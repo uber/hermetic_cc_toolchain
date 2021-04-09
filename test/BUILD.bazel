@@ -1,0 +1,35 @@
+load("@io_bazel_rules_docker//cc:image.bzl", "cc_image")
+
+cc_binary(
+    name = "hello",
+    srcs = ["hello.cpp"],
+)
+
+cc_image(
+    name = "hello_image",
+    binary = ":hello",
+)
+
+cc_binary(
+    name = "boost_exception",
+    srcs = ["boost_exception.cpp"],
+    copts = ["-fexceptions", "-frtti"],
+    deps = [
+        "@boost//:lexical_cast",
+    ],
+)
+
+cc_image(
+    name = "boost_exception_image",
+    binary = ":boost_exception",
+)
+
+cc_binary(
+    name = "exception",
+    srcs = ["exception.cpp"],
+)
+
+cc_image(
+    name = "exception_image",
+    binary = ":exception",
+)

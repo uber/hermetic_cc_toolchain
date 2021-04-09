@@ -1,0 +1,103 @@
+workspace(
+    name = "zig-cc-bazel-exceptions",
+)
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+
+rules_python_version = "812c48356881b34f3df68301b839a879c4d5ddf9"
+http_archive(
+    name = "rules_python",
+    sha256 = "f8a50280b9034b3933c4a41c61d0cf2309d473e3da39d92b38dac37d54bd4f82",
+    strip_prefix = "rules_python-{}".format(rules_python_version),
+    url = "https://github.com/bazelbuild/rules_python/archive/{}.zip".format(rules_python_version),
+)
+
+http_archive(
+    name = "io_bazel_rules_go",
+    sha256 = "7c10271940c6bce577d51a075ae77728964db285dac0a46614a7934dc34303e6",
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_go/releases/download/v0.26.0/rules_go-v0.26.0.tar.gz",
+        "https://github.com/bazelbuild/rules_go/releases/download/v0.26.0/rules_go-v0.26.0.tar.gz",
+    ],
+)
+
+http_archive(
+    name = "bazel_gazelle",
+    sha256 = "62ca106be173579c0a167deb23358fdfe71ffa1e4cfdddf5582af26520f1c66f",
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/bazel-gazelle/releases/download/v0.23.0/bazel-gazelle-v0.23.0.tar.gz",
+        "https://github.com/bazelbuild/bazel-gazelle/releases/download/v0.23.0/bazel-gazelle-v0.23.0.tar.gz",
+    ],
+)
+
+load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
+load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies", "go_repository")
+
+go_rules_dependencies()
+
+go_register_toolchains(version = "1.16")
+
+gazelle_dependencies(go_repository_default_config = "@//:WORKSPACE.bazel")
+
+http_archive(
+    name = "com_google_protobuf",
+    sha256 = "bf0e5070b4b99240183b29df78155eee335885e53a8af8683964579c214ad301",
+    strip_prefix = "protobuf-3.14.0",
+    urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.14.0.zip"],
+)
+
+load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
+protobuf_deps()
+
+http_archive(
+    name = "com_github_bazelbuild_buildtools",
+    strip_prefix = "buildtools-master",
+    url = "https://github.com/bazelbuild/buildtools/archive/master.zip",
+)
+
+http_archive(
+    name = "rules_pkg",
+    sha256 = "6b5969a7acd7b60c02f816773b06fcf32fbe8ba0c7919ccdc2df4f8fb923804a",
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_pkg/releases/download/0.3.0/rules_pkg-0.3.0.tar.gz",
+        "https://github.com/bazelbuild/rules_pkg/releases/download/0.3.0/rules_pkg-0.3.0.tar.gz",
+    ],
+)
+
+load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
+rules_pkg_dependencies()
+
+
+http_archive(
+    name = "io_bazel_rules_docker",
+    patches = ["//:patches/rules_docker/transitions.patch"],
+    patch_args = ["-p1"],
+    sha256 = "95d39fd84ff4474babaf190450ee034d958202043e366b9fc38f438c9e6c3334",
+    strip_prefix = "rules_docker-0.16.0",
+    urls = ["https://github.com/bazelbuild/rules_docker/releases/download/v0.16.0/rules_docker-v0.16.0.tar.gz"],
+)
+
+load("@io_bazel_rules_docker//repositories:repositories.bzl", container_repositories = "repositories")
+container_repositories()
+
+
+load("@io_bazel_rules_docker//cc:image.bzl", _cc_image_repos = "repositories")
+_cc_image_repos()
+
+load("@io_bazel_rules_docker//repositories:deps.bzl", container_deps = "deps")
+container_deps()
+
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
+git_repository(
+    name = "com_github_nelhage_rules_boost",
+    commit = "c13a880269cc044c4b5e90046625339836771d77",
+    remote = "https://github.com/nelhage/rules_boost",
+    shallow_since = "1591047380 -0700",
+)
+load("@com_github_nelhage_rules_boost//:boost/boost.bzl", "boost_deps")
+boost_deps()
+
+load("//zig-toolchains:defs.bzl", zig_register_all_toolchains = "register_all_toolchains", zig_toolchain_repositories = "toolchain_repositories")
+zig_toolchain_repositories()
+zig_register_all_toolchains()
