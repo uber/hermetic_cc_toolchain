@@ -35,3 +35,14 @@ If they *work*, then you'll see the same output as above. If not, you'll see:
 will throw and expect to catch an error...
 libc++abi: terminating with uncaught exception of type char const*
 ```
+
+If you want to try the above in a transient docker environment, you can do:
+
+```
+$ docker run --rm -it -v $(pwd):/workspace debian:buster-slim
+# apt update && apt install curl ca-certificates --no-install-recommends -y && curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.7.5/bazelisk-linux-amd64 > /usr/bin/bazel && chmod +x /usr/bin/bazel
+# cd /workspace
+# export CC=/usr/bin/false
+# bazel run --platforms=@com_github_ziglang_zig//:x86_64-linux-gnu.2.28 //test:hello
+# bazel run --platforms=@com_github_ziglang_zig//:x86_64-linux-gnu.2.28 //test:exception
+```

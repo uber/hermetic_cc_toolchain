@@ -14,39 +14,57 @@ DEFAULT_TOOL_PATHS = {
 }.items()
 
 DEFAULT_INCLUDE_DIRECTORIES = [
-    "lib/zig/include",
-    # "lib/zig/libcxx/include",
-    # "lib/zig/libcxxabi/include",
-    # "lib/zig/libunwind/include",
+    "lib/include",
+    # "lib/libcxx/include",
+    # "lib/libcxxabi/include",
+    # "lib/libunwind/include",
 ]
 
 # https://github.com/ziglang/zig/blob/0cfa39304b18c6a04689bd789f5dc4d035ec43b0/src/main.zig#L2962-L2966
 TARGET_CONFIGS = [
     struct(
-        target="x86_64-linux-gnu.2.28",
+        target="x86_64-macos-gnu",
         includes=[
-            "lib/zig/libcxx/include",
-            "lib/zig/libcxxabi/include",
-            "lib/zig/libunwind/include",
-            "lib/zig/libc/include/generic-glibc",
-            "lib/zig/libc/include/any-linux-any",
-            "lib/zig/libc/include/x86_64-linux-gnu",
-            "lib/zig/libc/include/x86_64-linux-any",
+            "lib/libcxx/include",
+            "lib/libcxxabi/include",
+            "lib/libunwind/include",
+            # "lib/libc/include/generic-glibc",
+            # "lib/libc/include/any-linux-any",
+            # "lib/libc/include/x86_64-linux-gnu",
+            # "lib/libc/include/x86_64-linux-any",
         ],
         linkopts=["-lc++", "-lc++abi"],
         copts=[],
+        bazel_target_cpu="darwin",
+        constraint_values=["@platforms//os:macos", "@platforms//cpu:x86_64"],
+        tool_paths={"ld": "ld64.lld"},
+    ),
+    struct(
+        target="x86_64-linux-gnu.2.28",
+        includes=[
+            "lib/libcxx/include",
+            "lib/libcxxabi/include",
+            "lib/libunwind/include",
+            "lib/libc/include/generic-glibc",
+            "lib/libc/include/any-linux-any",
+            "lib/libc/include/x86_64-linux-gnu",
+            "lib/libc/include/x86_64-linux-any",
+        ],
+        linkopts=["-lc++", "-lc++abi"],
+        copts=[],
+        bazel_target_cpu="k8",
         constraint_values=["@platforms//os:linux", "@platforms//cpu:x86_64"],
         tool_paths={"ld": "ld.lld"},
     ),
     # struct(
     #     target="x86_64-linux-musl",
     #     includes=[
-    #         "lib/zig/libcxx/include",
-    #         "lib/zig/libcxxabi/include",
-    #         "lib/zig/libc/include/generic-musl",
-    #         "lib/zig/libc/include/any-linux-any",
-    #         "lib/zig/libc/include/x86_64-linux-musl",
-    #         "lib/zig/libc/include/x86_64-linux-any",
+    #         "lib/libcxx/include",
+    #         "lib/libcxxabi/include",
+    #         "lib/libc/include/generic-musl",
+    #         "lib/libc/include/any-linux-any",
+    #         "lib/libc/include/x86_64-linux-musl",
+    #         "lib/libc/include/x86_64-linux-any",
     #     ],
     #     linkopts=[],
     #     # linkopts=["-lc++", "-lc++abi"],
@@ -111,7 +129,7 @@ exports_files(glob["**"])
 
     http_archive(
         name = "com_github_ziglang_zig_llvm_tools_linux_x86_64",
-        # sha256 = "",
+        sha256 = "829f5fb0ebda1d8716464394f97d5475d465ddc7bea2879c0601316b611ff6db",
         patch_cmds = llvm_patch_cmds,
         build_file_content = llvm_build_file_content,
         strip_prefix = "clang+llvm-11.0.0-x86_64-linux-gnu-ubuntu-20.04",
@@ -123,7 +141,10 @@ exports_files(glob["**"])
     zig_repository(
         name = "com_github_ziglang_zig",
         version = "0.7.1",
-        sha256 = "845cb17562978af0cf67e3993f4e33330525eaf01ead9386df9105111e3bc519",
+        host_platform_sha256 = {
+            "macos-x86_64": "845cb17562978af0cf67e3993f4e33330525eaf01ead9386df9105111e3bc519",
+            "linux-x86_64": "18c7b9b200600f8bcde1cd8d7f1f578cbc3676241ce36d771937ce19a8159b8d",
+        },
     )
 
 def register_all_toolchains():
@@ -148,12 +169,12 @@ def _zig_repository_impl(repository_ctx):
     repository_ctx.download_and_extract(
         url = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.tar.xz".format(**format_vars),
         stripPrefix = "zig-{host_platform}-{version}/".format(**format_vars),
-        sha256 = repository_ctx.attr.sha256,
+        sha256 = repository_ctx.attr.host_platform_sha256[host_platform],
     )
 
     # TODO Use llvm-ar for host platform until we have https://github.com/ziglang/zig/issues/7915
-    llvm_tools_dir = str(repository_ctx.path("")) + "/../" + llvm_tools_repo + "/llvm-ar"
-    repository_ctx.symlink(llvm_tools_dir, ZIG_TOOL_PATH.format(zig_tool="llvm-ar"))
+    llvm_tools_dir = str(repository_ctx.path("")) + "/../" + llvm_tools_repo
+    repository_ctx.symlink(llvm_tools_dir + "/llvm-ar", ZIG_TOOL_PATH.format(zig_tool="llvm-ar"))
 
     for zig_tool in ZIG_TOOLS:
         repository_ctx.file(
@@ -171,7 +192,7 @@ zig_repository = repository_rule(
     attrs = {
         "url": attr.string(),
         "version": attr.string(),
-        "sha256": attr.string(),
+        "host_platform_sha256": attr.string_dict(),
     },
     implementation = _zig_repository_impl,
 )
@@ -226,8 +247,7 @@ def zig_build_macro(absolute_path):
             copts = target_config.copts,
             linkopts = target_config.linkopts,
             target_system_name = "unknown",
-            # TODO don't hardcode this to k8
-            target_cpu = "k8",
+            target_cpu = target_config.bazel_target_cpu,
             target_libc = "unknown",
             compiler = "clang",
             abi_version = "unknown",
@@ -251,8 +271,7 @@ def zig_build_macro(absolute_path):
         native.cc_toolchain_suite(
             name = target + "_cc_toolchain_suite",
             toolchains = {
-                # TODO don't hardcode this to k8
-                "k8": ":%s_cc_toolchain" % target,
+                target_config.bazel_target_cpu: ":%s_cc_toolchain" % target,
             },
             tags = ["manual"]
         )

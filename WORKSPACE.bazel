@@ -88,12 +88,12 @@ _cc_image_repos()
 load("@io_bazel_rules_docker//repositories:deps.bzl", container_deps = "deps")
 container_deps()
 
-load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
-git_repository(
+rules_boost_version = "c13a880269cc044c4b5e90046625339836771d77"
+http_archive(
     name = "com_github_nelhage_rules_boost",
-    commit = "c13a880269cc044c4b5e90046625339836771d77",
-    remote = "https://github.com/nelhage/rules_boost",
-    shallow_since = "1591047380 -0700",
+    url = "https://github.com/nelhage/rules_boost/archive/{}.zip".format(rules_boost_version),
+    strip_prefix = "rules_boost-{}".format(rules_boost_version),
+    sha256 = "19a51f2f67e6bd2d1655a0641568bd88211db641a77c27fcdab7d9ad6de7dc00",
 )
 load("@com_github_nelhage_rules_boost//:boost/boost.bzl", "boost_deps")
 boost_deps()
