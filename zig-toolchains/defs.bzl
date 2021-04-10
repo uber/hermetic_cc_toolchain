@@ -14,10 +14,10 @@ DEFAULT_TOOL_PATHS = {
 }.items()
 
 DEFAULT_INCLUDE_DIRECTORIES = [
-    "lib/include",
-    # "lib/libcxx/include",
-    # "lib/libcxxabi/include",
-    # "lib/libunwind/include",
+    "include",
+    # "libcxx/include",
+    # "libcxxabi/include",
+    # "libunwind/include",
 ]
 
 # https://github.com/ziglang/zig/blob/0cfa39304b18c6a04689bd789f5dc4d035ec43b0/src/main.zig#L2962-L2966
@@ -25,15 +25,15 @@ TARGET_CONFIGS = [
     struct(
         target="x86_64-macos-gnu",
         includes=[
-            "lib/libcxx/include",
-            "lib/libcxxabi/include",
-            "lib/libunwind/include",
-            # "lib/libc/include/generic-glibc",
-            # "lib/libc/include/any-linux-any",
-            # "lib/libc/include/x86_64-linux-gnu",
-            # "lib/libc/include/x86_64-linux-any",
+            "libcxx/include",
+            "libcxxabi/include",
+            "libunwind/include",
+            "libc/include/any-macos-any",
+            "libc/include/x86_64-macos-any",
+            "libc/include/x86_64-macos-gnu",
         ],
-        linkopts=["-lc++", "-lc++abi"],
+        # linkopts=["-lc++", "-lc++abi"],
+        linkopts=[],
         copts=[],
         bazel_target_cpu="darwin",
         constraint_values=["@platforms//os:macos", "@platforms//cpu:x86_64"],
@@ -42,13 +42,13 @@ TARGET_CONFIGS = [
     struct(
         target="x86_64-linux-gnu.2.28",
         includes=[
-            "lib/libcxx/include",
-            "lib/libcxxabi/include",
-            "lib/libunwind/include",
-            "lib/libc/include/generic-glibc",
-            "lib/libc/include/any-linux-any",
-            "lib/libc/include/x86_64-linux-gnu",
-            "lib/libc/include/x86_64-linux-any",
+            "libcxx/include",
+            "libcxxabi/include",
+            "libunwind/include",
+            "libc/include/generic-glibc",
+            "libc/include/any-linux-any",
+            "libc/include/x86_64-linux-gnu",
+            "libc/include/x86_64-linux-any",
         ],
         linkopts=["-lc++", "-lc++abi"],
         copts=[],
@@ -59,12 +59,12 @@ TARGET_CONFIGS = [
     # struct(
     #     target="x86_64-linux-musl",
     #     includes=[
-    #         "lib/libcxx/include",
-    #         "lib/libcxxabi/include",
-    #         "lib/libc/include/generic-musl",
-    #         "lib/libc/include/any-linux-any",
-    #         "lib/libc/include/x86_64-linux-musl",
-    #         "lib/libc/include/x86_64-linux-any",
+    #         "libcxx/include",
+    #         "libcxxabi/include",
+    #         "libc/include/generic-musl",
+    #         "libc/include/any-linux-any",
+    #         "libc/include/x86_64-linux-musl",
+    #         "libc/include/x86_64-linux-any",
     #     ],
     #     linkopts=[],
     #     # linkopts=["-lc++", "-lc++abi"],
@@ -73,36 +73,6 @@ TARGET_CONFIGS = [
     #     tool_paths={"ld": "ld.lld"},
     # ),
 ]
-
-ZIG_TOOL_PATH = "tools/{zig_tool}"
-ZIG_TOOL_WRAPPER = """#!/bin/bash
-export HOME=$TMPDIR
-exec "{zig}" "{zig_tool}" "$@"
-"""
-
-ZIG_TOOLS = [
-    "c++",
-    "cc",
-    "build-lib", # https://github.com/ziglang/zig/issues/7915
-    # List of ld tools: https://github.com/ziglang/zig/blob/0cfa39304b18c6a04689bd789f5dc4d035ec43b0/src/main.zig#L2962-L2966
-    # and also: https://github.com/ziglang/zig/issues/3257
-    "ld.lld", # ELF 
-    "ld64.lld", # Mach-O
-    "lld-link", # COFF
-    "wasm-ld", # WebAssembly
-]
-
-TOOLS = ZIG_TOOLS + [
-    "llvm-ar",
-]
-
-BUILD = """
-load("@zig-cc-bazel-exceptions//zig-toolchains:defs.bzl", "zig_build_macro")
-load("@{llvm_tools_repo}//:noop.bzl", "noop")
-noop()
-package(default_visibility = ["//visibility:public"])
-zig_build_macro(absolute_path={absolute_path})
-"""
 
 def toolchain_repositories():
     # We need llvm-ar for now, so get it.
@@ -140,11 +110,25 @@ exports_files(glob["**"])
 
     zig_repository(
         name = "com_github_ziglang_zig",
-        version = "0.7.1",
+
+        version = "0.8.0-dev.1802+b3f5d4dc4",
+        url_format = "https://ziglang.org/builds/zig-{host_platform}-{version}.tar.xz",
         host_platform_sha256 = {
-            "macos-x86_64": "845cb17562978af0cf67e3993f4e33330525eaf01ead9386df9105111e3bc519",
-            "linux-x86_64": "18c7b9b200600f8bcde1cd8d7f1f578cbc3676241ce36d771937ce19a8159b8d",
+            "linux-x86_64": "433a3773413b1f3f303a57da70057edd6b2cdb9831934ddd8e8cbda399d9410a",
+            "macos-x86_64": "e54cb8a6a510011f946cef6ada45064fe3df4faa86705d98f258ef985e882db3",
         },
+
+        # version = "0.7.1",
+        # url_format = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.tar.xz",
+        # host_platform_sha256 = {
+        #     "macos-x86_64": "845cb17562978af0cf67e3993f4e33330525eaf01ead9386df9105111e3bc519",
+        #     "linux-x86_64": "18c7b9b200600f8bcde1cd8d7f1f578cbc3676241ce36d771937ce19a8159b8d",
+        # },
+
+        host_platform_include_root = {
+            "macos-x86_64": "lib/zig/",
+            "linux-x86_64": "lib/",
+        }
     )
 
 def register_all_toolchains():
@@ -152,6 +136,36 @@ def register_all_toolchains():
         native.register_toolchains(
             "@com_github_ziglang_zig//:%s_toolchain" % target_config.target,
         )
+
+ZIG_TOOL_PATH = "tools/{zig_tool}"
+ZIG_TOOL_WRAPPER = """#!/bin/bash
+export HOME=$TMPDIR
+exec "{zig}" "{zig_tool}" "$@"
+"""
+
+ZIG_TOOLS = [
+    "c++",
+    "cc",
+    "build-lib", # https://github.com/ziglang/zig/issues/7915
+    # List of ld tools: https://github.com/ziglang/zig/blob/0cfa39304b18c6a04689bd789f5dc4d035ec43b0/src/main.zig#L2962-L2966
+    # and also: https://github.com/ziglang/zig/issues/3257
+    "ld.lld", # ELF 
+    "ld64.lld", # Mach-O
+    "lld-link", # COFF
+    "wasm-ld", # WebAssembly
+]
+
+TOOLS = ZIG_TOOLS + [
+    "llvm-ar",
+]
+
+BUILD = """
+load("@zig-cc-bazel-exceptions//zig-toolchains:defs.bzl", "zig_build_macro")
+load("@{llvm_tools_repo}//:noop.bzl", "noop")
+noop()
+package(default_visibility = ["//visibility:public"])
+zig_build_macro(absolute_path={absolute_path}, zig_include_root={zig_include_root})
+"""
 
 def _zig_repository_impl(repository_ctx):
     if repository_ctx.os.name.lower().startswith("mac os"):
@@ -161,15 +175,18 @@ def _zig_repository_impl(repository_ctx):
         host_platform = "linux-x86_64"
         llvm_tools_repo = "com_github_ziglang_zig_llvm_tools_linux_x86_64"
 
+    zig_include_root = repository_ctx.attr.host_platform_include_root[host_platform]
+    zig_sha256 = repository_ctx.attr.host_platform_sha256[host_platform]
     format_vars = {
         "version" : repository_ctx.attr.version,
         "host_platform" : host_platform,
     }
+    zig_url = repository_ctx.attr.url_format.format(**format_vars)
 
     repository_ctx.download_and_extract(
-        url = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.tar.xz".format(**format_vars),
+        url = zig_url,
         stripPrefix = "zig-{host_platform}-{version}/".format(**format_vars),
-        sha256 = repository_ctx.attr.host_platform_sha256[host_platform],
+        sha256 = zig_sha256,
     )
 
     # TODO Use llvm-ar for host platform until we have https://github.com/ziglang/zig/issues/7915
@@ -185,7 +202,7 @@ def _zig_repository_impl(repository_ctx):
     absolute_path = json.encode(str(repository_ctx.path("")))
     repository_ctx.file(
         "BUILD",
-        BUILD.format(absolute_path=absolute_path, llvm_tools_repo=llvm_tools_repo),
+        BUILD.format(absolute_path=absolute_path, llvm_tools_repo=llvm_tools_repo, zig_include_root=json.encode(zig_include_root)),
     )
 
 zig_repository = repository_rule(
@@ -193,6 +210,8 @@ zig_repository = repository_rule(
         "url": attr.string(),
         "version": attr.string(),
         "host_platform_sha256": attr.string_dict(),
+        "url_format": attr.string(),
+        "host_platform_include_root": attr.string_dict(),
     },
     implementation = _zig_repository_impl,
 )
@@ -201,7 +220,7 @@ def filegroup(name, **kwargs):
     native.filegroup(name = name, **kwargs)
     return ":" + name
 
-def zig_build_macro(absolute_path):
+def zig_build_macro(absolute_path, zig_include_root):
     filegroup(name="empty")
     filegroup(name="zig_compiler", srcs=["zig"])
     filegroup(name="lib/std", srcs=native.glob(["lib/std/**"]))
@@ -220,6 +239,7 @@ def zig_build_macro(absolute_path):
         
         cxx_builtin_include_directories = []
         for d in DEFAULT_INCLUDE_DIRECTORIES + target_config.includes:
+            d = zig_include_root + d
             if d not in lazy_filegroups:
                 lazy_filegroups[d] = filegroup(name=d, srcs=native.glob([d + "/**"]))
             compiler_srcs.append(lazy_filegroups[d])
