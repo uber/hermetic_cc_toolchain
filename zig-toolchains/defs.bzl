@@ -3,10 +3,10 @@ load(":zig_toolchain.bzl", "zig_cc_toolchain_config")
 
 DEFAULT_TOOL_PATHS = {
     "ar": "llvm-ar", # TODO this should be "build-lib", see https://github.com/ziglang/zig/issues/7915
-    "cpp": "c++",
-    "gcc": "cc",
+    "gcc": "c++", # https://github.com/bazelbuild/bazel/issues/4644
 
     # TODO See https://github.com/ziglang/zig/issues/7917 for zig issue to implement these other tools.
+    "cpp": "/usr/bin/false",
     "gcov": "/usr/bin/false",
     "nm": "/usr/bin/false",
     "objdump": "/usr/bin/false",
@@ -111,11 +111,11 @@ exports_files(glob["**"])
     zig_repository(
         name = "com_github_ziglang_zig",
 
-        version = "0.8.0-dev.1802+b3f5d4dc4",
+        version = "0.8.0-dev.2729+87dae0ce9",
         url_format = "https://ziglang.org/builds/zig-{host_platform}-{version}.tar.xz",
         host_platform_sha256 = {
-            "linux-x86_64": "433a3773413b1f3f303a57da70057edd6b2cdb9831934ddd8e8cbda399d9410a",
-            "macos-x86_64": "e54cb8a6a510011f946cef6ada45064fe3df4faa86705d98f258ef985e882db3",
+            "linux-x86_64": "8f15f6cc88dd3afb0a6c0790aef8ee83fa7f7e3a8499154bc23c5b6d68ab74ed",
+            "macos-x86_64": "2d410a4d5ababb61a1deccca724357fda4ed0277b722fc45ea10adf2ed215c5e",
         },
 
         # version = "0.7.1",
@@ -235,7 +235,7 @@ def zig_build_macro(absolute_path, zig_include_root):
         ar_srcs = [":zig_compiler"]
         linker_srcs = [":zig_compiler"]
         compiler_srcs = [":zig_compiler"]
-        tool_srcs = {"gcc": compiler_srcs, "cpp": compiler_srcs, "ld": linker_srcs, "ar": ar_srcs}
+        tool_srcs = {"gcc": compiler_srcs, "ld": linker_srcs, "ar": ar_srcs}
         
         cxx_builtin_include_directories = []
         for d in DEFAULT_INCLUDE_DIRECTORIES + target_config.includes:
