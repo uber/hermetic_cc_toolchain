@@ -2,10 +2,9 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load(":zig_toolchain.bzl", "zig_cc_toolchain_config")
 
 DEFAULT_TOOL_PATHS = {
-    "ar": "llvm-ar", # TODO this should be "build-lib", see https://github.com/ziglang/zig/issues/7915
+    "ar": "ar",
     "gcc": "c++", # https://github.com/bazelbuild/bazel/issues/4644
 
-    # TODO See https://github.com/ziglang/zig/issues/7917 for zig issue to implement these other tools.
     "cpp": "/usr/bin/false",
     "gcov": "/usr/bin/false",
     "nm": "/usr/bin/false",
@@ -15,9 +14,8 @@ DEFAULT_TOOL_PATHS = {
 
 DEFAULT_INCLUDE_DIRECTORIES = [
     "include",
-    # "libcxx/include",
-    # "libcxxabi/include",
-    # "libunwind/include",
+    "libcxx/include",
+    "libcxxabi/include",
 ]
 
 # https://github.com/ziglang/zig/blob/0cfa39304b18c6a04689bd789f5dc4d035ec43b0/src/main.zig#L2962-L2966
@@ -25,8 +23,6 @@ TARGET_CONFIGS = [
     struct(
         target="x86_64-macos-gnu",
         includes=[
-            "libcxx/include",
-            "libcxxabi/include",
             "libunwind/include",
             "libc/include/any-macos-any",
             "libc/include/x86_64-macos-any",
@@ -42,28 +38,28 @@ TARGET_CONFIGS = [
     # If this gets uncommented, bazel will put `-target <...>gnu`, even if
     # the platform is explicitly set to:
     # --platforms=@com_github_ziglang_zig//:x86_64-linux-musl
-    #struct(
-    #    target="x86_64-linux-gnu.2.28",
-    #    includes=[
-    #        "libcxx/include",
-    #        "libcxxabi/include",
-    #        "libunwind/include",
-    #        "libc/include/generic-glibc",
-    #        "libc/include/any-linux-any",
-    #        "libc/include/x86_64-linux-gnu",
-    #        "libc/include/x86_64-linux-any",
-    #    ],
-    #    linkopts=["-lc++", "-lc++abi"],
-    #    copts=[],
-    #    bazel_target_cpu="k8",
-    #    constraint_values=["@platforms//os:linux", "@platforms//cpu:x86_64"],
-    #    tool_paths={"ld": "ld.lld"},
-    #),
+    struct(
+        target="x86_64-linux-gnu.2.28",
+        includes=[
+            "libunwind/include",
+            "libc/include/generic-glibc",
+            "libc/include/any-linux-any",
+            "libc/include/x86_64-linux-gnu",
+            "libc/include/x86_64-linux-any",
+        ],
+        linkopts=["-lc++", "-lc++abi"],
+        copts=[],
+        bazel_target_cpu="k8",
+        constraint_values=[
+            "@platforms//os:linux",
+            "@platforms//cpu:x86_64",
+            #"//zig-toolchains:glibc_2_28",
+        ],
+        tool_paths={"ld": "ld.lld"},
+    ),
     struct(
         target="x86_64-linux-musl",
         includes=[
-            "libcxx/include",
-            "libcxxabi/include",
             "libc/include/generic-musl",
             "libc/include/any-linux-any",
             "libc/include/x86_64-linux-musl",
@@ -72,7 +68,11 @@ TARGET_CONFIGS = [
         linkopts=[],
         copts=["-D_LIBCPP_HAS_MUSL_LIBC", "-D_LIBCPP_HAS_THREAD_API_PTHREAD"],
         bazel_target_cpu="k8",
-        constraint_values=["@platforms//os:linux", "@platforms//cpu:x86_64"],
+        constraint_values=[
+            "@platforms//os:linux",
+            "@platforms//cpu:x86_64",
+            #"//zig-toolchains:musl",
+        ],
         tool_paths={"ld": "ld.lld"},
     ),
 ]
