@@ -119,7 +119,7 @@ ZIG_TOOLS = [
 ]
 
 BUILD = """
-load("@zig-cc-bazel-exceptions//zig-toolchains:defs.bzl", "zig_build_macro")
+load("@zig-cc-bazel//zig-toolchains:defs.bzl", "zig_build_macro")
 package(default_visibility = ["//visibility:public"])
 zig_build_macro(absolute_path={absolute_path}, zig_include_root={zig_include_root})
 """
