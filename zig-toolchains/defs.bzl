@@ -39,39 +39,42 @@ TARGET_CONFIGS = [
         constraint_values=["@platforms//os:macos", "@platforms//cpu:x86_64"],
         tool_paths={"ld": "ld64.lld"},
     ),
+    # If this gets uncommented, bazel will put `-target <...>gnu`, even if
+    # the platform is explicitly set to:
+    # --platforms=@com_github_ziglang_zig//:x86_64-linux-musl
+    #struct(
+    #    target="x86_64-linux-gnu.2.28",
+    #    includes=[
+    #        "libcxx/include",
+    #        "libcxxabi/include",
+    #        "libunwind/include",
+    #        "libc/include/generic-glibc",
+    #        "libc/include/any-linux-any",
+    #        "libc/include/x86_64-linux-gnu",
+    #        "libc/include/x86_64-linux-any",
+    #    ],
+    #    linkopts=["-lc++", "-lc++abi"],
+    #    copts=[],
+    #    bazel_target_cpu="k8",
+    #    constraint_values=["@platforms//os:linux", "@platforms//cpu:x86_64"],
+    #    tool_paths={"ld": "ld.lld"},
+    #),
     struct(
-        target="x86_64-linux-gnu.2.28",
+        target="x86_64-linux-musl",
         includes=[
             "libcxx/include",
             "libcxxabi/include",
-            "libunwind/include",
-            "libc/include/generic-glibc",
+            "libc/include/generic-musl",
             "libc/include/any-linux-any",
-            "libc/include/x86_64-linux-gnu",
+            "libc/include/x86_64-linux-musl",
             "libc/include/x86_64-linux-any",
         ],
-        linkopts=["-lc++", "-lc++abi"],
-        copts=[],
+        linkopts=[],
+        copts=["-D_LIBCPP_HAS_MUSL_LIBC", "-D_LIBCPP_HAS_THREAD_API_PTHREAD"],
         bazel_target_cpu="k8",
         constraint_values=["@platforms//os:linux", "@platforms//cpu:x86_64"],
         tool_paths={"ld": "ld.lld"},
     ),
-    # struct(
-    #     target="x86_64-linux-musl",
-    #     includes=[
-    #         "libcxx/include",
-    #         "libcxxabi/include",
-    #         "libc/include/generic-musl",
-    #         "libc/include/any-linux-any",
-    #         "libc/include/x86_64-linux-musl",
-    #         "libc/include/x86_64-linux-any",
-    #     ],
-    #     linkopts=[],
-    #     # linkopts=["-lc++", "-lc++abi"],
-    #     copts=["-D_LIBCPP_HAS_MUSL_LIBC", "-D_LIBCPP_HAS_THREAD_API_PTHREAD"],
-    #     constraint_values=["@platforms//os:linux", "@platforms//cpu:x86_64"],
-    #     tool_paths={"ld": "ld.lld"},
-    # ),
 ]
 
 def toolchain_repositories():
