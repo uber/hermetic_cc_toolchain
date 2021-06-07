@@ -1,3 +1,5 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+
 cc_binary(
     name = "hello",
     srcs = ["hello.cpp"],
@@ -13,3 +15,21 @@ cc_binary(
 )
 
 # go build -ldflags "-linkmode external -extldflags -static" hello.go
+
+go_library(
+    name = "test_lib",
+    srcs = [
+        "exception.cpp",
+        "hello.cpp",
+        "hello.go",
+    ],
+    cgo = True,
+    importpath = "github.com/motiejus/bazel-zig-cc/test",
+    visibility = ["//visibility:private"],
+)
+
+go_binary(
+    name = "test",
+    embed = [":test_lib"],
+    visibility = ["//visibility:public"],
+)
