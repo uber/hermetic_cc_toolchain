@@ -53,7 +53,7 @@ TARGET_CONFIGS = [
         constraint_values=[
             "@platforms//os:linux",
             "@platforms//cpu:x86_64",
-            #"//zig-toolchains:glibc_2_28",
+            ":glibc_2_28",
         ],
         tool_paths={"ld": "ld.lld"},
     ),
@@ -71,7 +71,7 @@ TARGET_CONFIGS = [
         constraint_values=[
             "@platforms//os:linux",
             "@platforms//cpu:x86_64",
-            #"//zig-toolchains:musl",
+            ":musl",
         ],
         tool_paths={"ld": "ld.lld"},
     ),
@@ -81,11 +81,11 @@ def toolchain_repositories():
     zig_repository(
         name = "com_github_ziglang_zig",
 
-        version = "0.8.0-dev.2729+87dae0ce9",
+        version = "0.8.0",
         url_format = "https://ziglang.org/builds/zig-{host_platform}-{version}.tar.xz",
         host_platform_sha256 = {
-            "linux-x86_64": "8f15f6cc88dd3afb0a6c0790aef8ee83fa7f7e3a8499154bc23c5b6d68ab74ed",
-            "macos-x86_64": "2d410a4d5ababb61a1deccca724357fda4ed0277b722fc45ea10adf2ed215c5e",
+            "linux-x86_64": "502625d3da3ae595c5f44a809a87714320b7a40e6dff4a895b5fa7df3391d01e",
+            "macos-x86_64": "279f9360b5cb23103f0395dc4d3d0d30626e699b1b4be55e98fd985b62bc6fbe",
         },
 
         host_platform_include_root = {
@@ -122,6 +122,38 @@ BUILD = """
 load("@zig-cc-bazel//zig-toolchains:defs.bzl", "zig_build_macro")
 package(default_visibility = ["//visibility:public"])
 zig_build_macro(absolute_path={absolute_path}, zig_include_root={zig_include_root})
+
+constraint_setting(name = "libc")
+
+constraint_value(
+    name = "glibc_2_28",
+    constraint_setting = ":libc",
+)
+
+constraint_value(
+    name = "musl",
+    constraint_setting = ":libc",
+)
+
+
+platform(
+    name = "platform_linux-x86_64-musl",
+    constraint_values = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+        ":musl",
+    ],
+)
+
+platform(
+    name = "platform_linux-x86_64-glibc",
+    constraint_values = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+        ":glibc_2_28",
+    ],
+)
+
 """
 
 def _zig_repository_impl(repository_ctx):
