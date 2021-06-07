@@ -82,7 +82,7 @@ def toolchain_repositories():
         name = "com_github_ziglang_zig",
 
         version = "0.8.0",
-        url_format = "https://ziglang.org/builds/zig-{host_platform}-{version}.tar.xz",
+        url_format = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.tar.xz",
         host_platform_sha256 = {
             "linux-x86_64": "502625d3da3ae595c5f44a809a87714320b7a40e6dff4a895b5fa7df3391d01e",
             "macos-x86_64": "279f9360b5cb23103f0395dc4d3d0d30626e699b1b4be55e98fd985b62bc6fbe",
