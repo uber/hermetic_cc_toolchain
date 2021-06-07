@@ -7,10 +7,15 @@ go_library(
     cgo = True,
     importpath = "github.com/motiejus/bazel-zig-cc/test/go",
     visibility = ["//visibility:private"],
+    target_compatible_with = select({
+        "@platforms//os:linux": ["@com_github_ziglang_zig//:musl"],
+        "//conditions:default": [],
+    }),
 )
 
 go_binary(
     name = "go",
     embed = [":go_lib"],
     visibility = ["//visibility:public"],
+    static = "on",
 )
