@@ -1,9 +1,10 @@
 # Bazel zig cc toolchain for Go
 
-This is a prototype zig-cc toolchain for cgo programs with:
+This is a prototype zig-cc toolchain that can compile cgo programs with these c
+libraries:
 
 - glibc 2.19
-- musl.
+- musl
 
 # Testing
 
