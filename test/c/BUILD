@@ -11,5 +11,3 @@ cc_binary(
     name = "exception",
     srcs = ["exception.cpp"],
 )
-
-# go build -ldflags "-linkmode external -extldflags -static" hello.go
