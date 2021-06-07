@@ -1,15 +1,7 @@
-build --symlink_prefix=dist/
+build --verbose_failures
+test --sandbox_default_allow_network=false
 test --test_output=errors
-test:debug --test_output=streamed --test_strategy=exclusive --test_timeout=9999 --nocache_test_results --define=VERBOSE_LOGS=1
-run:debug --define=VERBOSE_LOGS=1 -- --node_options=--inspect-brk
-build:debug --compilation_mode=dbg
-build --nolegacy_external_runfiles
-build --incompatible_strict_action_env
-run --incompatible_strict_action_env
-try-import %workspace%/.bazelrc.user
 build --worker_sandboxing
 build --incompatible_enable_cc_toolchain_resolution
 build --incompatible_use_cc_configure_from_rules_cc
 build --incompatible_use_platforms_repo_for_constraints
-
-build  --javabase=@bazel_tools//tools/jdk:remote_jdk11

@@ -1,2 +1,7 @@
-bazel-out
-dist
+*~
+*.sw[op]
+
+/bazel-bin
+/bazel-bazel-zig-cc
+/bazel-out
+/bazel-testlogs
