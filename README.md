@@ -7,7 +7,7 @@ This is a prototype zig-cc toolchain for cgo programs with:
 
 # Testing
 
-Building a cgo binary with glibc:
+## cgo + glibc 2.19
 
 ```
 $ bazel build //test:gognu
@@ -18,7 +18,7 @@ $ file ../bazel-bin/test/gognu_/gognu
 ../bazel-bin/test/gognu_/gognu: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 2.0.0, Go BuildID=redacted, with debug_info, not stripped
 ```
 
-Build a cgo binary with musl:
+## cgo + musl
 
 ```
 $ bazel build --platforms @com_github_ziglang_zig//:platform_linux-x86_64-musl :gomusl
@@ -29,13 +29,12 @@ $ ../bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/gomusl_/gomusl
 hello, world
 ```
 
-If you want to try the above in a transient docker environment, you can do:
+## Transient docker environment
 
 ```
-$ docker run --rm -it -v $(pwd):/workspace debian:buster-slim
-# apt update && apt install curl ca-certificates --no-install-recommends -y && curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.7.5/bazelisk-linux-amd64 > /usr/bin/bazel && chmod +x /usr/bin/bazel
-# cd /workspace
+$ docker run -ti --rm -v $(pwd):/x -w /x debian:buster-slim
+# apt update && apt install curl ca-certificates -y && curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.7.5/bazelisk-linux-amd64 > /usr/local/bin/bazel && chmod +x /usr/local/bin/bazel
 # export CC=/usr/bin/false
-# bazel run --platforms @com_github_ziglang_zig//:platform_linux-x86_64-musl :gomusl
-# bazel run --platforms @com_github_ziglang_zig//:platform_linux-x86_64-glibc :gomusl
+# bazel run --platforms @com_github_ziglang_zig//:platform_linux-x86_64-musl //test:gomusl
+# bazel run --platforms @com_github_ziglang_zig//:platform_linux-x86_64-glibc //test:gognu
 ```
