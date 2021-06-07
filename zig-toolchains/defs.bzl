@@ -39,7 +39,7 @@ TARGET_CONFIGS = [
     # the platform is explicitly set to:
     # --platforms=@com_github_ziglang_zig//:x86_64-linux-musl
     struct(
-        target="x86_64-linux-gnu.2.28",
+        target="x86_64-linux-gnu.2.19",
         includes=[
             "libunwind/include",
             "libc/include/generic-glibc",
@@ -53,7 +53,7 @@ TARGET_CONFIGS = [
         constraint_values=[
             "@platforms//os:linux",
             "@platforms//cpu:x86_64",
-            ":glibc_2_28",
+            ":glibc_2_19",
         ],
         tool_paths={"ld": "ld.lld"},
     ),
@@ -126,7 +126,7 @@ zig_build_macro(absolute_path={absolute_path}, zig_include_root={zig_include_roo
 constraint_setting(name = "libc")
 
 constraint_value(
-    name = "glibc_2_28",
+    name = "glibc_2_19",
     constraint_setting = ":libc",
 )
 
@@ -150,7 +150,7 @@ platform(
     constraint_values = [
         "@platforms//os:linux",
         "@platforms//cpu:x86_64",
-        ":glibc_2_28",
+        ":glibc_2_19",
     ],
 )
 
