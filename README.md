@@ -37,5 +37,5 @@ $ docker run -ti --rm -v $(pwd):/x -w /x debian:buster-slim
 # apt update && apt install curl ca-certificates -y && curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.7.5/bazelisk-linux-amd64 > /usr/local/bin/bazel && chmod +x /usr/local/bin/bazel
 # export CC=/usr/bin/false
 # bazel run --platforms @com_github_ziglang_zig//:platform_linux-x86_64-musl //test:gomusl
-# bazel run --platforms @com_github_ziglang_zig//:platform_linux-x86_64-glibc //test:gognu
+# bazel run --platforms @com_github_ziglang_zig//:platform_linux-x86_64-gnu //test:gognu
 ```

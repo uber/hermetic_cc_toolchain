@@ -53,7 +53,7 @@ TARGET_CONFIGS = [
         constraint_values=[
             "@platforms//os:linux",
             "@platforms//cpu:x86_64",
-            ":glibc_2_19",
+            ":gnu_2_19",
         ],
         tool_paths={"ld": "ld.lld"},
     ),
@@ -126,7 +126,7 @@ zig_build_macro(absolute_path={absolute_path}, zig_include_root={zig_include_roo
 constraint_setting(name = "libc")
 
 constraint_value(
-    name = "glibc_2_19",
+    name = "gnu_2_19",
     constraint_setting = ":libc",
 )
 
@@ -146,11 +146,11 @@ platform(
 )
 
 platform(
-    name = "platform_linux-x86_64-glibc",
+    name = "platform_linux-x86_64-gnu",
     constraint_values = [
         "@platforms//os:linux",
         "@platforms//cpu:x86_64",
-        ":glibc_2_19",
+        ":gnu_2_19",
     ],
 )
 
