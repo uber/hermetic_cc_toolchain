@@ -48,7 +48,7 @@ http_archive(
     url = "https://github.com/bazelbuild/buildtools/archive/master.zip",
 )
 
-load("//zig-toolchains:defs.bzl",
+load("//toolchain:defs.bzl",
      zig_register_all_toolchains = "register_all_toolchains",
      zig_toolchain_repositories = "toolchain_repositories",
 )

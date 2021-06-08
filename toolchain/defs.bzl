@@ -35,9 +35,6 @@ TARGET_CONFIGS = [
         constraint_values=["@platforms//os:macos", "@platforms//cpu:x86_64"],
         tool_paths={"ld": "ld64.lld"},
     ),
-    # If this gets uncommented, bazel will put `-target <...>gnu`, even if
-    # the platform is explicitly set to:
-    # --platforms=@com_github_ziglang_zig//:x86_64-linux-musl
     struct(
         target="x86_64-linux-gnu.2.19",
         includes=[
@@ -119,7 +116,7 @@ ZIG_TOOLS = [
 ]
 
 BUILD = """
-load("@zig-cc-bazel//zig-toolchains:defs.bzl", "zig_build_macro")
+load("@zig-cc-bazel//toolchain:defs.bzl", "zig_build_macro")
 package(default_visibility = ["//visibility:public"])
 zig_build_macro(absolute_path={absolute_path}, zig_include_root={zig_include_root})
 
