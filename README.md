@@ -1,4 +1,4 @@
-[![builds.sr.ht status](https://builds.sr.ht/~motiejus/bazel-zig-toolchain.svg)](https://builds.sr.ht/~motiejus/bazel-zig-toolchain)
+[![builds.sr.ht status](https://builds.sr.ht/~motiejus/bazel-zig-cc.svg)](https://builds.sr.ht/~motiejus/bazel-zig-cc)
 
 # Bazel zig cc toolchain for Go
 
