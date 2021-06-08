@@ -66,3 +66,16 @@ $ docker run -ti --rm -v $(pwd):/x -w /x debian:buster-slim
 
 And run the `bazel build` commands above. Take a look at `.build.yml` and see
 how CI does it.
+
+# Appendix: compiling manually
+
+zcc
+```
+#!/bin/bash
+exec zig cc -target x86_64-macos-gnu "$@"
+```
+
+Build:
+``
+GOOS=darwin GOARCH=amd64 CC=zcc go build -ldflags "-linkmode external -extldflags -static" hello.go
+```
