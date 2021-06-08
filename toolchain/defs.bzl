@@ -32,7 +32,10 @@ TARGET_CONFIGS = [
         linkopts=[],
         copts=[],
         bazel_target_cpu="darwin",
-        constraint_values=["@platforms//os:macos", "@platforms//cpu:x86_64"],
+        constraint_values=[
+            "@platforms//os:macos",
+            "@platforms//cpu:x86_64",
+        ],
         tool_paths={"ld": "ld64.lld"},
     ),
     struct(
@@ -50,7 +53,6 @@ TARGET_CONFIGS = [
         constraint_values=[
             "@platforms//os:linux",
             "@platforms//cpu:x86_64",
-            ":gnu_2_19",
         ],
         tool_paths={"ld": "ld.lld"},
     ),
@@ -123,31 +125,33 @@ zig_build_macro(absolute_path={absolute_path}, zig_include_root={zig_include_roo
 constraint_setting(name = "libc")
 
 constraint_value(
-    name = "gnu_2_19",
-    constraint_setting = ":libc",
-)
-
-constraint_value(
     name = "musl",
     constraint_setting = ":libc",
 )
 
 
 platform(
-    name = "platform_linux-x86_64-musl",
+    name = "platform_x86_64-macos-gnu",
     constraint_values = [
-        "@platforms//os:linux",
+        "@platforms//os:macos",
         "@platforms//cpu:x86_64",
-        ":musl",
     ],
 )
 
 platform(
-    name = "platform_linux-x86_64-gnu",
+    name = "platform_x86_64-linux-gnu",
     constraint_values = [
         "@platforms//os:linux",
         "@platforms//cpu:x86_64",
-        ":gnu_2_19",
+    ],
+)
+
+platform(
+    name = "platform_x86_64-linux-musl",
+    constraint_values = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+        ":musl",
     ],
 )
 

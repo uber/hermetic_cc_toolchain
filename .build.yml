@@ -10,9 +10,14 @@ tasks:
       curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.9.0/bazelisk-linux-amd64 \
         -o bazel
       chmod +x bazel
+  - test_default: |
+      cd bazel-zig-cc; ../bazel run --toolchain_resolution_debug=true \
+        //test:gognu
   - test_musl: |
-      cd bazel-zig-cc
-      ../bazel run --platforms @com_github_ziglang_zig//:platform_linux-x86_64-musl //test:gomusl
+      cd bazel-zig-cc; ../bazel run --toolchain_resolution_debug=true \
+        --platforms @com_github_ziglang_zig//:platform_linux-x86_64-musl \
+        //test:gomusl
   - test_gnu: |
-      cd bazel-zig-cc
-      ../bazel run --platforms @com_github_ziglang_zig//:platform_linux-x86_64-gnu //test:gognu
+      cd bazel-zig-cc; ../bazel run --toolchain_resolution_debug=true \
+        --platforms @com_github_ziglang_zig//:platform_linux-x86_64-gnu \
+        //test:gognu
