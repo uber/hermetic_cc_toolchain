@@ -18,7 +18,7 @@ these basic constraints:
 
 # Testing
 
-## cgo + glibc 2.19
+## linux cgo + glibc 2.19
 
 Using the default toolchain:
 
@@ -31,20 +31,29 @@ $ file ../bazel-bin/test/gognu_/gognu
 ../bazel-bin/test/gognu_/gognu: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 2.0.0, Go BuildID=redacted, with debug_info, not stripped
 ```
 
-Explicitly specifying `-gnu`:
+Explicitly the toolchain explicitly `-gnu`:
 ```
 $ bazel run --platforms @com_github_ziglang_zig//:platform_x86_64-linux-gnu //test:gognu
 ```
 
-## cgo + musl
+## linux cgo + musl
 
 ```
-$ bazel build --platforms @com_github_ziglang_zig//:platform_x86_64-linux-musl :gomusl
+$ bazel build --platforms @com_github_ziglang_zig//:platform_x86_64-linux-musl //test:gomusl
 ...
 $ file ../bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/gomusl_/gomusl
 ../bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/gomusl_/gomusl: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, Go BuildID=redacted, with debug_info, not stripped
 $ ../bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/gomusl_/gomusl
 hello, world
+```
+
+## macos cgo + gnu
+
+Does not work?
+
+```
+$ bazel build --platforms @com_github_ziglang_zig//:platform_x86_64-macos-musl //test:gognu
+...
 ```
 
 ## Transient docker environment
