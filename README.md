@@ -1,3 +1,5 @@
+[![builds.sr.ht status](https://builds.sr.ht/~motiejus/bazel-zig-toolchain.svg)](https://builds.sr.ht/~motiejus/bazel-zig-toolchain)
+
 # Bazel zig cc toolchain for Go
 
 This is a prototype zig-cc toolchain that can compile cgo programs with these c
@@ -76,6 +78,10 @@ exec zig cc -target x86_64-macos-gnu "$@"
 ```
 
 Build:
-``
+```
 GOOS=darwin GOARCH=amd64 CC=zcc go build -ldflags "-linkmode external -extldflags -static" hello.go
 ```
+
+# Known Issues
+
+- [golang/go #46644: cmd/link: with CC=zig: SIGSERV when cross-compiling to darwin/amd64](https://github.com/golang/go/issues/46644)
