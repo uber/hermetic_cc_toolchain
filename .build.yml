@@ -8,9 +8,9 @@ environment:
 tasks:
   - setup: |
       curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.9.0/bazelisk-linux-amd64 \
-        -o /usr/local/bin/bazel
-      chmod +x /usr/local/bin/bazel
+        -o bazel
+      chmod +x bazel
   - test_musl: |
-      bazel run --platforms @com_github_ziglang_zig//:platform_linux-x86_64-musl //test:gomusl
+      ./bazel run --platforms @com_github_ziglang_zig//:platform_linux-x86_64-musl //test:gomusl
   - test_gnu: |
-      bazel run --platforms @com_github_ziglang_zig//:platform_linux-x86_64-gnu //test:gognu
+      ./bazel run --platforms @com_github_ziglang_zig//:platform_linux-x86_64-gnu //test:gognu
