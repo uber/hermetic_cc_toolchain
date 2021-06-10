@@ -17,7 +17,7 @@ tasks:
   - test_x86_64-linux-gnu: |
       cd bazel-zig-cc; ../bazel run \
            --platforms @zig_sdk//:x86_64-linux-gnu //test:gognu
-      cd bazel-zig-cc; file $(./getpath @zig_sdk//:x86_64-linux-gnu //test:gognu)
+      file $(./getpath @zig_sdk//:x86_64-linux-gnu //test:gognu)
   - test_x86_64-linux-musl: |
       cd bazel-zig-cc; ../bazel run \
            --platforms @zig_sdk//:x86_64-linux-musl //test:gomusl
