@@ -126,46 +126,6 @@ ZIG_TOOLS = [
     "wasm-ld", # WebAssembly
 ]
 
-BUILD = """
-load("@zig-cc-bazel//toolchain:defs.bzl", "zig_build_macro")
-package(default_visibility = ["//visibility:public"])
-zig_build_macro(absolute_path={absolute_path}, zig_include_root={zig_include_root})
-
-constraint_setting(name = "libc")
-
-constraint_value(
-    name = "musl",
-    constraint_setting = ":libc",
-)
-
-
-platform(
-    name = "platform_x86_64-macos-gnu",
-    constraint_values = [
-        "@platforms//os:macos",
-        "@platforms//cpu:x86_64",
-    ],
-)
-
-platform(
-    name = "platform_x86_64-linux-gnu",
-    constraint_values = [
-        "@platforms//os:linux",
-        "@platforms//cpu:x86_64",
-    ],
-)
-
-platform(
-    name = "platform_x86_64-linux-musl",
-    constraint_values = [
-        "@platforms//os:linux",
-        "@platforms//cpu:x86_64",
-        ":musl",
-    ],
-)
-
-"""
-
 def _zig_repository_impl(repository_ctx):
     if repository_ctx.os.name.lower().startswith("mac os"):
         host_platform = "macos-x86_64"
@@ -193,9 +153,14 @@ def _zig_repository_impl(repository_ctx):
         )
 
     absolute_path = json.encode(str(repository_ctx.path("")))
-    repository_ctx.file(
-        "BUILD",
-        BUILD.format(absolute_path=absolute_path, zig_include_root=json.encode(zig_include_root)),
+    repository_ctx.template(
+        "BUILD.bazel",
+        Label("//toolchain:BUILD.sdk.bazel"),
+        executable = False,
+        substitutions = {
+            "{absolute_path}": absolute_path,
+            "{zig_include_root}": json.encode(zig_include_root),
+        },
     )
 
 zig_repository = repository_rule(
