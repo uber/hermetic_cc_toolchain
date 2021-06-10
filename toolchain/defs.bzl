@@ -101,7 +101,7 @@ def register_all_toolchains():
 
 ZIG_TOOL_PATH = "tools/{zig_tool}"
 ZIG_TOOL_WRAPPER = """#!/bin/bash
-export HOME=$TMPDIR
+export HOME=${TMPDIR:-/tmp}
 exec "{zig}" "{zig_tool}" "$@"
 """
 
