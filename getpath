@@ -1,0 +1,6 @@
+#!/bin/bash
+
+exec bazel aquery \
+    --platforms "$1" "$2" 2>/dev/null | \
+    awk "/action 'GoLink/{f=1};/Outputs: / &&f{print;exit}" | \
+    awk -F'\\[|\\]' '{print $2}'
