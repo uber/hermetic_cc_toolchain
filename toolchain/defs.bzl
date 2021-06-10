@@ -39,7 +39,8 @@ TARGET_CONFIGS = [
         tool_paths={"ld": "ld64.lld"},
     ),
     struct(
-        target="x86_64-linux-gnu.2.19",
+        target="x86_64-linux-gnu",
+        target_suffix = ".2.19",
         includes=[
             "libunwind/include",
             "libc/include/generic-glibc",
@@ -182,11 +183,21 @@ def zig_build_macro(absolute_path, zig_include_root):
     filegroup(name="zig_compiler", srcs=["zig"])
     filegroup(name="lib/std", srcs=native.glob(["lib/std/**"]))
 
+    native.constraint_setting(name = "libc")
+
+    native.constraint_value(
+        name = "musl",
+        constraint_setting = ":libc",
+    )
+
     lazy_filegroups = {}
 
     for target_config in TARGET_CONFIGS:
         target = target_config.target
-        native.platform(name = target, constraint_values = target_config.constraint_values)
+        native.platform(
+            name = target,
+            constraint_values = target_config.constraint_values,
+        )
 
         all_srcs = []
         ar_srcs = [":zig_compiler"]
@@ -219,6 +230,7 @@ def zig_build_macro(absolute_path, zig_include_root):
         zig_cc_toolchain_config(
             name = target + "_cc_toolchain_config",
             target = target,
+            target_suffix = getattr(target_config, 'target_suffix', ''),
             tool_paths = absolute_tool_paths,
             cxx_builtin_include_directories = cxx_builtin_include_directories,
             copts = target_config.copts,

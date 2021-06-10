@@ -40,7 +40,7 @@ def _zig_cc_toolchain_config_impl(ctx):
                             "-I" + d
                             for d in ctx.attr.cxx_builtin_include_directories
                         ] + [
-                            "-target", ctx.attr.target,
+                            "-target", ctx.attr.target + ctx.attr.target_suffix,
                             "-no-canonical-prefixes",
                             "-Wno-builtin-macro-redefined",
                             "-D__DATE__=\"redacted\"",
@@ -104,6 +104,7 @@ zig_cc_toolchain_config = rule(
         "target_system_name": attr.string(),
         "target_cpu": attr.string(),
         "target_libc": attr.string(),
+        "target_suffix": attr.string(),
         "compiler": attr.string(),
         "abi_version": attr.string(),
         "abi_libc_version": attr.string(),
