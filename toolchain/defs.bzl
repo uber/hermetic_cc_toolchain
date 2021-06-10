@@ -200,7 +200,6 @@ def _zig_repository_impl(repository_ctx):
 
 zig_repository = repository_rule(
     attrs = {
-        "url": attr.string(),
         "version": attr.string(),
         "host_platform_sha256": attr.string_dict(),
         "url_format": attr.string(),
