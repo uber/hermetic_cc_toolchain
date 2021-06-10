@@ -13,13 +13,21 @@ tasks:
   - test_default: |
       cd bazel-zig-cc; ../bazel run \
         //test:gognu
-  - test_linux-gnu: |
+  - test_x86_64-linux-gnu: |
       cd bazel-zig-cc; ../bazel run \
         --platforms @zig_sdk//:x86_64-linux-gnu \
         //test:gognu
-  - test_linux-musl: |
+  - test_x86_64-linux-musl: |
       cd bazel-zig-cc; ../bazel run \
         --platforms @zig_sdk//:x86_64-linux-musl \
+        //test:gomusl
+  - test_aarch64-linux-gnu: |
+      cd bazel-zig-cc; ../bazel build \
+        --platforms @zig_sdk//:aarch64-linux-gnu \
+        //test:gognu
+  - test_aarch64-linux-musl: |
+      cd bazel-zig-cc; ../bazel build \
+        --platforms @zig_sdk//:aarch64-linux-musl \
         //test:gomusl
   #- test_macos-gnu: |
   #    cd bazel-zig-cc; ../bazel build --toolchain_resolution_debug=true \
