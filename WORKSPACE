@@ -43,12 +43,6 @@ load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
 
 protobuf_deps()
 
-http_archive(
-    name = "com_github_bazelbuild_buildtools",
-    strip_prefix = "buildtools-master",
-    url = "https://github.com/bazelbuild/buildtools/archive/master.zip",
-)
-
 load(
     "//toolchain:defs.bzl",
     zig_register_all_toolchains = "register_all_toolchains",
