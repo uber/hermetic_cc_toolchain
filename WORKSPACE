@@ -22,7 +22,6 @@ http_archive(
     ],
 )
 
-
 load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
 load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
 
@@ -32,6 +31,7 @@ go_register_toolchains(version = "1.16")
 
 gazelle_dependencies(go_repository_default_config = "@//:WORKSPACE")
 
+# protobuf is required for //:buildifier
 http_archive(
     name = "com_google_protobuf",
     sha256 = "bf0e5070b4b99240183b29df78155eee335885e53a8af8683964579c214ad301",
@@ -40,6 +40,7 @@ http_archive(
 )
 
 load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
+
 protobuf_deps()
 
 http_archive(
@@ -48,10 +49,12 @@ http_archive(
     url = "https://github.com/bazelbuild/buildtools/archive/master.zip",
 )
 
-load("//toolchain:defs.bzl",
-     zig_register_all_toolchains = "register_all_toolchains",
-     zig_toolchain_repositories = "toolchain_repositories",
+load(
+    "//toolchain:defs.bzl",
+    zig_register_all_toolchains = "register_all_toolchains",
+    zig_toolchain_repositories = "toolchain_repositories",
 )
 
 zig_toolchain_repositories()
+
 zig_register_all_toolchains()

@@ -1,10 +1,11 @@
 load("@bazel_tools//tools/build_defs/cc:action_names.bzl", "ACTION_NAMES")
-load("@bazel_tools//tools/cpp:cc_toolchain_config_lib.bzl",
+load(
+    "@bazel_tools//tools/cpp:cc_toolchain_config_lib.bzl",
     "feature",
     "flag_group",
     "flag_set",
-    "tool_path",
     "tool",
+    "tool_path",
 )
 
 all_link_actions = [
@@ -40,7 +41,8 @@ def _zig_cc_toolchain_config_impl(ctx):
                             "-I" + d
                             for d in ctx.attr.cxx_builtin_include_directories
                         ] + [
-                            "-target", ctx.attr.target + ctx.attr.target_suffix,
+                            "-target",
+                            ctx.attr.target + ctx.attr.target_suffix,
                             "-no-canonical-prefixes",
                             "-Wno-builtin-macro-redefined",
                             "-D__DATE__=\"redacted\"",
@@ -52,7 +54,7 @@ def _zig_cc_toolchain_config_impl(ctx):
             ),
         ],
     )
-    
+
     default_linker_flags = feature(
         name = "default_linker_flags",
         enabled = True,
@@ -62,7 +64,8 @@ def _zig_cc_toolchain_config_impl(ctx):
                 flag_groups = ([
                     flag_group(
                         flags = [
-                            "-target", ctx.attr.target,
+                            "-target",
+                            ctx.attr.target,
                         ] + ctx.attr.linkopts,
                     ),
                 ]),
@@ -87,7 +90,7 @@ def _zig_cc_toolchain_config_impl(ctx):
         abi_version = ctx.attr.abi_version,
         abi_libc_version = ctx.attr.abi_libc_version,
         tool_paths = [
-            tool_path(name=name, path=path)
+            tool_path(name = name, path = path)
             for name, path in ctx.attr.tool_paths.items()
         ],
         cxx_builtin_include_directories = ctx.attr.cxx_builtin_include_directories,
