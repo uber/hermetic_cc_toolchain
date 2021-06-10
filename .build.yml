@@ -17,19 +17,23 @@ tasks:
   - test_x86_64-linux-gnu: |
       cd bazel-zig-cc; ../bazel run \
            --platforms @zig_sdk//:x86_64-linux-gnu //test:gognu
-      file $(./getpath @zig_sdk//:x86_64-linux-gnu //test:gognu)
+      file $(./getpath @zig_sdk//:x86_64-linux-gnu //test:gognu) | \
+        tee /dev/stderr | grep -q "dynamically linked"
   - test_x86_64-linux-musl: |
       cd bazel-zig-cc; ../bazel run \
            --platforms @zig_sdk//:x86_64-linux-musl //test:gomusl
-      file $(./getpath @zig_sdk//:x86_64-linux-musl //test:gomusl)
+      file $(./getpath @zig_sdk//:x86_64-linux-musl //test:gomusl) | \
+        tee /dev/stderr | grep -q "statically linked"
   - test_aarch64-linux-gnu: |
       cd bazel-zig-cc; ../bazel build \
            --platforms @zig_sdk//:aarch64-linux-gnu //test:gognu
-      file $(./getpath @zig_sdk//:aarch64-linux-gnu //test:gognu)
+      file $(./getpath @zig_sdk//:aarch64-linux-gnu //test:gognu) | \
+        tee /dev/stderr | grep -q "dynamically linked"
   - test_aarch64-linux-musl: |
       cd bazel-zig-cc; ../bazel build \
            --platforms @zig_sdk//:aarch64-linux-musl //test:gomusl
-      file $(./getpath @zig_sdk//:aarch64-linux-musl //test:gomusl)
+      file $(./getpath @zig_sdk//:aarch64-linux-musl //test:gomusl) | \
+        tee /dev/stderr | grep -q "statically linked"
   #- test_macos-gnu: |
   #    cd bazel-zig-cc; ../bazel build --toolchain_resolution_debug=true \
   #      --platforms @zig_sdk//:x86_64-macos-gnu \
