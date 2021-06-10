@@ -11,14 +11,14 @@ tasks:
         -o bazel
       chmod +x bazel
   - test_default: |
-      cd bazel-zig-cc; ../bazel run --toolchain_resolution_debug=true \
+      cd bazel-zig-cc; ../bazel run \
         //test:gognu
   - test_linux-gnu: |
-      cd bazel-zig-cc; ../bazel run --toolchain_resolution_debug=true \
+      cd bazel-zig-cc; ../bazel run \
         --platforms @com_github_ziglang_zig//:platform_x86_64-linux-gnu \
         //test:gognu
   - test_linux-musl: |
-      cd bazel-zig-cc; ../bazel run --toolchain_resolution_debug=true \
+      cd bazel-zig-cc; ../bazel run \
         --platforms @com_github_ziglang_zig//:platform_x86_64-linux-musl \
         //test:gomusl
   #- test_macos-gnu: |

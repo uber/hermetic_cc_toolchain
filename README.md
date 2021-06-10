@@ -62,7 +62,7 @@ $ bazel build --platforms @com_github_ziglang_zig//:platform_x86_64-macos-musl /
 
 ```
 $ docker run -ti --rm -v $(pwd):/x -w /x debian:buster-slim
-# apt update && apt install curl ca-certificates -y && curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.7.5/bazelisk-linux-amd64 > /usr/local/bin/bazel && chmod +x /usr/local/bin/bazel
+# apt update && apt install curl -y && curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.9.0/bazelisk-linux-amd64 > /usr/local/bin/bazel && chmod +x /usr/local/bin/bazel
 # export CC=/usr/bin/false
 ```
 
@@ -84,4 +84,5 @@ GOOS=darwin GOARCH=amd64 CC=zcc go build -ldflags "-linkmode external -extldflag
 
 # Known Issues
 
-- [golang/go #46644: cmd/link: with CC=zig: SIGSERV when cross-compiling to darwin/amd64](https://github.com/golang/go/issues/46644)
+- <s>[golang/go #46644: cmd/link: with CC=zig: SIGSERV when cross-compiling to darwin/amd64](https://github.com/golang/go/issues/46644)</s>
+- [ziglang/zig #9050 golang linker segfault](https://github.com/ziglang/zig/issues/9050)
