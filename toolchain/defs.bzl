@@ -101,7 +101,16 @@ def register_all_toolchains():
 
 ZIG_TOOL_PATH = "tools/{zig_tool}"
 ZIG_TOOL_WRAPPER = """#!/bin/bash
-export HOME=${TMPDIR:-/tmp}
+if [[ -n "$TMPDIR" ]]; then
+  cache_prefix=$TMPDIR
+else
+  cache_prefix="$HOME/.cache"
+  if [[ "$(uname)" = Darwin ]]; then
+    cache_prefix="$HOME/Library/Caches"
+  fi
+fi
+export ZIG_LOCAL_CACHE_DIR="$cache_prefix/bazel-zig-cc"
+export ZIG_GLOBAL_CACHE_DIR=$ZIG_LOCAL_CACHE_DIR
 exec "{zig}" "{zig_tool}" "$@"
 """
 
