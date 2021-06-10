@@ -54,6 +54,7 @@ TARGET_CONFIGS_LISTOFLISTS = [[
         constraint_values=[
             "@platforms//os:linux",
             "@platforms//cpu:{}".format(cpu),
+            ":gnu.2.19",
         ],
         tool_paths={"ld": "ld.lld"},
     ),
@@ -189,6 +190,11 @@ def zig_build_macro(absolute_path, zig_include_root):
 
     native.constraint_value(
         name = "musl",
+        constraint_setting = ":libc",
+    )
+
+    native.constraint_value(
+        name = "gnu.2.19",
         constraint_setting = ":libc",
     )
 
