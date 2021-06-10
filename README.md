@@ -84,5 +84,5 @@ GOOS=darwin GOARCH=amd64 CC=zcc go build -ldflags "-linkmode external -extldflag
 
 # Known Issues
 
-- <del>[golang/go #46644: cmd/link: with CC=zig: SIGSERV when cross-compiling to darwin/amd64](https://github.com/golang/go/issues/46644)</del>
+- [golang/go #46644: cmd/link: with CC=zig: SIGSERV when cross-compiling to darwin/amd64](https://github.com/golang/go/issues/46644) (CLOSED)
 - [ziglang/zig #9050 golang linker segfault](https://github.com/ziglang/zig/issues/9050)
