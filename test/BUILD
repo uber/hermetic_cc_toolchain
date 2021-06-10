@@ -19,7 +19,7 @@ go_binary(
     embed = [":go_lib"],
     static = "on",
     target_compatible_with = select({
-        "@platforms//os:linux": ["@com_github_ziglang_zig//:musl"],
+        "@platforms//os:linux": ["@zig_sdk//:musl"],
         "//conditions:default": [],
     }),
     visibility = ["//visibility:public"],

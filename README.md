@@ -35,13 +35,13 @@ $ file ../bazel-bin/test/gognu_/gognu
 
 Explicitly the toolchain explicitly `-gnu`:
 ```
-$ bazel run --platforms @com_github_ziglang_zig//:platform_x86_64-linux-gnu //test:gognu
+$ bazel run --platforms @zig_sdk//:platform_x86_64-linux-gnu //test:gognu
 ```
 
 ## linux cgo + musl
 
 ```
-$ bazel build --platforms @com_github_ziglang_zig//:platform_x86_64-linux-musl //test:gomusl
+$ bazel build --platforms @zig_sdk//:platform_x86_64-linux-musl //test:gomusl
 ...
 $ file ../bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/gomusl_/gomusl
 ../bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/gomusl_/gomusl: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, Go BuildID=redacted, with debug_info, not stripped
@@ -54,7 +54,7 @@ hello, world
 Does not work?
 
 ```
-$ bazel build --platforms @com_github_ziglang_zig//:platform_x86_64-macos-musl //test:gognu
+$ bazel build --platforms @zig_sdk//:platform_x86_64-macos-musl //test:gognu
 ...
 ```
 

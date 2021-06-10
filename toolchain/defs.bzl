@@ -78,7 +78,7 @@ TARGET_CONFIGS = [
 
 def toolchain_repositories():
     zig_repository(
-        name = "com_github_ziglang_zig",
+        name = "zig_sdk",
 
         version = "0.8.0",
         url_format = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.tar.xz",
@@ -96,7 +96,7 @@ def toolchain_repositories():
 def register_all_toolchains():
     for target_config in TARGET_CONFIGS:
         native.register_toolchains(
-            "@com_github_ziglang_zig//:%s_toolchain" % target_config.target,
+            "@zig_sdk//:%s_toolchain" % target_config.target,
         )
 
 ZIG_TOOL_PATH = "tools/{zig_tool}"
