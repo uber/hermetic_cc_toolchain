@@ -1,4 +1,4 @@
-load("@zig-cc-bazel//toolchain:defs.bzl", "zig_build_macro")
+load("@bazel-zig-cc//toolchain:defs.bzl", "zig_build_macro")
 
 package(
     default_visibility = ["//visibility:public"],
