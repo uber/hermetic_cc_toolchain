@@ -66,7 +66,7 @@ TARGET_CONFIGS_LISTOFLISTS = [[
             "libc/include/{}-linux-musl".format(cpu),
             "libc/include/{}-linux-any".format(cpu),
         ],
-        linkopts=[],
+        linkopts=["-s", "-w"],
         copts=["-D_LIBCPP_HAS_MUSL_LIBC", "-D_LIBCPP_HAS_THREAD_API_PTHREAD"],
         bazel_target_cpu="k8",
         constraint_values=[
@@ -84,11 +84,15 @@ def toolchain_repositories():
     zig_repository(
         name = "zig_sdk",
 
-        version = "0.8.0",
-        url_format = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.tar.xz",
+        # Pre-release:
+        version = "0.9.0-dev.137+86ebd4b97",
+        url_format = "https://ziglang.org/builds/zig-{host_platform}-{version}.tar.xz",
+        # Release:
+        # version = "0.8.0",
+        # url_format = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.tar.xz",
         host_platform_sha256 = {
-            "linux-x86_64": "502625d3da3ae595c5f44a809a87714320b7a40e6dff4a895b5fa7df3391d01e",
-            "macos-x86_64": "279f9360b5cb23103f0395dc4d3d0d30626e699b1b4be55e98fd985b62bc6fbe",
+            "linux-x86_64": "3e5b4fa3b346e2eae6829dd7ef90e9a0f6e6297cee62017e3d0f0f7c9edfa21e",
+            "macos-x86_64": "9b5e3fefa6ae0b1ab26821323df0641f818e72bffc343e194dc60829005d3055",
         },
 
         host_platform_include_root = {
