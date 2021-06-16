@@ -1,0 +1,34 @@
+#!/bin/bash
+set -euo pipefail
+
+readonly bzl=https://github.com/bazelbuild/bazelisk/releases/download/v1.9.0/bazelisk-linux-amd64
+
+set -x
+
+outside() {
+  if [[ ! -x bazel ]]; then
+    rm -f bazel
+    curl -L "$bzl" -o bazel
+    chmod +x bazel
+  fi
+  exec docker run -ti --rm -v $(pwd):/x -w /x \
+    --cpus 2 \
+    -m 4096MB \
+    -e CC=/usr/bin/false \
+    debian:bullseye ./hangzig inside
+  }
+
+inside() {
+  apt-get update && apt-get install -y ca-certificates
+  exec ./bazel build --platforms @zig_sdk//:aarch64-macos-gnu //test:gognu
+}
+
+
+case "${1:-}" in
+  "")
+    outside;;
+  inside)
+    inside;;
+  *)
+    exit 1;
+esac
