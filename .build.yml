@@ -34,7 +34,15 @@ tasks:
            --platforms @zig_sdk//:aarch64-linux-musl //test:gomusl
       file $(./getpath @zig_sdk//:aarch64-linux-musl //test:gomusl) | \
         tee /dev/stderr | grep -q "statically linked"
-  #- test_macos-gnu: |
-  #    cd bazel-zig-cc; ../bazel build --toolchain_resolution_debug=true \
-  #      --platforms @zig_sdk//:x86_64-macos-gnu \
-  #      //test:gognu
+  - test_x86_64-macos-gnu: |
+      cd bazel-zig-cc; ../bazel build --toolchain_resolution_debug=true \
+        --platforms @zig_sdk//:x86_64-macos-gnu \
+        //test:gomacos
+      file $(./getpath @zig_sdk//:x86_64-macos-gnu //test:gomacos) | \
+        tee /dev/stderr | grep -q "Mach-O 64-bit arm64 executable"
+  - test_aarch64-macos-gnu: |
+      cd bazel-zig-cc; ../bazel build --toolchain_resolution_debug=true \
+        --platforms @zig_sdk//:aarch64-macos-gnu \
+        //test:gomacos
+      file $(./getpath @zig_sdk//:aarch64-macos-gnu //test:gomacos) | \
+        tee /dev/stderr | grep -q "Mach-O 64-bit x86_64 executable"
