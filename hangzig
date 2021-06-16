@@ -20,7 +20,7 @@ outside() {
 
 inside() {
   apt-get update && apt-get install -y ca-certificates
-  exec ./bazel build --platforms @zig_sdk//:aarch64-macos-gnu //test:gognu
+  exec ./bazel build -s --platforms @zig_sdk//:aarch64-macos-gnu //test:gognu
 }
 
 
