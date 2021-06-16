@@ -18,22 +18,22 @@ tasks:
       cd bazel-zig-cc; ../bazel run \
            --platforms @zig_sdk//:x86_64-linux-gnu //test:gognu
       file $(./getpath @zig_sdk//:x86_64-linux-gnu //test:gognu) | \
-        tee /dev/stderr | grep -q "dynamically linked"
+        tee /dev/stderr | grep -q "ELF 64-bit.* x86-64.* dynamically linked"
   - test_x86_64-linux-musl: |
       cd bazel-zig-cc; ../bazel run \
            --platforms @zig_sdk//:x86_64-linux-musl //test:gomusl
       file $(./getpath @zig_sdk//:x86_64-linux-musl //test:gomusl) | \
-        tee /dev/stderr | grep -q "statically linked"
+        tee /dev/stderr | grep -q "ELF 64-bit.* x86-64.* statically linked"
   - test_aarch64-linux-gnu: |
       cd bazel-zig-cc; ../bazel build \
            --platforms @zig_sdk//:aarch64-linux-gnu //test:gognu
       file $(./getpath @zig_sdk//:aarch64-linux-gnu //test:gognu) | \
-        tee /dev/stderr | grep -q "dynamically linked"
+        tee /dev/stderr | grep -q "ELF 64-bit.* ARM aarch64.* dynamically linked"
   - test_aarch64-linux-musl: |
       cd bazel-zig-cc; ../bazel build \
            --platforms @zig_sdk//:aarch64-linux-musl //test:gomusl
       file $(./getpath @zig_sdk//:aarch64-linux-musl //test:gomusl) | \
-        tee /dev/stderr | grep -q "statically linked"
+        tee /dev/stderr | grep -q "ELF 64-bit.* ARM aarch64.* statically linked"
   - test_x86_64-macos-gnu: |
       cd bazel-zig-cc; ../bazel build \
         --platforms @zig_sdk//:x86_64-macos-gnu //test:gognu
