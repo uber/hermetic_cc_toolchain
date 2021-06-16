@@ -16,11 +16,11 @@ outside() {
     --cpuset-cpus 0-1 \
     -m 4096MB \
     -e CC=/usr/bin/false \
-    debian:bullseye ./hangzig inside
+    debian:testing ./hangzig inside
   }
 
 inside() {
-  apt-get update && apt-get install -y ca-certificates procps
+  apt-get update && apt-get install -y ca-certificates
   exec ./bazel build -s --platforms @zig_sdk//:aarch64-macos-gnu //test:gognu
 }
 
