@@ -19,7 +19,7 @@ outside() {
   }
 
 inside() {
-  apt-get update && apt-get install -y ca-certificates
+  apt-get update && apt-get install -y ca-certificates procps
   exec ./bazel build -s --platforms @zig_sdk//:aarch64-macos-gnu //test:gognu
 }
 
