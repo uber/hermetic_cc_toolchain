@@ -11,19 +11,10 @@ go_library(
 go_binary(
     name = "gognu",
     embed = [":go_lib"],
-    target_compatible_with = ["@platforms//os:linux"],
-    visibility = ["//visibility:public"],
-)
-
-go_binary(
-    name = "gomacos",
-    embed = [":go_lib"],
-    gc_linkopts = [
-        "-s",
-        "-w",
-        "-buildmode=pie",
-    ],
-    target_compatible_with = ["@platforms//os:macos"],
+    gc_linkopts = select({
+        "@platforms//os:macos": ["-s", "-w", "-buildmode=pie"],
+        "//conditions:default": [],
+    }),
     visibility = ["//visibility:public"],
 )
 

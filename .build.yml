@@ -36,13 +36,11 @@ tasks:
         tee /dev/stderr | grep -q "statically linked"
   - test_x86_64-macos-gnu: |
       cd bazel-zig-cc; ../bazel build \
-        --platforms @zig_sdk//:x86_64-macos-gnu \
-        //test:gomacos
-      file $(./getpath @zig_sdk//:x86_64-macos-gnu //test:gomacos) | \
-        tee /dev/stderr | grep -q "Mach-O 64-bit arm64 executable"
+        --platforms @zig_sdk//:x86_64-macos-gnu //test:gognu
+      file $(./getpath @zig_sdk//:x86_64-macos-gnu //test:gognu) | \
+        tee /dev/stderr | grep -q "Mach-O 64-bit x86_64 executable"
   - test_aarch64-macos-gnu: |
       cd bazel-zig-cc; ../bazel build \
-        --platforms @zig_sdk//:aarch64-macos-gnu \
-        //test:gomacos
-      file $(./getpath @zig_sdk//:aarch64-macos-gnu //test:gomacos) | \
-        tee /dev/stderr | grep -q "Mach-O 64-bit x86_64 executable"
+        --platforms @zig_sdk//:aarch64-macos-gnu //test:gognu
+      file $(./getpath @zig_sdk//:aarch64-macos-gnu //test:gognu) | \
+        tee /dev/stderr | grep -q "Mach-O 64-bit arm64 executable"
