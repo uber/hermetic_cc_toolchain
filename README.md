@@ -2,40 +2,27 @@
 
 # Bazel zig cc toolchain for Go
 
-This is a prototype zig-cc toolchain that can compile cgo programs with these c
-libraries:
+This is a prototype zig-cc toolchain that can cross-compile cgo programs to these os/archs:
 
-- glibc 2.19
-- musl
+- x86_64-linux-musl
+- x86_64-linux-gnu.2.19
+- aarch-linux-musl
+- aarch-linux-gnu.2.19
+- x86_64-macos
+- aarch64-macos
 
-glibc 2.19 is the default. That means, glibc 2.19 toolchain is registered with
-these basic constraints:
-
-```
-[
-    "@platforms//os:linux",
-    "@platforms//cpu:x86_64",
-]
-```
+Convenient way is still being researched (see Known Issues below).
 
 # Testing
 
 ## linux cgo + glibc 2.19
 
-Using the default toolchain:
+Glibc toolchain is suffixed with `-gnu`:
 
-```
-$ bazel build --toolchain_resolution_debug=true //test:gognu
-...
-$ ../bazel-bin/test/gognu_/gognu
-hello, world
-$ file ../bazel-bin/test/gognu_/gognu
-../bazel-bin/test/gognu_/gognu: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 2.0.0, Go BuildID=redacted, with debug_info, not stripped
-```
-
-Explicitly the toolchain explicitly `-gnu`:
 ```
 $ bazel run --platforms @zig_sdk//:x86_64-linux-gnu //test:gognu
+$ file bazel-bin/test/gognu_/gognu
+bazel-bin/test/gognu_/gognu: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 2.0.0, Go BuildID=redacted, with debug_info, not stripped
 ```
 
 ## linux cgo + musl
@@ -49,13 +36,13 @@ $ ../bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/gomusl_/gomusl
 hello, world
 ```
 
-## macos cgo + gnu
-
-Does not work?
+## macos cgo
 
 ```
-$ bazel build --platforms @zig_sdk//:x86_64-macos-musl //test:gognu
+$ bazel build --platforms @zig_sdk//:x86_64-macos-gnu //test:gognu
 ...
+$ file bazel-bin/test/gognu_/gognu
+bazel-bin/test/gognu_/gognu: Mach-O 64-bit x86_64 executable, flags:<NOUNDEFS|DYLDLINK|TWOLEVEL|PIE>
 ```
 
 ## Transient docker environment
@@ -69,20 +56,12 @@ $ docker run -ti --rm -v $(pwd):/x -w /x debian:buster-slim
 And run the `bazel build` commands above. Take a look at `.build.yml` and see
 how CI does it.
 
-# Appendix: compiling manually
-
-zcc
-```
-#!/bin/bash
-exec zig cc -target x86_64-macos-gnu "$@"
-```
-
-Build:
-```
-GOOS=darwin GOARCH=amd64 CC=zcc go build -ldflags "-linkmode external -extldflags -static" hello.go
-```
-
 # Known Issues
 
+- [ziglang/zig #9139 zig c++ hanging when compiling golang for macos](https://github.com/ziglang/zig/issues/9139).
+- [rules/go #2894 Per-arch_target linker flags #2894 ](https://github.com/bazelbuild/rules_go/issues/2894).
+
+Closed issues:
+
 - [golang/go #46644: cmd/link: with CC=zig: SIGSERV when cross-compiling to darwin/amd64](https://github.com/golang/go/issues/46644) (CLOSED)
-- [ziglang/zig #9050 golang linker segfault](https://github.com/ziglang/zig/issues/9050)
+- [ziglang/zig #9050 golang linker segfault](https://github.com/ziglang/zig/issues/9050) (CLOSED)
