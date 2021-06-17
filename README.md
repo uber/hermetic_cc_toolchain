@@ -4,12 +4,12 @@
 
 This is a prototype zig-cc toolchain that can cross-compile cgo programs to these os/archs:
 
-- x86_64-linux-musl
 - x86_64-linux-gnu.2.19
-- aarch-linux-musl
+- x86_64-linux-musl
 - aarch-linux-gnu.2.19
-- x86_64-macos
-- aarch64-macos
+- aarch-linux-musl
+- x86_64-macos-gnu
+- aarch64-macos-gnu
 
 Convenient way is still being researched (see Known Issues below).
 
