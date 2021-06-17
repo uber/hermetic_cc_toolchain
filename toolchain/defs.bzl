@@ -83,14 +83,18 @@ def toolchain_repositories():
     zig_repository(
         name = "zig_sdk",
 
+        # Debug:
+        version = "0.8.0-187-gbfe3558ef",
+        url_format = "https://jakstys.lt/mtpad/zig-{host_platform}-{version}.tar.xz",
         # Pre-release:
-        version = "0.9.0-dev.137+86ebd4b97",
-        url_format = "https://ziglang.org/builds/zig-{host_platform}-{version}.tar.xz",
+        #version = "0.9.0-dev.137+86ebd4b97",
+        #url_format = "https://ziglang.org/builds/zig-{host_platform}-{version}.tar.xz",
         # Release:
         # version = "0.8.0",
         # url_format = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.tar.xz",
         host_platform_sha256 = {
-            "linux-x86_64": "3e5b4fa3b346e2eae6829dd7ef90e9a0f6e6297cee62017e3d0f0f7c9edfa21e",
+            #"linux-x86_64": "3e5b4fa3b346e2eae6829dd7ef90e9a0f6e6297cee62017e3d0f0f7c9edfa21e", # nightly
+            "linux-x86_64": "fd6ee2d7e0ad56b0e2d78cdf96fa026a29ad4e69a650648364d1bb08a3e0eaf8", # debug
             "macos-x86_64": "9b5e3fefa6ae0b1ab26821323df0641f818e72bffc343e194dc60829005d3055",
         },
         host_platform_include_root = {
