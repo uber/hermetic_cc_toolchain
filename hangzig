@@ -12,7 +12,7 @@ outside() {
     curl -L "$bzl" -o bazel
     chmod +x bazel
   fi
-  exec docker run -ti --rm -v $(pwd):/x -w /x --name hangzig \
+  exec docker run --privileged -ti --rm -v $(pwd):/x -w /x --name hangzig \
     --cpuset-cpus 0-1 \
     -m 4096MB \
     -e CC=/usr/bin/false \
