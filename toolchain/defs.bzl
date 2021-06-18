@@ -84,14 +84,14 @@ def toolchain_repositories():
         name = "zig_sdk",
 
         # Pre-release:
-        version = "0.9.0-dev.137+86ebd4b97",
+        version = "0.9.0-dev.190+6f0cfdb82",
         url_format = "https://ziglang.org/builds/zig-{host_platform}-{version}.tar.xz",
         # Release:
         # version = "0.8.0",
         # url_format = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.tar.xz",
         host_platform_sha256 = {
-            "linux-x86_64": "3e5b4fa3b346e2eae6829dd7ef90e9a0f6e6297cee62017e3d0f0f7c9edfa21e",
-            "macos-x86_64": "9b5e3fefa6ae0b1ab26821323df0641f818e72bffc343e194dc60829005d3055",
+            "linux-x86_64": "a086a1749c0590af6b1089c1f9320f1637adf736c7b874017554a4e13ebac78a",
+            "macos-x86_64": "314b68356ea1d7b377b4317f989d40a97b813449389942ca49e2cd1b50c0d51d",
         },
         host_platform_include_root = {
             "macos-x86_64": "lib/zig/",
