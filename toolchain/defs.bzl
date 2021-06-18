@@ -84,17 +84,17 @@ def toolchain_repositories():
         name = "zig_sdk",
 
         # Debug:
-        #version = "0.8.0-187-gbfe3558ef",
-        #url_format = "https://jakstys.lt/mtpad/zig-{host_platform}-{version}.tar.xz",
+        version = "0.8.0-194-gb9e78593b",
+        url_format = "https://jakstys.lt/mtpad/zig-{host_platform}-{version}.tar.xz",
         # Pre-release:
-        version = "0.9.0-dev.190+6f0cfdb82",
-        url_format = "https://ziglang.org/builds/zig-{host_platform}-{version}.tar.xz",
+        #version = "0.9.0-dev.190+6f0cfdb82",
+        #url_format = "https://ziglang.org/builds/zig-{host_platform}-{version}.tar.xz",
         # Release:
         # version = "0.8.0",
         # url_format = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.tar.xz",
         host_platform_sha256 = {
-            "linux-x86_64": "a086a1749c0590af6b1089c1f9320f1637adf736c7b874017554a4e13ebac78a", # nightly
-            #"linux-x86_64": "fd6ee2d7e0ad56b0e2d78cdf96fa026a29ad4e69a650648364d1bb08a3e0eaf8", # debug
+            #"linux-x86_64": "a086a1749c0590af6b1089c1f9320f1637adf736c7b874017554a4e13ebac78a", # nightly
+            "linux-x86_64": "869d437e4a2043029867fc23885eb1a58baa394b61907afe0dbac43e8264556a", # debug
             "macos-x86_64": "9b5e3fefa6ae0b1ab26821323df0641f818e72bffc343e194dc60829005d3055",
         },
         host_platform_include_root = {
