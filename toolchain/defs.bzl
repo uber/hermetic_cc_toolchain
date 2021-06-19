@@ -53,7 +53,6 @@ TARGET_CONFIGS_LISTOFLISTS = [[
         constraint_values = [
             "@platforms//os:linux",
             "@platforms//cpu:{}".format(cpu),
-            ":libc_gnu",
         ],
         tool_paths = {"ld": "ld.lld"},
     ),
@@ -71,9 +70,9 @@ TARGET_CONFIGS_LISTOFLISTS = [[
         constraint_values = [
             "@platforms//os:linux",
             "@platforms//cpu:{}".format(cpu),
-            ":libc_musl",
         ],
         tool_paths = {"ld": "ld.lld"},
+        skip_register = True,
     ),
 ] for cpu in ("x86_64", "aarch64")]
 
@@ -101,9 +100,10 @@ def toolchain_repositories():
 
 def register_all_toolchains():
     for target_config in TARGET_CONFIGS:
-        native.register_toolchains(
-            "@zig_sdk//:%s_toolchain" % target_config.target,
-        )
+        if not getattr(target_config, "skip_register", False):
+            native.register_toolchains(
+                "@zig_sdk//:%s_toolchain" % target_config.target,
+            )
 
 ZIG_TOOL_PATH = "tools/{zig_tool}"
 ZIG_TOOL_WRAPPER = """#!/bin/bash
@@ -187,18 +187,6 @@ def zig_build_macro(absolute_path, zig_include_root):
     filegroup(name = "empty")
     filegroup(name = "zig_compiler", srcs = ["zig"])
     filegroup(name = "lib/std", srcs = native.glob(["lib/std/**"]))
-
-    native.constraint_setting(name = "libc")
-
-    native.constraint_value(
-        name = "libc_musl",
-        constraint_setting = ":libc",
-    )
-
-    native.constraint_value(
-        name = "libc_gnu",
-        constraint_setting = ":libc",
-    )
 
     lazy_filegroups = {}
 

@@ -1,7 +1,7 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
 
 go_library(
-    name = "go_lib",
+    name = "hello_lib",
     srcs = ["hello.go"],
     cgo = True,
     importpath = "github.com/motiejus/bazel-zig-cc/test",
@@ -9,22 +9,16 @@ go_library(
 )
 
 go_binary(
-    name = "gognu",
-    embed = [":go_lib"],
+    name = "hello",
+    embed = [":hello_lib"],
     gc_linkopts = select({
-        "@platforms//os:macos": ["-s", "-w", "-buildmode=pie"],
+        "@platforms//os:macos": [
+            "-s",
+            "-w",
+            "-buildmode=pie",
+        ],
         "//conditions:default": [],
     }),
-    visibility = ["//visibility:public"],
-)
-
-go_binary(
-    name = "gomusl",
-    embed = [":go_lib"],
     static = "on",
-    target_compatible_with = select({
-        "@platforms//os:linux": ["@zig_sdk//:libc_musl"],
-        "//conditions:default": [],
-    }),
     visibility = ["//visibility:public"],
 )

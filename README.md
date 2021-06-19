@@ -28,11 +28,11 @@ bazel-bin/test/gognu_/gognu: ELF 64-bit LSB executable, x86-64, version 1 (SYSV)
 ## linux cgo + musl
 
 ```
-$ bazel build --platforms @zig_sdk//:x86_64-linux-musl //test:gomusl
+$ bazel build --extra_toolchains @zig_sdk//:x86_64-linux-musl_toolchain //test:hello
 ...
-$ file ../bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/gomusl_/gomusl
-../bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/gomusl_/gomusl: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, Go BuildID=redacted, with debug_info, not stripped
-$ ../bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/gomusl_/gomusl
+$ file ../bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/hello_/hello
+../bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/hello_/hello: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, Go BuildID=redacted, with debug_info, not stripped
+$ ../bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/hello_/hello
 hello, world
 ```
 

@@ -2,7 +2,8 @@
 *.sw[op]
 
 /bazel
-/bazel-bin
 /bazel-bazel-zig-cc
+/bazel-bin
 /bazel-out
 /bazel-testlogs
+/bazel-x
