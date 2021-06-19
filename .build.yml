@@ -8,7 +8,7 @@ environment:
   CC: /usr/bin/false
 tasks:
   - setup: |
-      dpkg -l
+      dpkg -l | cat
       curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.9.0/bazelisk-linux-amd64 \
         -o bazel
       chmod +x bazel
