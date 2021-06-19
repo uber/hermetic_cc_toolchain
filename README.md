@@ -11,7 +11,10 @@ This is a prototype zig-cc toolchain that can cross-compile cgo programs to thes
 - x86_64-macos-gnu
 - aarch64-macos-gnu
 
-Convenient way is still being researched (see [Known Issues](#known-issues)).
+GNU toolchain is the default, musl toolchain can be selected by adding it to
+`--extra_toolchains @zig_sdk//:ARCH-linux-musl_toolchain`.
+
+Don't use this yet, see [Known Issues](#known-issues)).
 
 # Testing
 
