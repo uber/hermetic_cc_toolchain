@@ -8,7 +8,8 @@ environment:
   CC: /usr/bin/false
 tasks:
   - setup: |
-      dpkg -l | cat
+      sudo apt-get purge gcc
+      sudo apt-get autoremove
       curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.9.0/bazelisk-linux-amd64 \
         -o bazel
       chmod +x bazel
