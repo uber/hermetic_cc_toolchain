@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# 'bazel' binary is stored in $HOME in builds.sr.ht.
+export PATH=$PATH:$HOME
+
+bazel build "$@"
+
+execpath=$(bazel aquery "$@" 2>/dev/null | \
+    awk "/action 'GoLink/{f=1};/Outputs: / &&f{print;exit}" | \
+    awk -F'\\[|\\]' '{print $2}')
+
+file "$execpath" | tee /dev/stderr

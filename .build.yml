@@ -13,35 +13,30 @@ tasks:
         -o bazel
       chmod +x bazel
   - test_default: |
-      cd bazel-zig-cc; ../bazel run \
-        //test:hello
+      cd bazel-zig-cc; ./build-and-file \
+          //test:hello | \
+        grep -q "ELF 64-bit.* x86-64.* dynamically linked"
   - test_x86_64-linux-gnu: |
-      cd bazel-zig-cc; ../bazel run \
-           --platforms @zig_sdk//:x86_64-linux-gnu //test:hello
-      file $(./getpath @zig_sdk//:x86_64-linux-gnu //test:hello) | \
-        tee /dev/stderr | grep -q "ELF 64-bit.* x86-64.* dynamically linked"
+      cd bazel-zig-cc; ./build-and-file \
+          --platforms @zig_sdk//:x86_64-linux-gnu //test:hello | \
+        grep -q "ELF 64-bit.* x86-64.* dynamically linked"
   - test_x86_64-linux-musl: |
-      cd bazel-zig-cc; ../bazel run \
-           --platforms @zig_sdk//:x86_64-linux-musl //test:hello
-      file $(./getpath @zig_sdk//:x86_64-linux-musl //test:hello) | \
-        tee /dev/stderr | grep -q "ELF 64-bit.* x86-64.* statically linked"
+      cd bazel-zig-cc; ./build-and-file \
+          --extra_toolchains @zig_sdk//:x86_64-linux-musl_toolchain //test:hello | \
+        grep -q "ELF 64-bit.* x86-64.* statically linked"
   - test_aarch64-linux-gnu: |
-      cd bazel-zig-cc; ../bazel build \
-           --platforms @zig_sdk//:aarch64-linux-gnu //test:hello
-      file $(./getpath @zig_sdk//:aarch64-linux-gnu //test:hello) | \
-        tee /dev/stderr | grep -q "ELF 64-bit.* ARM aarch64.* dynamically linked"
+      cd bazel-zig-cc; ./build-and-file \
+          --platforms @zig_sdk//:aarch64-linux-gnu //test:hello | \
+        grep -q "ELF 64-bit.* ARM aarch64.* dynamically linked"
   - test_aarch64-linux-musl: |
-      cd bazel-zig-cc; ../bazel build \
-           --platforms @zig_sdk//:aarch64-linux-musl //test:hello
-      file $(./getpath @zig_sdk//:aarch64-linux-musl //test:hello) | \
-        tee /dev/stderr | grep -q "ELF 64-bit.* ARM aarch64.* statically linked"
+      cd bazel-zig-cc; ./build-and-file \
+          --extra_toolchains @zig_sdk//:aarch64-linux-musl_toolchain //test:hello | \
+        grep -q "ELF 64-bit.* ARM aarch64.* statically linked"
   - test_x86_64-macos-gnu: |
-      cd bazel-zig-cc; ../bazel build \
-        --platforms @zig_sdk//:x86_64-macos-gnu //test:hello
-      file $(./getpath @zig_sdk//:x86_64-macos-gnu //test:hello) | \
-        tee /dev/stderr | grep -q "Mach-O 64-bit x86_64 executable"
+      cd bazel-zig-cc; ./build-and-file \
+          --platforms @zig_sdk//:x86_64-macos-gnu //test:hello | \
+        grep -q "Mach-O 64-bit x86_64 executable"
   - test_aarch64-macos-gnu: |
-      cd bazel-zig-cc; ../bazel build \
-        --platforms @zig_sdk//:aarch64-macos-gnu //test:hello
-      file $(./getpath @zig_sdk//:aarch64-macos-gnu //test:hello) | \
-        tee /dev/stderr | grep -q "Mach-O 64-bit arm64 executable"
+      cd bazel-zig-cc; ./build-and-file \
+          --platforms @zig_sdk//:aarch64-macos-gnu //test:hello | \
+        grep -q "Mach-O 64-bit arm64 executable"
