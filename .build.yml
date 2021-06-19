@@ -8,8 +8,7 @@ environment:
   CC: /usr/bin/false
 tasks:
   - setup: |
-      sudo apt-get purge gcc -y
-      sudo apt-get autoremove -y
+      sudo apt-get purge gcc -y && sudo apt-get autoremove -y
       curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.9.0/bazelisk-linux-amd64 \
         -o bazel
       chmod +x bazel
@@ -37,12 +36,12 @@ tasks:
       file $(./getpath @zig_sdk//:aarch64-linux-musl //test:gomusl) | \
         tee /dev/stderr | grep -q "ELF 64-bit.* ARM aarch64.* statically linked"
   - test_x86_64-macos-gnu: |
-      cd bazel-zig-cc; ../bazel build -s \
+      cd bazel-zig-cc; ../bazel build \
         --platforms @zig_sdk//:x86_64-macos-gnu //test:gognu
       file $(./getpath @zig_sdk//:x86_64-macos-gnu //test:gognu) | \
         tee /dev/stderr | grep -q "Mach-O 64-bit x86_64 executable"
   - test_aarch64-macos-gnu: |
-      cd bazel-zig-cc; ../bazel build -s \
+      cd bazel-zig-cc; ../bazel build \
         --platforms @zig_sdk//:aarch64-macos-gnu //test:gognu
       file $(./getpath @zig_sdk//:aarch64-macos-gnu //test:gognu) | \
         tee /dev/stderr | grep -q "Mach-O 64-bit arm64 executable"
