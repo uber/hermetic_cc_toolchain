@@ -58,8 +58,8 @@ how CI does it.
 
 # Known Issues
 
-- [ziglang/zig #9139 zig c++ hanging when compiling golang for macos](https://github.com/ziglang/zig/issues/9139)
-- [rules/go #2894 Per-arch_target linker flags #2894 ](https://github.com/bazelbuild/rules_go/issues/2894)
+- [ziglang/zig #9139 zig c++ hanging when compiling in parallel](https://github.com/ziglang/zig/issues/9139)
+- [rules/go #2894 Per-arch_target linker flags](https://github.com/bazelbuild/rules_go/issues/2894)
 
 Closed issues:
 
