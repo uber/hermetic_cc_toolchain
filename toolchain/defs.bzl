@@ -196,11 +196,8 @@ def zig_build_macro(absolute_path, zig_include_root):
             constraint_values = target_config.constraint_values,
         )
 
-        all_srcs = []
-        ar_srcs = [":zig_compiler"]
-        linker_srcs = [":zig_compiler"]
         compiler_srcs = [":zig_compiler"]
-        tool_srcs = {"gcc": compiler_srcs, "ld": linker_srcs, "ar": ar_srcs}
+        tool_srcs = {tool: [":zig_compiler"] for tool in ["gcc", "ld", "ar"]}
 
         cxx_builtin_include_directories = []
         for d in DEFAULT_INCLUDE_DIRECTORIES + target_config.includes:
@@ -218,6 +215,7 @@ def zig_build_macro(absolute_path, zig_include_root):
             tool_path = ZIG_TOOL_PATH.format(zig_tool = path)
             absolute_tool_paths[name] = "%s/%s" % (absolute_path, tool_path)
             tool_srcs[name].append(tool_path)
+
 
         zig_cc_toolchain_config(
             name = target + "_cc_toolchain_config",
