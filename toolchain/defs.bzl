@@ -27,7 +27,6 @@ TARGET_CONFIGS_LISTOFLISTS = [[
             "libc/include/{}-macos-any".format(cpu),
             "libc/include/{}-macos-gnu".format(cpu),
         ],
-        # linkopts=["-lc++", "-lc++abi"],
         linkopts = [],
         copts = [],
         bazel_target_cpu = "darwin",
@@ -220,11 +219,6 @@ def zig_build_macro(absolute_path, zig_include_root):
             absolute_tool_paths[name] = "%s/%s" % (absolute_path, tool_path)
             tool_srcs[name].append(tool_path)
 
-        ar_files = filegroup(name = target + "_ar_files", srcs = ar_srcs)
-        linker_files = filegroup(name = target + "_linker_files", srcs = linker_srcs)
-        compiler_files = filegroup(name = target + "_compiler_files", srcs = compiler_srcs)
-        all_files = filegroup(name = target + "_all_files", srcs = all_srcs + [ar_files, linker_files, compiler_files])
-
         zig_cc_toolchain_config(
             name = target + "_cc_toolchain_config",
             target = target,
@@ -245,10 +239,10 @@ def zig_build_macro(absolute_path, zig_include_root):
             name = target + "_cc_toolchain",
             toolchain_identifier = target + "-toolchain",
             toolchain_config = ":%s_cc_toolchain_config" % target,
-            all_files = all_files,
-            ar_files = ar_files,
-            compiler_files = compiler_files,
-            linker_files = linker_files,
+            all_files = ":zig_compiler",
+            ar_files = ":zig_compiler",
+            compiler_files = ":zig_compiler",
+            linker_files = ":zig_compiler",
             dwp_files = ":empty",
             objcopy_files = ":empty",
             strip_files = ":empty",
