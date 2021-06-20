@@ -31,7 +31,9 @@ bazel-bin/test/gognu_/gognu: ELF 64-bit LSB executable, x86-64, version 1 (SYSV)
 ## linux cgo + musl
 
 ```
-$ bazel build --extra_toolchains @zig_sdk//:x86_64-linux-musl_toolchain //test:hello
+$ bazel build \
+    --platforms @io_bazel_rules_go//go/toolchain:linux_amd64_cgo \
+    --extra_toolchains @zig_sdk//:x86_64-linux-musl_toolchain //test:hello
 ...
 $ file ../bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/hello_/hello
 ../bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/hello_/hello: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, Go BuildID=redacted, with debug_info, not stripped
