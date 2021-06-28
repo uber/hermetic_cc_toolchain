@@ -1,6 +1,5 @@
 #!/bin/bash
 # 'bazel' binary is stored in $HOME in builds.sr.ht.
-export PATH=$PATH:$HOME
 
 # -o pipefail fails `bazel aquery ...`: it errs if it can't output to stdout.
 set -xeu
