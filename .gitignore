@@ -1,7 +1,8 @@
 *~
 *.sw[op]
 
-/bazel
+/bin/bazel
+
 /bazel-bazel-zig-cc
 /bazel-bin
 /bazel-out

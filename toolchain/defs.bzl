@@ -157,14 +157,13 @@ def _zig_repository_impl(repository_ctx):
             ZIG_TOOL_WRAPPER.format(zig = str(repository_ctx.path("zig")), zig_tool = zig_tool),
         )
 
-    absolute_path = json.encode(str(repository_ctx.path("")))
     repository_ctx.template(
         "BUILD.bazel",
         Label("//toolchain:BUILD.sdk.bazel"),
         executable = False,
         substitutions = {
-            "{absolute_path}": absolute_path,
-            "{zig_include_root}": json.encode(zig_include_root),
+            "{absolute_path}": str(repository_ctx.path("")),
+            "{zig_include_root}": zig_include_root,
         },
     )
 
