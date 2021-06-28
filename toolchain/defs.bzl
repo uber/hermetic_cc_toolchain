@@ -183,7 +183,7 @@ def filegroup(name, **kwargs):
 
 def zig_build_macro(absolute_path, zig_include_root):
     filegroup(name = "empty")
-    filegroup(name = "zig_compiler", srcs = ["zig"])
+    native.exports_files(["zig"], visibility = ["//visibility:public"])
     filegroup(name = "lib/std", srcs = native.glob(["lib/std/**"]))
 
     lazy_filegroups = {}
@@ -195,8 +195,8 @@ def zig_build_macro(absolute_path, zig_include_root):
             constraint_values = target_config.constraint_values,
         )
 
-        compiler_srcs = [":zig_compiler"]
-        tool_srcs = {tool: [":zig_compiler"] for tool in ["gcc", "ld", "ar"]}
+        compiler_srcs = [":zig"]
+        tool_srcs = {tool: [":zig"] for tool in ["gcc", "ld", "ar"]}
 
         cxx_builtin_include_directories = []
         for d in DEFAULT_INCLUDE_DIRECTORIES + target_config.includes:
@@ -236,10 +236,10 @@ def zig_build_macro(absolute_path, zig_include_root):
             name = target + "_cc_toolchain",
             toolchain_identifier = target + "-toolchain",
             toolchain_config = ":%s_cc_toolchain_config" % target,
-            all_files = ":zig_compiler",
-            ar_files = ":zig_compiler",
-            compiler_files = ":zig_compiler",
-            linker_files = ":zig_compiler",
+            all_files = ":zig",
+            ar_files = ":zig",
+            compiler_files = ":zig",
+            linker_files = ":zig",
             dwp_files = ":empty",
             objcopy_files = ":empty",
             strip_files = ":empty",
