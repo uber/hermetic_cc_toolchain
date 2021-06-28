@@ -1,6 +1,6 @@
 image: debian/testing
 packages:
-  - curl
+  - wget
   - file
 sources:
   - https://git.sr.ht/~motiejus/bazel-zig-cc
