@@ -2,6 +2,7 @@ build --verbose_failures
 test --sandbox_default_allow_network=false
 test --test_output=errors
 build --worker_sandboxing
+
 build --incompatible_enable_cc_toolchain_resolution
-build --incompatible_use_cc_configure_from_rules_cc
-build --incompatible_use_platforms_repo_for_constraints
+#build --incompatible_use_cc_configure_from_rules_cc
+#build --incompatible_use_platforms_repo_for_constraints
