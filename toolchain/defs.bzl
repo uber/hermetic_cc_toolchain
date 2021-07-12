@@ -1,3 +1,4 @@
+load("@bazel_skylib//lib:shell.bzl", "shell")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load(":zig_toolchain.bzl", "zig_cc_toolchain_config")
 
@@ -162,8 +163,8 @@ def _zig_repository_impl(repository_ctx):
         Label("//toolchain:BUILD.sdk.bazel"),
         executable = False,
         substitutions = {
-            "{absolute_path}": str(repository_ctx.path("")),
-            "{zig_include_root}": zig_include_root,
+            "{absolute_path}": shell.quote(str(repository_ctx.path(""))),
+            "{zig_include_root}": shell.quote(zig_include_root),
         },
     )
 
@@ -215,7 +216,6 @@ def zig_build_macro(absolute_path, zig_include_root):
             absolute_tool_paths[name] = "%s/%s" % (absolute_path, tool_path)
             tool_srcs[name].append(tool_path)
 
-
         zig_cc_toolchain_config(
             name = target + "_cc_toolchain_config",
             target = target,
@@ -225,7 +225,7 @@ def zig_build_macro(absolute_path, zig_include_root):
             copts = target_config.copts,
             linkopts = target_config.linkopts,
             target_system_name = "unknown",
-            target_cpu = target_config.bazel_target_cpu,
+            target_cpu = getattr(target_config, "bazel_target_cpu", None),
             target_libc = "unknown",
             compiler = "clang",
             abi_version = "unknown",
@@ -244,14 +244,6 @@ def zig_build_macro(absolute_path, zig_include_root):
             objcopy_files = ":empty",
             strip_files = ":empty",
             supports_param_files = 0,
-        )
-
-        native.cc_toolchain_suite(
-            name = target + "_cc_toolchain_suite",
-            toolchains = {
-                target_config.bazel_target_cpu: ":%s_cc_toolchain" % target,
-            },
-            tags = ["manual"],
         )
 
         native.toolchain(
