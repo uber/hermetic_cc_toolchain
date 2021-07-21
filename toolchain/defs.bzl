@@ -21,6 +21,7 @@ DEFAULT_INCLUDE_DIRECTORIES = [
 # https://github.com/ziglang/zig/blob/0cfa39304b18c6a04689bd789f5dc4d035ec43b0/src/main.zig#L2962-L2966
 TARGET_CONFIGS_LISTOFLISTS = [[
     struct(
+        gotarget = "darwin_{}".format(gocpu),
         zigtarget = "{}-macos-gnu".format(zigcpu),
         includes = [
             "libunwind/include",
@@ -39,6 +40,7 @@ TARGET_CONFIGS_LISTOFLISTS = [[
         register = True,
     ),
     struct(
+        gotarget = "linux_{}_gnu".format(gocpu),
         zigtarget = "{}-linux-gnu".format(zigcpu),
         target_suffix = ".2.19",
         includes = [
@@ -59,6 +61,7 @@ TARGET_CONFIGS_LISTOFLISTS = [[
         register = True,
     ),
     struct(
+        gotarget = "linux_{}_musl".format(gocpu),
         zigtarget = "{}-linux-musl".format(zigcpu),
         includes = [
             "libc/include/generic-musl",
@@ -104,7 +107,7 @@ def register_all_toolchains():
     for target_config in TARGET_CONFIGS:
         if target_config.register:
             native.register_toolchains(
-                "@zig_sdk//:%s_toolchain" % target_config.zigtarget,
+                "@zig_sdk//:%s_toolchain" % target_config.gotarget,
             )
 
 ZIG_TOOL_PATH = "tools/{zig_tool}"
@@ -192,9 +195,10 @@ def zig_build_macro(absolute_path, zig_include_root):
     lazy_filegroups = {}
 
     for target_config in TARGET_CONFIGS:
+        gotarget = target_config.gotarget
         zigtarget = target_config.zigtarget
         native.platform(
-            name = zigtarget,
+            name = gotarget,
             constraint_values = target_config.constraint_values,
         )
 
@@ -249,7 +253,7 @@ def zig_build_macro(absolute_path, zig_include_root):
         )
 
         native.toolchain(
-            name = zigtarget + "_toolchain",
+            name = gotarget + "_toolchain",
             exec_compatible_with = None,
             target_compatible_with = target_config.constraint_values,
             toolchain = ":%s_cc_toolchain" % zigtarget,

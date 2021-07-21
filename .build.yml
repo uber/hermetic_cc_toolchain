@@ -20,7 +20,7 @@ tasks:
   - test_x86_64-linux-musl: |
       cd bazel-zig-cc; . .envrc; ./build-and-file \
           --platforms @io_bazel_rules_go//go/toolchain:linux_amd64_cgo \
-          --extra_toolchains @zig_sdk//:x86_64-linux-musl_toolchain //test:hello | \
+          --extra_toolchains @zig_sdk//:linux_amd64_musl_toolchain //test:hello | \
         grep -q "ELF 64-bit.* x86-64.* statically linked"
   - test_aarch64-linux-gnu: |
       cd bazel-zig-cc; . .envrc; ./build-and-file \
@@ -29,7 +29,7 @@ tasks:
   - test_aarch64-linux-musl: |
       cd bazel-zig-cc; . .envrc; ./build-and-file \
           --platforms @io_bazel_rules_go//go/toolchain:linux_arm64_cgo \
-          --extra_toolchains @zig_sdk//:aarch64-linux-musl_toolchain //test:hello | \
+          --extra_toolchains @zig_sdk//:linux_arm64_musl_toolchain //test:hello | \
         grep -q "ELF 64-bit.* ARM aarch64.* statically linked"
   - test_x86_64-macos-gnu: |
       cd bazel-zig-cc; . .envrc; ./build-and-file \
