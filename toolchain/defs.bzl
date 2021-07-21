@@ -42,7 +42,7 @@ TARGET_CONFIGS_LISTOFLISTS = [[
     struct(
         gotarget = "linux_{}_gnu".format(gocpu),
         zigtarget = "{}-linux-gnu".format(zigcpu),
-        target_suffix = ".2.28", # use 2.19 for jessie.
+        target_suffix = ".2.19", # use 2.19 for jessie.
         includes = [
             "libunwind/include",
             "libc/include/generic-glibc",
