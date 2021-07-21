@@ -21,60 +21,62 @@ DEFAULT_INCLUDE_DIRECTORIES = [
 # https://github.com/ziglang/zig/blob/0cfa39304b18c6a04689bd789f5dc4d035ec43b0/src/main.zig#L2962-L2966
 TARGET_CONFIGS_LISTOFLISTS = [[
     struct(
-        target = "{}-macos-gnu".format(cpu),
+        zigtarget = "{}-macos-gnu".format(zigcpu),
         includes = [
             "libunwind/include",
             "libc/include/any-macos-any",
-            "libc/include/{}-macos-any".format(cpu),
-            "libc/include/{}-macos-gnu".format(cpu),
+            "libc/include/{}-macos-any".format(zigcpu),
+            "libc/include/{}-macos-gnu".format(zigcpu),
         ],
         linkopts = [],
         copts = [],
         bazel_target_cpu = "darwin",
         constraint_values = [
             "@platforms//os:macos",
-            "@platforms//cpu:{}".format(cpu),
+            "@platforms//cpu:{}".format(zigcpu),
         ],
         tool_paths = {"ld": "ld64.lld"},
+        register = True,
     ),
     struct(
-        target = "{}-linux-gnu".format(cpu),
+        zigtarget = "{}-linux-gnu".format(zigcpu),
         target_suffix = ".2.19",
         includes = [
             "libunwind/include",
             "libc/include/generic-glibc",
             "libc/include/any-linux-any",
-            "libc/include/{}-linux-gnu".format(cpu),
-            "libc/include/{}-linux-any".format(cpu),
+            "libc/include/{}-linux-gnu".format(zigcpu),
+            "libc/include/{}-linux-any".format(zigcpu),
         ],
         linkopts = ["-lc++", "-lc++abi"],
         copts = [],
         bazel_target_cpu = "k8",
         constraint_values = [
             "@platforms//os:linux",
-            "@platforms//cpu:{}".format(cpu),
+            "@platforms//cpu:{}".format(zigcpu),
         ],
         tool_paths = {"ld": "ld.lld"},
+        register = True,
     ),
     struct(
-        target = "{}-linux-musl".format(cpu),
+        zigtarget = "{}-linux-musl".format(zigcpu),
         includes = [
             "libc/include/generic-musl",
             "libc/include/any-linux-any",
-            "libc/include/{}-linux-musl".format(cpu),
-            "libc/include/{}-linux-any".format(cpu),
+            "libc/include/{}-linux-musl".format(zigcpu),
+            "libc/include/{}-linux-any".format(zigcpu),
         ],
         linkopts = ["-s", "-w"],
         copts = ["-D_LIBCPP_HAS_MUSL_LIBC", "-D_LIBCPP_HAS_THREAD_API_PTHREAD"],
         bazel_target_cpu = "k8",
         constraint_values = [
             "@platforms//os:linux",
-            "@platforms//cpu:{}".format(cpu),
+            "@platforms//cpu:{}".format(zigcpu),
         ],
         tool_paths = {"ld": "ld.lld"},
-        skip_register = True,
+        register = False,
     ),
-] for cpu in ("x86_64", "aarch64")]
+] for zigcpu, gocpu in (("x86_64", "amd64"), ("aarch64", "arm64"))]
 
 TARGET_CONFIGS = [val for sublist in TARGET_CONFIGS_LISTOFLISTS for val in sublist]
 
@@ -100,9 +102,9 @@ def toolchain_repositories():
 
 def register_all_toolchains():
     for target_config in TARGET_CONFIGS:
-        if not getattr(target_config, "skip_register", False):
+        if target_config.register:
             native.register_toolchains(
-                "@zig_sdk//:%s_toolchain" % target_config.target,
+                "@zig_sdk//:%s_toolchain" % target_config.zigtarget,
             )
 
 ZIG_TOOL_PATH = "tools/{zig_tool}"
@@ -190,9 +192,9 @@ def zig_build_macro(absolute_path, zig_include_root):
     lazy_filegroups = {}
 
     for target_config in TARGET_CONFIGS:
-        target = target_config.target
+        zigtarget = target_config.zigtarget
         native.platform(
-            name = target,
+            name = zigtarget,
             constraint_values = target_config.constraint_values,
         )
 
@@ -217,8 +219,8 @@ def zig_build_macro(absolute_path, zig_include_root):
             tool_srcs[name].append(tool_path)
 
         zig_cc_toolchain_config(
-            name = target + "_cc_toolchain_config",
-            target = target,
+            name = zigtarget + "_cc_toolchain_config",
+            target = zigtarget,
             target_suffix = getattr(target_config, "target_suffix", ""),
             tool_paths = absolute_tool_paths,
             cxx_builtin_include_directories = cxx_builtin_include_directories,
@@ -233,9 +235,9 @@ def zig_build_macro(absolute_path, zig_include_root):
         )
 
         native.cc_toolchain(
-            name = target + "_cc_toolchain",
-            toolchain_identifier = target + "-toolchain",
-            toolchain_config = ":%s_cc_toolchain_config" % target,
+            name = zigtarget + "_cc_toolchain",
+            toolchain_identifier = zigtarget + "-toolchain",
+            toolchain_config = ":%s_cc_toolchain_config" % zigtarget,
             all_files = ":zig",
             ar_files = ":zig",
             compiler_files = ":zig",
@@ -247,9 +249,9 @@ def zig_build_macro(absolute_path, zig_include_root):
         )
 
         native.toolchain(
-            name = target + "_toolchain",
+            name = zigtarget + "_toolchain",
             exec_compatible_with = None,
             target_compatible_with = target_config.constraint_values,
-            toolchain = ":%s_cc_toolchain" % target,
+            toolchain = ":%s_cc_toolchain" % zigtarget,
             toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
         )
