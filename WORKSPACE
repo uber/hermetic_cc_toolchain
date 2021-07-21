@@ -29,6 +29,11 @@ go_rules_dependencies()
 
 go_register_toolchains(version = "1.16")
 
+load("//:repositories.bzl", "go_repositories")
+
+# gazelle:repository_macro repositories.bzl%go_repositories
+go_repositories()
+
 gazelle_dependencies(go_repository_default_config = "@//:WORKSPACE")
 
 # protobuf is required for //:buildifier
