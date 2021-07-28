@@ -4,7 +4,6 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
-# TODO(motiejus) use json.encode() and unquote these variables with bazel 4+.
 zig_build_macro(
     absolute_path = {absolute_path},
     zig_include_root = {zig_include_root},

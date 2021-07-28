@@ -202,7 +202,6 @@ def zig_build_macro(absolute_path, zig_include_root):
             constraint_values = target_config.constraint_values,
         )
 
-        compiler_srcs = [":zig"]
         tool_srcs = {tool: [":zig"] for tool in ["gcc", "ld", "ar"]}
 
         cxx_builtin_include_directories = []
@@ -210,7 +209,6 @@ def zig_build_macro(absolute_path, zig_include_root):
             d = zig_include_root + d
             if d not in lazy_filegroups:
                 lazy_filegroups[d] = filegroup(name = d, srcs = native.glob([d + "/**"]))
-            compiler_srcs.append(lazy_filegroups[d])
             cxx_builtin_include_directories.append(absolute_path + "/" + d)
 
         absolute_tool_paths = {}
