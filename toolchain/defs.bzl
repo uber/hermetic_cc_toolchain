@@ -26,7 +26,7 @@ GLIBC_2.2.5 {
    fcntl;
 };
 """
-_fcntl_h = """asm (".symver fcntl64, fcntl@GLIBC_2.2.5");\n"""
+_fcntl_h = """__asm__(".symver fcntl64, fcntl@GLIBC_2.2.5");\n"""
 
 # https://github.com/ziglang/zig/blob/0cfa39304b18c6a04689bd789f5dc4d035ec43b0/src/main.zig#L2962-L2966
 TARGET_CONFIGS_LISTOFLISTS = [[
@@ -240,8 +240,8 @@ def zig_build_macro(absolute_path, zig_include_root):
 
         linkopts = target_config.linkopts
         copts = target_config.copts
-        compiler_extra_include = getattr(target_config, "compiler_extra_include", None)
-        linker_version_script = getattr(target_config, "linker_version_script", None)
+        compiler_extra_include = getattr(target_config, "compiler_extra_include", "")
+        linker_version_script = getattr(target_config, "linker_version_script", "")
         if linker_version_script:
             linkopts = linkopts + ["-Wl,--version-script,%s/%s" % (absolute_path, linker_version_script)]
         if compiler_extra_include:
