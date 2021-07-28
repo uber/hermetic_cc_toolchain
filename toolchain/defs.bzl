@@ -18,6 +18,16 @@ DEFAULT_INCLUDE_DIRECTORIES = [
     "libcxxabi/include",
 ]
 
+
+# https://github.com/ziglang/zig/issues/5882#issuecomment-888250676
+# only required for glibc 2.27 or lower.
+_fcntl_map = """
+GLIBC_2.2.5 {
+   fcntl;
+};
+"""
+_fcntl_h = """asm (".symver fcntl64, fcntl@GLIBC_2.2.5");\n"""
+
 # https://github.com/ziglang/zig/blob/0cfa39304b18c6a04689bd789f5dc4d035ec43b0/src/main.zig#L2962-L2966
 TARGET_CONFIGS_LISTOFLISTS = [[
     struct(
@@ -50,6 +60,8 @@ TARGET_CONFIGS_LISTOFLISTS = [[
             "libc/include/{}-linux-gnu".format(zigcpu),
             "libc/include/{}-linux-any".format(zigcpu),
         ],
+        linker_version_script = "glibc-hacks/fcntl.map",
+        compiler_extra_include = "glibc-hacks/fcntl.h",
         linkopts = ["-lc++", "-lc++abi"],
         copts = [],
         bazel_target_cpu = "k8",
@@ -163,6 +175,15 @@ def _zig_repository_impl(repository_ctx):
             ZIG_TOOL_WRAPPER.format(zig = str(repository_ctx.path("zig")), zig_tool = zig_tool),
         )
 
+    repository_ctx.file(
+        "glibc-hacks/fcntl.map",
+        content = _fcntl_map,
+    )
+    repository_ctx.file(
+        "glibc-hacks/fcntl.h",
+        content = _fcntl_h,
+    )
+
     repository_ctx.template(
         "BUILD.bazel",
         Label("//toolchain:BUILD.sdk.bazel"),
@@ -217,16 +238,25 @@ def zig_build_macro(absolute_path, zig_include_root):
             tool_path = ZIG_TOOL_PATH.format(zig_tool = path)
             absolute_tool_paths[name] = "%s/%s" % (absolute_path, tool_path)
 
+        linkopts = target_config.linkopts
+        copts = target_config.copts
+        compiler_extra_include = getattr(target_config, "compiler_extra_include", None)
+        linker_version_script = getattr(target_config, "linker_version_script", None)
+        if linker_version_script:
+            linkopts = linkopts + ["-Wl,--version-script,%s/%s" % (absolute_path, linker_version_script)]
+        if compiler_extra_include:
+            copts = copts + ["-include", "%s/%s" % (absolute_path, compiler_extra_include)]
+
         zig_cc_toolchain_config(
             name = zigtarget + "_cc_toolchain_config",
             target = zigtarget,
             target_suffix = getattr(target_config, "target_suffix", ""),
             tool_paths = absolute_tool_paths,
             cxx_builtin_include_directories = cxx_builtin_include_directories,
-            copts = target_config.copts,
-            linkopts = target_config.linkopts,
+            copts = copts,
+            linkopts = linkopts,
+            target_cpu = target_config.bazel_target_cpu,
             target_system_name = "unknown",
-            target_cpu = getattr(target_config, "bazel_target_cpu", None),
             target_libc = "unknown",
             compiler = "clang",
             abi_version = "unknown",
