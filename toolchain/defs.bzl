@@ -163,7 +163,9 @@ else
 fi
 export ZIG_LOCAL_CACHE_DIR="$cache_prefix/bazel-zig-cc"
 export ZIG_GLOBAL_CACHE_DIR=$ZIG_LOCAL_CACHE_DIR
-exec "{zig}" "{zig_tool}" "$@"
+
+# https://github.com/ziglang/zig/issues/9431
+exec flock "{zig}" "{zig}" "{zig_tool}" "$@"
 """
 
 _ZIG_TOOLS = [
