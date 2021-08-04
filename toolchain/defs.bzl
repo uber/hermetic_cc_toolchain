@@ -18,9 +18,8 @@ DEFAULT_INCLUDE_DIRECTORIES = [
     "libcxxabi/include",
 ]
 
-
 # https://github.com/ziglang/zig/issues/5882#issuecomment-888250676
-# only required for glibc 2.27 or lower.
+# only required for glibc 2.27 or less.
 _fcntl_map = """
 GLIBC_2.2.5 {
    fcntl;
@@ -28,9 +27,26 @@ GLIBC_2.2.5 {
 """
 _fcntl_h = """__asm__(".symver fcntl64, fcntl@GLIBC_2.2.5");\n"""
 
-# https://github.com/ziglang/zig/blob/0cfa39304b18c6a04689bd789f5dc4d035ec43b0/src/main.zig#L2962-L2966
-TARGET_CONFIGS_LISTOFLISTS = [[
-    struct(
+# Zig supports even older glibcs than defined below, but we have tested only
+# down to 2.19, which is in Debian Jessie.
+_GLIBCS = [
+    "2.19",
+    "2.22",
+    "2.23",
+    "2.24",
+    "2.25",
+    "2.26",
+    "2.27",
+    "2.28",
+    "2.29",
+    "2.30",
+    "2.31",
+    "2.32",
+    "2.33",
+]
+
+def _target_darwin(gocpu, zigcpu):
+    return struct(
         gotarget = "darwin_{}".format(gocpu),
         zigtarget = "{}-macos-gnu".format(zigcpu),
         includes = [
@@ -47,12 +63,13 @@ TARGET_CONFIGS_LISTOFLISTS = [[
             "@platforms//cpu:{}".format(zigcpu),
         ],
         tool_paths = {"ld": "ld64.lld"},
-        register = True,
-    ),
-    struct(
+    )
+
+def _target_linux_gnu(gocpu, zigcpu, glibc_version):
+    return struct(
         gotarget = "linux_{}_gnu".format(gocpu),
         zigtarget = "{}-linux-gnu".format(zigcpu),
-        target_suffix = ".2.19", # use 2.19 for jessie.
+        target_suffix = ".{}".format(glibc_version),
         includes = [
             "libunwind/include",
             "libc/include/generic-glibc",
@@ -60,8 +77,8 @@ TARGET_CONFIGS_LISTOFLISTS = [[
             "libc/include/{}-linux-gnu".format(zigcpu),
             "libc/include/{}-linux-any".format(zigcpu),
         ],
-        linker_version_script = "glibc-hacks/fcntl.map",
-        compiler_extra_include = "glibc-hacks/fcntl.h",
+        linker_version_script = "glibc-hacks/fcntl.map" if glibc_version < "2.28" else None,
+        compiler_extra_include = "glibchack-fcntl.h" if glibc_version < "2.28" else None,
         linkopts = ["-lc++", "-lc++abi"],
         copts = [],
         bazel_target_cpu = "k8",
@@ -70,9 +87,10 @@ TARGET_CONFIGS_LISTOFLISTS = [[
             "@platforms//cpu:{}".format(zigcpu),
         ],
         tool_paths = {"ld": "ld.lld"},
-        register = True,
-    ),
-    struct(
+    )
+
+def _target_linux_musl(gocpu, zigcpu):
+    return struct(
         gotarget = "linux_{}_musl".format(gocpu),
         zigtarget = "{}-linux-musl".format(zigcpu),
         includes = [
@@ -89,16 +107,24 @@ TARGET_CONFIGS_LISTOFLISTS = [[
             "@platforms//cpu:{}".format(zigcpu),
         ],
         tool_paths = {"ld": "ld.lld"},
-        register = False,
-    ),
-] for zigcpu, gocpu in (("x86_64", "amd64"), ("aarch64", "arm64"))]
+    )
 
-TARGET_CONFIGS = [val for sublist in TARGET_CONFIGS_LISTOFLISTS for val in sublist]
+def register_toolchains(
+        register_linux_libc = "gnu",
+        glibc_version = _GLIBCS[-1]):
+    """register_toolchains downloads and registers zig toolchains:
 
-def toolchain_repositories():
+        @param register_linux_libc: either "musl" or "gnu". Only one can be
+            registered at a time to avoid conflict.
+        @param glibc_version: which glibc version to use when compiling via
+            glibc (either via registered toolchain, or via --extra_toolchains).
+    """
+
+    if register_linux_libc not in ("gnu", "musl"):
+        fail("register_linux_libc must be either gnu or musl")
+
     zig_repository(
         name = "zig_sdk",
-
         # Pre-release:
         version = "0.9.0-dev.727+aad459836",
         url_format = "https://ziglang.org/builds/zig-{host_platform}-{version}.tar.xz",
@@ -113,14 +139,17 @@ def toolchain_repositories():
             "macos-x86_64": "lib/zig/",
             "linux-x86_64": "lib/",
         },
+        glibc_version = glibc_version,
     )
 
-def register_all_toolchains():
-    for target_config in TARGET_CONFIGS:
-        if target_config.register:
-            native.register_toolchains(
-                "@zig_sdk//:%s_toolchain" % target_config.gotarget,
-            )
+    for cfg in _target_structs(glibc_version):
+        if cfg.gotarget.startswith("linux"):
+            if not cfg.gotarget.endswith(register_linux_libc):
+                continue
+
+        native.register_toolchains(
+            "@zig_sdk//:%s_toolchain" % cfg.gotarget,
+        )
 
 ZIG_TOOL_PATH = "tools/{zig_tool}"
 ZIG_TOOL_WRAPPER = """#!/bin/bash
@@ -137,12 +166,10 @@ export ZIG_GLOBAL_CACHE_DIR=$ZIG_LOCAL_CACHE_DIR
 exec "{zig}" "{zig_tool}" "$@"
 """
 
-ZIG_TOOLS = [
+_ZIG_TOOLS = [
     "c++",
     "cc",
     "ar",
-    # List of ld tools: https://github.com/ziglang/zig/blob/0cfa39304b18c6a04689bd789f5dc4d035ec43b0/src/main.zig#L2962-L2966
-    # and also: https://github.com/ziglang/zig/issues/3257
     "ld.lld",  # ELF
     "ld64.lld",  # Mach-O
     "lld-link",  # COFF
@@ -169,7 +196,7 @@ def _zig_repository_impl(repository_ctx):
         sha256 = zig_sha256,
     )
 
-    for zig_tool in ZIG_TOOLS:
+    for zig_tool in _ZIG_TOOLS:
         repository_ctx.file(
             ZIG_TOOL_PATH.format(zig_tool = zig_tool),
             ZIG_TOOL_WRAPPER.format(zig = str(repository_ctx.path("zig")), zig_tool = zig_tool),
@@ -180,7 +207,7 @@ def _zig_repository_impl(repository_ctx):
         content = _fcntl_map,
     )
     repository_ctx.file(
-        "glibc-hacks/fcntl.h",
+        "glibc-hacks/glibchack-fcntl.h",
         content = _fcntl_h,
     )
 
@@ -191,6 +218,7 @@ def _zig_repository_impl(repository_ctx):
         substitutions = {
             "{absolute_path}": shell.quote(str(repository_ctx.path(""))),
             "{zig_include_root}": shell.quote(zig_include_root),
+            "{glibc_version}": shell.quote(repository_ctx.attr.glibc_version),
         },
     )
 
@@ -200,22 +228,31 @@ zig_repository = repository_rule(
         "host_platform_sha256": attr.string_dict(),
         "url_format": attr.string(),
         "host_platform_include_root": attr.string_dict(),
+        "glibc_version": attr.string(values = _GLIBCS),
     },
     implementation = _zig_repository_impl,
 )
+
+def _target_structs(glibc_version):
+    ret = []
+    for zigcpu, gocpu in (("x86_64", "amd64"), ("aarch64", "arm64")):
+        ret.append(_target_darwin(gocpu, zigcpu))
+        ret.append(_target_linux_gnu(gocpu, zigcpu, glibc_version))
+        ret.append(_target_linux_musl(gocpu, zigcpu))
+    return ret
 
 def filegroup(name, **kwargs):
     native.filegroup(name = name, **kwargs)
     return ":" + name
 
-def zig_build_macro(absolute_path, zig_include_root):
+def zig_build_macro(absolute_path, zig_include_root, glibc_version):
     filegroup(name = "empty")
     native.exports_files(["zig"], visibility = ["//visibility:public"])
     filegroup(name = "lib/std", srcs = native.glob(["lib/std/**"]))
 
     lazy_filegroups = {}
 
-    for target_config in TARGET_CONFIGS:
+    for target_config in _target_structs(glibc_version):
         gotarget = target_config.gotarget
         zigtarget = target_config.zigtarget
         native.platform(
@@ -245,7 +282,8 @@ def zig_build_macro(absolute_path, zig_include_root):
         if linker_version_script:
             linkopts = linkopts + ["-Wl,--version-script,%s/%s" % (absolute_path, linker_version_script)]
         if compiler_extra_include:
-            copts = copts + ["-include", "%s/%s" % (absolute_path, compiler_extra_include)]
+            copts = copts + ["-include", "%s/glibc-hacks/%s" % (absolute_path, compiler_extra_include)]
+            cxx_builtin_include_directories.append(absolute_path + "/glibc-hacks")
 
         zig_cc_toolchain_config(
             name = zigtarget + "_cc_toolchain_config",
@@ -277,8 +315,19 @@ def zig_build_macro(absolute_path, zig_include_root):
             supports_param_files = 0,
         )
 
+        # register two kinds of toolchain targets: Go and Zig conventions.
+        # Go convention: amd64/arm64, linux/darwin
         native.toolchain(
             name = gotarget + "_toolchain",
+            exec_compatible_with = None,
+            target_compatible_with = target_config.constraint_values,
+            toolchain = ":%s_cc_toolchain" % zigtarget,
+            toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
+        )
+
+        # Zig convention: x86_64/aarch64, linux/macos
+        native.toolchain(
+            name = zigtarget + "_toolchain",
             exec_compatible_with = None,
             target_compatible_with = target_config.constraint_values,
             toolchain = ":%s_cc_toolchain" % zigtarget,

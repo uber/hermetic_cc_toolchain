@@ -50,10 +50,7 @@ protobuf_deps()
 
 load(
     "//toolchain:defs.bzl",
-    zig_register_all_toolchains = "register_all_toolchains",
-    zig_toolchain_repositories = "toolchain_repositories",
+    zig_register_toolchains = "register_toolchains",
 )
 
-zig_toolchain_repositories()
-
-zig_register_all_toolchains()
+zig_register_toolchains(glibc_version = "2.19")
