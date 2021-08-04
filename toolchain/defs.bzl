@@ -111,13 +111,17 @@ def _target_linux_musl(gocpu, zigcpu):
 
 def register_toolchains(
         register_linux_libc = "gnu",
-        glibc_version = _GLIBCS[-1]):
+        glibc_version = _GLIBCS[-1],
+        speed_first_safety_later = False):
     """register_toolchains downloads and registers zig toolchains:
 
         @param register_linux_libc: either "musl" or "gnu". Only one can be
             registered at a time to avoid conflict.
         @param glibc_version: which glibc version to use when compiling via
             glibc (either via registered toolchain, or via --extra_toolchains).
+        @param speed_first_safety_later: remove workaround of
+            github.com/ziglang/zig/issues/9431; dramatically increases compilation
+            speed
     """
 
     if register_linux_libc not in ("gnu", "musl"):
@@ -140,6 +144,7 @@ def register_toolchains(
             "linux-x86_64": "lib/",
         },
         glibc_version = glibc_version,
+        speed_first_safety_later = speed_first_safety_later,
     )
 
     for cfg in _target_structs(glibc_version):
@@ -165,7 +170,7 @@ export ZIG_LOCAL_CACHE_DIR="$cache_prefix/bazel-zig-cc"
 export ZIG_GLOBAL_CACHE_DIR=$ZIG_LOCAL_CACHE_DIR
 
 # https://github.com/ziglang/zig/issues/9431
-exec flock "{zig}" "{zig}" "{zig_tool}" "$@"
+exec {maybe_flock} "{zig}" "{zig_tool}" "$@"
 """
 
 _ZIG_TOOLS = [
@@ -198,10 +203,18 @@ def _zig_repository_impl(repository_ctx):
         sha256 = zig_sha256,
     )
 
+    maybe_flock = "flock"
+    if repository_ctx.attr.speed_first_safety_later:
+        maybe_flock = ""
+
     for zig_tool in _ZIG_TOOLS:
         repository_ctx.file(
             ZIG_TOOL_PATH.format(zig_tool = zig_tool),
-            ZIG_TOOL_WRAPPER.format(zig = str(repository_ctx.path("zig")), zig_tool = zig_tool),
+            ZIG_TOOL_WRAPPER.format(
+                zig = str(repository_ctx.path("zig")),
+                zig_tool = zig_tool,
+                maybe_flock = maybe_flock,
+            ),
         )
 
     repository_ctx.file(
@@ -231,6 +244,7 @@ zig_repository = repository_rule(
         "url_format": attr.string(),
         "host_platform_include_root": attr.string_dict(),
         "glibc_version": attr.string(values = _GLIBCS),
+        "speed_first_safety_later": attr.bool(),
     },
     implementation = _zig_repository_impl,
 )

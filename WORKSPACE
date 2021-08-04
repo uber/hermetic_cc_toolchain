@@ -53,4 +53,7 @@ load(
     zig_register_toolchains = "register_toolchains",
 )
 
-zig_register_toolchains(glibc_version = "2.19")
+zig_register_toolchains(
+    glibc_version = "2.19",
+    speed_first_safety_later = True,
+)
