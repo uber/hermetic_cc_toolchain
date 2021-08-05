@@ -15,9 +15,10 @@ tasks:
         grep -q "ELF 64-bit.* x86-64.* dynamically linked"
   - test_amd64-linux-gnu: |
       cd bazel-zig-cc; . .envrc; ./build-and-file \
+          --extra_toolchains @zig_sdk//:linux_amd64_gnu_toolchain \
           --platforms @io_bazel_rules_go//go/toolchain:linux_amd64_cgo //test:hello | \
         grep -q "ELF 64-bit.* x86-64.* dynamically linked"
-  - test_amd64-linux-gnu.2.19: |
+  - test_amd64-linux-gnu-2_19: |
       cd bazel-zig-cc; . .envrc; ./build-and-file \
           --extra_toolchains @zig_sdk//:linux_amd64_gnu.2.19_toolchain \
           --platforms @io_bazel_rules_go//go/toolchain:linux_amd64_cgo //test:hello | \
