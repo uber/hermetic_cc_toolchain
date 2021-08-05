@@ -18,8 +18,6 @@ DEFAULT_INCLUDE_DIRECTORIES = [
     "libcxxabi/include",
 ]
 
-# https://github.com/ziglang/zig/issues/5882#issuecomment-888250676
-# only required for glibc 2.27 or less.
 _fcntl_map = """
 GLIBC_2.2.5 {
    fcntl;
@@ -28,8 +26,11 @@ GLIBC_2.2.5 {
 _fcntl_h = """__asm__(".symver fcntl64, fcntl@GLIBC_2.2.5");\n"""
 
 # Zig supports even older glibcs than defined below, but we have tested only
-# down to 2.19, which is in Debian Jessie.
+# down to 2.17.
+# $ zig targets | jq -r '.glibc[]' | sort -V
 _GLIBCS = [
+    "2.17",
+    "2.18",
     "2.19",
     "2.22",
     "2.23",
@@ -46,8 +47,8 @@ _GLIBCS = [
 ]
 
 DEFAULT_TOOLCHAINS = [
-    "linux_amd64_gnu",
-    "linux_arm64_gnu",
+    "linux_arm64_gnu.2.28",  # Cannot apply fcntl64 hack for older versions.
+    "linux_amd64_gnu.2.19",  # Debian Jessie
     "darwin_amd64",
     "darwin_arm64",
 ]
@@ -77,6 +78,23 @@ def _target_linux_gnu(gocpu, zigcpu, glibc_version = ""):
     if glibc_version != "":
         glibc_suffix = "gnu.{}".format(glibc_version)
 
+    # https://github.com/ziglang/zig/issues/5882#issuecomment-888250676
+    # fcntl_hack is only required for glibc 2.27 or less. We assume that
+    # glibc_version == "" (autodetect) is running a recent glibc version, thus
+    # adding this hack only when glibc is explicitly 2.27 or lower.
+    # __asm__ directive does not work on aarch64 (for some reasons unknown to
+    # me), so the hack applies to x86_64 only.
+    fcntl_hack = False
+    if zigcpu == "x86_64":
+        if glibc_version == "":
+            # zig doesn't reliably detect the glibc version, so
+            # often falls back to 2.17; the hack should be included.
+            # https://github.com/ziglang/zig/issues/6469
+            fcntl_hack = True
+        else:
+            # we know the version; hack is required for 2.27 or less.
+            fcntl_hack = glibc_version < "2.28"
+
     return struct(
         gotarget = "linux_{}_{}".format(gocpu, glibc_suffix),
         zigtarget = "{}-linux-{}".format(zigcpu, glibc_suffix),
@@ -87,9 +105,9 @@ def _target_linux_gnu(gocpu, zigcpu, glibc_version = ""):
             "libc/include/{}-linux-gnu".format(zigcpu),
             "libc/include/{}-linux-any".format(zigcpu),
         ],
-        # TODO: do not include these if glibc version is unspecified
-        linker_version_script = "glibc-hacks/fcntl.map" if glibc_version < "2.28" else None,
-        compiler_extra_include = "glibchack-fcntl.h" if glibc_version < "2.28" else None,
+        toplevel_include = ["glibc-hacks"] if fcntl_hack else [],
+        compiler_extra_includes = ["glibchack-fcntl.h"] if fcntl_hack else [],
+        linker_version_scripts = ["glibc-hacks/fcntl.map"] if fcntl_hack else [],
         linkopts = ["-lc++", "-lc++abi"],
         copts = [],
         bazel_target_cpu = "k8",
@@ -284,6 +302,8 @@ def zig_build_macro(absolute_path, zig_include_root):
             if d not in lazy_filegroups:
                 lazy_filegroups[d] = filegroup(name = d, srcs = native.glob([d + "/**"]))
             cxx_builtin_include_directories.append(absolute_path + "/" + d)
+        for d in getattr(target_config, "toplevel_include", []):
+            cxx_builtin_include_directories.append(absolute_path + "/" + d)
 
         absolute_tool_paths = {}
         for name, path in target_config.tool_paths.items() + DEFAULT_TOOL_PATHS:
@@ -295,13 +315,10 @@ def zig_build_macro(absolute_path, zig_include_root):
 
         linkopts = target_config.linkopts
         copts = target_config.copts
-        compiler_extra_include = getattr(target_config, "compiler_extra_include", "")
-        linker_version_script = getattr(target_config, "linker_version_script", "")
-        if linker_version_script:
-            linkopts = linkopts + ["-Wl,--version-script,%s/%s" % (absolute_path, linker_version_script)]
-        if compiler_extra_include:
-            copts = copts + ["-include", "%s/glibc-hacks/%s" % (absolute_path, compiler_extra_include)]
-            cxx_builtin_include_directories.append(absolute_path + "/glibc-hacks")
+        for s in getattr(target_config, "linker_version_scripts", []):
+            linkopts = linkopts + ["-Wl,--version-script,%s/%s" % (absolute_path, s)]
+        for incl in getattr(target_config, "compiler_extra_includes", []):
+            copts = copts + ["-include", incl]
 
         zig_cc_toolchain_config(
             name = zigtarget + "_cc_toolchain_config",

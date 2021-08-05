@@ -13,30 +13,34 @@ tasks:
       cd bazel-zig-cc; . .envrc; ./build-and-file \
           //test:hello | \
         grep -q "ELF 64-bit.* x86-64.* dynamically linked"
-  - test_x86_64-linux-gnu: |
+  - test_amd64-linux-gnu: |
       cd bazel-zig-cc; . .envrc; ./build-and-file \
           --platforms @io_bazel_rules_go//go/toolchain:linux_amd64_cgo //test:hello | \
         grep -q "ELF 64-bit.* x86-64.* dynamically linked"
-  - test_x86_64-linux-musl: |
+  - test_amd64-linux-gnu.2.19: |
+      cd bazel-zig-cc; . .envrc; ./build-and-file \
+          --extra_toolchains @zig_sdk//:linux_amd64_gnu.2.19_toolchain \
+          --platforms @io_bazel_rules_go//go/toolchain:linux_amd64_cgo //test:hello | \
+        grep -q "ELF 64-bit.* x86-64.* dynamically linked"
+  - test_amd64-linux-musl: |
       cd bazel-zig-cc; . .envrc; ./build-and-file \
           --platforms @io_bazel_rules_go//go/toolchain:linux_amd64_cgo \
           --extra_toolchains @zig_sdk//:linux_amd64_musl_toolchain //test:hello | \
         grep -q "ELF 64-bit.* x86-64.* statically linked"
-  # fcntl64 hack doesn't work on arm64
-  #- test_aarch64-linux-gnu: |
-  #    cd bazel-zig-cc; . .envrc; ./build-and-file \
-  #        --platforms @io_bazel_rules_go//go/toolchain:linux_arm64_cgo //test:hello | \
-  #      grep -q "ELF 64-bit.* ARM aarch64.* dynamically linked"
-  - test_aarch64-linux-musl: |
+  - test_arm64-linux-gnu: |
+      cd bazel-zig-cc; . .envrc; ./build-and-file \
+          --platforms @io_bazel_rules_go//go/toolchain:linux_arm64_cgo //test:hello | \
+        grep -q "ELF 64-bit.* ARM aarch64.* dynamically linked"
+  - test_arm64-linux-musl: |
       cd bazel-zig-cc; . .envrc; ./build-and-file \
           --platforms @io_bazel_rules_go//go/toolchain:linux_arm64_cgo \
           --extra_toolchains @zig_sdk//:linux_arm64_musl_toolchain //test:hello | \
         grep -q "ELF 64-bit.* ARM aarch64.* statically linked"
-  - test_x86_64-macos-gnu: |
+  - test_amd64-macos: |
       cd bazel-zig-cc; . .envrc; ./build-and-file \
           --platforms @io_bazel_rules_go//go/toolchain:darwin_amd64_cgo //test:hello | \
         grep -q "Mach-O 64-bit x86_64 executable"
-  - test_aarch64-macos-gnu: |
+  - test_arm64-macos-gnu: |
       cd bazel-zig-cc; . .envrc; ./build-and-file \
           --platforms @io_bazel_rules_go//go/toolchain:darwin_arm64_cgo //test:hello | \
         grep -q "Mach-O 64-bit arm64 executable"
