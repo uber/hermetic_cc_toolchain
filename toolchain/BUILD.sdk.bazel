@@ -6,7 +6,6 @@ package(
 
 zig_build_macro(
     absolute_path = {absolute_path},
-    glibc_version = {glibc_version},
     zig_include_root = {zig_include_root},
 )
 

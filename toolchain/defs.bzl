@@ -45,6 +45,13 @@ _GLIBCS = [
     "2.33",
 ]
 
+DEFAULT_TOOLCHAINS = [
+    "linux_amd64_gnu",
+    "linux_arm64_gnu",
+    "darwin_amd64",
+    "darwin_arm64",
+]
+
 def _target_darwin(gocpu, zigcpu):
     return struct(
         gotarget = "darwin_{}".format(gocpu),
@@ -65,11 +72,14 @@ def _target_darwin(gocpu, zigcpu):
         tool_paths = {"ld": "ld64.lld"},
     )
 
-def _target_linux_gnu(gocpu, zigcpu, glibc_version):
+def _target_linux_gnu(gocpu, zigcpu, glibc_version = ""):
+    glibc_suffix = "gnu"
+    if glibc_version != "":
+        glibc_suffix = "gnu.{}".format(glibc_version)
+
     return struct(
-        gotarget = "linux_{}_gnu".format(gocpu),
-        zigtarget = "{}-linux-gnu".format(zigcpu),
-        target_suffix = ".{}".format(glibc_version),
+        gotarget = "linux_{}_{}".format(gocpu, glibc_suffix),
+        zigtarget = "{}-linux-{}".format(zigcpu, glibc_suffix),
         includes = [
             "libunwind/include",
             "libc/include/generic-glibc",
@@ -77,6 +87,7 @@ def _target_linux_gnu(gocpu, zigcpu, glibc_version):
             "libc/include/{}-linux-gnu".format(zigcpu),
             "libc/include/{}-linux-any".format(zigcpu),
         ],
+        # TODO: do not include these if glibc version is unspecified
         linker_version_script = "glibc-hacks/fcntl.map" if glibc_version < "2.28" else None,
         compiler_extra_include = "glibchack-fcntl.h" if glibc_version < "2.28" else None,
         linkopts = ["-lc++", "-lc++abi"],
@@ -110,23 +121,8 @@ def _target_linux_musl(gocpu, zigcpu):
     )
 
 def register_toolchains(
-        register_linux_libc = "gnu",
-        glibc_version = _GLIBCS[-1],
-        speed_first_safety_later = False):
-    """register_toolchains downloads and registers zig toolchains:
-
-        @param register_linux_libc: either "musl" or "gnu". Only one can be
-            registered at a time to avoid conflict.
-        @param glibc_version: which glibc version to use when compiling via
-            glibc (either via registered toolchain, or via --extra_toolchains).
-        @param speed_first_safety_later: remove workaround of
-            github.com/ziglang/zig/issues/9431; dramatically increases compilation
-            speed
-    """
-
-    if register_linux_libc not in ("gnu", "musl"):
-        fail("register_linux_libc must be either gnu or musl")
-
+        register = DEFAULT_TOOLCHAINS,
+        speed_first_safety_later = "auto"):
     zig_repository(
         name = "zig_sdk",
         # Pre-release:
@@ -143,34 +139,30 @@ def register_toolchains(
             "macos-x86_64": "lib/zig/",
             "linux-x86_64": "lib/",
         },
-        glibc_version = glibc_version,
         speed_first_safety_later = speed_first_safety_later,
     )
 
-    for cfg in _target_structs(glibc_version):
-        if cfg.gotarget.startswith("linux"):
-            if not cfg.gotarget.endswith(register_linux_libc):
-                continue
-
-        native.register_toolchains(
-            "@zig_sdk//:%s_toolchain" % cfg.gotarget,
-        )
+    toolchains = ["@zig_sdk//:%s_toolchain" % t for t in register]
+    native.register_toolchains(*toolchains)
 
 ZIG_TOOL_PATH = "tools/{zig_tool}"
 ZIG_TOOL_WRAPPER = """#!/bin/bash
+set -eu
+readonly _zig="{zig}"
+
 if [[ -n "$TMPDIR" ]]; then
-  cache_prefix=$TMPDIR
+  _cache_prefix=$TMPDIR
 else
-  cache_prefix="$HOME/.cache"
+  _cache_prefix="$HOME/.cache"
   if [[ "$(uname)" = Darwin ]]; then
-    cache_prefix="$HOME/Library/Caches"
+    _cache_prefix="$HOME/Library/Caches"
   fi
 fi
-export ZIG_LOCAL_CACHE_DIR="$cache_prefix/bazel-zig-cc"
+export ZIG_LOCAL_CACHE_DIR="$_cache_prefix/bazel-zig-cc"
 export ZIG_GLOBAL_CACHE_DIR=$ZIG_LOCAL_CACHE_DIR
 
 # https://github.com/ziglang/zig/issues/9431
-exec {maybe_flock} "{zig}" "{zig_tool}" "$@"
+exec {maybe_flock} "$_zig" "{zig_tool}" "$@"
 """
 
 _ZIG_TOOLS = [
@@ -203,10 +195,14 @@ def _zig_repository_impl(repository_ctx):
         sha256 = zig_sha256,
     )
 
-    maybe_flock = "flock"
-    if repository_ctx.attr.speed_first_safety_later:
-        maybe_flock = ""
+    if repository_ctx.attr.speed_first_safety_later == "auto":
+        do_flock = repository_ctx.os.name.lower().startswith("mac os")
+    elif repository_ctx.attr.speed_first_safety_later == "yes":
+        do_flock = True
+    else:
+        do_flock = False
 
+    maybe_flock = 'flock "${_zig}"' if do_flock else ""
     for zig_tool in _ZIG_TOOLS:
         repository_ctx.file(
             ZIG_TOOL_PATH.format(zig_tool = zig_tool),
@@ -233,7 +229,6 @@ def _zig_repository_impl(repository_ctx):
         substitutions = {
             "{absolute_path}": shell.quote(str(repository_ctx.path(""))),
             "{zig_include_root}": shell.quote(zig_include_root),
-            "{glibc_version}": shell.quote(repository_ctx.attr.glibc_version),
         },
     )
 
@@ -243,32 +238,39 @@ zig_repository = repository_rule(
         "host_platform_sha256": attr.string_dict(),
         "url_format": attr.string(),
         "host_platform_include_root": attr.string_dict(),
-        "glibc_version": attr.string(values = _GLIBCS),
-        "speed_first_safety_later": attr.bool(),
+        "speed_first_safety_later": attr.string(
+            values = ["yes", "no", "auto"],
+            default = "auto",
+            doc = "Workaround for github.com/ziglang/zig/issues/9431; " +
+                  "dramatically decreases compilation time on multi-core " +
+                  "hosts, but may fail compilation. Then re-run it. So far, " +
+                  "the author has reproduced this only on OSX.",
+        ),
     },
     implementation = _zig_repository_impl,
 )
 
-def _target_structs(glibc_version):
+def _target_structs():
     ret = []
     for zigcpu, gocpu in (("x86_64", "amd64"), ("aarch64", "arm64")):
         ret.append(_target_darwin(gocpu, zigcpu))
-        ret.append(_target_linux_gnu(gocpu, zigcpu, glibc_version))
         ret.append(_target_linux_musl(gocpu, zigcpu))
+        for glibc in [""] + _GLIBCS:
+            ret.append(_target_linux_gnu(gocpu, zigcpu, glibc))
     return ret
 
 def filegroup(name, **kwargs):
     native.filegroup(name = name, **kwargs)
     return ":" + name
 
-def zig_build_macro(absolute_path, zig_include_root, glibc_version):
+def zig_build_macro(absolute_path, zig_include_root):
     filegroup(name = "empty")
     native.exports_files(["zig"], visibility = ["//visibility:public"])
     filegroup(name = "lib/std", srcs = native.glob(["lib/std/**"]))
 
     lazy_filegroups = {}
 
-    for target_config in _target_structs(glibc_version):
+    for target_config in _target_structs():
         gotarget = target_config.gotarget
         zigtarget = target_config.zigtarget
         native.platform(
@@ -304,7 +306,6 @@ def zig_build_macro(absolute_path, zig_include_root, glibc_version):
         zig_cc_toolchain_config(
             name = zigtarget + "_cc_toolchain_config",
             target = zigtarget,
-            target_suffix = getattr(target_config, "target_suffix", ""),
             tool_paths = absolute_tool_paths,
             cxx_builtin_include_directories = cxx_builtin_include_directories,
             copts = copts,
