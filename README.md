@@ -68,9 +68,9 @@ bazel-bin/test/gognu_/gognu: Mach-O 64-bit x86_64 executable, flags:<NOUNDEFS|DY
 ## Transient docker environment
 
 ```
-$ docker run -ti --rm -v $(pwd):/x -w /x debian:buster-slim
-# apt update && apt install curl -y && curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.9.0/bazelisk-linux-amd64 > /usr/local/bin/bazel && chmod +x /usr/local/bin/bazel
-# export CC=/usr/bin/false
+$ docker run -e CC=/usr/bin/false -ti --rm -v $(pwd):/x -w /x debian:buster-slim
+# apt update && apt install wget git -y
+# . .envrc
 ```
 
 And run the `bazel build` commands above. Take a look at `.build.yml` and see
