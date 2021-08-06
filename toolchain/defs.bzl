@@ -175,7 +175,7 @@ ZIG_TOOL_PATH = "tools/{zig_tool}"
 ZIG_TOOL_WRAPPER = """#!/bin/bash
 set -e
 
-if [[ -z "$TMPDIR" ]]; then
+if [[ -n "$TMPDIR" ]]; then
   _cache_prefix=$TMPDIR
 else
   _cache_prefix="$HOME/.cache"
