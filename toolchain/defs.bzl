@@ -110,7 +110,7 @@ def _target_linux_gnu(gocpu, zigcpu, glibc_version = ""):
             "libc/include/{}-linux-any".format(zigcpu),
         ],
         toplevel_include = ["glibc-hacks"] if fcntl_hack else [],
-        compiler_extra_includes = ["glibchack-fcntl.h"] if fcntl_hack else [],
+        compiler_extra_includes = ["glibc-hacks/glibchack-fcntl.h"] if fcntl_hack else [],
         linker_version_scripts = ["glibc-hacks/fcntl.map"] if fcntl_hack else [],
         linkopts = ["-lc++", "-lc++abi"],
         copts = DEFAULT_COPTS,
@@ -322,7 +322,7 @@ def zig_build_macro(absolute_path, zig_include_root):
         for s in getattr(target_config, "linker_version_scripts", []):
             linkopts = linkopts + ["-Wl,--version-script,%s/%s" % (absolute_path, s)]
         for incl in getattr(target_config, "compiler_extra_includes", []):
-            copts = copts + ["-include", incl]
+            copts = copts + ["-include", absolute_path + "/" + incl]
 
         zig_cc_toolchain_config(
             name = zigtarget + "_cc_toolchain_config",
