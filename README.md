@@ -2,7 +2,8 @@
 
 # Bazel zig cc toolchain
 
-This is an early stage zig-cc toolchain that can cross-compile cgo programs to these os/archs:
+This is an early stage zig-cc toolchain that can cross-compile C/C++ programs
+(including cgo) to these os/archs:
 
 - amd64-linux-gnu.2.19
 - amd64-linux-musl
@@ -10,6 +11,8 @@ This is an early stage zig-cc toolchain that can cross-compile cgo programs to t
 - arm64-linux-musl
 - amd64-macos
 - arm64-macos
+
+... and more.
 
 # Usage
 
