@@ -1,6 +1,6 @@
 [![builds.sr.ht status](https://builds.sr.ht/~motiejus/bazel-zig-cc.svg)](https://builds.sr.ht/~motiejus/bazel-zig-cc)
 
-# Bazel zig cc toolchain for Go
+# Bazel zig cc toolchain
 
 This is an early stage zig-cc toolchain that can cross-compile cgo programs to these os/archs:
 
