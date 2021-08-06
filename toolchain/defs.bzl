@@ -27,7 +27,13 @@ GLIBC_2.2.5 {
    fcntl;
 };
 """
-_fcntl_h = """__asm__(".symver fcntl64, fcntl@GLIBC_2.2.5");\n"""
+_fcntl_h = """
+#ifdef __ASSEMBLER__
+.symver fcntl64, fcntl@GLIBC_2.2.5
+#else
+__asm__(".symver fcntl64, fcntl@GLIBC_2.2.5");
+#endif
+"""
 
 # Zig supports even older glibcs than defined below, but we have tested only
 # down to 2.17.
