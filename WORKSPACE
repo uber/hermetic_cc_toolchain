@@ -53,4 +53,4 @@ load(
     zig_register_toolchains = "register_toolchains",
 )
 
-zig_register_toolchains()
+zig_register_toolchains(speed_first_safety_later="auto")
