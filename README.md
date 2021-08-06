@@ -78,7 +78,7 @@ how CI does it.
 
 # Known Issues
 
-- [ziglang/zig #9485 glibc 2.27 or older: fcntl64 not found, but zig's glibc headers refer it] (https://github.com/ziglang/zig/issues/9485)
+- [ziglang/zig #9485 glibc 2.27 or older: fcntl64 not found, but zig's glibc headers refer it](https://github.com/ziglang/zig/issues/9485)
 - [ziglang/zig #9431 FileNotFound when compiling macos](https://github.com/ziglang/zig/issues/9431)
 - [rules/go #2894 Per-arch_target linker flags](https://github.com/bazelbuild/rules_go/issues/2894)
 
