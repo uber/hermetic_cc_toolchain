@@ -13,7 +13,25 @@ This is an early stage zig-cc toolchain that can cross-compile cgo programs to t
 
 # Usage
 
-Add this to your `WORKSPACE`: TBD.
+Add this to your `WORKSPACE`:
+
+```
+BAZEL_ZIG_CC_VERSION = "0.2"
+
+http_archive(
+    name = "bazel-zig-cc",
+    sha256 = "0af0493e2d4822a94803e8a83703d25e0f9d8fe6ec4daf3b0ed3ca4cd6076650",
+    strip_prefix = "bazel-zig-cc-{}".format(BAZEL_ZIG_CC_VERSION),
+    urls = ["https://git.sr.ht/~motiejus/bazel-zig-cc/archive/{}.tar.gz".format(BAZEL_ZIG_CC_VERSION)],
+)
+
+load("@bazel-zig-cc//toolchain:defs.bzl", zig_register_toolchains = "register_toolchains")
+
+zig_register_toolchains()
+```
+
+This will register the "default" toolchains. Look into `register_toolchains` on
+which parameters it accepts.
 
 # Testing
 
