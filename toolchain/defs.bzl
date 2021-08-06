@@ -57,8 +57,9 @@ _GLIBCS = [
 ]
 
 DEFAULT_TOOLCHAINS = [
-    "linux_arm64_gnu.2.28",  # Cannot apply fcntl64 hack for older versions.
-    "linux_amd64_gnu.2.19",  # Debian Jessie
+    "linux_arm64_gnu.2.19", # Debian Jessie arm64
+    #"linux_amd64_gnu.2.19", # there is a problem with fcntl on arm64, this is WIP
+    "linux_amd64_gnu.2.28", # there is a problem with fcntl on arm64, this is WIP
     "darwin_amd64",
     "darwin_arm64",
 ]
@@ -92,18 +93,15 @@ def _target_linux_gnu(gocpu, zigcpu, glibc_version = ""):
     # fcntl_hack is only required for glibc 2.27 or less. We assume that
     # glibc_version == "" (autodetect) is running a recent glibc version, thus
     # adding this hack only when glibc is explicitly 2.27 or lower.
-    # __asm__ directive does not work on aarch64 (for some reasons unknown to
-    # me), so the hack applies to x86_64 only.
     fcntl_hack = False
-    if zigcpu == "x86_64":
-        if glibc_version == "":
-            # zig doesn't reliably detect the glibc version, so
-            # often falls back to 2.17; the hack should be included.
-            # https://github.com/ziglang/zig/issues/6469
-            fcntl_hack = True
-        else:
-            # we know the version; hack is required for 2.27 or less.
-            fcntl_hack = glibc_version < "2.28"
+    if glibc_version == "":
+        # zig doesn't reliably detect the glibc version, so
+        # often falls back to 2.17; the hack should be included.
+        # https://github.com/ziglang/zig/issues/6469
+        fcntl_hack = True
+    else:
+        # hack is required for 2.27 or less.
+        fcntl_hack = glibc_version < "2.28"
 
     return struct(
         gotarget = "linux_{}_{}".format(gocpu, glibc_suffix),
