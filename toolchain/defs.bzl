@@ -57,9 +57,8 @@ _GLIBCS = [
 ]
 
 DEFAULT_TOOLCHAINS = [
-    "linux_arm64_gnu.2.19", # Debian Jessie arm64
-    #"linux_amd64_gnu.2.19", # there is a problem with fcntl on arm64, this is WIP
-    "linux_amd64_gnu.2.28", # there is a problem with fcntl on arm64, this is WIP
+    "linux_arm64_gnu.2.28", # There is a problem with fcntl on arm64, this is WIP
+    "linux_amd64_gnu.2.19", # Debian Jessie amd64
     "darwin_amd64",
     "darwin_arm64",
 ]
