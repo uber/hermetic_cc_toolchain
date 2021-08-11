@@ -9,6 +9,9 @@ environment:
 tasks:
   - setup: |
       sudo apt-get purge gcc -y && sudo apt-get autoremove -y
+  - test_list_toolchains: |
+      cd bazel-zig-cc; . .envrc; echo "Available toolchains:"
+      bazel query @zig_sdk//... | sed -En '/.*_toolchain$/ s/.*:(.*)_toolchain$/\1/p'
   - test_default: |
       cd bazel-zig-cc; . .envrc; ./build-and-file \
           //test:hello | \

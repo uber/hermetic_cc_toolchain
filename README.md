@@ -2,17 +2,12 @@
 
 # Bazel zig cc toolchain
 
-This is an early stage zig-cc toolchain that can cross-compile C/C++ programs
-(including cgo) to these os/archs:
-
-- amd64-linux-gnu.2.19
-- amd64-linux-musl
-- arm64-linux-gnu.2.28
-- arm64-linux-musl
-- amd64-macos
-- arm64-macos
-
-... and more.
+This is a C/C++ toolchain that can (cross-)compile C/C++ programs. It contains
+clang-12, musl, glibc (versions 2-2.33, selectable), all in a ~40MB package.
+Read
+[here](https://andrewkelley.me/post/zig-cc-powerful-drop-in-replacement-gcc-clang.html)
+about zig-cc; the rest of the README will present how to use this toolchain
+from Bazel.
 
 # Usage
 
@@ -30,11 +25,34 @@ http_archive(
 
 load("@bazel-zig-cc//toolchain:defs.bzl", zig_register_toolchains = "register_toolchains")
 
-zig_register_toolchains()
+zig_register_toolchains(["x86_64-linux-gnu.2.28", "x86_64-macos-gnu"])
 ```
 
-This will register the "default" toolchains. Look into `register_toolchains` on
-which parameters it accepts.
+The snippet above will download the zig toolchain and register it for the
+following platforms:
+
+- `x86_64-linux-gnu.2.28` for `["@platforms//os:linux", "@platforms//cpu:x86_64"]`.
+- `x86_64-macos-gnu` for `["@platforms//os:macos", "@platforms//cpu:x86_64"]`.
+
+Note that both Go and Bazel naming schemes are accepted. For convenience with
+Go, the following Go-style toolchain aliases are created:
+
+|Bazel (zig) name |Go name|
+--- | ---
+|`x86_64`|`amd64`|
+|`aarch64`|`arm64`|
+|`macos`|`darwin`|
+
+For example, the toolchain `linux_amd64_gnu is aliased to
+`x86_64-linux-gnu.2.28`. .2.28`.
+
+To find out which toolchains can be registered or used, run this:
+
+```
+$ bazel query @zig_sdk//... | sed -En '/.*_toolchain$/ s/.*:(.*)_toolchain$/\1/p'
+```
+
+This is still work in progress; please read [#Known Issues] before using.
 
 # Testing
 
@@ -81,11 +99,46 @@ how CI does it.
 
 # Known Issues
 
-- [ziglang/zig #9485 glibc 2.27 or older: fcntl64 not found, but zig's glibc headers refer it](https://github.com/ziglang/zig/issues/9485)
-- [ziglang/zig #9431 FileNotFound when compiling macos](https://github.com/ziglang/zig/issues/9431)
-- [rules/go #2894 Per-arch_target linker flags](https://github.com/bazelbuild/rules_go/issues/2894)
+## Parallel `zig c++` invocations may fail
 
-Closed issues:
+Task: [ziglang/zig #9431 FileNotFound when compiling macos](https://github.com/ziglang/zig/issues/9431)
+
+Background: there is a race when calling `zig c++`, which Bazel does a lot.
+This may fail compilation. Yours truly only reproduced it on macos with a cold
+cache. Based on that, a workaround in the toolchain exists, named
+`speed_first_safety_later`. The possible values are `auto` (default), `yes`,
+`no`.
+
+## glibc 2.27 or older
+
+Task: [ziglang/zig #9485 glibc 2.27 or older: fcntl64 not found, but zig's glibc headers refer it](https://github.com/ziglang/zig/issues/9485)
+
+Background: when glibc 2.27 or older is selected, it may miss `fcntl64`. A
+workaround is applied for `x86_64`, but not for aarch64. The same workaround
+may apply to aarch64, but the author didn't find a need to test or ensure it
+(yet).
+
+## cgo for darwin (macos)
+
+Task: [rules/go #2894 Per-arch_target linker flags](https://github.com/bazelbuild/rules_go/issues/2894)
+
+Background: this toolchain needs an extra step to be used for Darwin (macos)
+targets. Specifically, one needs to add `gc_linkopts` for every `go_binary`:
+
+```
+go_binary(
+    <...>
+    gc_linkopts = select({
+        "@platforms//os:macos": ["-s", "-w", "-buildmode=pie"],
+        "//conditions:default": [],
+    }),
+)
+```
+
+Until the linked task is resolved, this needs to be done for every `go_binary`
+that is meant to be compiled to Darwin.
+
+# Closed issues
 
 - [ziglang/zig #9139 zig c++ hanging when compiling in parallel](https://github.com/ziglang/zig/issues/9139) (CLOSED)
 - [golang/go #46644 cmd/link: with CC=zig: SIGSERV when cross-compiling to darwin/amd64](https://github.com/golang/go/issues/46644) (CLOSED)

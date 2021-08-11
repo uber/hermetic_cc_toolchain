@@ -56,13 +56,6 @@ _GLIBCS = [
     "2.33",
 ]
 
-DEFAULT_TOOLCHAINS = [
-    "linux_arm64_gnu.2.28", # There is a problem with fcntl on arm64, this is WIP
-    "linux_amd64_gnu.2.19", # Debian Jessie amd64
-    "darwin_amd64",
-    "darwin_arm64",
-]
-
 def _target_darwin(gocpu, zigcpu):
     return struct(
         gotarget = "darwin_{}".format(gocpu),
@@ -146,8 +139,16 @@ def _target_linux_musl(gocpu, zigcpu):
     )
 
 def register_toolchains(
-        register = DEFAULT_TOOLCHAINS,
+        register = [],
         speed_first_safety_later = "auto"):
+    """
+        Download zig toolchain and register some.
+        @param register registers the given toolchains to the system using
+        native.register_toolchains(). See README for possible choices.
+        @param speed_first_safety_later is a workaround for
+        https://github.com/ziglang/zig/issues/9431
+    """
+
     zig_repository(
         name = "zig_sdk",
         # Pre-release:
@@ -311,10 +312,6 @@ def zig_build_macro(absolute_path, zig_include_root):
     for target_config in _target_structs():
         gotarget = target_config.gotarget
         zigtarget = target_config.zigtarget
-        native.platform(
-            name = gotarget,
-            constraint_values = target_config.constraint_values,
-        )
 
         cxx_builtin_include_directories = []
         for d in DEFAULT_INCLUDE_DIRECTORIES + target_config.includes:
@@ -341,7 +338,7 @@ def zig_build_macro(absolute_path, zig_include_root):
             copts = copts + ["-include", absolute_path + "/" + incl]
 
         zig_cc_toolchain_config(
-            name = zigtarget + "_cc_toolchain_config",
+            name = zigtarget + "_toolchain_cc_config",
             target = zigtarget,
             tool_paths = absolute_tool_paths,
             cxx_builtin_include_directories = cxx_builtin_include_directories,
@@ -356,9 +353,9 @@ def zig_build_macro(absolute_path, zig_include_root):
         )
 
         native.cc_toolchain(
-            name = zigtarget + "_cc_toolchain",
+            name = zigtarget + "_toolchain_cc",
             toolchain_identifier = zigtarget + "-toolchain",
-            toolchain_config = ":%s_cc_toolchain_config" % zigtarget,
+            toolchain_config = ":%s_toolchain_cc_config" % zigtarget,
             all_files = ":zig",
             ar_files = ":zig",
             compiler_files = ":zig",
@@ -375,7 +372,7 @@ def zig_build_macro(absolute_path, zig_include_root):
             name = gotarget + "_toolchain",
             exec_compatible_with = None,
             target_compatible_with = target_config.constraint_values,
-            toolchain = ":%s_cc_toolchain" % zigtarget,
+            toolchain = ":%s_toolchain_cc" % zigtarget,
             toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
         )
 
@@ -384,6 +381,6 @@ def zig_build_macro(absolute_path, zig_include_root):
             name = zigtarget + "_toolchain",
             exec_compatible_with = None,
             target_compatible_with = target_config.constraint_values,
-            toolchain = ":%s_cc_toolchain" % zigtarget,
+            toolchain = ":%s_toolchain_cc" % zigtarget,
             toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
         )
