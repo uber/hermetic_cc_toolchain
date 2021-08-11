@@ -44,58 +44,14 @@ Go, the following Go-style toolchain aliases are created:
 |`macos`|`darwin`|
 
 For example, the toolchain `linux_amd64_gnu is aliased to
-`x86_64-linux-gnu.2.28`. .2.28`.
-
-To find out which toolchains can be registered or used, run this:
+`x86_64-linux-gnu.2.28`. To find out which toolchains can be registered or
+used, run:
 
 ```
 $ bazel query @zig_sdk//... | sed -En '/.*_toolchain$/ s/.*:(.*)_toolchain$/\1/p'
 ```
 
-This is still work in progress; please read [#Known Issues] before using.
-
-# Testing
-
-## linux cgo + glibc 2.19
-
-```
-$ bazel build --platforms @io_bazel_rules_go//go/toolchain:linux_amd64_cgo //test:hello
-$ file bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/hello_/hello
-bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/hello_/hello: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 2.0.0, Go BuildID=redacted, with debug_info, not stripped
-```
-
-## linux cgo + musl
-
-```
-$ bazel build \
-    --platforms @io_bazel_rules_go//go/toolchain:linux_amd64_cgo \
-    --extra_toolchains @zig_sdk//:x86_64-linux-musl_toolchain //test:hello
-...
-$ file ../bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/hello_/hello
-../bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/hello_/hello: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, Go BuildID=redacted, with debug_info, not stripped
-$ ../bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/hello_/hello
-hello, world
-```
-
-## macos cgo
-
-```
-$ bazel build --platforms @io_bazel_rules_go//go/toolchain:darwin_amd64_cgo //test:gognu
-...
-$ file bazel-bin/test/gognu_/gognu
-bazel-bin/test/gognu_/gognu: Mach-O 64-bit x86_64 executable, flags:<NOUNDEFS|DYLDLINK|TWOLEVEL|PIE>
-```
-
-## Transient docker environment
-
-```
-$ docker run -e CC=/usr/bin/false -ti --rm -v $(pwd):/x -w /x debian:buster-slim
-# apt update && apt install wget git -y
-# . .envrc
-```
-
-And run the `bazel build` commands above. Take a look at `.build.yml` and see
-how CI does it.
+Read [#Known Issues](##known-issues) before using.
 
 # Known Issues
 
@@ -145,3 +101,46 @@ that is meant to be compiled to Darwin.
 - [ziglang/zig #9050 golang linker segfault](https://github.com/ziglang/zig/issues/9050) (CLOSED)
 - [ziglang/zig #7917 [meta] better c/c++ toolchain compatibility](https://github.com/ziglang/zig/issues/7917) (CLOSED)
 - [ziglang/zig #7915 ar-compatible command for zig cc](https://github.com/ziglang/zig/issues/7915) (CLOSED)
+
+# Testing
+
+## linux cgo + glibc 2.19
+
+```
+$ bazel build --platforms @io_bazel_rules_go//go/toolchain:linux_amd64_cgo //test:hello
+$ file bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/hello_/hello
+bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/hello_/hello: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 2.0.0, Go BuildID=redacted, with debug_info, not stripped
+```
+
+## linux cgo + musl
+
+```
+$ bazel build \
+    --platforms @io_bazel_rules_go//go/toolchain:linux_amd64_cgo \
+    --extra_toolchains @zig_sdk//:x86_64-linux-musl_toolchain //test:hello
+...
+$ file ../bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/hello_/hello
+../bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/hello_/hello: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, Go BuildID=redacted, with debug_info, not stripped
+$ ../bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/hello_/hello
+hello, world
+```
+
+## macos cgo
+
+```
+$ bazel build --platforms @io_bazel_rules_go//go/toolchain:darwin_amd64_cgo //test:gognu
+...
+$ file bazel-bin/test/gognu_/gognu
+bazel-bin/test/gognu_/gognu: Mach-O 64-bit x86_64 executable, flags:<NOUNDEFS|DYLDLINK|TWOLEVEL|PIE>
+```
+
+## Transient docker environment
+
+```
+$ docker run -e CC=/usr/bin/false -ti --rm -v $(pwd):/x -w /x debian:buster-slim
+# apt update && apt install wget git -y
+# . .envrc
+```
+
+And run the `bazel build` commands above. Take a look at `.build.yml` and see
+how CI does it.
