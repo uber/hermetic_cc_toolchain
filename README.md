@@ -61,7 +61,9 @@ Read [#Known Issues](#known-issues) before using.
 
 ## Parallel `zig c++` invocations may fail
 
-Task: [ziglang/zig #9431 FileNotFound when compiling macos](https://github.com/ziglang/zig/issues/9431)
+**Severity: High**
+
+**Task:** [ziglang/zig #9431 FileNotFound when compiling macos](https://github.com/ziglang/zig/issues/9431)
 
 Background: there is a race when calling `zig c++`, which Bazel does a lot.
 This may fail compilation. Yours truly only reproduced it on macos with a cold
@@ -71,6 +73,8 @@ cache. Based on that, a workaround in the toolchain exists, named
 
 ## glibc 2.27 or older
 
+**Severity: Low**
+
 Task: [ziglang/zig #9485 glibc 2.27 or older: fcntl64 not found, but zig's glibc headers refer it](https://github.com/ziglang/zig/issues/9485)
 
 Background: when glibc 2.27 or older is selected, it may miss `fcntl64`. A
@@ -79,7 +83,9 @@ may apply to aarch64, but the author didn't find a need to test it (yet).
 
 ## cgo for darwin (macos)
 
-Task: [rules/go #2894 Per-arch_target linker flags](https://github.com/bazelbuild/rules_go/issues/2894)
+**Severity: Low**
+
+**Task:** [rules/go #2894 Per-arch_target linker flags](https://github.com/bazelbuild/rules_go/issues/2894)
 
 Background: until there is a better "global" way (i.e. the task is solved), all
 `go_binary` targets destined for Darwin (macos) need an extra `gc_linkopts`
@@ -97,7 +103,9 @@ go_binary(
 
 ## incorrect glibc version autodetection
 
-Task: [ziglang/zig zig detects wrong libc version #6469](https://github.com/ziglang/zig/issues/6469)
+**Severity: Low**
+
+**Task:** [ziglang/zig zig detects wrong libc version #6469](https://github.com/ziglang/zig/issues/6469)
 
 Background: zig detects an incorrect glibc version when not specified.
 Therefore, until the task is resolved, registering a GNU toolchain without a
