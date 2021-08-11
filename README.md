@@ -164,3 +164,9 @@ $ docker run -e CC=/usr/bin/false -ti --rm -v $(pwd):/x -w /x debian:buster-slim
 
 And run the `bazel build` commands above. Take a look at `.build.yml` and see
 how CI does it.
+
+# Credits
+
+Many thanks to Adam Bouhenguel and his
+[bazel-zig-cc](https://github.com/ajbouh/bazel-zig-cc/), the parent of this
+repository.
