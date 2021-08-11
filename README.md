@@ -92,6 +92,17 @@ go_binary(
 )
 ```
 
+## incorrect glibc version autodetection
+
+Task: [ziglang/zig zig detects wrong libc version #6469](https://github.com/ziglang/zig/issues/6469)
+
+Background: zig detects an incorrect glibc version when not specified.
+Therefore, until the task is resolved, registering a GNU toolchain without a
+version suffix (e.g. `linux_amd64_gnu`) is not recommended. We recommend
+specifying the suffix to the oldest system that is mean to run the compiled
+binaries. This is safe, because glibc is backwards-compatible. Alternatively,
+use musl.
+
 # Closed issues
 
 - [ziglang/zig #9139 zig c++ hanging when compiling in parallel](https://github.com/ziglang/zig/issues/9139) (CLOSED)
