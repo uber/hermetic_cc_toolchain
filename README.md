@@ -34,6 +34,7 @@ following platforms:
 - `x86_64-linux-gnu.2.28` for `["@platforms//os:linux", "@platforms//cpu:x86_64"]`.
 - `x86_64-macos-gnu` for `["@platforms//os:macos", "@platforms//cpu:x86_64"]`.
 
+
 Note that both Go and Bazel naming schemes are accepted. For convenience with
 Go, the following Go-style toolchain aliases are created:
 
@@ -43,7 +44,7 @@ Go, the following Go-style toolchain aliases are created:
 |`aarch64`|`arm64`|
 |`macos`|`darwin`|
 
-For example, the toolchain `linux_amd64_gnu is aliased to
+For example, the toolchain `linux_amd64_gnu` is aliased to
 `x86_64-linux-gnu.2.28`. To find out which toolchains can be registered or
 used, run:
 
@@ -51,7 +52,7 @@ used, run:
 $ bazel query @zig_sdk//... | sed -En '/.*_toolchain$/ s/.*:(.*)_toolchain$/\1/p'
 ```
 
-Read [#Known Issues](##known-issues) before using.
+Read [#Known Issues](#known-issues) before using.
 
 # Known Issues
 
@@ -71,15 +72,15 @@ Task: [ziglang/zig #9485 glibc 2.27 or older: fcntl64 not found, but zig's glibc
 
 Background: when glibc 2.27 or older is selected, it may miss `fcntl64`. A
 workaround is applied for `x86_64`, but not for aarch64. The same workaround
-may apply to aarch64, but the author didn't find a need to test or ensure it
-(yet).
+may apply to aarch64, but the author didn't find a need to test it (yet).
 
 ## cgo for darwin (macos)
 
 Task: [rules/go #2894 Per-arch_target linker flags](https://github.com/bazelbuild/rules_go/issues/2894)
 
-Background: this toolchain needs an extra step to be used for Darwin (macos)
-targets. Specifically, one needs to add `gc_linkopts` for every `go_binary`:
+Background: until there is a better "global" way (i.e. the task is solved), all
+`go_binary` targets destined for Darwin (macos) need an extra `gc_linkopts`
+flag:
 
 ```
 go_binary(
@@ -90,9 +91,6 @@ go_binary(
     }),
 )
 ```
-
-Until the linked task is resolved, this needs to be done for every `go_binary`
-that is meant to be compiled to Darwin.
 
 # Closed issues
 
