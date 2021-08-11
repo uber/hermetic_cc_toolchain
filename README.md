@@ -25,7 +25,10 @@ http_archive(
 
 load("@bazel-zig-cc//toolchain:defs.bzl", zig_register_toolchains = "register_toolchains")
 
-zig_register_toolchains(["x86_64-linux-gnu.2.28", "x86_64-macos-gnu"])
+zig_register_toolchains(register = [
+    "x86_64-linux-gnu.2.28",
+    "x86_64-macos-gnu",
+])
 ```
 
 The snippet above will download the zig toolchain and register it for the
