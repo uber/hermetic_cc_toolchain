@@ -71,6 +71,21 @@ cache. Based on that, a workaround in the toolchain exists, named
 `speed_first_safety_later`. The possible values are `auto` (default), `yes`,
 `no`.
 
+## relocation error with glibc < 2.32
+
+**Severity: High**
+
+**Task:** [ziglang/zig relocation error: symbol pthread_sigmask version GLIBC_2.2.5 not defined in file libc.so.6 with link time reference #7667](https://github.com/ziglang/zig/issues/7667)
+
+Background: one of our internal shared libraries (which we must build with glibc 2.19) does not load on an older system:
+
+```
+id: relocation error: /lib/x86_64-linux-gnu/libnss_uber.so.2: symbol pthread_sigmask, version GLIBC_2.2.5 not defined in file libc.so.6 with link time reference
+```
+
+Severity is high, because there is no known workaround: the shared library,
+when built with this toolchain, will not work on our target system.
+
 ## glibc 2.27 or older
 
 **Severity: Low**
