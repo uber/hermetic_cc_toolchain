@@ -86,7 +86,7 @@ id: relocation error: /lib/x86_64-linux-gnu/libnss_uber.so.2: symbol pthread_sig
 Severity is high, because there is no known workaround: the shared library,
 when built with this toolchain, will not work on our target system.
 
-## glibc 2.27 or older
+## fcntl64 linking error on glibc < 2.28
 
 **Severity: Low**
 
