@@ -2,6 +2,7 @@
 *.sw[op]
 
 /bin/bazel
+/bin/bazelisk-*
 
 /bazel-bazel-zig-cc
 /bazel-bin
