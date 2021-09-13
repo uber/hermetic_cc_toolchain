@@ -152,18 +152,22 @@ def register_toolchains(
     zig_repository(
         name = "zig_sdk",
         # Pre-release:
-        version = "0.9.0-dev.727+aad459836",
-        url_format = "https://ziglang.org/builds/zig-{host_platform}-{version}.tar.xz",
+        # version = "0.9.0-dev.727+aad459836",
+        # url_format = "https://ziglang.org/builds/zig-{host_platform}-{version}.tar.xz",
         # Release:
-        # version = "0.8.0",
-        # url_format = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.tar.xz",
+        version = "0.8.1",
+        url_format = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.tar.xz",
         host_platform_sha256 = {
-            "linux-x86_64": "1a0f45e77e2323d4afb3405868c0d96a88170a922eb60fc06f233ac8395fbfd5",
-            "macos-x86_64": "cdc76afd3e361c8e217e4d56f2027ec6482d7f612462c27794149b7ad31b9244",
+            "linux-aarch64": "2166dc9f2d8df387e8b4122883bb979d739281e1ff3f3d5483fec3a23b957510",
+            "linux-x86_64": "6c032fc61b5d77a3f3cf781730fa549f8f059ffdb3b3f6ad1c2994d2b2d87983",
+            "macos-aarch64": "5351297e3b8408213514b29c0a938002c5cf9f97eee28c2f32920e1227fd8423",
+            "macos-x86_64": "16b0e1defe4c1807f2e128f72863124bffdd906cefb21043c34b673bf85cd57f",
         },
         host_platform_include_root = {
-            "macos-x86_64": "lib/zig/",
+            "linux-aarch64": "lib/",
             "linux-x86_64": "lib/",
+            "macos-aarch64": "lib/zig/",
+            "macos-x86_64": "lib/zig/",
         },
         speed_first_safety_later = speed_first_safety_later,
     )
@@ -216,10 +220,15 @@ _ZIG_TOOLS = [
 ]
 
 def _zig_repository_impl(repository_ctx):
+    res = repository_ctx.execute(["uname", "-m"])
+    if res.return_code != 0:
+        fail("failed to run uname -m")
+    uname = res.stdout.strip()
+
     if repository_ctx.os.name.lower().startswith("mac os"):
-        host_platform = "macos-x86_64"
+        host_platform = "macos-{}".format(uname)
     else:
-        host_platform = "linux-x86_64"
+        host_platform = "linux-{}".format(uname)
 
     zig_include_root = repository_ctx.attr.host_platform_include_root[host_platform]
     zig_sha256 = repository_ctx.attr.host_platform_sha256[host_platform]
