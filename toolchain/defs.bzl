@@ -152,16 +152,16 @@ def register_toolchains(
     zig_repository(
         name = "zig_sdk",
         # Pre-release:
-        # version = "0.9.0-dev.727+aad459836",
-        # url_format = "https://ziglang.org/builds/zig-{host_platform}-{version}.tar.xz",
+        version = "0.9.0-dev.953+211856693",
+        url_format = "https://ziglang.org/builds/zig-{host_platform}-{version}.tar.xz",
         # Release:
-        version = "0.8.1",
-        url_format = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.tar.xz",
+        #version = "0.8.1",
+        #url_format = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.tar.xz",
         host_platform_sha256 = {
-            "linux-aarch64": "2166dc9f2d8df387e8b4122883bb979d739281e1ff3f3d5483fec3a23b957510",
-            "linux-x86_64": "6c032fc61b5d77a3f3cf781730fa549f8f059ffdb3b3f6ad1c2994d2b2d87983",
-            "macos-aarch64": "5351297e3b8408213514b29c0a938002c5cf9f97eee28c2f32920e1227fd8423",
-            "macos-x86_64": "16b0e1defe4c1807f2e128f72863124bffdd906cefb21043c34b673bf85cd57f",
+            "linux-x86_64": "acc6aff7efcb6e96fc489ade1cf7321eba21fdac8ac15ac12bfe4edb3587f3eb",
+            "linux-aarch64": "ece15088f7588e2be3a2da698bc00a4327225e3ed94c52710a867a232880bdfd",
+            "macos-x86_64": "87afe1c59490ab15294e0689a5265f614ba856c9efa568731383783d745cdce4",
+            "macos-aarch64": "ad67c09fb89f417b2cb4691266d71f50c8a0e0eaaa423b08b074b15d307b788a",
         },
         host_platform_include_root = {
             "linux-aarch64": "lib/",
