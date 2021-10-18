@@ -11,7 +11,7 @@ tasks:
       sudo apt-get purge gcc -y && sudo apt-get autoremove -y
   - lint:
       cd bazel-zig-cc
-      shellcheck $(awk '/#!\/bin\/(ba)?sh/&&FNR==1{print FILENAME}' $(git ls-files)))
+      shellcheck -x $(awk '/#!\/bin\/(ba)?sh/&&FNR==1{print FILENAME}' $(git ls-files))
   - test_list_toolchains: |
       cd bazel-zig-cc; . .envrc; echo "Available toolchains:"
       bazel query @zig_sdk//... | sed -En '/.*_toolchain$/ s/.*:(.*)_toolchain$/\1/p'

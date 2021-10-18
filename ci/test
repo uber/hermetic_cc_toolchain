@@ -5,7 +5,8 @@ cd "$(dirname "$0")/.."
 
 _build_and_file() {
     bazel build --color=yes --curses=yes "$@"
-    local execpath=$(bazel aquery "$@" 2>/dev/null | \
+    local execpath
+    execpath=$(bazel aquery "$@" 2>/dev/null | \
         awk "/action 'GoLink/{f=1};/Outputs: /&&f{print;exit}" | \
         awk -F'\\[|\\]' '{print $2}')
     file "$execpath" | tee /dev/stderr
