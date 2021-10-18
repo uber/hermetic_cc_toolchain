@@ -154,7 +154,8 @@ def register_toolchains(
         # Pre-release:
         #version = "0.9.0-dev.953+211856693", # fails on darwin-x86_64
         version = "0.9.0-dev.727+aad459836",
-        url_format = "https://ziglang.org/builds/zig-{host_platform}-{version}.tar.xz",
+        url_format = "https://dl.jakstys.lt./zig/zig-{host_platform}-{version}.tar.xz",
+        #url_format = "https://ziglang.org/builds/zig-{host_platform}-{version}.tar.xz",
         # Release:
         #version = "0.8.1",
         #url_format = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.tar.xz",
