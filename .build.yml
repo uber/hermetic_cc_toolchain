@@ -14,8 +14,8 @@ triggers:
 tasks:
   - setup: |
       sudo apt-get purge gcc -y && sudo apt-get autoremove -y
-  - lint:
-      cd bazel-zig-cc
+  - lint: |
+      cd bazel-zig-cc;
       shellcheck -x $(awk '/#!\/bin\/(ba)?sh/&&FNR==1{print FILENAME}' $(git ls-files))
   - test_list_toolchains: |
       cd bazel-zig-cc; . .envrc; echo "Available toolchains:"
