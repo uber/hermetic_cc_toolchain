@@ -1,0 +1,22 @@
+#!/bin/bash
+set -euo pipefail
+
+_err(){ >&2 echo "ERROR: $*"; exit 1; }
+
+git status --porcelain | grep -q "" &&
+    _err "working tree is dirty, commit your changes first."
+
+[[ "$1" =~ ^v([0-9]+)\.([0-9]+)(\.([0-9]+))?$ ]] || \
+    _err "arg1 accepts the following formats: v1.0 v1.0.0"
+
+git tag | grep -q "^$1$" &&
+    _err "tag $1 already exists"
+
+last_tag=$(git tag | tail -1)
+
+{
+    echo bazel-zig-cc "$1"
+    echo
+    echo Changelog since "$last_tag":
+    git log --pretty=format:"- [%cn] %s" "$last_tag"..HEAD
+} | git tag -u motiejus@jakstys.lt -F - "$1"
