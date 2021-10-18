@@ -2,10 +2,15 @@ image: debian/testing
 packages:
   - direnv
   - file
+  - shellcheck
 sources:
   - https://git.sr.ht/~motiejus/bazel-zig-cc
 environment:
   CC: /usr/bin/false
+triggers:
+  - action: email
+    condition: failure
+    to: motiejus+srht@jakstys.lt
 tasks:
   - setup: |
       sudo apt-get purge gcc -y && sudo apt-get autoremove -y
