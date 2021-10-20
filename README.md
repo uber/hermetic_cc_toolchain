@@ -86,6 +86,15 @@ id: relocation error: /lib/x86_64-linux-gnu/libnss_uber.so.2: symbol pthread_sig
 Severity is high, because there is no known workaround: the shared library,
 when built with this toolchain, will not work on our target system.
 
+## newer zig fails darwin tests
+
+**Severity: Medium**
+
+Task: not yet triaged.
+
+If zig is upgraded in this repository to nightly, it can't build the Darwin
+executable. I did not yet have time to dig further.
+
 ## fcntl64 linking error on glibc < 2.28
 
 **Severity: Low**
@@ -131,11 +140,11 @@ use musl.
 
 # Closed issues
 
-- [ziglang/zig #9139 zig c++ hanging when compiling in parallel](https://github.com/ziglang/zig/issues/9139) (CLOSED)
-- [golang/go #46644 cmd/link: with CC=zig: SIGSERV when cross-compiling to darwin/amd64](https://github.com/golang/go/issues/46644) (CLOSED)
-- [ziglang/zig #9050 golang linker segfault](https://github.com/ziglang/zig/issues/9050) (CLOSED)
-- [ziglang/zig #7917 [meta] better c/c++ toolchain compatibility](https://github.com/ziglang/zig/issues/7917) (CLOSED)
-- [ziglang/zig #7915 ar-compatible command for zig cc](https://github.com/ziglang/zig/issues/7915) (CLOSED)
+- [ziglang/zig #9139 zig c++ hanging when compiling in parallel](https://github.com/ziglang/zig/issues/9139) (CLOSED, thanks andrewrk)
+- [golang/go #46644 cmd/link: with CC=zig: SIGSERV when cross-compiling to darwin/amd64](https://github.com/golang/go/issues/46644) (CLOSED, thanks kubkon)
+- [ziglang/zig #9050 golang linker segfault](https://github.com/ziglang/zig/issues/9050) (CLOSED, thanks kubkon)
+- [ziglang/zig #7917 [meta] better c/c++ toolchain compatibility](https://github.com/ziglang/zig/issues/7917) (CLOSED, thanks andrewrk)
+- [ziglang/zig #7915 ar-compatible command for zig cc](https://github.com/ziglang/zig/issues/7915) (CLOSED, thanks andrewrk)
 
 # Testing
 
