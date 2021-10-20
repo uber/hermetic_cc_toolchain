@@ -172,8 +172,8 @@ bazel-bin/test/gognu_/gognu: Mach-O 64-bit x86_64 executable, flags:<NOUNDEFS|DY
 ## Transient docker environment
 
 ```
-$ docker run -e CC=/usr/bin/false -ti --rm -v $(pwd):/x -w /x debian:buster-slim
-# apt update && apt install wget git -y
+$ docker run -e CC=/usr/bin/false -ti --rm -v $(pwd):/x -w /x debian:bullseye-slim
+# apt update && apt install direnv git -y
 # . .envrc
 ```
 
