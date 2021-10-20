@@ -88,15 +88,6 @@ when built with this toolchain, will not work on our target system.
 
 ## newer zig fails darwin tests
 
-**Severity: no yet triaged**
-
-Task: not yet triaged.
-
-If zig is upgraded in this repository to nightly, it can't build the Darwin
-executable. This section will be updated when more details are identified.
-
-## fcntl64 linking error on glibc < 2.28
-
 **Severity: Low**
 
 Task: [ziglang/zig #9485 glibc 2.27 or older: fcntl64 not found, but zig's glibc headers refer it](https://github.com/ziglang/zig/issues/9485)
