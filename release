@@ -6,7 +6,7 @@ _err(){ >&2 echo "ERROR: $*"; exit 1; }
 git status --porcelain | grep -q "" &&
     _err "working tree is dirty, commit your changes first."
 
-[[ "$1" =~ ^([0-9]+)\.([0-9]+)(\.([0-9]+))?$ ]] || \
+[[ "$1" =~ ^v([0-9]+)\.([0-9]+)(\.([0-9]+))?$ ]] || \
     _err "arg1 accepts the following formats: 1.0 1.0.0"
 
 git tag | grep -q "^$1$" &&
