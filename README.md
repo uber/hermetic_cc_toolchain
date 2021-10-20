@@ -88,12 +88,12 @@ when built with this toolchain, will not work on our target system.
 
 ## newer zig fails darwin tests
 
-**Severity: Medium**
+**Severity: no yet triaged**
 
 Task: not yet triaged.
 
 If zig is upgraded in this repository to nightly, it can't build the Darwin
-executable. I did not yet have time to dig further.
+executable. This section will be updated when more details are identified.
 
 ## fcntl64 linking error on glibc < 2.28
 
