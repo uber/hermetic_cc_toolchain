@@ -10,17 +10,17 @@ Example: if this toolchain is registered as bazel-zig-cc in your WORKSPACE, add 
 your root BUILD file
 # gazelle:map_kind go_binary go_binary @bazel-zig-cc//rules:go_binary_override.bzl
 """
-def go_binary(**args):
-  new_args = {}
-  new_args["gc_linkopts"] = select({
-      "@platforms//os:macos": [
-          "-s",
-          "-w",
-          "-buildmode=pie",
-      ],
-      "//conditions:default": [],
-  })
-  for k, v in args.items():
-    new_args[k] = v
-  go_binary_rule(**new_args)
 
+def go_binary(**args):
+    new_args = {}
+    new_args["gc_linkopts"] = select({
+        "@platforms//os:macos": [
+            "-s",
+            "-w",
+            "-buildmode=pie",
+        ],
+        "//conditions:default": [],
+    })
+    for k, v in args.items():
+        new_args[k] = v
+    go_binary_rule(**new_args)

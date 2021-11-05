@@ -160,9 +160,9 @@ def register_toolchains(
         #url_format = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.tar.xz",
         host_platform_sha256 = {
             "linux-aarch64": "d910c838fa4c7b535e924e39726bbd2ff4811cd88d7cd64b087a7c12d3c37dc8",
-            "linux-x86_64":  "8b55b538278c9be63ecaeb164b3097c542e410d8d3fee7aac1a51080fa04e64c",
+            "linux-x86_64": "8b55b538278c9be63ecaeb164b3097c542e410d8d3fee7aac1a51080fa04e64c",
             "macos-aarch64": "aa14e2348bb22fbe75ca14d5b1eee5301f88dbbde5eccca2b750d4747f9033bc",
-            "macos-x86_64":  "038d9ad0d2f76dfeb44d3a05679620e9b49bc93e4250d856238f79edea03dff6",
+            "macos-x86_64": "038d9ad0d2f76dfeb44d3a05679620e9b49bc93e4250d856238f79edea03dff6",
         },
         host_platform_include_root = {
             "linux-aarch64": "lib/",
