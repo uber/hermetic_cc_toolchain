@@ -96,33 +96,6 @@ Background: when glibc 2.27 or older is selected, it may miss `fcntl64`. A
 workaround is applied for `x86_64`, but not for aarch64. The same workaround
 may apply to aarch64, but the author didn't find a need to test it (yet).
 
-## cgo for darwin (macos)
-
-**Severity: Low**
-
-**Task:** [rules/go #2894 Per-arch_target linker flags](https://github.com/bazelbuild/rules_go/issues/2894)
-
-Background: until there is a better "global" way (i.e. the task is solved), all
-`go_binary` targets destined for Darwin (macos) need an extra `gc_linkopts`
-flag:
-
-```
-go_binary(
-    <...>
-    gc_linkopts = select({
-        "@platforms//os:macos": ["-s", "-w", "-buildmode=pie"],
-        "//conditions:default": [],
-    }),
-)
-```
-
-A workaround with [gazelle](https://github.com/bazelbuild/bazel-gazelle) `map_kind` directive is possible. This will override rules_go `go_binary` rule with `go_binary` which contains default `gc_linkopts` parameters. Add this line to your BUILD files (usually adding to root BUILD file will suffice) and run `gazelle` to automatically generate `load` statements.
-
-```
-# gazelle:map_kind go_binary go_binary @bazel-zig-cc//rules:go_binary_override.bzl
-```
-
-
 ## incorrect glibc version autodetection
 
 **Severity: Low**
@@ -143,6 +116,7 @@ use musl.
 - [ziglang/zig #9050 golang linker segfault](https://github.com/ziglang/zig/issues/9050) (CLOSED, thanks kubkon)
 - [ziglang/zig #7917 [meta] better c/c++ toolchain compatibility](https://github.com/ziglang/zig/issues/7917) (CLOSED, thanks andrewrk)
 - [ziglang/zig #7915 ar-compatible command for zig cc](https://github.com/ziglang/zig/issues/7915) (CLOSED, thanks andrewrk)
+- [rules/go #2894 Per-arch_target linker flags](https://github.com/bazelbuild/rules_go/issues/2894) (CLOSED, thanks mjonaitis)
 
 # Testing
 
