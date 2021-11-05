@@ -116,6 +116,13 @@ go_binary(
 )
 ```
 
+A workaround with [gazelle](https://github.com/bazelbuild/bazel-gazelle) `map_kind` directive is possible. This will override rules_go `go_binary` rule with `go_binary` which contains default `gc_linkopts` parameters. Add this line to your BUILD files (usually adding to root BUILD file will suffice) and run `gazelle` to automatically generate `load` statements.
+
+```
+# gazelle:map_kind go_binary go_binary @bazel-zig-cc//rules:go_binary_override.bzl
+```
+
+
 ## incorrect glibc version autodetection
 
 **Severity: Low**
