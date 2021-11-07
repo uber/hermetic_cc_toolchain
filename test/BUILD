@@ -7,10 +7,7 @@ go_library(
     cgo = True,
     importpath = "github.com/motiejus/bazel-zig-cc/test",
     visibility = ["//visibility:private"],
-    deps = [
-        "@com_github_datadog_zstd//:zstd",
-        "@com_github_mattn_go_sqlite3//:go-sqlite3",
-    ],
+    deps = ["@com_github_mattn_go_sqlite3//:go-sqlite3"],
 )
 
 go_binary(
