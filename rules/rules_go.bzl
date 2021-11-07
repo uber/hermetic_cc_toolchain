@@ -8,19 +8,14 @@ where target binary needs to be compiled with zig toolchain.
 
 Example: if this toolchain is registered as bazel-zig-cc in your WORKSPACE, add this to
 your root BUILD file
-# gazelle:map_kind go_binary go_binary @bazel-zig-cc//rules:go_binary_override.bzl
+# gazelle:map_kind go_binary go_binary @bazel-zig-cc//rules:rules_go.bzl
 """
 
-def go_binary(**args):
-    new_args = {}
-    new_args["gc_linkopts"] = select({
-        "@platforms//os:macos": [
-            "-s",
-            "-w",
-            "-buildmode=pie",
-        ],
+_MACOS_GC_LINKOPTS = ["-s", "-w", "-buildmode=pie"]
+
+def go_binary(**kwargs):
+    kwargs["gc_linkopts"] = select({
+        "@platforms//os:macos": _MACOS_GC_LINKOPTS,
         "//conditions:default": [],
-    })
-    for k, v in args.items():
-        new_args[k] = v
-    go_binary_rule(**new_args)
+    }) + kwargs.pop("gc_linkopts", [])
+    go_binary_rule(**kwargs)

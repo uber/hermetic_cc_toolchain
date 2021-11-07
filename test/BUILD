@@ -1,4 +1,4 @@
-load("//rules:go_binary_override.bzl", "go_binary")
+load("//rules:rules_go.bzl", "go_binary")
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
 go_library(
