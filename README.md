@@ -161,8 +161,22 @@ $ docker run -e CC=/usr/bin/false -ti --rm -v $(pwd):/x -w /x debian:bullseye-sl
 And run the `bazel build` commands above. Take a look at `.build.yml` and see
 how CI does it.
 
+# Contribution guidelines
+
+Contributions are accepted via patches to the mailing list
+[~motiejus/bazel-zig-cc@lists.sr.ht][mailing-list]. A few ways to send patches:
+
+1. `git send-email(1)`. More info at [git-send-email.io][git-send-email].
+2. Sourcehut web UI. See [video][video] by sourcehut's creator Drew DeVault.
+
+Copyright is retained by the contributors.
+
 # Credits
 
-Many thanks to Adam Bouhenguel and his
-[bazel-zig-cc](https://github.com/ajbouh/bazel-zig-cc/), the parent of this
-repository.
+Many thanks to Adam Bouhenguel and his [bazel-zig-cc][ajbouh], the parent of
+this repository.
+
+[mailing-list]: mailto:~motiejus/bazel-zig-cc@lists.sr.ht
+[ajbouh]: https://github.com/ajbouh/bazel-zig-cc/
+[git-send-email]: https://git-send-email.io/
+[video]: https://spacepub.space/w/no6jnhHeUrt2E5ST168tRL
