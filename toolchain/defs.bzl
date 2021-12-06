@@ -138,28 +138,39 @@ def _target_linux_musl(gocpu, zigcpu):
         tool_paths = {"ld": "ld.lld"},
     )
 
-def register_toolchains(register = []):
+# Release:
+#_URL_FORMAT = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.tar.xz"
+#_VERSION = "0.8.1"
+
+# Nightly
+#_URL_FORMAT = "https://ziglang.org/builds/zig-{host_platform}-{version}.tar.xz"
+_URL_FORMAT = "https://dl.jakstys.lt/zig/zig-{host_platform}-{version}.tar.xz"
+_VERSION = "0.9.0-dev.1414+cde3dd365"
+
+def register_toolchains(
+        register = [],
+        version = _VERSION,
+        url_format = _URL_FORMAT,
+        host_platform_sha256 = {}):
     """
         Download zig toolchain and register some.
         @param register registers the given toolchains to the system using
         native.register_toolchains(). See README for possible choices.
     """
 
+    sha256s = {
+        "linux-aarch64": "d910c838fa4c7b535e924e39726bbd2ff4811cd88d7cd64b087a7c12d3c37dc8",
+        "linux-x86_64": "8b55b538278c9be63ecaeb164b3097c542e410d8d3fee7aac1a51080fa04e64c",
+        "macos-aarch64": "aa14e2348bb22fbe75ca14d5b1eee5301f88dbbde5eccca2b750d4747f9033bc",
+        "macos-x86_64": "038d9ad0d2f76dfeb44d3a05679620e9b49bc93e4250d856238f79edea03dff6",
+    }
+    sha256s.update(host_platform_sha256)
+
     zig_repository(
         name = "zig_sdk",
-        # Pre-release:
-        version = "0.9.0-dev.1414+cde3dd365",
-        url_format = "https://dl.jakstys.lt/zig/zig-{host_platform}-{version}.tar.xz",
-        #url_format = "https://ziglang.org/builds/zig-{host_platform}-{version}.tar.xz",
-        # Release:
-        #version = "0.8.1",
-        #url_format = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.tar.xz",
-        host_platform_sha256 = {
-            "linux-aarch64": "d910c838fa4c7b535e924e39726bbd2ff4811cd88d7cd64b087a7c12d3c37dc8",
-            "linux-x86_64": "8b55b538278c9be63ecaeb164b3097c542e410d8d3fee7aac1a51080fa04e64c",
-            "macos-aarch64": "aa14e2348bb22fbe75ca14d5b1eee5301f88dbbde5eccca2b750d4747f9033bc",
-            "macos-x86_64": "038d9ad0d2f76dfeb44d3a05679620e9b49bc93e4250d856238f79edea03dff6",
-        },
+        version = version,
+        url_format = url_format,
+        host_platform_sha256 = sha256s,
         host_platform_include_root = {
             "linux-aarch64": "lib/",
             "linux-x86_64": "lib/",
