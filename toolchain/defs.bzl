@@ -138,15 +138,11 @@ def _target_linux_musl(gocpu, zigcpu):
         tool_paths = {"ld": "ld.lld"},
     )
 
-def register_toolchains(
-        register = [],
-        speed_first_safety_later = "auto"):
+def register_toolchains(register = []):
     """
         Download zig toolchain and register some.
         @param register registers the given toolchains to the system using
         native.register_toolchains(). See README for possible choices.
-        @param speed_first_safety_later is a workaround for
-        https://github.com/ziglang/zig/issues/9431
     """
 
     zig_repository(
@@ -170,7 +166,6 @@ def register_toolchains(
             "macos-aarch64": "lib/zig/",
             "macos-x86_64": "lib/zig/",
         },
-        speed_first_safety_later = speed_first_safety_later,
     )
 
     toolchains = ["@zig_sdk//:%s_toolchain" % t for t in register]
@@ -191,23 +186,7 @@ fi
 export ZIG_LOCAL_CACHE_DIR="$_cache_prefix/bazel-zig-cc"
 export ZIG_GLOBAL_CACHE_DIR=$ZIG_LOCAL_CACHE_DIR
 
-# https://github.com/ziglang/zig/issues/9431
-_flock=
-if [[ -n "{do_flock}" ]]; then
-  _flock=$(command -v flock || :)
-  if [[ -z "$_flock" && -x /usr/local/bin/flock ]]; then
-    _flock=/usr/local/bin/flock
-  else
-    >&2 echo "WARNING: flock not found, proceeding unsafely."
-    >&2 echo "If build fails, retry it."
-  fi
-fi
-
-if [[ -n "$_flock" ]]; then
-  exec "$_flock" "{zig}" "{zig}" "{zig_tool}" "$@"
-else
-  exec "{zig}" "{zig_tool}" "$@"
-fi
+exec "{zig}" "{zig_tool}" "$@"
 """
 
 _ZIG_TOOLS = [
@@ -245,20 +224,12 @@ def _zig_repository_impl(repository_ctx):
         sha256 = zig_sha256,
     )
 
-    if repository_ctx.attr.speed_first_safety_later == "auto":
-        do_flock = repository_ctx.os.name.lower().startswith("mac os")
-    elif repository_ctx.attr.speed_first_safety_later == "yes":
-        do_flock = False
-    else:
-        do_flock = True
-
     for zig_tool in _ZIG_TOOLS:
         repository_ctx.file(
             ZIG_TOOL_PATH.format(zig_tool = zig_tool),
             ZIG_TOOL_WRAPPER.format(
                 zig = str(repository_ctx.path("zig")),
                 zig_tool = zig_tool,
-                do_flock = "1" if do_flock else "",
             ),
         )
 
@@ -287,14 +258,6 @@ zig_repository = repository_rule(
         "host_platform_sha256": attr.string_dict(),
         "url_format": attr.string(),
         "host_platform_include_root": attr.string_dict(),
-        "speed_first_safety_later": attr.string(
-            values = ["yes", "no", "auto"],
-            default = "auto",
-            doc = "Workaround for github.com/ziglang/zig/issues/9431; " +
-                  "dramatically decreases compilation time on multi-core " +
-                  "hosts, but may fail compilation. Then re-run it. So far, " +
-                  "the author has reproduced this only on OSX.",
-        ),
     },
     implementation = _zig_repository_impl,
 )

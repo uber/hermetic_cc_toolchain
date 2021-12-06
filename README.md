@@ -66,10 +66,7 @@ Read [#Known Issues](#known-issues) before using.
 **Task:** [ziglang/zig #9431 FileNotFound when compiling macos](https://github.com/ziglang/zig/issues/9431)
 
 Background: there is a race when calling `zig c++`, which Bazel does a lot.
-This may fail compilation. Yours truly only reproduced it on macos with a cold
-cache. Based on that, a workaround in the toolchain exists, named
-`speed_first_safety_later`. The possible values are `auto` (default), `yes`,
-`no`.
+This may fail compilation.
 
 ## relocation error with glibc < 2.32
 
