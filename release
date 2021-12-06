@@ -7,7 +7,7 @@ git status --porcelain | grep -q "" &&
     _err "working tree is dirty, commit your changes first."
 
 [[ "$1" =~ ^v([0-9]+)\.([0-9]+)(\.([0-9]+))?$ ]] || \
-    _err "arg1 accepts the following formats: 1.0 1.0.0"
+    _err "arg1 accepts the following formats: v1.0 v1.0.0"
 
 git tag | grep -q "^$1$" &&
     _err "tag $1 already exists"
