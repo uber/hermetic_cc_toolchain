@@ -138,31 +138,28 @@ def _target_linux_musl(gocpu, zigcpu):
         tool_paths = {"ld": "ld.lld"},
     )
 
-# Release:
-#_URL_FORMAT = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.tar.xz"
-#_VERSION = "0.8.1"
-
 # Nightly
-#_URL_FORMAT = "https://ziglang.org/builds/zig-{host_platform}-{version}.tar.xz"
-_URL_FORMAT = "https://dl.jakstys.lt/zig/zig-{host_platform}-{version}.tar.xz"
-_VERSION = "0.9.0-dev.1414+cde3dd365"
+_URL_FORMAT_RELEASE = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.tar.xz"
+_URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform}-{version}.tar.xz"
+_URL_FORMAT_JAKSTYS = "https://dl.jakstys.lt/zig/zig-{host_platform}-{version}.tar.xz"
+
+_VERSION = "0.9.0-dev.1914+7d1f47313"
 
 def register_toolchains(
         register = [],
         version = _VERSION,
-        url_format = _URL_FORMAT,
+        url_format = _URL_FORMAT_NIGHTLY,
         host_platform_sha256 = {}):
     """
         Download zig toolchain and register some.
         @param register registers the given toolchains to the system using
         native.register_toolchains(). See README for possible choices.
     """
-
     sha256s = {
-        "linux-aarch64": "d910c838fa4c7b535e924e39726bbd2ff4811cd88d7cd64b087a7c12d3c37dc8",
-        "linux-x86_64": "8b55b538278c9be63ecaeb164b3097c542e410d8d3fee7aac1a51080fa04e64c",
-        "macos-aarch64": "aa14e2348bb22fbe75ca14d5b1eee5301f88dbbde5eccca2b750d4747f9033bc",
-        "macos-x86_64": "038d9ad0d2f76dfeb44d3a05679620e9b49bc93e4250d856238f79edea03dff6",
+        "linux-aarch64": "3afea493d49566b6b718343c4bfb62ef1c20190de955a3dad30d9a941bb33a5f",
+        "linux-x86_64": "9e7d014c079f8577f0713cd48fa3185a7caaa84c2ac3bfdf97ec6defce5cacac",
+        "macos-aarch64": "73da645ded140ece651a2a85c83233d465082f9db547cdc68fdd7180edc515b3",
+        "macos-x86_64": "f8973b60716af4c19ce392f8bf3a740f5569b1caec205b8d36c0e9cbb15b93c7",
     }
     sha256s.update(host_platform_sha256)
 
