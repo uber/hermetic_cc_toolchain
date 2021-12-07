@@ -59,15 +59,6 @@ Read [#Known Issues](#known-issues) before using.
 
 # Known Issues
 
-## Parallel `zig c++` invocations may fail
-
-**Severity: High**
-
-**Task:** [ziglang/zig #9431 FileNotFound when compiling macos](https://github.com/ziglang/zig/issues/9431)
-
-Background: there is a race when calling `zig c++`, which Bazel does a lot.
-This may fail compilation.
-
 ## relocation error with glibc < 2.32
 
 **Severity: High**
@@ -124,6 +115,7 @@ mind when adopting the toolchain.
 - [ziglang/zig #7917 [meta] better c/c++ toolchain compatibility](https://github.com/ziglang/zig/issues/7917) (CLOSED, thanks andrewrk)
 - [ziglang/zig #7915 ar-compatible command for zig cc](https://github.com/ziglang/zig/issues/7915) (CLOSED, thanks andrewrk)
 - [rules/go #2894 Per-arch_target linker flags](https://github.com/bazelbuild/rules_go/issues/2894) (CLOSED, thanks mjonaitis)
+- [ziglang/zig #9431 FileNotFound when compiling macos](https://github.com/ziglang/zig/issues/9431) (CLOSED, thanks andrewrk)
 
 # Testing
 
