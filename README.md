@@ -106,6 +106,16 @@ specifying the suffix to the oldest system that is mean to run the compiled
 binaries. This is safe, because glibc is backwards-compatible. Alternatively,
 use musl.
 
+## Non-trivial upgrades
+
+**Severity: Medium**
+
+**Task:** [ziglang/zig [cgo darwin] AccessDenied](https://github.com/ziglang/zig/issues/10293)
+
+Zig upgrades are non-trivial: paths change, and integration with cgo is
+difficult to troubleshoot. This will change over time, but something to keep in
+mind when adopting the toolchain.
+
 # Closed issues
 
 - [ziglang/zig #9139 zig c++ hanging when compiling in parallel](https://github.com/ziglang/zig/issues/9139) (CLOSED, thanks andrewrk)
