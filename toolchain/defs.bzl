@@ -62,9 +62,11 @@ def _target_darwin(gocpu, zigcpu):
         zigtarget = "{}-macos-gnu".format(zigcpu),
         includes = [
             "libunwind/include",
-            "libc/include/any-macos-any",
+            # FIXME: add macos.10, macos.11 and macos.12 targets,
+            # and adjust the includes
+            "libc/include/{}-macos.10-gnu".format(zigcpu),
             "libc/include/{}-macos-any".format(zigcpu),
-            "libc/include/{}-macos-gnu".format(zigcpu),
+            "libc/include/any-macos-any",
         ],
         linkopts = [],
         copts = DEFAULT_COPTS,
