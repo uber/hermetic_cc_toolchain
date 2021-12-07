@@ -141,10 +141,10 @@ hello, world
 ## macos cgo
 
 ```
-$ bazel build --platforms @io_bazel_rules_go//go/toolchain:darwin_amd64_cgo //test:gognu
+$ bazel build --platforms @io_bazel_rules_go//go/toolchain:darwin_amd64_cgo //test:hello
 ...
-$ file bazel-bin/test/gognu_/gognu
-bazel-bin/test/gognu_/gognu: Mach-O 64-bit x86_64 executable, flags:<NOUNDEFS|DYLDLINK|TWOLEVEL|PIE>
+$ file bazel-bin/test/hello_/hello
+bazel-bin/test/hello_/hello: Mach-O 64-bit x86_64 executable, flags:<NOUNDEFS|DYLDLINK|TWOLEVEL|PIE>
 ```
 
 ## Transient docker environment
