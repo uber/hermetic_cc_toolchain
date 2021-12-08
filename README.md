@@ -97,15 +97,22 @@ specifying the suffix to the oldest system that is mean to run the compiled
 binaries. This is safe, because glibc is backwards-compatible. Alternatively,
 use musl.
 
-## Non-trivial upgrades
+## [darwin x86_64 cgo] regression
 
-**Severity: Medium**
+**Severity: High**
 
-**Task:** [ziglang/zig [cgo darwin] AccessDenied](https://github.com/ziglang/zig/issues/10293)
+**Task:** [ziglang/zig [darwin x86_64 cgo] regression #10297](https://github.com/ziglang/zig/issues/10297)
 
-Zig upgrades are non-trivial: paths change, and integration with cgo is
-difficult to troubleshoot. This will change over time, but something to keep in
-mind when adopting the toolchain.
+Background: `zig cc` cannot create Darwin x86_64 binaries.
+
+## [darwin aarch64 cgo] regression
+
+**Severity: Low**
+
+**Task:** [ziglang/zig [darwin aarch64 cgo] regression #10299](https://github.com/ziglang/zig/issues/10299)
+
+Background: `zig cc` cannot create Darwin aarch64 binaries. Low severity,
+because M1 is not yet a priority.
 
 # Closed issues
 
