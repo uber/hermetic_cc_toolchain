@@ -3,7 +3,7 @@
 # Bazel zig cc toolchain
 
 This is a C/C++ toolchain that can (cross-)compile C/C++ programs. It contains
-clang-12, musl, glibc (versions 2-2.33, selectable), all in a ~40MB package.
+clang-13, musl, glibc (versions 2-2.33, selectable), all in a ~40MB package.
 Read
 [here](https://andrewkelley.me/post/zig-cc-powerful-drop-in-replacement-gcc-clang.html)
 about zig-cc; the rest of the README will present how to use this toolchain
