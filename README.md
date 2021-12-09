@@ -37,7 +37,6 @@ following platforms:
 - `x86_64-linux-gnu.2.28` for `["@platforms//os:linux", "@platforms//cpu:x86_64"]`.
 - `x86_64-macos-gnu` for `["@platforms//os:macos", "@platforms//cpu:x86_64"]`.
 
-
 Note that both Go and Bazel naming schemes are accepted. For convenience with
 Go, the following Go-style toolchain aliases are created:
 
@@ -55,7 +54,11 @@ used, run:
 $ bazel query @zig_sdk//... | sed -En '/.*_toolchain$/ s/.*:(.*)_toolchain$/\1/p'
 ```
 
-Read [#Known Issues](#known-issues) before using.
+## Compiling OS X executables
+
+MacOS SDK (`--sysroot`) may be necessary. Read [Jakub's comment](sysroot) about
+it. This section will be expanded once yours truly understands more about the
+requirements and limitations of linking on OSX.
 
 # Known Issues
 
@@ -97,32 +100,17 @@ specifying the suffix to the oldest system that is mean to run the compiled
 binaries. This is safe, because glibc is backwards-compatible. Alternatively,
 use musl.
 
-## [darwin x86_64 cgo] regression
-
-**Severity: High**
-
-**Task:** [ziglang/zig [darwin x86_64 cgo] regression #10297](https://github.com/ziglang/zig/issues/10297)
-
-Background: `zig cc` cannot create Darwin x86_64 binaries.
-
-## [darwin aarch64 cgo] regression
-
-**Severity: Low**
-
-**Task:** [ziglang/zig [darwin aarch64 cgo] regression #10299](https://github.com/ziglang/zig/issues/10299)
-
-Background: `zig cc` cannot create Darwin aarch64 binaries. Low severity,
-because M1 is not yet a priority.
-
 # Closed issues
 
-- [ziglang/zig #9139 zig c++ hanging when compiling in parallel](https://github.com/ziglang/zig/issues/9139) (CLOSED, thanks andrewrk)
-- [golang/go #46644 cmd/link: with CC=zig: SIGSERV when cross-compiling to darwin/amd64](https://github.com/golang/go/issues/46644) (CLOSED, thanks kubkon)
-- [ziglang/zig #9050 golang linker segfault](https://github.com/ziglang/zig/issues/9050) (CLOSED, thanks kubkon)
-- [ziglang/zig #7917 [meta] better c/c++ toolchain compatibility](https://github.com/ziglang/zig/issues/7917) (CLOSED, thanks andrewrk)
-- [ziglang/zig #7915 ar-compatible command for zig cc](https://github.com/ziglang/zig/issues/7915) (CLOSED, thanks andrewrk)
-- [rules/go #2894 Per-arch_target linker flags](https://github.com/bazelbuild/rules_go/issues/2894) (CLOSED, thanks mjonaitis)
+- [ziglang/zig [darwin aarch64 cgo] regression #10299](https://github.com/ziglang/zig/issues/10299) (CLOSED, thanks kubkon)
+- [ziglang/zig [darwin x86_64 cgo] regression #10297](https://github.com/ziglang/zig/issues/10297) (CLOSED, thanks kubkon)
 - [ziglang/zig #9431 FileNotFound when compiling macos](https://github.com/ziglang/zig/issues/9431) (CLOSED, thanks andrewrk)
+- [rules/go #2894 Per-arch_target linker flags](https://github.com/bazelbuild/rules_go/issues/2894) (CLOSED, thanks mjonaitis)
+- [ziglang/zig #7915 ar-compatible command for zig cc](https://github.com/ziglang/zig/issues/7915) (CLOSED, thanks andrewrk)
+- [ziglang/zig #7917 [meta] better c/c++ toolchain compatibility](https://github.com/ziglang/zig/issues/7917) (CLOSED, thanks andrewrk)
+- [ziglang/zig #9050 golang linker segfault](https://github.com/ziglang/zig/issues/9050) (CLOSED, thanks kubkon)
+- [golang/go #46644 cmd/link: with CC=zig: SIGSERV when cross-compiling to darwin/amd64](https://github.com/golang/go/issues/46644) (CLOSED, thanks kubkon)
+- [ziglang/zig #9139 zig c++ hanging when compiling in parallel](https://github.com/ziglang/zig/issues/9139) (CLOSED, thanks andrewrk)
 
 # Testing
 
@@ -167,6 +155,21 @@ $ docker run -e CC=/usr/bin/false -ti --rm -v $(pwd):/x -w /x debian:bullseye-sl
 And run the `bazel build` commands above. Take a look at `.build.yml` and see
 how CI does it.
 
+# Future & Roadmap
+
+This section lists things that I think will happen at some point: either by
+myself, or my colleagues, or outside contributors.
+
+* Move Zig cache path to bazel root, so `bazel clean --expunge` clears the zig
+  cache.
+* Provide a way to specify alternative URLs for the zig toolchain (currently
+  zig is downloaded from jakstys.lt, which is nuts).
+* Rename `@zig_sdk//:<toolchain>_toolchain` to
+  `@zig_sdk//toolchain:<toolchain>` or similar; so the user-facing targets are
+  in their own namespace.
+* Provide a way to specify sysroot for Darwin (OSX). See [#Compiling OS X
+  executables](#compiling-os-x-executables) for an ongoing discussion.
+
 # Contribution guidelines
 
 Contributions are accepted via patches to the mailing list
@@ -177,12 +180,14 @@ Contributions are accepted via patches to the mailing list
 
 Copyright is retained by the contributors.
 
-# Credits
+# Thanks
 
 Many thanks to Adam Bouhenguel and his [bazel-zig-cc][ajbouh], the parent of
-this repository.
+this repository. Also, the Zig team for making this all possible and handling
+the issues promptly.
 
 [mailing-list]: mailto:~motiejus/bazel-zig-cc@lists.sr.ht
 [ajbouh]: https://github.com/ajbouh/bazel-zig-cc/
 [git-send-email]: https://git-send-email.io/
 [video]: https://spacepub.space/w/no6jnhHeUrt2E5ST168tRL
+[sysroot]: https://github.com/ziglang/zig/issues/10299#issuecomment-989153750
