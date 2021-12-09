@@ -56,7 +56,7 @@ $ bazel query @zig_sdk//... | sed -En '/.*_toolchain$/ s/.*:(.*)_toolchain$/\1/p
 
 ## Compiling OS X executables
 
-MacOS SDK (`--sysroot`) may be necessary. Read [Jakub's comment](sysroot) about
+MacOS SDK (`--sysroot`) may be necessary. Read [Jakub's comment][sysroot] about
 it. This section will be expanded once yours truly understands more about the
 requirements and limitations of linking on OSX.
 
