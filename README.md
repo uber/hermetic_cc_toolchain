@@ -68,7 +68,7 @@ requirements and limitations of linking on OSX.
 
 **Task:** [ziglang/zig relocation error: symbol pthread_sigmask version GLIBC_2.2.5 not defined in file libc.so.6 with link time reference #7667](https://github.com/ziglang/zig/issues/7667)
 
-Background: one of our internal shared libraries (which we must build with glibc 2.19) does not load on an older system:
+Background: one of our internal shared libraries (which we must build with glibc 2.28) does not load on an older system:
 
 ```
 id: relocation error: /lib/x86_64-linux-gnu/libnss_uber.so.2: symbol pthread_sigmask, version GLIBC_2.2.5 not defined in file libc.so.6 with link time reference
@@ -114,7 +114,7 @@ use musl.
 
 # Testing
 
-## linux cgo + glibc 2.19
+## linux cgo + glibc 2.28
 
 ```
 $ bazel build --platforms @io_bazel_rules_go//go/toolchain:linux_amd64_cgo //test:hello

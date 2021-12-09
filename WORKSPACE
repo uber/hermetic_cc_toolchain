@@ -55,7 +55,7 @@ load(
 
 _REGISTER_TOOLCHAINS = [
     "linux_arm64_gnu.2.28",
-    "linux_amd64_gnu.2.19",
+    "linux_amd64_gnu.2.28",
     "darwin_amd64",
     "darwin_arm64",
 ]
