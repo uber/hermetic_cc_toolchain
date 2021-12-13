@@ -145,7 +145,7 @@ _URL_FORMAT_RELEASE = "https://ziglang.org/download/{version}/zig-{host_platform
 _URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform}-{version}.tar.xz"
 _URL_FORMAT_JAKSTYS = "https://dl.jakstys.lt/zig/zig-{host_platform}-{version}.tar.xz"
 
-_VERSION = "0.9.0-dev.1926+803178353"
+_VERSION = "0.9.0-dev.1950+a76910b69"
 
 def register_toolchains(
         register = [],
@@ -158,10 +158,10 @@ def register_toolchains(
         native.register_toolchains(). See README for possible choices.
     """
     sha256s = {
-        "linux-aarch64": "71947cfc7753d6b386a220741746dfeabf9edbadf18eab0395ffa67fa37ffa94",
-        "linux-x86_64": "a494448938da854aa25e5a34ada1c6a1426c0067b0d291d47e7b22687e7d840d",
-        "macos-aarch64": "745a1aba547a72352a1f8a27747895ddbcc630618d15874ed45654bb0fef21c4",
-        "macos-x86_64": "b22fa79ec716ca3b88c119e533ceed3392f895fafb155e3b160e6957e7df27cb",
+        "linux-aarch64": "df2a1800f3960010e70956891abcb88cb9a559aedd54c0373ef706b439e8b9cb",
+        "linux-x86_64": "a1410d2ad1a647f7033ab0109716434d233def438ff1b4e8b968d428e9e671fc",
+        "macos-aarch64": "274c012149421511be700f28271ceaccb06d951f2ea9e6d805eef740d2a54634",
+        "macos-x86_64": "9f49975b0926feadc709db774fd5cc026d32e2c21c09734c550e975b8db95c56",
     }
     sha256s.update(host_platform_sha256)
 
