@@ -170,13 +170,22 @@ myself, or my colleagues, or outside contributors.
 * Provide a way to specify sysroot for Darwin (OSX). See [#Compiling OS X
   executables](#compiling-os-x-executables) for an ongoing discussion.
 
-# Contribution guidelines
+# Questions & Contributions
 
-Contributions are accepted via patches to the mailing list
-[~motiejus/bazel-zig-cc@lists.sr.ht][mailing-list]. A few ways to send patches:
+Project's mailing list is [~motiejus/bazel-zig-cc][mailing-list]. The mailing
+list is used for:
 
-1. `git send-email(1)`. More info at [git-send-email.io][git-send-email].
-2. Sourcehut web UI. See [video][video] by sourcehut's creator Drew DeVault.
+- announcements (I am aiming to send an email with every release).
+- user discussions.
+- raising issues.
+- contributions.
+
+I will generally respond to emails about issues. I may even be able to fix
+them. However, no promises: you are much more likely (and welcome!) to get it
+fixed by submitting a patch.
+
+To contribute, send your patches to the mailing list, as described in
+[git-send-email.io][git-send-email] or via [Sourcehut web UI][video].
 
 Copyright is retained by the contributors.
 
@@ -186,7 +195,7 @@ Many thanks to Adam Bouhenguel and his [bazel-zig-cc][ajbouh], the parent of
 this repository. Also, the Zig team for making this all possible and handling
 the issues promptly.
 
-[mailing-list]: mailto:~motiejus/bazel-zig-cc@lists.sr.ht
+[mailing-list]: https://lists.sr.ht/~motiejus/bazel-zig-cc
 [ajbouh]: https://github.com/ajbouh/bazel-zig-cc/
 [git-send-email]: https://git-send-email.io/
 [video]: https://spacepub.space/w/no6jnhHeUrt2E5ST168tRL
