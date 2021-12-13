@@ -18,10 +18,6 @@ DEFAULT_INCLUDE_DIRECTORIES = [
     "libcxxabi/include",
 ]
 
-# -Os, -O2 or -O3 must be set, because some dependencies use C's undefined
-# behavior. See https://github.com/ziglang/zig/issues/4830
-DEFAULT_COPTS = ["-O3"]
-
 _fcntl_map = """
 GLIBC_2.2.5 {
    fcntl;
@@ -69,7 +65,7 @@ def _target_darwin(gocpu, zigcpu):
             "libc/include/any-macos-any",
         ],
         linkopts = [],
-        copts = DEFAULT_COPTS,
+        copts = [],
         bazel_target_cpu = "darwin",
         constraint_values = [
             "@platforms//os:macos",
@@ -111,7 +107,7 @@ def _target_linux_gnu(gocpu, zigcpu, glibc_version = ""):
         compiler_extra_includes = ["glibc-hacks/glibchack-fcntl.h"] if fcntl_hack else [],
         linker_version_scripts = ["glibc-hacks/fcntl.map"] if fcntl_hack else [],
         linkopts = ["-lc++", "-lc++abi"],
-        copts = DEFAULT_COPTS,
+        copts = [],
         bazel_target_cpu = "k8",
         constraint_values = [
             "@platforms//os:linux",
@@ -131,7 +127,7 @@ def _target_linux_musl(gocpu, zigcpu):
             "libc/include/{}-linux-any".format(zigcpu),
         ] + ["libc/include/x86-linux-any"] if zigcpu == "x86_64" else [],
         linkopts = ["-s", "-w"],
-        copts = DEFAULT_COPTS + ["-D_LIBCPP_HAS_MUSL_LIBC", "-D_LIBCPP_HAS_THREAD_API_PTHREAD"],
+        copts = ["-D_LIBCPP_HAS_MUSL_LIBC", "-D_LIBCPP_HAS_THREAD_API_PTHREAD"],
         bazel_target_cpu = "k8",
         constraint_values = [
             "@platforms//os:linux",
