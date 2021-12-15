@@ -141,7 +141,7 @@ _URL_FORMAT_RELEASE = "https://ziglang.org/download/{version}/zig-{host_platform
 _URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform}-{version}.tar.xz"
 _URL_FORMAT_JAKSTYS = "https://dl.jakstys.lt/zig/zig-{host_platform}-{version}.tar.xz"
 
-_VERSION = "0.9.0-dev.1950+a76910b69"
+_VERSION = "0.9.0-dev.1968+ff93486d0"
 
 def register_toolchains(
         register = [],
