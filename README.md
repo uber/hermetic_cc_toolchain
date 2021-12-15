@@ -62,21 +62,6 @@ requirements and limitations of linking on OSX.
 
 # Known Issues
 
-## relocation error with glibc < 2.32
-
-**Severity: High**
-
-**Task:** [ziglang/zig relocation error: symbol pthread_sigmask version GLIBC_2.2.5 not defined in file libc.so.6 with link time reference #7667](https://github.com/ziglang/zig/issues/7667)
-
-Background: one of our internal shared libraries (which we must build with glibc 2.28) does not load on an older system:
-
-```
-id: relocation error: /lib/x86_64-linux-gnu/libnss_uber.so.2: symbol pthread_sigmask, version GLIBC_2.2.5 not defined in file libc.so.6 with link time reference
-```
-
-Severity is high, because there is no known workaround: the shared library,
-when built with this toolchain, will not work on our target system.
-
 ## using glibc 2.27 or older
 
 **Severity: Low**
@@ -87,21 +72,10 @@ Background: when glibc 2.27 or older is selected, it may miss `fcntl64`. A
 workaround is applied for `x86_64`, but not for aarch64. The same workaround
 may apply to aarch64, but the author didn't find a need to test it (yet).
 
-## incorrect glibc version autodetection
-
-**Severity: Low**
-
-**Task:** [ziglang/zig zig detects wrong libc version #6469](https://github.com/ziglang/zig/issues/6469)
-
-Background: zig detects an incorrect glibc version when not specified.
-Therefore, until the task is resolved, registering a GNU toolchain without a
-version suffix (e.g. `linux_amd64_gnu`) is not recommended. We recommend
-specifying the suffix to the oldest system that is mean to run the compiled
-binaries. This is safe, because glibc is backwards-compatible. Alternatively,
-use musl.
-
 # Closed issues
 
+- [ziglang/zig relocation error: symbol pthread_sigmask version GLIBC_2.2.5 not defined in file libc.so.6 with link time reference #7667](https://github.com/ziglang/zig/issues/7667) (CLOSED, thanks mjonaitis and andrewrk)
+- [ziglang/zig macho: fail if requested -framework is not found #10312](https://github.com/ziglang/zig/pull/10312) (CLOSED, thanks kubkon)
 - [ziglang/zig [darwin aarch64 cgo] regression #10299](https://github.com/ziglang/zig/issues/10299) (CLOSED, thanks kubkon)
 - [ziglang/zig [darwin x86_64 cgo] regression #10297](https://github.com/ziglang/zig/issues/10297) (CLOSED, thanks kubkon)
 - [ziglang/zig #9431 FileNotFound when compiling macos](https://github.com/ziglang/zig/issues/9431) (CLOSED, thanks andrewrk)
