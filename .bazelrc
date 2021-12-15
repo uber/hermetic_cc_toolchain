@@ -1,7 +1,9 @@
-build --verbose_failures
 test --sandbox_default_allow_network=false
 test --test_output=errors
+
+build --verbose_failures
 build --worker_sandboxing
+build --compilation_mode=opt
 
 build --incompatible_enable_cc_toolchain_resolution
 #build --incompatible_use_cc_configure_from_rules_cc
