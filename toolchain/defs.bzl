@@ -154,10 +154,10 @@ def register_toolchains(
         native.register_toolchains(). See README for possible choices.
     """
     sha256s = {
-        "linux-aarch64": "df2a1800f3960010e70956891abcb88cb9a559aedd54c0373ef706b439e8b9cb",
-        "linux-x86_64": "a1410d2ad1a647f7033ab0109716434d233def438ff1b4e8b968d428e9e671fc",
-        "macos-aarch64": "274c012149421511be700f28271ceaccb06d951f2ea9e6d805eef740d2a54634",
-        "macos-x86_64": "9f49975b0926feadc709db774fd5cc026d32e2c21c09734c550e975b8db95c56",
+        "linux-aarch64": "bd47f6ba0149fda8a9328b153c130b960718b59fa831761bcf1152071e126378",
+        "linux-x86_64": "06e50a5cdc5935ef3a4c9c52efdc4384a803ec31d93d73259865756134d25990",
+        "macos-aarch64": "d339f95ccb9456f99f79d4c968bea6ca13731a8c124adc45e2c15578a772af3f",
+        "macos-x86_64": "c641e92516e4a50b8bd4c206d30375f366368968ba766fa1d17791761baee6e3",
     }
     sha256s.update(host_platform_sha256)
 
