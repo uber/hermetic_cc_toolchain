@@ -74,7 +74,7 @@ may apply to aarch64, but the author didn't find a need to test it (yet).
 
 # Closed issues
 
-- [ziglang/zig relocation error: symbol pthread_sigmask version GLIBC_2.2.5 not defined in file libc.so.6 with link time reference #7667](https://github.com/ziglang/zig/issues/7667) (CLOSED, thanks mjonaitis and andrewrk)
+- [ziglang/zig misplaced relocated glibc stubs (pthread_sigmask) #7667](https://github.com/ziglang/zig/issues/7667) (CLOSED, thanks mjonaitis and andrewrk)
 - [ziglang/zig macho: fail if requested -framework is not found #10312](https://github.com/ziglang/zig/pull/10312) (CLOSED, thanks kubkon)
 - [ziglang/zig [darwin aarch64 cgo] regression #10299](https://github.com/ziglang/zig/issues/10299) (CLOSED, thanks kubkon)
 - [ziglang/zig [darwin x86_64 cgo] regression #10297](https://github.com/ziglang/zig/issues/10297) (CLOSED, thanks kubkon)
