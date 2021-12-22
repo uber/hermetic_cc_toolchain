@@ -46,7 +46,7 @@ Go, the following Go-style toolchain aliases are created:
 |`aarch64`|`arm64`|
 |`macos`|`darwin`|
 
-For example, the toolchain `linux_amd64_gnu` is aliased to
+For example, the toolchain `linux_amd64_gnu.2.28` is aliased to
 `x86_64-linux-gnu.2.28`. To find out which toolchains can be registered or
 used, run:
 
@@ -54,7 +54,7 @@ used, run:
 $ bazel query @zig_sdk//... | sed -En '/.*_toolchain$/ s/.*:(.*)_toolchain$/\1/p'
 ```
 
-# Known Issues in bazel-zig-cc
+# Known Issues In bazel-zig-cc
 
 These are the things you may stumble into when using bazel-zig-cc. I am
 unlikely to implement them, but patches implementing those will be accepted.
@@ -63,26 +63,26 @@ contribute.
 
 ## OSX: sysroot
 
-MacOS SDK (`--sysroot`) may be necessary for non-trivial programs (and is
-required for all cgo darwin/arm64 ones). Read [Jakub's comment][sysroot] about
-it. Support for OSX sysroot is currently not implemented.
+For non-trivial programs (and for all darwin/arm64 cgo programs) MacOS SDK may
+be necessary. Read [Jakub's comment][sysroot] about it. Support for OSX sysroot
+is currently not implemented.
 
 ## OSX: different OS targets (Catalina -- Monterey)
 
-Since [zig 0.9.0](https://ziglang.org/download/0.9.0/release-notes.html#macOS)
-zig may target macos.10 (Catalina), macos.11 (Big Sur) or macos.12 (Monterey).
-It currently targets the lowest version.
+[Zig 0.9.0](https://ziglang.org/download/0.9.0/release-notes.html#macOS) may
+target macos.10 (Catalina), macos.11 (Big Sur) or macos.12 (Monterey). It
+currently targets the lowest version, without ability to change it.
 
 ## Zig cache
 
-Currently zig cache is in `$HOME` so `bazel clean --expunge` does not clear the
-zig cache. Zig's cache should be stored somewhere in the project's path.
+Currently zig cache is in `$HOME`, so `bazel clean --expunge` does not clear
+the zig cache. Zig's cache should be stored somewhere in the project's path.
 
 ## Alternative download URLs
 
-Currently zig is downloaded from [dl.jakstys.lt](https://dl.jakstys.lt/zig/),
-which is nuts. One should provide a way to specify alternative URLs for the zig
-toolchain.
+Currently zig is downloaded from
+[dl.jakstys.lt/zig](https://dl.jakstys.lt/zig/), which is nuts. One should
+provide a way to specify alternative URLs for the zig toolchain.
 
 ## Bazel toolchain target locations
 
@@ -90,10 +90,10 @@ The path to Bazel toolchains is `@zig_sdk//:<toolchain>_toolchain`. It should
 be moved to `@zig_sdk//toolchain:<toolchain>` or similar; so the user-facing
 targets are in their own namespace.
 
-# Known Issues in upstream
+# Known Issues In Upstream
 
-This section lists issues that I've stumbled into when using `zig cc`, and
-is outside of control bazel-zig-cc's control.
+This section lists issues that I've stumbled into when using `zig cc`, and is
+outside of bazel-zig-cc's control.
 
 ## using glibc 2.27 or older
 
@@ -105,7 +105,7 @@ Background: when glibc 2.27 or older is selected, it may miss `fcntl64`. A
 workaround is applied for `x86_64`, but not for aarch64. The same workaround
 may apply to aarch64, but the author didn't find a need to test it (yet).
 
-# Closed upstream issues
+# Closed Upstream Issues
 
 - [ziglang/zig misplaced relocated glibc stubs (pthread_sigmask) #7667](https://github.com/ziglang/zig/issues/7667) (CLOSED, thanks mjonaitis and andrewrk)
 - [ziglang/zig macho: fail if requested -framework is not found #10312](https://github.com/ziglang/zig/pull/10312) (CLOSED, thanks kubkon)
@@ -161,12 +161,6 @@ $ docker run -e CC=/usr/bin/false -ti --rm -v $(pwd):/x -w /x debian:bullseye-sl
 
 And run the `bazel build` commands above. Take a look at `.build.yml` and see
 how CI does it.
-
-# Future & Roadmap
-
-This section lists things that I think will happen at some point: either by
-myself, or my colleagues, or outside contributors.
-
 
 # Questions & Contributions
 
