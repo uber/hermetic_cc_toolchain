@@ -95,6 +95,14 @@ targets are in their own namespace.
 This section lists issues that I've stumbled into when using `zig cc`, and is
 outside of bazel-zig-cc's control.
 
+## Segmentation Fault in zig cc 0.9.0
+
+**Severity: High**
+
+Task: [ziglang/zig zig cc regression in 0.9.0 #10386](https://github.com/ziglang/zig/issues/10386)
+
+This issue upgrade to zig 0.9.0.
+
 ## using glibc 2.27 or older
 
 **Severity: Low**
