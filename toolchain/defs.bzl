@@ -50,6 +50,7 @@ _GLIBCS = [
     "2.31",
     "2.32",
     "2.33",
+    "2.34",
 ]
 
 def _target_darwin(gocpu, zigcpu):
@@ -141,8 +142,7 @@ _URL_FORMAT_RELEASE = "https://ziglang.org/download/{version}/zig-{host_platform
 _URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform}-{version}.tar.xz"
 _URL_FORMAT_JAKSTYS = "https://dl.jakstys.lt/zig/zig-{host_platform}-{version}.tar.xz"
 
-# https://github.com/ziglang/zig/issues/10386 is blocking 0.9.0
-_VERSION = "0.9.0-dev.1968+ff93486d0"
+_VERSION = "0.10.0-dev.283+ba0f72363"
 
 def register_toolchains(
         register = [],
@@ -155,10 +155,10 @@ def register_toolchains(
         native.register_toolchains(). See README for possible choices.
     """
     sha256s = {
-        "linux-aarch64": "bd47f6ba0149fda8a9328b153c130b960718b59fa831761bcf1152071e126378",
-        "linux-x86_64": "06e50a5cdc5935ef3a4c9c52efdc4384a803ec31d93d73259865756134d25990",
-        "macos-aarch64": "d339f95ccb9456f99f79d4c968bea6ca13731a8c124adc45e2c15578a772af3f",
-        "macos-x86_64": "c641e92516e4a50b8bd4c206d30375f366368968ba766fa1d17791761baee6e3",
+        "linux-aarch64": "daa0dd7534b07745a8d8aa6859b45cc4b88475fcee6066925b89ce1c6286b24f",
+        "linux-x86_64": "2d53b7338f9c70d378ce654fc8a8998f10eaa2431d2e4956db7087d85246c606",
+        "macos-aarch64": "6da7618d6d3e40098a346d615f92ea8b0d774c75eeaa3a075ace40a78bc3e824",
+        "macos-x86_64": "58e869d392b624f0eef8256bba2b9fc4a00b4d43780474389555765c37cb45c9",
     }
     sha256s.update(host_platform_sha256)
 
