@@ -150,7 +150,8 @@ _URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform}-{version}.
 # Author's mirror that doesn't purge the nightlies so aggressively. I will be
 # cleaning those up manually only after the artifacts are not in use for many
 # months in bazel-zig-cc. dl.jakstys.lt is sitting in my home closet, so
-# reliability is not as promising as s3.
+# reliability is not as promising as s3 (although 100% over the last 3 months
+# as of writing, which is better than s3).
 _URL_FORMAT_JAKSTYS = "https://dl.jakstys.lt/zig/zig-{host_platform}-{version}.tar.xz"
 
 _VERSION = "0.10.0-dev.283+ba0f72363"
