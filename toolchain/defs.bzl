@@ -137,9 +137,20 @@ def _target_linux_musl(gocpu, zigcpu):
         tool_paths = {"ld": "ld.lld"},
     )
 
-# Nightly
+# Official recommended version. Should use this when we have a usable release.
 _URL_FORMAT_RELEASE = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.tar.xz"
+
+# Caution: nightly releases are purged from ziglang.org after ~90 days. A real
+# solution would be to allow the downstream project specify their own mirrors.
+# This is explained in
+# https://sr.ht/~motiejus/bazel-zig-cc/#alternative-download-urls and is
+# awaiting my attention or your contribution.
 _URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform}-{version}.tar.xz"
+
+# Author's mirror that doesn't purge the nightlies so aggressively. I will be
+# cleaning those up manually only after the artifacts are not in use for many
+# months in bazel-zig-cc. dl.jakstys.lt is sitting in my home closet, so
+# reliability is not as promising as s3.
 _URL_FORMAT_JAKSTYS = "https://dl.jakstys.lt/zig/zig-{host_platform}-{version}.tar.xz"
 
 _VERSION = "0.10.0-dev.283+ba0f72363"
