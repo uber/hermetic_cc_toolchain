@@ -11,7 +11,13 @@ from Bazel.
 
 # Usage
 
-Add this to your `WORKSPACE`:
+Add this to `.bazelrc`:
+
+```
+build --incompatible_enable_cc_toolchain_resolution
+```
+
+And this to your `WORKSPACE`:
 
 ```
 BAZEL_ZIG_CC_VERSION = "v0.4.0"
