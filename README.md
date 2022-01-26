@@ -11,13 +11,7 @@ from Bazel.
 
 # Usage
 
-Add this to `.bazelrc`:
-
-```
-build --incompatible_enable_cc_toolchain_resolution
-```
-
-And this to your `WORKSPACE`:
+Add this to your `WORKSPACE`:
 
 ```
 BAZEL_ZIG_CC_VERSION = "v0.4.0"
@@ -35,6 +29,12 @@ zig_register_toolchains(register = [
     "x86_64-linux-gnu.2.28",
     "x86_64-macos-gnu",
 ])
+```
+
+And this to `.bazelrc`:
+
+```
+build --incompatible_enable_cc_toolchain_resolution
 ```
 
 The snippet above will download the zig toolchain and register it for the
@@ -60,12 +60,27 @@ used, run:
 $ bazel query @zig_sdk//... | sed -En '/.*_toolchain$/ s/.*:(.*)_toolchain$/\1/p'
 ```
 
+## UBSAN and "SIGILL: Illegal Instruction"
+
+`zig cc` differs from "mainstream" compilers by [enabling UBSAN by
+default][ubsan1]. Which means your program may compile successfully and crash
+with:
+
+```
+SIGILL: illegal instruction
+```
+
+This is by design: it encourages program authors to fix the undefined behavior.
+There are [many ways][ubsan2] to find the undefined behavior.
+
 # Known Issues In bazel-zig-cc
 
 These are the things you may stumble into when using bazel-zig-cc. I am
 unlikely to implement them, but patches implementing those will be accepted.
 See [Questions & Contributions](#questions-amp-contributions) on how to
 contribute.
+
+
 
 ## OSX: sysroot
 
@@ -199,3 +214,5 @@ the issues promptly.
 [git-send-email]: https://git-send-email.io/
 [video]: https://spacepub.space/w/no6jnhHeUrt2E5ST168tRL
 [sysroot]: https://github.com/ziglang/zig/issues/10299#issuecomment-989153750
+[ubsan1]: https://github.com/ziglang/zig/issues/4830#issuecomment-605491606
+[ubsan2]: https://github.com/ziglang/zig/issues/5163
