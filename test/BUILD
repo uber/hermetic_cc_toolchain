@@ -7,18 +7,25 @@ go_library(
     cgo = True,
     importpath = "github.com/motiejus/bazel-zig-cc/test",
     visibility = ["//visibility:private"],
-    deps = ["@com_github_mattn_go_sqlite3//:go-sqlite3"],
 )
 
 go_binary(
     name = "hello",
-    embed = [":hello_lib"],
+    embed = [":test_lib"],
     static = "on",
     visibility = ["//visibility:public"],
 )
 
 go_test(
-    name = "hello_test",
+    name = "test_test",
     srcs = ["hello_test.go"],
-    embed = [":hello_lib"],
+    embed = [":test_lib"],
+)
+
+go_library(
+    name = "test_lib",
+    srcs = ["hello.go"],
+    cgo = True,
+    importpath = "git.sr.ht/~motiejus/bazel-zig-cc/test",
+    visibility = ["//visibility:private"],
 )

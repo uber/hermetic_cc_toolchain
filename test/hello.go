@@ -9,6 +9,6 @@ func main() {
 	C.printhello()
 }
 
-func chello() string {
+func Chello() string {
 	return C.GoString(C.hello())
 }

@@ -1,3 +1,3 @@
-module github.com/motiejus/bazel-zig-cc/test
+module git.sr.ht/~motiejus/bazel-zig-cc
 
 go 1.16
