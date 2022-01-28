@@ -5,8 +5,8 @@ import (
 )
 
 // #include <stdio.h>
-// char* hello() { return "hello, world\n"; }
-// void printhello() { printf(hello()); }
+// char* hello() { return "hello, world"; }
+// void printhello() { printf("%s\n", hello()); }
 import "C"
 
 func main() {

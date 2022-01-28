@@ -18,7 +18,7 @@ go_binary(
 )
 
 go_test(
-    name = "test_test",
+    name = "hello_test",
     srcs = ["hello_test.go"],
-    embed = [":test_lib"],
+    embed = [":hello_lib"],
 )
