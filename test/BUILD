@@ -1,5 +1,5 @@
 load("//rules:rules_go.bzl", "go_binary")
-load("@io_bazel_rules_go//go:def.bzl", "go_library")
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "hello_lib",
@@ -15,4 +15,10 @@ go_binary(
     embed = [":hello_lib"],
     static = "on",
     visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "test_test",
+    srcs = ["hello_test.go"],
+    embed = [":test_lib"],
 )

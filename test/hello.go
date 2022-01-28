@@ -5,9 +5,14 @@ import (
 )
 
 // #include <stdio.h>
-// void helloworld() { printf("hello, world\n"); }
+// char* hello() { return "hello, world\n"; }
+// void printhello() { printf(hello()); }
 import "C"
 
 func main() {
-	C.helloworld()
+	C.printhello()
+}
+
+func chello() string {
+	return C.GoString(C.hello())
 }
