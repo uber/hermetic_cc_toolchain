@@ -1,9 +1,5 @@
 package main
 
-import (
-	_ "github.com/mattn/go-sqlite3"
-)
-
 // #include <stdio.h>
 // char* hello() { return "hello, world"; }
 // void printhello() { printf("%s\n", hello()); }
