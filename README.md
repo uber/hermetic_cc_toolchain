@@ -73,14 +73,33 @@ SIGILL: illegal instruction
 This is by design: it encourages program authors to fix the undefined behavior.
 There are [many ways][ubsan2] to find the undefined behavior.
 
+## Specifying non-default toolchains (and not registering at all)
+
+You may explicitly request Bazel to use a specific toolchain, even though one
+is registered using `--extra_toolchains <toolchain>` flag. For example, if you
+wish to compile a specific binary (or run tests) using musl on linux/amd64, you
+may specify:
+
+```
+--extra_toolchains @zig_sdk//:linux_amd64_musl_toolchain
+```
+
+As an extension to this, you may not register the toolchains at all:
+
+```
+zig_register_toolchains()
+```
+
+In that case, you will need to specify the `--extra_toolchains <toolchain>`
+command-line argument. Otherwise Bazel will use the default one -- the host
+toolchain.
+
 # Known Issues In bazel-zig-cc
 
 These are the things you may stumble into when using bazel-zig-cc. I am
 unlikely to implement them, but patches implementing those will be accepted.
 See [Questions & Contributions](#questions-amp-contributions) on how to
 contribute.
-
-
 
 ## OSX: sysroot
 
@@ -105,11 +124,30 @@ Currently zig is downloaded from
 [dl.jakstys.lt/zig](https://dl.jakstys.lt/zig/), which is nuts. One should
 provide a way to specify alternative URLs for the zig toolchain.
 
-## Bazel toolchain target locations
+## Toolchain and platform target locations
 
 The path to Bazel toolchains is `@zig_sdk//:<toolchain>_toolchain`. It should
 be moved to `@zig_sdk//toolchain:<toolchain>` or similar; so the user-facing
 targets are in their own namespace.
+
+Currently, platform is not defined in `@zig_sdk`. As you may see in the
+examples, we are currently using the one provided by cgo. E.g.
+`@io_bazel_rules_go//go/toolchain:linux_amd64_cgo`. This is because we want to
+define it in `@zig_sdk//:platform:<platform>`. This is waiting for mine or a
+contributor's attention. You may work around this by sending a patch to
+bazel-zig-cc or specifying the platform in your project:
+
+```
+platform(
+    name = "linux_aarch64",
+    constraint_values = [
+        "@bazel_tools//platforms:linux",
+        "@bazel_tools//platforms:aarch64",
+    ]
+)
+```
+
+and `--platforms="//:linux_aarch64"`.
 
 # Known Issues In Upstream
 
