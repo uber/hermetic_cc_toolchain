@@ -2,22 +2,22 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 load("//rules:rules_go.bzl", "go_binary")
 
 go_library(
-    name = "test_lib",
+    name = "go_lib",
     srcs = ["hello.go"],
     cgo = True,
-    importpath = "git.sr.ht/~motiejus/bazel-zig-cc/test",
+    importpath = "git.sr.ht/~motiejus/bazel-zig-cc/test/go",
     visibility = ["//visibility:private"],
 )
 
 go_binary(
-    name = "test",
+    name = "go",
+    embed = [":go_lib"],
     static = "on",
-    embed = [":test_lib"],
     visibility = ["//visibility:public"],
 )
 
 go_test(
-    name = "test_test",
+    name = "go_test",
     srcs = ["hello_test.go"],
-    embed = [":test_lib"],
+    embed = [":go_lib"],
 )
