@@ -168,9 +168,9 @@ may apply to aarch64, but the author didn't find a need to test it (yet).
 ## linux cgo + glibc 2.28
 
 ```
-$ bazel build --platforms @zig_sdk//:linux_amd64_platform //test:hello
-$ file bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/hello_/hello
-bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/hello_/hello: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 2.0.0, Go BuildID=redacted, with debug_info, not stripped
+$ bazel build --platforms @zig_sdk//:linux_amd64_platform //test/go:go
+$ file bazel-out/k8-opt-ST-d17813c235ce/bin/test/go/go_/go
+bazel-out/k8-opt-ST-d17813c235ce/bin/test/go/go_/go: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 2.0.0, Go BuildID=redacted, with debug_info, not stripped
 ```
 
 ## linux cgo + musl
@@ -178,21 +178,21 @@ bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/hello_/hello: ELF 64-bit LSB exe
 ```
 $ bazel build \
     --platforms @zig_sdk//:linux_amd64_platform \
-    --extra_toolchains @zig_sdk//:linux_amd64_musl_toolchain //test:hello
+    --extra_toolchains @zig_sdk//:linux_amd64_musl_toolchain //test/go:go
 ...
-$ file ../bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/hello_/hello
-../bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/hello_/hello: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, Go BuildID=redacted, with debug_info, not stripped
-$ ../bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/hello_/hello
+$ file bazel-out/k8-opt-ST-d17813c235ce/bin/test/go/go_/go
+bazel-out/k8-opt-ST-d17813c235ce/bin/test/go/go_/go: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, Go BuildID=redacted, stripped
+$ bazel-out/k8-opt-ST-d17813c235ce/bin/test/go/go_/go
 hello, world
 ```
 
 ## macos cgo
 
 ```
-$ bazel build --platforms @zig_sdk//:darwin_amd64_platform //test:hello
+$ bazel build --platforms @zig_sdk//:darwin_amd64_platform //test/go:go
 ...
-$ file bazel-bin/test/hello_/hello
-bazel-bin/test/hello_/hello: Mach-O 64-bit x86_64 executable, flags:<NOUNDEFS|DYLDLINK|TWOLEVEL|PIE>
+$ file bazel-out/k8-opt-ST-d17813c235ce/bin/test/go/go_/go
+bazel-out/k8-opt-ST-d17813c235ce/bin/test/go/go_/go: Mach-O 64-bit x86_64 executable, flags:<NOUNDEFS|DYLDLINK|TWOLEVEL|PIE|HAS_TLV_DESCRIPTORS>
 ```
 
 ## Transient docker environment

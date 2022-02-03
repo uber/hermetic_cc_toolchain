@@ -21,9 +21,9 @@ _test() {
     >&2 echo
     >&2 echo "Testing $name and looking for '$glob':"
     >&2 echo
-    >&2 echo "  bazel build $* //test:test"
+    >&2 echo "  bazel build $* //test/go:go"
     >&2 echo
-    if _build_and_file "$@" //test:test | grep -q "$glob"; then
+    if _build_and_file "$@" //test/go:go | grep -q "$glob"; then
         >&2 echo "OK $name"
         return 0
     else
