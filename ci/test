@@ -1,65 +1,36 @@
 #!/bin/bash
 set -euo pipefail
+
 cd "$(dirname "$0")/.."
 . .envrc
 
-_build_and_file() {
-    file "$(bazel run --color=yes --curses=yes --run_under=echo "$@")" | \
-        tee /dev/stderr
-}
-
 _run() {
+    >&2 echo
     >&2 echo "  $*"
+    >&2 echo
     "$@"
 }
 
-_build() {
-    local name=$1
-    local glob=$2
-    shift; shift;
-    >&2 echo "================================================================"
-    >&2 echo "Building everything under //test/... for $name"
-    >&2 echo
-    _run bazel build --color=yes --curses=yes "$@" //test/...
-    >&2 echo
-    >&2 echo "Testing $name and looking for '$glob':"
-    >&2 echo
-    if _run _build_and_file "$@" //test/go:go | grep -q "$glob"; then
-        >&2 echo "OK $name"
-        return 0
-    else
-        >&2 echo "FAIL $name: glob does not match"
-        return 1
+while read -r action platform toolchain run_under; do
+    args=("$@")
+    if [[ $run_under != : ]]; then
+        args+=(--run_under="$run_under")
     fi
-}
+    args+=(--platforms "@zig_sdk//:${platform}_platform")
+    args+=(--extra_toolchains "@zig_sdk//:${toolchain}_toolchain")
+    args+=(//test/...)
+    _run bazel "$action" "${args[@]}"
+done <<EOF
+test linux_amd64 linux_amd64_gnu.2.19 :
+test linux_amd64 linux_amd64_musl :
+build linux_arm64 linux_arm64_musl :
+build linux_arm64 linux_arm64_gnu.2.28 :
+build darwin_amd64 darwin_amd64 :
+EOF
 
-_build "Host" \
-    "ELF 64-bit.* x86-64.* dynamically linked"
-
-_build "darwin_amd64" \
-  "Mach-O 64-bit x86_64 executable" \
-    --platforms @zig_sdk//:darwin_amd64_platform
-
-# hello world on darwin/arm64 requires OSX SDK via `zig cc --sysroot=<...>`.
-# see https://github.com/ziglang/zig/issues/10299#issuecomment-989595215
-#_build "darwin_arm64" \
-#    "Mach-O 64-bit arm64 executable" \
-#    --platforms @zig_sdk//:darwin_arm64_platform
-
-_build "linux_amd64_gnu" \
-    "ELF 64-bit.* x86-64.* dynamically linked" \
-    --platforms @zig_sdk//:linux_amd64_platform
-
-_build "linux_amd64_musl" \
-    "ELF 64-bit.* x86-64.* statically linked" \
-    --platforms @zig_sdk//:linux_amd64_platform \
-    --extra_toolchains @zig_sdk//:linux_amd64_musl_toolchain
-
-_build "linux_arm64_gnu" \
-    "ELF 64-bit.* ARM aarch64.* dynamically linked" \
-    --platforms @zig_sdk//:linux_arm64_platform
-
-_build "linux_arm64_musl" \
-    "ELF 64-bit.* ARM aarch64.* statically linked" \
-    --platforms @zig_sdk//:linux_arm64_platform \
-    --extra_toolchains @zig_sdk//:linux_arm64_musl_toolchain
+# TODO:
+# works locally, fails on srht:
+#    test linux_arm64 linux_arm64_musl qemu-aarch64
+#
+# fails locally, qemu-aarch64 can't find the files in /usr
+#    test linux_arm64 linux_arm64_gnu.2.28 qemu-aarch64 -L /usr/aarch64-linux-gnu
