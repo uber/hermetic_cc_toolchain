@@ -11,8 +11,8 @@ go_library(
 
 go_binary(
     name = "test",
-    static = "on",
     embed = [":test_lib"],
+    static = "on",
     visibility = ["//visibility:public"],
 )
 
