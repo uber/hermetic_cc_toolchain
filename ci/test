@@ -13,10 +13,17 @@ _test() {
     local glob=$2
     shift; shift;
     >&2 echo "================================================================"
-    >&2 echo "Testing $name and looking for '$glob':"
-    >&2 echo "  bazel build $* //test:hello"
+    >&2 echo "Building everything under //test/... for $name"
     >&2 echo
-    if _build_and_file "$@" //test:hello | grep -q "$glob"; then
+    >&2 echo "  bazel build --color=yes --curses=yes $* //test/..."
+    >&2 echo
+    bazel build --color=yes --curses=yes "$@" //test/...
+    >&2 echo
+    >&2 echo "Testing $name and looking for '$glob':"
+    >&2 echo
+    >&2 echo "  bazel build $* //test:test"
+    >&2 echo
+    if _build_and_file "$@" //test:test | grep -q "$glob"; then
         >&2 echo "OK $name"
         return 0
     else
