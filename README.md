@@ -130,24 +130,8 @@ The path to Bazel toolchains is `@zig_sdk//:<toolchain>_toolchain`. It should
 be moved to `@zig_sdk//toolchain:<toolchain>` or similar; so the user-facing
 targets are in their own namespace.
 
-Currently, platform is not defined in `@zig_sdk`. As you may see in the
-examples, we are currently using the one provided by cgo. E.g.
-`@io_bazel_rules_go//go/toolchain:linux_amd64_cgo`. This is because we want to
-define it in `@zig_sdk//:platform:<platform>`. This is waiting for mine or a
-contributor's attention. You may work around this by sending a patch to
-bazel-zig-cc or specifying the platform in your project:
-
-```
-platform(
-    name = "linux_aarch64",
-    constraint_values = [
-        "@bazel_tools//platforms:linux",
-        "@bazel_tools//platforms:aarch64",
-    ]
-)
-```
-
-and `--platforms="//:linux_aarch64"`.
+Likewise, platforms are `@zig_sdk//:<platform>_platform`, and should be moved
+to `@zig_sdk//:platform:<platform>`.
 
 # Known Issues In Upstream
 
@@ -184,7 +168,7 @@ may apply to aarch64, but the author didn't find a need to test it (yet).
 ## linux cgo + glibc 2.28
 
 ```
-$ bazel build --platforms @io_bazel_rules_go//go/toolchain:linux_amd64_cgo //test:hello
+$ bazel build --platforms @zig_sdk//:linux_amd64_platform //test:hello
 $ file bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/hello_/hello
 bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/hello_/hello: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 2.0.0, Go BuildID=redacted, with debug_info, not stripped
 ```
@@ -193,7 +177,7 @@ bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/hello_/hello: ELF 64-bit LSB exe
 
 ```
 $ bazel build \
-    --platforms @io_bazel_rules_go//go/toolchain:linux_amd64_cgo \
+    --platforms @zig_sdk//:linux_amd64_platform \
     --extra_toolchains @zig_sdk//:linux_amd64_musl_toolchain //test:hello
 ...
 $ file ../bazel-out/k8-fastbuild-ST-d17813c235ce/bin/test/hello_/hello
@@ -205,7 +189,7 @@ hello, world
 ## macos cgo
 
 ```
-$ bazel build --platforms @io_bazel_rules_go//go/toolchain:darwin_amd64_cgo //test:hello
+$ bazel build --platforms @zig_sdk//:darwin_amd64_platform //test:hello
 ...
 $ file bazel-bin/test/hello_/hello
 bazel-bin/test/hello_/hello: Mach-O 64-bit x86_64 executable, flags:<NOUNDEFS|DYLDLINK|TWOLEVEL|PIE>

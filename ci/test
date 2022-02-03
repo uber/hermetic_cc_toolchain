@@ -30,28 +30,28 @@ _test "Host" \
 
 _test "darwin_amd64" \
   "Mach-O 64-bit x86_64 executable" \
-    --platforms @io_bazel_rules_go//go/toolchain:darwin_amd64_cgo
+    --platforms @zig_sdk//:darwin_amd64_platform
 
 # hello world on darwin/arm64 requires OSX SDK via `zig cc --sysroot=<...>`.
 # see https://github.com/ziglang/zig/issues/10299#issuecomment-989595215
 #_test "darwin_arm64" \
 #    "Mach-O 64-bit arm64 executable" \
-#    --platforms @io_bazel_rules_go//go/toolchain:darwin_arm64_cgo
+#    --platforms @zig_sdk//:darwin_arm64_platform
 
 _test "linux_amd64_gnu" \
     "ELF 64-bit.* x86-64.* dynamically linked" \
-    --platforms @io_bazel_rules_go//go/toolchain:linux_amd64_cgo
+    --platforms @zig_sdk//:linux_amd64_platform
 
 _test "linux_amd64_musl" \
     "ELF 64-bit.* x86-64.* statically linked" \
-    --platforms @io_bazel_rules_go//go/toolchain:linux_amd64_cgo \
+    --platforms @zig_sdk//:linux_amd64_platform \
     --extra_toolchains @zig_sdk//:linux_amd64_musl_toolchain
 
 _test "linux_arm64_gnu" \
     "ELF 64-bit.* ARM aarch64.* dynamically linked" \
-    --platforms @io_bazel_rules_go//go/toolchain:linux_arm64_cgo
+    --platforms @zig_sdk//:linux_arm64_platform
 
 _test "linux_arm64_musl" \
     "ELF 64-bit.* ARM aarch64.* statically linked" \
-    --platforms @io_bazel_rules_go//go/toolchain:linux_arm64_cgo \
+    --platforms @zig_sdk//:linux_arm64_platform \
     --extra_toolchains @zig_sdk//:linux_arm64_musl_toolchain
