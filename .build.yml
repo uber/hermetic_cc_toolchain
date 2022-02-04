@@ -2,7 +2,8 @@ image: debian/stable
 packages:
   - direnv
   - shellcheck
-  - qemu-user
+  - qemu-user-static
+  - libc6-arm64-cross
 sources:
   - https://git.sr.ht/~motiejus/bazel-zig-cc
 environment:
@@ -14,14 +15,19 @@ triggers:
 tasks:
   - setup: |
       sudo apt-get purge gcc -y && sudo apt-get autoremove -y
+      sudo mkdir -p /etc/qemu-binfmt
+      sudo ln -sf /usr/aarch64-linux-gnu /etc/qemu-binfmt/aarch64
+  - test_list_toolchains_platforms: |
+      cd bazel-zig-cc; . .envrc
+      echo "Available toolchains:"
+      bazel query @zig_sdk//... | grep _toolchain$
+      echo "Available platforms:"
+      bazel query @zig_sdk//... | grep _platform$
+  - test_hello_on_toolchains: |
+      cd bazel-zig-cc
+      ./ci/test --color=yes --curses=yes
   - lint: |
       cd bazel-zig-cc; . .envrc
       shellcheck -x $(awk '/#!\/bin\/(ba)?sh/&&FNR==1{print FILENAME}' $(git ls-files))
       bazel run //:buildifier
       git diff --exit-code
-  - test_list_toolchains: |
-      cd bazel-zig-cc; . .envrc; echo "Available toolchains:"
-      bazel query @zig_sdk//... | sed -En '/.*_toolchain$/ s/.*:(.*)_toolchain$/\1/p'
-  - test_hello_on_toolchains: |
-      cd bazel-zig-cc
-      ./ci/test --color=yes --curses=yes
