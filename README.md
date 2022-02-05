@@ -60,19 +60,6 @@ used, run:
 $ bazel query @zig_sdk//... | sed -En '/.*_toolchain$/ s/.*:(.*)_toolchain$/\1/p'
 ```
 
-## UBSAN and "SIGILL: Illegal Instruction"
-
-`zig cc` differs from "mainstream" compilers by [enabling UBSAN by
-default][ubsan1]. Which means your program may compile successfully and crash
-with:
-
-```
-SIGILL: illegal instruction
-```
-
-This is by design: it encourages program authors to fix the undefined behavior.
-There are [many ways][ubsan2] to find the undefined behavior.
-
 ## Specifying non-default toolchains (and not registering at all)
 
 You may explicitly request Bazel to use a specific toolchain, even though one
@@ -94,24 +81,25 @@ In that case, you will need to specify the `--extra_toolchains <toolchain>`
 command-line argument. Otherwise Bazel will use the default one -- the host
 toolchain.
 
+## UBSAN and "SIGILL: Illegal Instruction"
+
+`zig cc` differs from "mainstream" compilers by [enabling UBSAN by
+default][ubsan1]. Which means your program may compile successfully and crash
+with:
+
+```
+SIGILL: illegal instruction
+```
+
+This is by design: it encourages program authors to fix the undefined behavior.
+There are [many ways][ubsan2] to find the undefined behavior.
+
 # Known Issues In bazel-zig-cc
 
 These are the things you may stumble into when using bazel-zig-cc. I am
-unlikely to implement them, but patches implementing those will be accepted.
-See [Questions & Contributions](#questions-amp-contributions) on how to
-contribute.
-
-## OSX: sysroot
-
-For non-trivial programs (and for all darwin/arm64 cgo programs) MacOS SDK may
-be necessary. Read [Jakub's comment][sysroot] about it. Support for OSX sysroot
-is currently not implemented.
-
-## OSX: different OS targets (Catalina -- Monterey)
-
-[Zig 0.9.0](https://ziglang.org/download/0.9.0/release-notes.html#macOS) may
-target macos.10 (Catalina), macos.11 (Big Sur) or macos.12 (Monterey). It
-currently targets the lowest version, without ability to change it.
+unlikely to implement them any time soon, but patches implementing those will
+be accepted. See [Questions & Contributions](#questions-amp-contributions) on
+how to contribute.
 
 ## Zig cache
 
@@ -132,6 +120,18 @@ targets are in their own namespace.
 
 Likewise, platforms are `@zig_sdk//:<platform>_platform`, and should be moved
 to `@zig_sdk//:platform:<platform>`.
+
+## OSX: sysroot
+
+For non-trivial programs (and for all darwin/arm64 cgo programs) MacOS SDK may
+be necessary. Read [Jakub's comment][sysroot] about it. Support for OSX sysroot
+is currently not implemented.
+
+## OSX: different OS targets (Catalina -- Monterey)
+
+[Zig 0.9.0](https://ziglang.org/download/0.9.0/release-notes.html#macOS) may
+target macos.10 (Catalina), macos.11 (Big Sur) or macos.12 (Monterey). It
+currently targets the lowest version, without ability to change it.
 
 # Known Issues In Upstream
 
@@ -165,25 +165,26 @@ may apply to aarch64, but the author didn't find a need to test it (yet).
 
 # Testing
 
-## linux cgo + glibc 2.28
+## build & run linux cgo + glibc
 
 ```
 $ bazel build --platforms @zig_sdk//:linux_amd64_platform //test/go:go
 $ file bazel-out/k8-opt-ST-d17813c235ce/bin/test/go/go_/go
 bazel-out/k8-opt-ST-d17813c235ce/bin/test/go/go_/go: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 2.0.0, Go BuildID=redacted, with debug_info, not stripped
-```
-
-## linux cgo + musl
-
-```
-$ bazel build \
-    --platforms @zig_sdk//:linux_amd64_platform \
-    --extra_toolchains @zig_sdk//:linux_amd64_musl_toolchain //test/go:go
-...
-$ file bazel-out/k8-opt-ST-d17813c235ce/bin/test/go/go_/go
-bazel-out/k8-opt-ST-d17813c235ce/bin/test/go/go_/go: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, Go BuildID=redacted, stripped
 $ bazel-out/k8-opt-ST-d17813c235ce/bin/test/go/go_/go
 hello, world
+```
+
+## test linux cgo + musl on arm64 (under qemu-aarch64)
+
+```
+$ bazel test \
+    --run_under=qemu-aarch64 \
+    --platforms @zig_sdk//:linux_arm64_platform \
+    --extra_toolchains @zig_sdk//:linux_arm64_musl_toolchain //test/...
+...
+INFO: Build completed successfully, 10 total actions
+//test/go:go_test                                                        PASSED in 0.2s
 ```
 
 ## macos cgo
