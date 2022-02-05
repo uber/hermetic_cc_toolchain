@@ -4,6 +4,7 @@ packages:
   - shellcheck
   - qemu-user-static
   - libc6-arm64-cross
+  - binfmt-support
 sources:
   - https://git.sr.ht/~motiejus/bazel-zig-cc
 environment:
