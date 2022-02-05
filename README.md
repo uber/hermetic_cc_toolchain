@@ -57,7 +57,7 @@ For example, the toolchain `linux_amd64_gnu.2.28` is aliased to
 used, run:
 
 ```
-$ bazel query @zig_sdk//... | sed -En '/.*_toolchain$/ s/.*:(.*)_toolchain$/\1/p'
+$ bazel query @zig_sdk//... | grep _toolchain$
 ```
 
 ## Specifying non-default toolchains (and not registering at all)
@@ -179,7 +179,7 @@ hello, world
 
 ```
 $ bazel test \
-    --run_under=qemu-aarch64 \
+    --run_under=qemu-aarch64-static \
     --platforms @zig_sdk//:linux_arm64_platform \
     --extra_toolchains @zig_sdk//:linux_arm64_musl_toolchain //test/...
 ...
