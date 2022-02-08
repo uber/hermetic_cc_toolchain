@@ -172,7 +172,7 @@ hello, world
 
 ```
 $ bazel test \
-    --run_under=qemu-aarch64-static \
+    --config=qemu-aarch64 \
     --platforms @zig_sdk//:linux_arm64_platform \
     --extra_toolchains @zig_sdk//:linux_arm64_musl_toolchain //test/...
 ...
