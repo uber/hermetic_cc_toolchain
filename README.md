@@ -63,26 +63,16 @@ used, run:
 $ bazel query @zig_sdk//... | grep _toolchain$
 ```
 
-## Specifying non-default toolchains (and not registering at all)
+## Specifying non-default toolchains
 
-You may explicitly request Bazel to use a specific toolchain, even though one
-is registered using `--extra_toolchains <toolchain>` flag. For example, if you
-wish to compile a specific binary (or run tests) using musl on linux/amd64, you
-may specify:
+You may explicitly request Bazel to use a specific toolchain, even though a
+different one is registered using `--extra_toolchains <toolchain>` in
+`.bazelrc`. For example, if you wish to compile a specific binary (or run
+tests) on linux/amd64/musl, you may specify:
 
 ```
 --extra_toolchains @zig_sdk//:linux_amd64_musl_toolchain
 ```
-
-As an extension to this, you may not register the toolchains at all:
-
-```
-zig_register_toolchains()
-```
-
-In that case, you will need to specify the `--extra_toolchains <toolchain>`
-command-line argument. Otherwise Bazel will use the default one -- the host
-toolchain.
 
 ## UBSAN and "SIGILL: Illegal Instruction"
 
