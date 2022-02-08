@@ -16,8 +16,6 @@ triggers:
 tasks:
   - setup: |
       sudo apt-get purge gcc -y && sudo apt-get autoremove -y
-      sudo mkdir -p /etc/qemu-binfmt
-      sudo ln -sf /usr/aarch64-linux-gnu /etc/qemu-binfmt/aarch64
   - test_list_toolchains_platforms: |
       cd bazel-zig-cc; . .envrc
       echo "Available toolchains:"

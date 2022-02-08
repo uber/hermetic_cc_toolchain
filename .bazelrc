@@ -10,5 +10,6 @@ build --extra_toolchains @zig_sdk//:linux_amd64_gnu.2.19_toolchain
 build --extra_toolchains @zig_sdk//:linux_arm64_gnu.2.28_toolchain
 build --extra_toolchains @zig_sdk//:darwin_amd64_toolchain
 build --extra_toolchains @zig_sdk//:darwin_arm64_toolchain
-#build --incompatible_use_cc_configure_from_rules_cc
-#build --incompatible_use_platforms_repo_for_constraints
+
+test:qemu-aarch64 --test_env=QEMU_LD_PREFIX=/usr/aarch64-linux-gnu/
+test:qemu-aarch64 --run_under=qemu-aarch64-static
