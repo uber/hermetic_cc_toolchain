@@ -53,11 +53,4 @@ load(
     zig_register_toolchains = "register_toolchains",
 )
 
-_REGISTER_TOOLCHAINS = [
-    "linux_arm64_gnu.2.28",
-    "linux_amd64_gnu.2.19",
-    "darwin_amd64",
-    "darwin_arm64",
-]
-
-zig_register_toolchains(register = _REGISTER_TOOLCHAINS)
+zig_register_toolchains()

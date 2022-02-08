@@ -25,23 +25,26 @@ http_archive(
 
 load("@bazel-zig-cc//toolchain:defs.bzl", zig_register_toolchains = "register_toolchains")
 
-zig_register_toolchains(register = [
-    "x86_64-linux-gnu.2.28",
-    "x86_64-macos-gnu",
-])
+zig_register_toolchains()
 ```
 
 And this to `.bazelrc`:
 
 ```
 build --incompatible_enable_cc_toolchain_resolution
+build --extra_toolchains @zig_sdk//:linux_amd64_gnu.2.19_toolchain
+build --extra_toolchains @zig_sdk//:linux_arm64_gnu.2.28_toolchain
+build --extra_toolchains @zig_sdk//:darwin_amd64_toolchain
+build --extra_toolchains @zig_sdk//:darwin_arm64_toolchain
 ```
 
-The snippet above will download the zig toolchain and register it for the
+The snippets above will download the zig toolchain and register it for the
 following platforms:
 
-- `x86_64-linux-gnu.2.28` for `["@platforms//os:linux", "@platforms//cpu:x86_64"]`.
+- `x86_64-linux-gnu.2.19` for `["@platforms//os:linux", "@platforms//cpu:x86_64"]`.
+- `x86_64-linux-gnu.2.28` for `["@platforms//os:linux", "@platforms//cpu:arm64"]`.
 - `x86_64-macos-gnu` for `["@platforms//os:macos", "@platforms//cpu:x86_64"]`.
+- `aarch64-macos-gnu` for `["@platforms//os:macos", "@platforms//cpu:arm64"]`.
 
 Note that both Go and Bazel naming schemes are accepted. For convenience with
 Go, the following Go-style toolchain aliases are created:
