@@ -42,18 +42,18 @@ The snippets above will download the zig toolchain and register it for the
 following platforms:
 
 - `x86_64-linux-gnu.2.19` for `["@platforms//os:linux", "@platforms//cpu:x86_64"]`.
-- `x86_64-linux-gnu.2.28` for `["@platforms//os:linux", "@platforms//cpu:arm64"]`.
+- `x86_64-linux-gnu.2.28` for `["@platforms//os:linux", "@platforms//cpu:aarch64"]`.
 - `x86_64-macos-gnu` for `["@platforms//os:macos", "@platforms//cpu:x86_64"]`.
-- `aarch64-macos-gnu` for `["@platforms//os:macos", "@platforms//cpu:arm64"]`.
+- `aarch64-macos-gnu` for `["@platforms//os:macos", "@platforms//cpu:aarch64"]`.
 
 Note that both Go and Bazel naming schemes are accepted. For convenience with
 Go, the following Go-style toolchain aliases are created:
 
-|Bazel (zig) name |Go name|
---- | ---
-|`x86_64`|`amd64`|
-|`aarch64`|`arm64`|
-|`macos`|`darwin`|
+|Bazel (zig) name | Go name  |
+|---------------- | -------- |
+|`x86_64`         | `amd64`  |
+|`aarch64`        | `arm64`  |
+|`macos`          | `darwin` |
 
 For example, the toolchain `linux_amd64_gnu.2.28` is aliased to
 `x86_64-linux-gnu.2.28`. To find out which toolchains can be registered or
