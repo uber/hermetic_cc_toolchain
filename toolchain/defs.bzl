@@ -222,12 +222,15 @@ def _zig_repository_impl(repository_ctx):
     res = repository_ctx.execute(["uname", "-m"])
     if res.return_code != 0:
         fail("failed to run uname -m")
-    uname = res.stdout.strip()
+    arch = res.stdout.strip()
 
+    os = "linux"
     if repository_ctx.os.name.lower().startswith("mac os"):
-        host_platform = "macos-{}".format(uname)
-    else:
-        host_platform = "linux-{}".format(uname)
+        os = "macos"
+        if arch == "arm64":
+            # uname -m reports arm64 on an M1 Mac.
+            arch = "aarch64"
+    host_platform = "{}-{}".format(os, arch)
 
     zig_include_root = repository_ctx.attr.host_platform_include_root[host_platform]
     zig_sha256 = repository_ctx.attr.host_platform_sha256[host_platform]
