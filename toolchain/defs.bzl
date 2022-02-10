@@ -54,15 +54,17 @@ _GLIBCS = [
 ]
 
 def _target_darwin(gocpu, zigcpu):
+    min_os = "10"
+    if zigcpu == "aarch64":
+        min_os = "11"
     return struct(
         gotarget = "darwin_{}".format(gocpu),
         zigtarget = "{}-macos-gnu".format(zigcpu),
         includes = [
             "libunwind/include",
-            # FIXME: add macos.10, macos.11 and macos.12 targets,
-            # and adjust the includes
-            "libc/include/{}-macos.10-gnu".format(zigcpu),
-            "libc/include/{}-macos-any".format(zigcpu),
+            # TODO: Define a toolchain for each minimum OS version
+            "libc/include/{}-macos.{}-gnu".format(zigcpu, min_os),
+            "libc/include/any-macos.{}-any".format(min_os),
             "libc/include/any-macos-any",
         ],
         linkopts = [],
