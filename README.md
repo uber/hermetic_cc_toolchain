@@ -14,11 +14,11 @@ from Bazel.
 Add this to your `WORKSPACE`:
 
 ```
-BAZEL_ZIG_CC_VERSION = "v0.4.4"
+BAZEL_ZIG_CC_VERSION = "v0.4.5"
 
 http_archive(
     name = "bazel-zig-cc",
-    sha256 = "ad6384b4d16ebb3e5047df6548a195e598346da84e5f320250beb9198705ac81",
+    sha256 = "5888e46c3a6089d4a79b6a5cac8c397e3642ed732910cec8a1011986d68a112b",
     strip_prefix = "bazel-zig-cc-{}".format(BAZEL_ZIG_CC_VERSION),
     urls = ["https://git.sr.ht/~motiejus/bazel-zig-cc/archive/{}.tar.gz".format(BAZEL_ZIG_CC_VERSION)],
 )
