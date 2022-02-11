@@ -193,7 +193,7 @@ bazel-out/k8-opt-ST-d17813c235ce/bin/test/go/go_/go: Mach-O 64-bit x86_64 execut
 
 ```
 $ docker run -e CC=/usr/bin/false -ti --rm -v $(pwd):/x -w /x debian:bullseye-slim
-# apt update && apt install direnv git -y
+# apt update && apt install -y direnv git
 # . .envrc
 ```
 
