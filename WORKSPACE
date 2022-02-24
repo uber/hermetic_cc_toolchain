@@ -28,7 +28,7 @@ load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
 go_rules_dependencies()
 
 # use latest stable.
-go_download_sdk(name="go_sdk")
+go_download_sdk(name = "go_sdk")
 
 go_register_toolchains()
 
