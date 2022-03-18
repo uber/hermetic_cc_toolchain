@@ -158,29 +158,28 @@ _URL_FORMAT_JAKSTYS = "https://dl.jakstys.lt/zig/zig-{host_platform}-{version}.t
 
 _VERSION = "0.10.0-dev.513+029844210"
 
+_HOST_PLATFORM_SHA256 = {
+    "linux-aarch64": "fc0b929948d57d1b15aaac33db0cd136a1f79830926c9285fd3f5b6445f1ef95",
+    "linux-x86_64": "c6f323b02b0bcf7b18143983bf2525640dd541f39af661e963823c9a61a09b28",
+    "macos-aarch64": "0ccd8dad1264474ca824d45c3021b7e549b67792fa1a66cb9d4d7040775319bb",
+    "macos-x86_64": "3c939bebe8648c277ee66d1c600e68576e382d0309dc29eb4c32aba96b83f6f0",
+}
+
 def register_toolchains(
         register = [],
         version = _VERSION,
         url_format = _URL_FORMAT_JAKSTYS,
-        host_platform_sha256 = {}):
+        host_platform_sha256 = _HOST_PLATFORM_SHA256):
     """
         Download zig toolchain and register some.
         @param register registers the given toolchains to the system using
         native.register_toolchains(). See README for possible choices.
     """
-    sha256s = {
-        "linux-aarch64": "fc0b929948d57d1b15aaac33db0cd136a1f79830926c9285fd3f5b6445f1ef95",
-        "linux-x86_64": "c6f323b02b0bcf7b18143983bf2525640dd541f39af661e963823c9a61a09b28",
-        "macos-aarch64": "0ccd8dad1264474ca824d45c3021b7e549b67792fa1a66cb9d4d7040775319bb",
-        "macos-x86_64": "3c939bebe8648c277ee66d1c600e68576e382d0309dc29eb4c32aba96b83f6f0",
-    }
-    sha256s.update(host_platform_sha256)
-
     zig_repository(
         name = "zig_sdk",
         version = version,
         url_format = url_format,
-        host_platform_sha256 = sha256s,
+        host_platform_sha256 = host_platform_sha256,
         host_platform_include_root = {
             "linux-aarch64": "lib/",
             "linux-x86_64": "lib/",
