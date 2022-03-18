@@ -26,6 +26,15 @@ http_archive(
 load("@bazel-zig-cc//toolchain:defs.bzl", zig_register_toolchains = "register_toolchains")
 
 zig_register_toolchains()
+
+# Or, if you are using this in production, you probably want more control:
+zig_register_toolchains(
+    version = "<...>",
+    url_formats = [
+        "https://example.internal/zig/zig-{host_platform}-{version}.tar.xz",
+    ],
+    host_platform_sha256 = { ... },
+)
 ```
 
 And this to `.bazelrc`:
@@ -98,12 +107,6 @@ how to contribute.
 
 Currently zig cache is in `$HOME`, so `bazel clean --expunge` does not clear
 the zig cache. Zig's cache should be stored somewhere in the project's path.
-
-## Alternative download URLs
-
-Currently zig is downloaded from
-[dl.jakstys.lt/zig](https://dl.jakstys.lt/zig/), which is nuts. One should
-provide a way to specify alternative URLs for the zig toolchain.
 
 ## Toolchain and platform target locations
 

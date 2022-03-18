@@ -140,21 +140,21 @@ def _target_linux_musl(gocpu, zigcpu):
     )
 
 # Official recommended version. Should use this when we have a usable release.
-_URL_FORMAT_RELEASE = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.tar.xz"
+URL_FORMAT_RELEASE = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.tar.xz"
 
 # Caution: nightly releases are purged from ziglang.org after ~90 days. A real
 # solution would be to allow the downstream project specify their own mirrors.
 # This is explained in
 # https://sr.ht/~motiejus/bazel-zig-cc/#alternative-download-urls and is
 # awaiting my attention or your contribution.
-_URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform}-{version}.tar.xz"
+URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform}-{version}.tar.xz"
 
 # Author's mirror that doesn't purge the nightlies so aggressively. I will be
 # cleaning those up manually only after the artifacts are not in use for many
 # months in bazel-zig-cc. dl.jakstys.lt is a small x86_64 server with an NVMe
 # drive sitting in my home closet on a 1GB/s symmetric residential connection,
 # which, as of writing, has been quite reliable.
-_URL_FORMAT_JAKSTYS = "https://dl.jakstys.lt/zig/zig-{host_platform}-{version}.tar.xz"
+URL_FORMAT_JAKSTYS = "https://dl.jakstys.lt/zig/zig-{host_platform}-{version}.tar.xz"
 
 _VERSION = "0.10.0-dev.513+029844210"
 
@@ -168,8 +168,7 @@ _HOST_PLATFORM_SHA256 = {
 def register_toolchains(
         register = [],
         version = _VERSION,
-        url_format = [_URL_FORMAT_JAKSTYS],
-        url_formats = [],
+        url_formats = [URL_FORMAT_JAKSTYS],
         host_platform_sha256 = _HOST_PLATFORM_SHA256):
     """
         Download zig toolchain and register some.
@@ -179,8 +178,7 @@ def register_toolchains(
     zig_repository(
         name = "zig_sdk",
         version = version,
-        url_format = url_format if type(url_format) == type("") else None,
-        url_formats = url_format if type(url_format) == type([""]) else None,
+        url_formats = url_formats,
         host_platform_sha256 = host_platform_sha256,
         host_platform_include_root = {
             "linux-aarch64": "lib/",
@@ -242,13 +240,7 @@ def _zig_repository_impl(repository_ctx):
         "host_platform": host_platform,
     }
 
-    url_format = repository_ctx.attr.url_format
     url_formats = repository_ctx.attr.url_formats
-
-    if len(url_formats) == 0:
-        url_formats = [url_format]
-    elif url_format != "":
-        fail("Only one of url_format and url_formats should be specified.")
 
     repository_ctx.download_and_extract(
         url = [uf.format(**format_vars) for uf in url_formats],
@@ -288,8 +280,7 @@ zig_repository = repository_rule(
     attrs = {
         "version": attr.string(),
         "host_platform_sha256": attr.string_dict(),
-        "url_format": attr.string(doc = "Deprecated in favor of url_formats"),
-        "url_formats": attr.string_list(),
+        "url_formats": attr.string_list(allow_empty = False),
         "host_platform_include_root": attr.string_dict(),
     },
     implementation = _zig_repository_impl,
