@@ -157,13 +157,13 @@ URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform}-{version}.t
 # which, as of writing, has been quite reliable.
 URL_FORMAT_JAKSTYS = "https://dl.jakstys.lt/zig/zig-{host_platform}-{version}.tar.xz"
 
-_VERSION = "0.10.0-dev.513+029844210"
+_VERSION = "0.10.0-dev.1393+291f5055f"
 
 _HOST_PLATFORM_SHA256 = {
-    "linux-aarch64": "fc0b929948d57d1b15aaac33db0cd136a1f79830926c9285fd3f5b6445f1ef95",
-    "linux-x86_64": "c6f323b02b0bcf7b18143983bf2525640dd541f39af661e963823c9a61a09b28",
-    "macos-aarch64": "0ccd8dad1264474ca824d45c3021b7e549b67792fa1a66cb9d4d7040775319bb",
-    "macos-x86_64": "3c939bebe8648c277ee66d1c600e68576e382d0309dc29eb4c32aba96b83f6f0",
+    "linux-aarch64": "10c6618f57f6253c047098aee4093fe36e7fc4da7f0ed2451cca91e8b84575b8",
+    "linux-x86_64": "de30008c98ba61791ab5caa78ec9fbe20c76f8e57c7a41e1cf5788d8f59b4c7e",
+    "macos-aarch64": "72edc26973d697bba68f138701ebf9755548677ecedd853fd224baa836bef2f8",
+    "macos-x86_64": "78220a4460a7c0f563d7365313fcd3ea028ed38166ebac55ba22f17ab6404851",
 }
 
 def register_toolchains(
