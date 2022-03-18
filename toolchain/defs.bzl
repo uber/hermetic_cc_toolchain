@@ -168,7 +168,8 @@ _HOST_PLATFORM_SHA256 = {
 def register_toolchains(
         register = [],
         version = _VERSION,
-        url_format = _URL_FORMAT_JAKSTYS,
+        url_format = [_URL_FORMAT_JAKSTYS],
+        url_formats = [],
         host_platform_sha256 = _HOST_PLATFORM_SHA256):
     """
         Download zig toolchain and register some.
@@ -178,7 +179,8 @@ def register_toolchains(
     zig_repository(
         name = "zig_sdk",
         version = version,
-        url_format = url_format,
+        url_format = url_format if type(url_format) == type("") else None,
+        url_formats = url_format if type(url_format) == type([""]) else None,
         host_platform_sha256 = host_platform_sha256,
         host_platform_include_root = {
             "linux-aarch64": "lib/",
@@ -239,10 +241,17 @@ def _zig_repository_impl(repository_ctx):
         "version": repository_ctx.attr.version,
         "host_platform": host_platform,
     }
-    zig_url = repository_ctx.attr.url_format.format(**format_vars)
+
+    url_format = repository_ctx.attr.url_format
+    url_formats = repository_ctx.attr.url_formats
+
+    if len(url_formats) == 0:
+        url_formats = [url_format]
+    elif url_format != "":
+        fail("Only one of url_format and url_formats should be specified.")
 
     repository_ctx.download_and_extract(
-        url = zig_url,
+        url = [uf.format(**format_vars) for uf in url_formats],
         stripPrefix = "zig-{host_platform}-{version}/".format(**format_vars),
         sha256 = zig_sha256,
     )
@@ -279,7 +288,8 @@ zig_repository = repository_rule(
     attrs = {
         "version": attr.string(),
         "host_platform_sha256": attr.string_dict(),
-        "url_format": attr.string(),
+        "url_format": attr.string(doc = "Deprecated in favor of url_formats"),
+        "url_formats": attr.string_list(),
         "host_platform_include_root": attr.string_dict(),
     },
     implementation = _zig_repository_impl,
