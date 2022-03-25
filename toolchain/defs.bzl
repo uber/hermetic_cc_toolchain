@@ -1,6 +1,6 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-load("@bazel_tools//tools/build_defs/repo:utils.bzl", "read_netrc", "use_netrc")
+load("@bazel_tools//tools/build_defs/repo:utils.bzl", "read_user_netrc", "use_netrc")
 load(":zig_toolchain.bzl", "zig_cc_toolchain_config")
 
 DEFAULT_TOOL_PATHS = {
@@ -240,7 +240,7 @@ def _zig_repository_impl(repository_ctx):
 
     urls = [uf.format(**format_vars) for uf in repository_ctx.attr.url_formats]
     repository_ctx.download_and_extract(
-        auth = use_netrc(_read_user_netrc(repository_ctx), urls, {}),
+        auth = use_netrc(read_user_netrc(repository_ctx), urls, {}),
         url = urls,
         stripPrefix = "zig-{host_platform}-{version}/".format(**format_vars),
         sha256 = zig_sha256,
@@ -396,25 +396,3 @@ def zig_build_macro(absolute_path, zig_include_root):
                     name = "{os}_{gocpu}_platform".format(os = os, gocpu = gocpu),
                     constraint_values = constraint_values,
                 )
-
-# Copied from https://github.com/bazelbuild/bazel/blob/master/tools/build_defs/repo/utils.bzl
-# TODO: Upgrade to Bazel 5.1 and import this instead.
-def _read_user_netrc(ctx):
-    """Read user's default netrc file.
-    Args:
-      ctx: The repository context of the repository rule calling this utility function.
-    Returns:
-      dict mapping a machine names to a dict with the information provided about them.
-    """
-    if ctx.os.name.startswith("windows"):
-        home_dir = ctx.os.environ.get("USERPROFILE", "")
-    else:
-        home_dir = ctx.os.environ.get("HOME", "")
-
-    if not home_dir:
-        return {}
-
-    netrcfile = "{}/.netrc".format(home_dir)
-    if not ctx.path(netrcfile).exists:
-        return {}
-    return read_netrc(ctx, netrcfile)
