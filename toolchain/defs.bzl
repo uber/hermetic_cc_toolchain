@@ -221,17 +221,14 @@ _ZIG_TOOLS = [
 ]
 
 def _zig_repository_impl(repository_ctx):
-    res = repository_ctx.execute(["uname", "-m"])
-    if res.return_code != 0:
-        fail("failed to run uname -m")
-    arch = res.stdout.strip()
+    arch = repository_ctx.os.arch
+    if arch == "amd64":
+        arch = "x86_64"
 
-    os = "linux"
-    if repository_ctx.os.name.lower().startswith("mac os"):
+    os = repository_ctx.os.name.lower()
+    if os.startswith("mac os"):
         os = "macos"
-        if arch == "arm64":
-            # uname -m reports arm64 on an M1 Mac.
-            arch = "aarch64"
+
     host_platform = "{}-{}".format(os, arch)
 
     zig_include_root = repository_ctx.attr.host_platform_include_root[host_platform]
