@@ -1,3 +1,3 @@
-load("@bazel-zig-cc//toolchain:defs.bzl", "declare_platforms")
+load("@bazel-zig-cc//toolchain/platform:defs.bzl", "declare_platforms")
 
 declare_platforms()
