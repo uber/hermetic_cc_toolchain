@@ -1,11 +1,10 @@
-load("@bazel-zig-cc//toolchain:defs.bzl", "zig_build_macro")
+load("@bazel-zig-cc//toolchain:defs.bzl", "declare_files")
 
 package(
     default_visibility = ["//visibility:public"],
 )
 
-zig_build_macro(
-    absolute_path = {absolute_path},
+declare_files(
     zig_include_root = {zig_include_root},
 )
 

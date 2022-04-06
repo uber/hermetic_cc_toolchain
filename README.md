@@ -41,10 +41,10 @@ And this to `.bazelrc`:
 
 ```
 build --incompatible_enable_cc_toolchain_resolution
-build --extra_toolchains @zig_sdk//:linux_amd64_gnu.2.19_toolchain
-build --extra_toolchains @zig_sdk//:linux_arm64_gnu.2.28_toolchain
-build --extra_toolchains @zig_sdk//:darwin_amd64_toolchain
-build --extra_toolchains @zig_sdk//:darwin_arm64_toolchain
+build --extra_toolchains @zig_sdk//toolchain:linux_amd64_gnu.2.19
+build --extra_toolchains @zig_sdk//toolchain:linux_arm64_gnu.2.28
+build --extra_toolchains @zig_sdk//toolchain:darwin_amd64
+build --extra_toolchains @zig_sdk//toolchain:darwin_arm64
 ```
 
 The snippets above will download the zig toolchain and register it for the
@@ -80,7 +80,7 @@ different one is registered using `--extra_toolchains <toolchain>` in
 tests) on linux/amd64/musl, you may specify:
 
 ```
---extra_toolchains @zig_sdk//:linux_amd64_musl_toolchain
+--extra_toolchains @zig_sdk//toolchain:linux_amd64_musl
 ```
 
 ## UBSAN and "SIGILL: Illegal Instruction"
@@ -107,12 +107,6 @@ how to contribute.
 
 Currently zig cache is in `$HOME`, so `bazel clean --expunge` does not clear
 the zig cache. Zig's cache should be stored somewhere in the project's path.
-
-## Toolchain and platform target locations
-
-The path to Bazel toolchains is `@zig_sdk//:<toolchain>_toolchain`. It should
-be moved to `@zig_sdk//toolchain:<toolchain>` or similar; so the user-facing
-targets are in their own namespace.
 
 ## OSX: sysroot
 
@@ -174,7 +168,7 @@ hello, world
 $ bazel test \
     --config=qemu-aarch64 \
     --platforms @zig_sdk//platform:linux_arm64 \
-    --extra_toolchains @zig_sdk//:linux_arm64_musl_toolchain //test/...
+    --extra_toolchains @zig_sdk//toolchain:linux_arm64_musl //test/...
 ...
 INFO: Build completed successfully, 10 total actions
 //test/go:go_test                                                        PASSED in 0.2s

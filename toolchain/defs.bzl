@@ -189,7 +189,7 @@ def register_toolchains(
         },
     )
 
-    toolchains = ["@zig_sdk//:%s_toolchain" % t for t in register]
+    toolchains = ["@zig_sdk//:toolchain:%s" % t for t in register]
     native.register_toolchains(*toolchains)
 
 ZIG_TOOL_PATH = "tools/{zig_tool}"
@@ -268,10 +268,18 @@ def _zig_repository_impl(repository_ctx):
         Label("//toolchain/platform:BUILD"),
         "platform/BUILD",
     )
+    repository_ctx.template(
+        "BUILD",
+        Label("//toolchain:BUILD.sdk.bazel"),
+        executable = False,
+        substitutions = {
+            "{zig_include_root}": shell.quote(zig_include_root),
+        },
+    )
 
     repository_ctx.template(
-        "BUILD.bazel",
-        Label("//toolchain:BUILD.sdk.bazel"),
+        "toolchain/BUILD",
+        Label("//toolchain/toolchain:BUILD.sdk.bazel"),
         executable = False,
         substitutions = {
             "{absolute_path}": shell.quote(str(repository_ctx.path(""))),
@@ -302,7 +310,7 @@ def filegroup(name, **kwargs):
     native.filegroup(name = name, **kwargs)
     return ":" + name
 
-def zig_build_macro(absolute_path, zig_include_root):
+def declare_files(zig_include_root):
     filegroup(name = "empty")
     native.exports_files(["zig"], visibility = ["//visibility:public"])
     filegroup(name = "lib/std", srcs = native.glob(["lib/std/**"]))
@@ -310,14 +318,20 @@ def zig_build_macro(absolute_path, zig_include_root):
     lazy_filegroups = {}
 
     for target_config in _target_structs():
+        for d in DEFAULT_INCLUDE_DIRECTORIES + target_config.includes:
+            d = zig_include_root + d
+            if d not in lazy_filegroups:
+                lazy_filegroups[d] = filegroup(name = d, srcs = native.glob([d + "/**"]))
+
+
+def declare_toolchains(absolute_path, zig_include_root):
+    for target_config in _target_structs():
         gotarget = target_config.gotarget
         zigtarget = target_config.zigtarget
 
         cxx_builtin_include_directories = []
         for d in DEFAULT_INCLUDE_DIRECTORIES + target_config.includes:
             d = zig_include_root + d
-            if d not in lazy_filegroups:
-                lazy_filegroups[d] = filegroup(name = d, srcs = native.glob([d + "/**"]))
             cxx_builtin_include_directories.append(absolute_path + "/" + d)
         for d in getattr(target_config, "toplevel_include", []):
             cxx_builtin_include_directories.append(absolute_path + "/" + d)
@@ -338,7 +352,7 @@ def zig_build_macro(absolute_path, zig_include_root):
             copts = copts + ["-include", absolute_path + "/" + incl]
 
         zig_cc_toolchain_config(
-            name = zigtarget + "_toolchain_cc_config",
+            name = zigtarget + "_cc_config",
             target = zigtarget,
             tool_paths = absolute_tool_paths,
             cxx_builtin_include_directories = cxx_builtin_include_directories,
@@ -353,35 +367,34 @@ def zig_build_macro(absolute_path, zig_include_root):
         )
 
         native.cc_toolchain(
-            name = zigtarget + "_toolchain_cc",
+            name = zigtarget + "_cc",
             toolchain_identifier = zigtarget + "-toolchain",
-            toolchain_config = ":%s_toolchain_cc_config" % zigtarget,
-            all_files = ":zig",
-            ar_files = ":zig",
-            compiler_files = ":zig",
-            linker_files = ":zig",
-            dwp_files = ":empty",
-            objcopy_files = ":empty",
-            strip_files = ":empty",
+            toolchain_config = ":%s_cc_config" % zigtarget,
+            all_files = "@zig_sdk//:zig",
+            ar_files = "@zig_sdk//:zig",
+            compiler_files = "@zig_sdk//:zig",
+            linker_files = "@zig_sdk//:zig",
+            dwp_files = "@zig_sdk//:empty",
+            objcopy_files = "@zig_sdk//:empty",
+            strip_files = "@zig_sdk//:empty",
             supports_param_files = 0,
         )
 
         # register two kinds of toolchain targets: Go and Zig conventions.
         # Go convention: amd64/arm64, linux/darwin
         native.toolchain(
-            name = gotarget + "_toolchain",
+            name = gotarget,
             exec_compatible_with = None,
             target_compatible_with = target_config.constraint_values,
-            toolchain = ":%s_toolchain_cc" % zigtarget,
+            toolchain = ":%s_cc" % zigtarget,
             toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
         )
 
         # Zig convention: x86_64/aarch64, linux/macos
         native.toolchain(
-            name = zigtarget + "_toolchain",
+            name = zigtarget,
             exec_compatible_with = None,
             target_compatible_with = target_config.constraint_values,
-            toolchain = ":%s_toolchain_cc" % zigtarget,
+            toolchain = ":%s_cc" % zigtarget,
             toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
         )
-

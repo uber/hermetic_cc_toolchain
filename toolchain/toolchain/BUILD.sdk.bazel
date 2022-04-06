@@ -1,0 +1,10 @@
+load("@bazel-zig-cc//toolchain:defs.bzl", "declare_toolchains")
+
+package(
+    default_visibility = ["//visibility:public"],
+)
+
+declare_toolchains(
+    absolute_path = {absolute_path},
+    zig_include_root = {zig_include_root},
+)
