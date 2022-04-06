@@ -264,6 +264,11 @@ def _zig_repository_impl(repository_ctx):
         content = _fcntl_h,
     )
 
+    repository_ctx.symlink(
+        Label("//toolchain/platform:BUILD"),
+        "platform/BUILD",
+    )
+
     repository_ctx.template(
         "BUILD.bazel",
         Label("//toolchain:BUILD.sdk.bazel"),
@@ -380,6 +385,7 @@ def zig_build_macro(absolute_path, zig_include_root):
             toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
         )
 
+def declare_platforms():
     # create @zig_sdk//{os}_{arch}_platform entries with zig and go conventions
     for zigcpu, gocpu in (("x86_64", "amd64"), ("aarch64", "arm64")):
         for bzlos, oss in {"linux": ["linux"], "macos": ["macos", "darwin"]}.items():
@@ -389,10 +395,10 @@ def zig_build_macro(absolute_path, zig_include_root):
                     "@platforms//cpu:{}".format(zigcpu),
                 ]
                 native.platform(
-                    name = "{os}_{zigcpu}_platform".format(os = os, zigcpu = zigcpu),
+                    name = "{os}_{zigcpu}".format(os = os, zigcpu = zigcpu),
                     constraint_values = constraint_values,
                 )
                 native.platform(
-                    name = "{os}_{gocpu}_platform".format(os = os, gocpu = gocpu),
+                    name = "{os}_{gocpu}".format(os = os, gocpu = gocpu),
                     constraint_values = constraint_values,
                 )

@@ -18,7 +18,7 @@ while read -r action platform toolchain config; do
     fi
 
     args+=(\
-        --platforms "@zig_sdk//:${platform}_platform" \
+        --platforms "@zig_sdk//platform:${platform}" \
         --extra_toolchains "@zig_sdk//:${toolchain}_toolchain" \
         //test/... \
     )

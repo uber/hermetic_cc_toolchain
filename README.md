@@ -114,9 +114,6 @@ The path to Bazel toolchains is `@zig_sdk//:<toolchain>_toolchain`. It should
 be moved to `@zig_sdk//toolchain:<toolchain>` or similar; so the user-facing
 targets are in their own namespace.
 
-Likewise, platforms are `@zig_sdk//:<platform>_platform`, and should be moved
-to `@zig_sdk//:platform:<platform>`.
-
 ## OSX: sysroot
 
 For non-trivial programs (and for all darwin/arm64 cgo programs) MacOS SDK may
@@ -164,7 +161,7 @@ may apply to aarch64, but the author didn't find a need to test it (yet).
 ## build & run linux cgo + glibc
 
 ```
-$ bazel build --platforms @zig_sdk//:linux_amd64_platform //test/go:go
+$ bazel build --platforms @zig_sdk//platform:linux_amd64 //test/go:go
 $ file bazel-out/k8-opt-ST-d17813c235ce/bin/test/go/go_/go
 bazel-out/k8-opt-ST-d17813c235ce/bin/test/go/go_/go: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 2.0.0, Go BuildID=redacted, with debug_info, not stripped
 $ bazel-out/k8-opt-ST-d17813c235ce/bin/test/go/go_/go
@@ -176,7 +173,7 @@ hello, world
 ```
 $ bazel test \
     --config=qemu-aarch64 \
-    --platforms @zig_sdk//:linux_arm64_platform \
+    --platforms @zig_sdk//platform:linux_arm64 \
     --extra_toolchains @zig_sdk//:linux_arm64_musl_toolchain //test/...
 ...
 INFO: Build completed successfully, 10 total actions
@@ -186,7 +183,7 @@ INFO: Build completed successfully, 10 total actions
 ## macos cgo
 
 ```
-$ bazel build --platforms @zig_sdk//:darwin_amd64_platform //test/go:go
+$ bazel build --platforms @zig_sdk//platform:darwin_amd64 //test/go:go
 ...
 $ file bazel-out/k8-opt-ST-d17813c235ce/bin/test/go/go_/go
 bazel-out/k8-opt-ST-d17813c235ce/bin/test/go/go_/go: Mach-O 64-bit x86_64 executable, flags:<NOUNDEFS|DYLDLINK|TWOLEVEL|PIE|HAS_TLV_DESCRIPTORS>
