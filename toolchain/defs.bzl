@@ -143,6 +143,7 @@ def _zig_repository_impl(repository_ctx):
         Label("//toolchain/platform:BUILD"),
         "platform/BUILD",
     )
+
     repository_ctx.template(
         "BUILD",
         Label("//toolchain:BUILD.sdk.bazel"),
@@ -152,9 +153,14 @@ def _zig_repository_impl(repository_ctx):
         },
     )
 
-    repository_ctx.template(
+    repository_ctx.symlink(
+        Label("//toolchain/toolchain:BUILD"),
         "toolchain/BUILD",
-        Label("//toolchain/toolchain:BUILD.sdk.bazel"),
+    )
+
+    repository_ctx.template(
+        "private/BUILD",
+        Label("//toolchain/private:BUILD.sdk.bazel"),
         executable = False,
         substitutions = {
             "{absolute_path}": shell.quote(str(repository_ctx.path(""))),
