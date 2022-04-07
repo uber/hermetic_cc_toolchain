@@ -19,9 +19,9 @@ tasks:
   - test_list_toolchains_platforms: |
       cd bazel-zig-cc; . .envrc
       echo "Available toolchains:"
-      bazel query @zig_sdk//... | grep _toolchain$
+      bazel query @zig_sdk//toolchain:*
       echo "Available platforms:"
-      bazel query @zig_sdk//... | grep _platform$
+      bazel query @zig_sdk//platform:*
   - test_hello_on_toolchains: |
       cd bazel-zig-cc
       ./ci/test --color=yes --curses=yes
