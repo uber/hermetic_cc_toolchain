@@ -172,8 +172,6 @@ zig_repository = repository_rule(
     implementation = _zig_repository_impl,
 )
 
-
-
 def filegroup(name, **kwargs):
     native.filegroup(name = name, **kwargs)
     return ":" + name
