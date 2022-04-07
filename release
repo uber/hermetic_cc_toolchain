@@ -18,7 +18,7 @@ last_tag=$(git tag | tail -1)
     echo bazel-zig-cc "$1"
     echo
     echo Changelog since "$last_tag":
-    git log --pretty=format:"- [%cn] %s" "$last_tag"..HEAD
+    git log --pretty=format:"- [%an] %s" "$last_tag"..HEAD
 } | git tag -u motiejus@jakstys.lt -F - "$1"
 
 shasum=$(git archive --prefix="bazel-zig-cc-$1/" --format=tar "$1" | \
