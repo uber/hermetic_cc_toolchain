@@ -211,9 +211,6 @@ fixed by submitting a patch.
 To contribute, send your patches to the mailing list, as described in
 [git-send-email.io][git-send-email] or via [Sourcehut web UI][video].
 
-Development is happening in the [next][next] branch. It may be incompatible
-with main, but is expected to be landed "soon".
-
 Copyright is retained by the contributors.
 
 # Thanks
@@ -229,4 +226,3 @@ the issues promptly.
 [sysroot]: https://github.com/ziglang/zig/issues/10299#issuecomment-989153750
 [ubsan1]: https://github.com/ziglang/zig/issues/4830#issuecomment-605491606
 [ubsan2]: https://github.com/ziglang/zig/issues/5163
-[next]: https://git.sr.ht/~motiejus/bazel-zig-cc/tree/next
