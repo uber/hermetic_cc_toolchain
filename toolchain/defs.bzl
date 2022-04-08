@@ -65,7 +65,7 @@ def register_toolchains(
         },
     )
 
-    toolchains = ["@zig_sdk//:toolchain:%s" % t for t in register]
+    toolchains = ["@zig_sdk//toolchain:%s" % t for t in register]
     native.register_toolchains(*toolchains)
 
 ZIG_TOOL_WRAPPER = """#!/bin/bash
