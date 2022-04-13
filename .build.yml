@@ -3,7 +3,6 @@ packages:
   - direnv
   - shellcheck
   - qemu-user-static
-  - libc6-arm64-cross
   - binfmt-support
 sources:
   - https://git.sr.ht/~motiejus/bazel-zig-cc
@@ -16,17 +15,19 @@ triggers:
 tasks:
   - setup: |
       sudo apt-get purge gcc -y && sudo apt-get autoremove -y
-  - test_list_toolchains_platforms: |
+      sudo dpkg --add-architecture arm64
+      sudo apt-get update
+      sudo apt-get install libc6:arm64 -y
+  - list_toolchains_platforms: |
       cd bazel-zig-cc; . .envrc
       echo "Available toolchains:"
       bazel query @zig_sdk//toolchain:*
       echo "Available platforms:"
       bazel query @zig_sdk//platform:*
-  - test_hello_on_toolchains: |
-      cd bazel-zig-cc
+  - test: |
+      cd bazel-zig-cc; . .envrc
       ./ci/test --color=yes --curses=yes
   - lint: |
       cd bazel-zig-cc; . .envrc
-      shellcheck -x $(awk '/#!\/bin\/(ba)?sh/&&FNR==1{print FILENAME}' $(git ls-files))
-      bazel run //:buildifier
+      ./ci/lint
       git diff --exit-code

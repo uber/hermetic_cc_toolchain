@@ -2,9 +2,8 @@
 
 set -xeuo pipefail
 
-cd "$(git rev-parse --show-toplevel)"
-bazel build @go_sdk//:go_sdk
-bazel-bazel-zig-cc/external/go_sdk/bin/go mod tidy
+cd "$(git rev-parse --show-toplevel)/"
+bazel run @go_sdk//:bin/go -- mod tidy
 exec bazel run //:gazelle -- update-repos \
     -from_file=go.mod \
     -prune \

@@ -69,7 +69,7 @@ For example, the toolchain `linux_amd64_gnu.2.28` is aliased to
 used, run:
 
 ```
-$ bazel query @zig_sdk//... | grep _toolchain$
+$ bazel query @zig_sdk//toolchain/...
 ```
 
 ## Specifying non-default toolchains
@@ -151,48 +151,22 @@ may apply to aarch64, but the author didn't find a need to test it (yet).
 - [golang/go #46644 cmd/link: with CC=zig: SIGSERV when cross-compiling to darwin/amd64](https://github.com/golang/go/issues/46644) (CLOSED, thanks kubkon)
 
 # Testing
-
-## build & run linux cgo + glibc
-
-```
-$ bazel build --platforms @zig_sdk//platform:linux_amd64 //test/go:go
-$ file bazel-out/k8-opt-ST-d17813c235ce/bin/test/go/go_/go
-bazel-out/k8-opt-ST-d17813c235ce/bin/test/go/go_/go: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 2.0.0, Go BuildID=redacted, with debug_info, not stripped
-$ bazel-out/k8-opt-ST-d17813c235ce/bin/test/go/go_/go
-hello, world
-```
-
-## test linux cgo + musl on arm64 (under qemu-aarch64)
-
-```
-$ bazel test \
-    --config=qemu-aarch64 \
-    --platforms @zig_sdk//platform:linux_arm64 \
-    --extra_toolchains @zig_sdk//toolchain:linux_arm64_musl //test/...
-...
-INFO: Build completed successfully, 10 total actions
-//test/go:go_test                                                        PASSED in 0.2s
-```
-
-## macos cgo
-
-```
-$ bazel build --platforms @zig_sdk//platform:darwin_amd64 //test/go:go
-...
-$ file bazel-out/k8-opt-ST-d17813c235ce/bin/test/go/go_/go
-bazel-out/k8-opt-ST-d17813c235ce/bin/test/go/go_/go: Mach-O 64-bit x86_64 executable, flags:<NOUNDEFS|DYLDLINK|TWOLEVEL|PIE|HAS_TLV_DESCRIPTORS>
-```
-
 ## Transient docker environment
 
+First of all, make sure that your kernel is configured to run arm64 binaries.
+You can either `apt install qemu-user-static binfmt-support`; this should setup
+`binfmt_misc` to handle arm64 binaries. Or you can use this handy dockerized
+script `docker run --rm --privileged multiarch/qemu-user-static --reset -p yes`.
+
 ```
-$ docker run -e CC=/usr/bin/false -ti --rm -v $(pwd):/x -w /x debian:bullseye-slim
-# apt update && apt install -y direnv git
+$ docker run -e CC=/usr/bin/false -ti --rm -v $(git rev-parse --show-toplevel):/x -w /x debian:bullseye-slim
+# dpkg --add-architecture arm64 && apt update && apt install -y direnv git shellcheck libc6:arm64
 # . .envrc
+# ./ci/test
+# ./ci/lint
 ```
 
-And run the `bazel build` commands above. Take a look at `.build.yml` and see
-how CI does it.
+See `ci/test` for how tests are run.
 
 # Questions & Contributions
 

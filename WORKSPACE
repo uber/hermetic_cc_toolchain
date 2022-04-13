@@ -42,18 +42,6 @@ go_repositories()
 
 gazelle_dependencies(go_repository_default_config = "@//:WORKSPACE")
 
-# protobuf is required for //:buildifier
-http_archive(
-    name = "com_google_protobuf",
-    sha256 = "25f1292d4ea6666f460a2a30038eef121e6c3937ae0f61d610611dfb14b0bd32",
-    strip_prefix = "protobuf-3.19.1",
-    urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.19.1.zip"],
-)
-
-load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
-
-protobuf_deps()
-
 load(
     "//toolchain:defs.bzl",
     zig_register_toolchains = "register_toolchains",
