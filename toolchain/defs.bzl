@@ -1,4 +1,3 @@
-load("@bazel_skylib//lib:shell.bzl", "shell")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "read_user_netrc", "use_netrc")
 load("@bazel-zig-cc//toolchain/private:defs.bzl", "DEFAULT_INCLUDE_DIRECTORIES", "ZIG_TOOL_PATH", "target_structs")
@@ -42,15 +41,15 @@ _HOST_PLATFORM_SHA256 = {
     "macos-x86_64": "78220a4460a7c0f563d7365313fcd3ea028ed38166ebac55ba22f17ab6404851",
 }
 
-def register_toolchains(
-        register = [],
+def toolchains(
         version = _VERSION,
         url_formats = [URL_FORMAT_JAKSTYS],
         host_platform_sha256 = _HOST_PLATFORM_SHA256):
     """
-        Download zig toolchain and register some.
-        @param register registers the given toolchains to the system using
-        native.register_toolchains(). See README for possible choices.
+        Download zig toolchain and declare bazel toolchains.
+        The platforms are not registered automatically, that should be done by
+        the user with register_toolchains() in the WORKSPACE file. See README
+        for possible choices.
     """
     zig_repository(
         name = "zig_sdk",
@@ -64,9 +63,6 @@ def register_toolchains(
             "macos-x86_64": "lib/zig/",
         },
     )
-
-    toolchains = ["@zig_sdk//toolchain:%s" % t for t in register]
-    native.register_toolchains(*toolchains)
 
 ZIG_TOOL_WRAPPER = """#!/bin/bash
 set -e
@@ -94,6 +90,9 @@ _ZIG_TOOLS = [
     "lld-link",  # COFF
     "wasm-ld",  # WebAssembly
 ]
+
+def _quote(s):
+    return "'" + s.replace("'", "'\\''") + "'"
 
 def _zig_repository_impl(repository_ctx):
     arch = repository_ctx.os.arch
@@ -139,34 +138,28 @@ def _zig_repository_impl(repository_ctx):
         content = _fcntl_h,
     )
 
-    repository_ctx.symlink(
-        Label("//toolchain/platform:BUILD"),
-        "platform/BUILD",
-    )
+    for dest, src in {
+        "platform/BUILD": "//toolchain/platform:BUILD",
+        "toolchain/BUILD": "//toolchain/toolchain:BUILD",
+        "libc/BUILD": "//toolchain/libc:BUILD",
+        "libc_aware/platform/BUILD": "//toolchain/libc_aware/platform:BUILD",
+        "libc_aware/toolchain/BUILD": "//toolchain/libc_aware/toolchain:BUILD",
+    }.items():
+        repository_ctx.symlink(Label(src), dest)
 
-    repository_ctx.template(
-        "BUILD",
-        Label("//toolchain:BUILD.sdk.bazel"),
-        executable = False,
-        substitutions = {
-            "{zig_include_root}": shell.quote(zig_include_root),
-        },
-    )
-
-    repository_ctx.symlink(
-        Label("//toolchain/toolchain:BUILD"),
-        "toolchain/BUILD",
-    )
-
-    repository_ctx.template(
-        "private/BUILD",
-        Label("//toolchain/private:BUILD.sdk.bazel"),
-        executable = False,
-        substitutions = {
-            "{absolute_path}": shell.quote(str(repository_ctx.path(""))),
-            "{zig_include_root}": shell.quote(zig_include_root),
-        },
-    )
+    for dest, src in {
+        "BUILD": "//toolchain:BUILD.sdk.bazel",
+        "private/BUILD": "//toolchain/private:BUILD.sdk.bazel",
+    }.items():
+        repository_ctx.template(
+            dest,
+            Label(src),
+            executable = False,
+            substitutions = {
+                "{absolute_path}": _quote(str(repository_ctx.path(""))),
+                "{zig_include_root}": _quote(zig_include_root),
+            },
+        )
 
 zig_repository = repository_rule(
     attrs = {

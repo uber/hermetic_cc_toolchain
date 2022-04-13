@@ -44,7 +44,14 @@ gazelle_dependencies(go_repository_default_config = "@//:WORKSPACE")
 
 load(
     "//toolchain:defs.bzl",
-    zig_register_toolchains = "register_toolchains",
+    zig_toolchains = "toolchains",
 )
 
-zig_register_toolchains()
+zig_toolchains()
+
+register_toolchains(
+    "@zig_sdk//toolchain:linux_amd64_gnu.2.19",
+    "@zig_sdk//toolchain:linux_arm64_gnu.2.28",
+    "@zig_sdk//toolchain:darwin_amd64",
+    "@zig_sdk//toolchain:darwin_arm64",
+)

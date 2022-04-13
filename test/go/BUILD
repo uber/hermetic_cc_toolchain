@@ -26,8 +26,8 @@ go_test(
     platform_binary(
         name = "go_{}".format(toolchain),
         src = "go",
-        extra_toolchains = [toolchain],
-        platform = platform,
+        extra_toolchains = ["//toolchain:{}".format(toolchain)],
+        platform = "//platform:{}".format(platform),
     )
     for platform, toolchain in [
         ("linux_amd64", "linux_amd64_musl"),
@@ -42,8 +42,8 @@ go_test(
     platform_test(
         name = "go_test_{}".format(toolchain),
         src = "go_test",
-        extra_toolchains = [toolchain],
-        platform = platform,
+        extra_toolchains = ["//toolchain:{}".format(toolchain)],
+        platform = "//platform:{}".format(platform),
     )
     for platform, toolchain in [
         ("linux_amd64", "linux_amd64_musl"),

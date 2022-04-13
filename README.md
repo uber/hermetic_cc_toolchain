@@ -23,67 +23,168 @@ http_archive(
     urls = ["https://git.sr.ht/~motiejus/bazel-zig-cc/archive/{}.tar.gz".format(BAZEL_ZIG_CC_VERSION)],
 )
 
-load("@bazel-zig-cc//toolchain:defs.bzl", zig_register_toolchains = "register_toolchains")
+load("@bazel-zig-cc//toolchain:defs.bzl", zig_toolchains = "toolchains")
 
-zig_register_toolchains()
-
-# Or, if you are using this in production, you probably want more control:
-zig_register_toolchains(
-    version = "<...>",
-    url_formats = [
-        "https://example.internal/zig/zig-{host_platform}-{version}.tar.xz",
-    ],
-    host_platform_sha256 = { ... },
-)
+zig_toolchains()
 ```
+
+>   ### zig sdk download control
+>
+>   If you are using this in production, you probably want more control over
+>   where the zig sdk is downloaded from:
+>   ```
+>   zig_register_toolchains(
+>       version = "<...>",
+>       url_formats = [
+>           "https://example.internal/zig/zig-{host_platform}-{version}.tar.xz",
+>       ],
+>       host_platform_sha256 = { ... },
+>   )
+>   ```
 
 And this to `.bazelrc`:
 
 ```
 build --incompatible_enable_cc_toolchain_resolution
-build --extra_toolchains @zig_sdk//toolchain:linux_amd64_gnu.2.19
-build --extra_toolchains @zig_sdk//toolchain:linux_arm64_gnu.2.28
-build --extra_toolchains @zig_sdk//toolchain:darwin_amd64
-build --extra_toolchains @zig_sdk//toolchain:darwin_arm64
+```
+
+The snippets above will download the zig toolchain and make the bazel
+toolchains available for registration and usage.
+
+The next steps depend on your use case.
+
+## I want to manually build a single target with a specific zig cc toolchain
+
+You may explicitly request Bazel to use a specific toolchain (compatible with
+the specified platform). For example, if you wish to compile a specific binary
+(or run tests) on linux/amd64/musl, you may specify:
+
+```
+bazel build \
+    --platforms @zig_sdk//platform:linux_arm64 \
+    --extra_toolchains @zig_sdk//toolchain:linux_arm64_musl \
+    //test/go:go
+```
+
+This registers the toolchain `@zig_sdk//toolchain:linux_arm64_musl` for linux
+arm64 targets. This toolchains links code statically with musl. We also specify
+that we want to build //test/go:go for linux arm64.
+
+## I want to use zig cc as the default compiler
+
+Replace the call to `zig_register_toolchains` with
+```
+register_toolchains(
+    "@zig_sdk//toolchain:linux_amd64_gnu.2.19",
+    "@zig_sdk//toolchain:linux_arm64_gnu.2.28",
+    "@zig_sdk//toolchain:darwin_amd64",
+    "@zig_sdk//toolchain:darwin_arm64",
+)
 ```
 
 The snippets above will download the zig toolchain and register it for the
-following platforms:
+following configurations:
 
-- `x86_64-linux-gnu.2.19` for `["@platforms//os:linux", "@platforms//cpu:x86_64"]`.
-- `x86_64-linux-gnu.2.28` for `["@platforms//os:linux", "@platforms//cpu:aarch64"]`.
-- `x86_64-macos-gnu` for `["@platforms//os:macos", "@platforms//cpu:x86_64"]`.
-- `aarch64-macos-gnu` for `["@platforms//os:macos", "@platforms//cpu:aarch64"]`.
+- `toolchain:linux_amd64_gnu.2.19` for `["@platforms//os:linux", "@platforms//cpu:x86_64", "@zig_sdk//libc:unconstrained"]`.
+- `toolchain:linux_arm64_gnu.2.28` for `["@platforms//os:linux", "@platforms//cpu:aarch64", "@zig_sdk//libc:unconstrained"]`.
+- `toolchain:darwin_arm64` for `["@platforms//os:macos", "@platforms//cpu:x86_64"]`.
+- `toolchain:darwin_arm64` for `["@platforms//os:macos", "@platforms//cpu:aarch64"]`.
 
-Note that both Go and Bazel naming schemes are accepted. For convenience with
-Go, the following Go-style toolchain aliases are created:
+>   ### Naming
+>
+>   Both Go and Bazel naming schemes are accepted. For convenience with
+>   Go, the following Go-style toolchain aliases are created:
+>
+>   |Bazel (zig) name | Go name  |
+>   |---------------- | -------- |
+>   |`x86_64`         | `amd64`  |
+>   |`aarch64`        | `arm64`  |
+>   |`macos`          | `darwin` |
+>
+>   For example, the toolchain `linux_amd64_gnu.2.28` is aliased to
+>   `x86_64-linux-gnu.2.28`. To find out which toolchains can be registered or
+>   used, run:
+>
+>   ```
+>   $ bazel query @zig_sdk//toolchain/...
+>   ```
 
-|Bazel (zig) name | Go name  |
-|---------------- | -------- |
-|`x86_64`         | `amd64`  |
-|`aarch64`        | `arm64`  |
-|`macos`          | `darwin` |
+>   ### Disabling the default bazel cc toolchain
+>
+>   It may be useful to disable the default toolchain that bazel configures for
+>   you, so that configuration issues can be caught early on:
+>
+>   .bazelrc
+>   ```
+>   build:zig_cc --action_env BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
+>   ```
+>
+>   This is not documented in bazel, so use at your own peril.
 
-For example, the toolchain `linux_amd64_gnu.2.28` is aliased to
-`x86_64-linux-gnu.2.28`. To find out which toolchains can be registered or
-used, run:
+## I want to start using the zig cc toolchain gradually
 
+You can register your zig cc toolchains under a config in your .bazelrc
 ```
-$ bazel query @zig_sdk//toolchain/...
+build:zig_cc --extra_toolchains @zig_sdk//toolchain:linux_amd64_gnu.2.19
+build:zig_cc --extra_toolchains @zig_sdk//toolchain:linux_arm64_gnu.2.28
+build:zig_cc --extra_toolchains @zig_sdk//toolchain:darwin_amd64
+build:zig_cc --extra_toolchains @zig_sdk//toolchain:darwin_arm64
 ```
 
-## Specifying non-default toolchains
-
-You may explicitly request Bazel to use a specific toolchain, even though a
-different one is registered using `--extra_toolchains <toolchain>` in
-`.bazelrc`. For example, if you wish to compile a specific binary (or run
-tests) on linux/amd64/musl, you may specify:
-
+Then for your builds/tests you need to specify that the `zig_cc` config
+should be used:
 ```
---extra_toolchains @zig_sdk//toolchain:linux_amd64_musl
+bazel build --config zig_cc //test/go:go
 ```
 
-## UBSAN and "SIGILL: Illegal Instruction"
+You can build a target for a different platform like so:
+```
+bazel build --config zig_cc \
+    --platforms @zig_sdk//platform:linux_arm64 \
+    //test/go:go
+```
+
+## I want to use zig to build targets for multiple libc variants
+
+If you have targets that need to be build with different glibc versions or with
+musl, you can register a linux toolchain declared under `libc_aware/toolchains`.
+It will only be selected when building for a specific libc version. For example
+
+- `libc_aware/toolchain:linux_amd64_gnu.2.19` for `["@platforms//os:linux", "@platforms//cpu:x86_64", "@zig_sdk//libc:gnu.2.19"]`.
+- `libc_aware/toolchain:linux_amd64_gnu.2.28` for `["@platforms//os:linux", "@platforms//cpu:x86_64", "@zig_sdk//libc:gnu.2.28"]`.
+- `libc_aware/toolchain:x86_64-linux-musl` for `["@platforms//os:linux", "@platforms//cpu:x86_64", "@zig_sdk//libc:musl"]`.
+
+With these toolchains registered, you can build a project for a specific libc
+aware platform:
+```
+$ bazel build --platforms @zig_sdk//libc_aware/platform:linux_amd64_gnu.2.19 //test/go:go
+$ bazel build --platforms @zig_sdk//libc_aware/platform:linux_amd64_gnu.2.28 //test/go:go
+$ bazel build --platforms @zig_sdk//libc_aware/platform:linux_amd64_musl //test/go:go
+```
+
+You can see the list of libc aware toolchains and platforms by running:
+```
+$ bazel query @zig_sdk//libc_aware/toolchain/...
+$ bazel query @zig_sdk//libc_aware/platform/...
+ ```
+
+This is especially useful if you are relying on [transitions][transitions], as
+transitioning `extra_platforms` will cause your host tools to be rebuilt with
+the specific libc version, which takes time, and your host may not be able to
+run them.
+
+The `@zig_sdk//libc:variant` constraint is used to select a matching toolchain.
+If you are using your own platform definitions, add a `@zig_sdk//libc:variant`
+constraint to them. See the list of available values:
+```
+$ bazel query "attr(constraint_setting, @zig_sdk//libc:variant, @zig_sdk//...)"
+```
+
+`@zig_sdk//libc:unconstrained` is a special value that indicates that no value
+for the constraint is specified. The non libc aware linux toolchains are only
+compatible with this value to prevent accidental silent fallthrough to them.
+
+# UBSAN and "SIGILL: Illegal Instruction"
 
 `zig cc` differs from "mainstream" compilers by [enabling UBSAN by
 default][ubsan1]. Which means your program may compile successfully and crash
@@ -200,3 +301,4 @@ the issues promptly.
 [sysroot]: https://github.com/ziglang/zig/issues/10299#issuecomment-989153750
 [ubsan1]: https://github.com/ziglang/zig/issues/4830#issuecomment-605491606
 [ubsan2]: https://github.com/ziglang/zig/issues/5163
+[transitions]: https://docs.bazel.build/versions/main/skylark/config.html#user-defined-transitions
