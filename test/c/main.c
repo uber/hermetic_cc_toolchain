@@ -3,9 +3,9 @@
 
 int main() {
     #ifdef __GLIBC__
-    printf("glibc_%d.%d", __GLIBC__, __GLIBC_MINOR__);
+    printf("glibc_%d.%d\n", __GLIBC__, __GLIBC_MINOR__);
     #else
-    puts("non-glibc");
+    printf("non-glibc\n");
     #endif
     return 0;
 }

@@ -28,7 +28,7 @@ _GLIBCS = [
     "2.34",
 ]
 
-LIBCS = ["musl", "gnu"] + ["gnu.{}".format(glibc) for glibc in _GLIBCS]
+LIBCS = ["musl"] + ["gnu.{}".format(glibc) for glibc in _GLIBCS]
 
 def target_structs():
     ret = []

@@ -50,8 +50,17 @@ load(
 zig_toolchains()
 
 register_toolchains(
+    # if no `--platform` is selected, these toolchains will be used.
     "@zig_sdk//toolchain:linux_amd64_gnu.2.19",
     "@zig_sdk//toolchain:linux_arm64_gnu.2.28",
     "@zig_sdk//toolchain:darwin_amd64",
     "@zig_sdk//toolchain:darwin_arm64",
+
+    # when a libc-aware platform is selected, these will be used. arm64:
+    "@zig_sdk//libc_aware/toolchain:linux_arm64_gnu.2.28",
+    "@zig_sdk//libc_aware/toolchain:linux_arm64_musl",
+    # ditto, amd64:
+    "@zig_sdk//libc_aware/toolchain:linux_amd64_gnu.2.19",
+    "@zig_sdk//libc_aware/toolchain:linux_amd64_gnu.2.28",
+    "@zig_sdk//libc_aware/toolchain:linux_amd64_musl",
 )
