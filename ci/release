@@ -4,7 +4,8 @@ set -xeuo pipefail
 parent_ref=$(git rev-parse HEAD)
 cd "$(git rev-parse --show-toplevel)"
 ./release --nosign v99.0
-trap "git tag -d v99.0; git reset --hard $parent_ref" EXIT
+cleanup() { git tag -d v99.0; git reset --hard "$parent_ref"; }
+trap cleanup EXIT
 
 want=" 1 file changed, 2 insertions(+), 2 deletions(-)"
 got=$(git show --shortstat HEAD | tail -1)
