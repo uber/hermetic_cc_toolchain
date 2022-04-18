@@ -24,31 +24,29 @@ go_test(
 
 [
     platform_binary(
-        name = "go_{}".format(toolchain),
+        name = "go_{}".format(name),
         src = "go",
-        extra_toolchains = ["//toolchain:{}".format(toolchain)],
-        platform = "//platform:{}".format(platform),
+        platform = platform,
     )
-    for platform, toolchain in [
-        ("linux_amd64", "linux_amd64_musl"),
-        ("linux_amd64", "linux_amd64_gnu.2.19"),
-        ("linux_arm64", "linux_arm64_musl"),
-        ("linux_arm64", "linux_arm64_gnu.2.28"),
-        ("darwin_amd64", "darwin_amd64"),
+    for name, platform in [
+        ("linux_amd64_musl", "//libc_aware/platform:linux_amd64_musl"),
+        ("linux_amd64_gnu.2.19", "//libc_aware/platform:linux_amd64_gnu.2.19"),
+        ("linux_arm64_musl", "//libc_aware/platform:linux_arm64_musl"),
+        ("linux_arm64_gnu.2.28", "//libc_aware/platform:linux_arm64_gnu.2.28"),
+        ("darwin_amd64", "//platform:darwin_amd64"),
     ]
 ]
 
 [
     platform_test(
-        name = "go_test_{}".format(toolchain),
+        name = "go_test_{}".format(name),
         src = "go_test",
-        extra_toolchains = ["//toolchain:{}".format(toolchain)],
-        platform = "//platform:{}".format(platform),
+        platform = platform,
     )
-    for platform, toolchain in [
-        ("linux_amd64", "linux_amd64_musl"),
-        ("linux_amd64", "linux_amd64_gnu.2.19"),
-        ("linux_arm64", "linux_arm64_musl"),
-        ("linux_arm64", "linux_arm64_gnu.2.28"),
+    for name, platform in [
+        ("linux_amd64_musl", "//libc_aware/platform:linux_amd64_musl"),
+        ("linux_amd64_gnu.2.19", "//libc_aware/platform:linux_amd64_gnu.2.19"),
+        ("linux_arm64_musl", "//libc_aware/platform:linux_arm64_musl"),
+        ("linux_arm64_gnu.2.28", "//libc_aware/platform:linux_arm64_gnu.2.28"),
     ]
 ]

@@ -2,7 +2,6 @@ def _platform_transition_impl(settings, attr):
     _ignore = settings
     return {
         "//command_line_option:platforms": "@zig_sdk{}".format(attr.platform),
-        "//command_line_option:extra_toolchains": ["@zig_sdk{}".format(tc) for tc in attr.extra_toolchains],
     }
 
 _platform_transition = transition(
@@ -10,7 +9,6 @@ _platform_transition = transition(
     inputs = [],
     outputs = [
         "//command_line_option:platforms",
-        "//command_line_option:extra_toolchains",
     ],
 )
 
@@ -40,16 +38,12 @@ _attrs = {
     "platform": attr.string(
         doc = "The platform to build the target for.",
     ),
-    "extra_toolchains": attr.string_list(
-        doc = "The toolchains to provide as extra_toolchains.",
-    ),
     "_allowlist_function_transition": attr.label(
         default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
     ),
 }
 
-# wrap a single exectable and build it for the specified platform passing in
-# the extra_toolchains.
+# wrap a single exectable and build it for the specified platform.
 platform_binary = rule(
     implementation = _platform_binary_impl,
     cfg = _platform_transition,
@@ -57,8 +51,7 @@ platform_binary = rule(
     executable = True,
 )
 
-# wrap a single test target and build it for the specified platform passing in
-# the extra_toolchains.
+# wrap a single test target and build it for the specified platform.
 platform_test = rule(
     implementation = _platform_binary_impl,
     cfg = _platform_transition,

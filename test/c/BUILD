@@ -13,16 +13,6 @@ cc_binary(
         platform_binary(
             name = "which_libc_{}".format(name),
             src = "which_libc",
-            extra_toolchains = [
-                # toolchains for specific libc versions
-                "//libc_aware/toolchain:linux_amd64_gnu.2.19",
-                "//libc_aware/toolchain:linux_amd64_gnu.2.28",
-                "//libc_aware/toolchain:linux_amd64_gnu.2.31",
-                "//libc_aware/toolchain:linux_amd64_musl",
-                # fallback toolchains
-                "//toolchain:linux_amd64_gnu.2.19",
-                "//toolchain:linux_arm64_gnu.2.28",
-            ],
             platform = platform,
         ),
         sh_test(
