@@ -35,7 +35,7 @@ def target_structs():
     for zigcpu, gocpu in (("x86_64", "amd64"), ("aarch64", "arm64")):
         ret.append(_target_darwin(gocpu, zigcpu))
         ret.append(_target_linux_musl(gocpu, zigcpu))
-        for glibc in [""] + _GLIBCS:
+        for glibc in _GLIBCS:
             ret.append(_target_linux_gnu(gocpu, zigcpu, glibc))
     return ret
 
@@ -63,24 +63,12 @@ def _target_darwin(gocpu, zigcpu):
         tool_paths = {"ld": "ld64.lld"},
     )
 
-def _target_linux_gnu(gocpu, zigcpu, glibc_version = ""):
-    glibc_suffix = "gnu"
-    if glibc_version != "":
-        glibc_suffix = "gnu.{}".format(glibc_version)
+def _target_linux_gnu(gocpu, zigcpu, glibc_version):
+    glibc_suffix = "gnu.{}".format(glibc_version)
 
     # https://github.com/ziglang/zig/issues/5882#issuecomment-888250676
-    # fcntl_hack is only required for glibc 2.27 or less. We assume that
-    # glibc_version == "" (autodetect) is running a recent glibc version, thus
-    # adding this hack only when glibc is explicitly 2.27 or lower.
-    fcntl_hack = False
-    if glibc_version == "":
-        # zig doesn't reliably detect the glibc version, so
-        # often falls back to 2.17; the hack should be included.
-        # https://github.com/ziglang/zig/issues/6469
-        fcntl_hack = True
-    else:
-        # hack is required for 2.27 or less.
-        fcntl_hack = glibc_version < "2.28"
+    # fcntl_hack is only required for glibc 2.27 or less.
+    fcntl_hack = glibc_version < "2.28"
 
     return struct(
         gotarget = "linux_{}_{}".format(gocpu, glibc_suffix),
