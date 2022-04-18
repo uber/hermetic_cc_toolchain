@@ -4,12 +4,12 @@ set -euo pipefail
 indent() { sed 's/^/    /'; }
 
 echo "Available toolchains:"
-bazel query '@zig_sdk//toolchain:*' | indent
+bazel query --noshow_progress '@zig_sdk//toolchain:*' | indent
 echo "Available platforms:"
-bazel query '@zig_sdk//platform:*' | indent
+bazel query --noshow_progress '@zig_sdk//platform:*' | indent
 echo "Available libc aware toolchains:"
-bazel query '@zig_sdk//libc_aware/toolchain:*' | indent
+bazel query --noshow_progress '@zig_sdk//libc_aware/toolchain:*' | indent
 echo "Available libc aware platforms:"
-bazel query '@zig_sdk//libc_aware/platform:*' | indent
+bazel query --noshow_progress '@zig_sdk//libc_aware/platform:*' | indent
 echo "Available libc variants:"
-bazel query "attr(constraint_setting, @zig_sdk//libc:variant, @zig_sdk//...)" | indent
+bazel query --noshow_progress "attr(constraint_setting, @zig_sdk//libc:variant, @zig_sdk//...)" | indent
