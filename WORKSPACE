@@ -42,21 +42,27 @@ go_repositories()
 
 gazelle_dependencies(go_repository_default_config = "@//:WORKSPACE")
 
-# protobuf is required for //:buildifier
-http_archive(
-    name = "com_google_protobuf",
-    sha256 = "25f1292d4ea6666f460a2a30038eef121e6c3937ae0f61d610611dfb14b0bd32",
-    strip_prefix = "protobuf-3.19.1",
-    urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.19.1.zip"],
-)
-
-load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
-
-protobuf_deps()
-
 load(
     "//toolchain:defs.bzl",
-    zig_register_toolchains = "register_toolchains",
+    zig_toolchains = "toolchains",
 )
 
-zig_register_toolchains()
+zig_toolchains()
+
+register_toolchains(
+    # if no `--platform` is specified, these toolchains will be used for
+    # (linux,darwin)x(amd64,arm64)
+    "@zig_sdk//toolchain:linux_amd64_gnu.2.19",
+    "@zig_sdk//toolchain:linux_arm64_gnu.2.28",
+    "@zig_sdk//toolchain:darwin_amd64",
+    "@zig_sdk//toolchain:darwin_arm64",
+
+    # amd64 toolchains for libc-aware platforms:
+    "@zig_sdk//libc_aware/toolchain:linux_amd64_gnu.2.19",
+    "@zig_sdk//libc_aware/toolchain:linux_amd64_gnu.2.28",
+    "@zig_sdk//libc_aware/toolchain:linux_amd64_gnu.2.31",
+    "@zig_sdk//libc_aware/toolchain:linux_amd64_musl",
+    # arm64 toolchains for libc-aware platforms:
+    "@zig_sdk//libc_aware/toolchain:linux_arm64_gnu.2.28",
+    "@zig_sdk//libc_aware/toolchain:linux_arm64_musl",
+)

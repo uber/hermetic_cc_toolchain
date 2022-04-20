@@ -1,0 +1,9 @@
+#!/bin/bash
+set -euo pipefail
+
+REPO_ROOT=$(git rev-parse --show-toplevel)
+cd "$REPO_ROOT"
+
+# shellcheck disable=SC2046
+shellcheck -x $(awk '/#!\/bin\/(ba)?sh/&&FNR==1{print FILENAME}' $(git ls-files))
+find . \( -name 'WORKSPACE' -o -name 'BUILD' -o -name '*.bzl' \) -exec buildifier {} +
