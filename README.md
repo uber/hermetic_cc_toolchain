@@ -98,7 +98,8 @@ compatible with (in Bazelspeak, `target_compatible_with`) **all of the**
 
 ### Option `--toolchains=@zig_sdk//toolchain:linux_arm64_musl`
 
-Inspect first:
+Inspect first (`@platforms//cpu:aarch64` is an alias to
+`@platforms//cpu:arm64`):
 
 ```
 $ bazel query --output=build @zig_sdk//toolchain:linux_arm64_musl
@@ -108,22 +109,16 @@ toolchain(
   generator_function = "declare_toolchains",
   generator_location = "toolchain/BUILD:7:19",
   toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
-  target_compatible_with = [
-      "@platforms//os:linux",
-      "@platforms//cpu:aarch64",
-      "@zig_sdk//libc:unconstrained",
-  ],
+  target_compatible_with = ["@platforms//os:linux", "@platforms//cpu:aarch64", "@zig_sdk//libc:unconstrained"],
   toolchain = "@zig_sdk//private:aarch64-linux-musl_cc",
 )
 ```
 
-The above means toolchain is compatible with platforms that include
-`@platforms//os:linux`, `@platforms//cpu:aarch64` (an alias to
-`@platforms//cpu:arm64`) and `@zig_sdk//libc:unconstrained`. For a platform to
-pick up the right toolchain, the toolchain's `target_compatible_with` must be
-equivalent or a superset to the platforms `constraint_values`. Since the
-toolchain is a superset (therefore, `libc:unconstrained` does not matter here),
-the platform is compatible with this toolchain. As a result, `--platforms
+For a platform to pick up the right toolchain, the platform's
+`constraint_values` must be a subset[^1] of the toolchain's
+`target_compatible_with`. Since the platform is a subset (therefore,
+toolchain's `@zig_sdk//libc:unconstrained` does not matter), this toolchain is
+selected for this platform. As a result, `--platforms
 @zig_sdk//platform:linux_amd64` causes Bazel to select a toolchain
 `@zig_sdk//platform:linux_arm64_musl` (because it satisfies all constraints),
 which will compile and link the C/C++ code with musl.
@@ -343,23 +338,34 @@ may apply to aarch64, but the author didn't find a need to test it (yet).
 - [rules/go #2894 Per-arch_target linker flags](https://github.com/bazelbuild/rules_go/issues/2894) (CLOSED, thanks mjonaitis)
 - [golang/go #46644 cmd/link: with CC=zig: SIGSERV when cross-compiling to darwin/amd64](https://github.com/golang/go/issues/46644) (CLOSED, thanks kubkon)
 
-# Testing
+# Host Environments
+
+This repository is used on the following (host) platforms:
+
+- `linux_amd64`, a.k.a. `x86_64`.
+- `linux_arm64`, a.k.a. `AArch64`.
+- `darwin_amd64`, the post-PowerPC models.
+- `darwin_arm64`, the M1.
+
+The tests are running (CId) on linux-amd64, and are assuming the kernel is
+configured to run arm64 binaries. There are two reasonably convenient ways to
+configure arm64 emulation:
+- `$ apt install qemu-user-static binfmt-support`; this should correctly setup
+  `binfmt_misc`.
+- `$ docker run --rm --privileged multiarch/qemu-user-static --reset -p yes`.
+
 ## Transient docker environment
 
-First of all, make sure that your kernel is configured to run arm64 binaries.
-You can either `apt install qemu-user-static binfmt-support`; this should setup
-`binfmt_misc` to handle arm64 binaries. Or you can use this handy dockerized
-script `docker run --rm --privileged multiarch/qemu-user-static --reset -p yes`.
+A standalone Docker environment to play with bazel-zig-cc:
 
 ```
-$ docker run -e CC=/usr/bin/false -ti --rm -v $(git rev-parse --show-toplevel):/x -w /x debian:bullseye-slim
-# dpkg --add-architecture arm64 && apt update && apt install -y direnv git shellcheck libc6:arm64
-# . .envrc
+$ docker run -e CC=/usr/bin/false -ti --rm -v "$PWD:/x" -w /x debian:bullseye-slim
+# dpkg --add-architecture arm64 && apt update
+# apt install --no-install-recommends -y direnv git shellcheck ca-certificates libc6:arm64
+# eval "$(direnv hook bash)" && direnv allow
 # ./ci/test
 # ./ci/lint
 ```
-
-See `ci/test` for how tests are run.
 
 # Questions & Contributions
 
@@ -386,6 +392,8 @@ Many thanks to Adam Bouhenguel and his [bazel-zig-cc][ajbouh], the parent of
 this repository. Also, the Zig team for making this all possible and handling
 the issues promptly.
 
+[^1]: a [mathematical subset][subset]: both can be equal.
+
 [mailing-list]: https://lists.sr.ht/~motiejus/bazel-zig-cc
 [ajbouh]: https://github.com/ajbouh/bazel-zig-cc/
 [git-send-email]: https://git-send-email.io/
@@ -394,3 +402,4 @@ the issues promptly.
 [ubsan1]: https://github.com/ziglang/zig/issues/4830#issuecomment-605491606
 [ubsan2]: https://github.com/ziglang/zig/issues/5163
 [transitions]: https://docs.bazel.build/versions/main/skylark/config.html#user-defined-transitions
+[subset]: https://en.wikipedia.org/wiki/Subset
