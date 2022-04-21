@@ -351,7 +351,7 @@ The tests are running (CId) on linux-amd64, and are assuming the kernel is
 configured to run arm64 binaries. There are two reasonably convenient ways to
 configure arm64 emulation:
 - `$ apt install qemu-user-static binfmt-support`; this should correctly setup
-  `binfmt_misc`.
+  [`binfmt_misc`][binfmt_misc].
 - `$ docker run --rm --privileged multiarch/qemu-user-static --reset -p yes`.
 
 ## Transient docker environment
@@ -394,6 +394,7 @@ the issues promptly.
 
 [^1]: a [mathematical subset][subset]: both can be equal.
 
+[binfmt_misc]: https://en.wikipedia.org/wiki/Binfmt_misc
 [mailing-list]: https://lists.sr.ht/~motiejus/bazel-zig-cc
 [ajbouh]: https://github.com/ajbouh/bazel-zig-cc/
 [git-send-email]: https://git-send-email.io/
