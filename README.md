@@ -270,7 +270,12 @@ used, run:
 $ bazel query @zig_sdk//toolchain/...
 ```
 
-# Note: UBSAN and "SIGILL: Illegal Instruction"
+# Incompatibilities with clang and gcc
+
+`zig cc` is *almost* a drop-in replacement for clang/gcc. This section lists
+some of the discovered differences and ways to live with them.
+
+## UBSAN and "SIGILL: Illegal Instruction"
 
 `zig cc` differs from "mainstream" compilers by [enabling UBSAN by
 default][ubsan1]. Which means your program may compile successfully and crash
@@ -280,9 +285,14 @@ with:
 SIGILL: illegal instruction
 ```
 
-This is by design: it encourages program authors to fix the undefined behavior.
-There are [many ways][ubsan2] to find the undefined behavior.
+This flag encourages program authors to fix the undefined behavior. There are
+[many ways][ubsan2] to find the undefined behavior.
 
+## Use of `--gc-sections` by default
+
+`zig cc` passes `--gc-sections` to the ld.lld linker by default, this causes
+problems for CGo. See
+[below][#go-linker-does-not-put-libc-onto-the-linker-line].
 
 # Known Issues In bazel-zig-cc
 
@@ -312,6 +322,34 @@ currently targets the lowest version, without ability to change it.
 
 This section lists issues that I've stumbled into when using `zig cc`, and is
 outside of bazel-zig-cc's control.
+
+## Go linker does not put libc onto the linker line
+
+**Severity: Low**
+
+Task: [golang/go #52690 Go linker does not put libc onto the linker line, causing undefined symbol errors](https://github.com/golang/go/issues/52690)
+
+Background: when linking CGo programs that do not have C code by itself,
+the Golang linker does not link the C library, causing undefined symbols and
+a message similar to this:
+
+```
+runtime/race(.text): relocation target getuid not defined
+runtime/race(.text): relocation target pthread_self not defined
+```
+
+This is because `zig cc` emits `--gc-sections` for the linker, which is
+incompatbile with what CGo thinks about linking.
+
+A workaround until [#52690](https://github.com/golang/go/issues/52690) is
+resolved: add `--no-gc-sections` to the link step. So the resulting command to
+compile CGo code on Linux is:
+
+```
+CGO_ENABLED=1 CC="zig cc -Wl,--no-gc-sections" go build main.go
+```
+
+This is done automatically in bazel-zig-cc.
 
 ## using glibc 2.27 or older
 

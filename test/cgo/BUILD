@@ -3,29 +3,29 @@ load("//rules:rules_go.bzl", "go_binary")
 load("@bazel-zig-cc//rules:platform.bzl", "platform_binary", "platform_test")
 
 go_library(
-    name = "go_lib",
-    srcs = ["hello.go"],
+    name = "cgo_lib",
+    srcs = ["cgo.go"],
     cgo = True,
-    importpath = "git.sr.ht/~motiejus/bazel-zig-cc/test/go",
+    importpath = "git.sr.ht/~motiejus/bazel-zig-cc/test/cgo",
     visibility = ["//visibility:private"],
 )
 
-go_binary(
-    name = "go",
-    embed = [":go_lib"],
-    visibility = ["//visibility:public"],
+go_test(
+    name = "cgo_test",
+    srcs = ["cgo_test.go"],
+    embed = [":cgo_lib"],
 )
 
-go_test(
-    name = "go_test",
-    srcs = ["hello_test.go"],
-    embed = [":go_lib"],
+go_binary(
+    name = "cgo",
+    embed = [":cgo_lib"],
+    visibility = ["//visibility:public"],
 )
 
 [
     platform_binary(
-        name = "go_{}".format(name),
-        src = "go",
+        name = "cgo_{}".format(name),
+        src = "cgo",
         platform = platform,
     )
     for name, platform in [
@@ -39,8 +39,8 @@ go_test(
 
 [
     platform_test(
-        name = "go_test_{}".format(name),
-        src = "go_test",
+        name = "cgo_test_{}".format(name),
+        src = "cgo_test",
         platform = platform,
     )
     for name, platform in [

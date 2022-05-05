@@ -78,7 +78,33 @@ fi
 export ZIG_LOCAL_CACHE_DIR="$_cache_prefix/bazel-zig-cc"
 export ZIG_GLOBAL_CACHE_DIR=$ZIG_LOCAL_CACHE_DIR
 
-exec "{zig}" "{zig_tool}" "$@"
+lookup_args=()
+add_arg=
+case "{zig_tool}" in
+    cc|c++)
+        lookup_args=("-Wl,--gc-sections" "-Wl,--no-gc-sections")
+        add_arg="-Wl,--no-gc-sections"
+        ;;
+    ld.lld)
+        lookup_args=("--gc-sections" "--no-gc-sections")
+        add_arg="--no-gc-sections"
+        ;;
+esac
+
+has_special_arg=0
+for arg in "${{lookup_args[@]}}"; do
+    if [[ " ${{args[*]}} " == *" $arg "* ]]; then
+        has_special_arg=1
+        break
+    fi
+done
+
+args=( "$@" )
+if [[ "$has_special_arg" == 0 ]]; then
+    args+=( "$add_arg" )
+fi
+
+exec "{zig}" "{zig_tool}" "${{args[@]}}"
 """
 
 _ZIG_TOOLS = [
