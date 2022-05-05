@@ -14,12 +14,15 @@ all_link_actions = [
     ACTION_NAMES.cpp_link_nodeps_dynamic_library,
 ]
 
-all_compile_actions = [
-    ACTION_NAMES.assemble,
+compile_and_link_actions = [
     ACTION_NAMES.c_compile,
+    ACTION_NAMES.cpp_compile,
+]
+
+rest_compile_actions = [
+    ACTION_NAMES.assemble,
     ACTION_NAMES.cc_flags_make_variable,
     ACTION_NAMES.clif_match,
-    ACTION_NAMES.cpp_compile,
     ACTION_NAMES.cpp_header_parsing,
     ACTION_NAMES.cpp_module_codegen,
     ACTION_NAMES.cpp_module_compile,
@@ -29,27 +32,42 @@ all_compile_actions = [
 ]
 
 def _zig_cc_toolchain_config_impl(ctx):
-    default_compiler_flags = feature(
-        name = "default_compiler_flags",
+    compiler_flags = [
+        "-I" + d
+        for d in ctx.attr.cxx_builtin_include_directories
+    ] + [
+        "-target",
+        ctx.attr.target + ctx.attr.target_suffix,
+        "-no-canonical-prefixes",
+        "-Wno-builtin-macro-redefined",
+        "-D__DATE__=\"redacted\"",
+        "-D__TIMESTAMP__=\"redacted\"",
+        "-D__TIME__=\"redacted\"",
+    ]
+    no_gc_sections = ["-Wl,--no-gc-sections"]
+
+    compile_and_link_flags = feature(
+        name = "compile_and_link_flags",
         enabled = True,
         flag_sets = [
             flag_set(
-                actions = all_compile_actions,
+                actions = compile_and_link_actions,
                 flag_groups = [
-                    flag_group(
-                        flags = [
-                            "-I" + d
-                            for d in ctx.attr.cxx_builtin_include_directories
-                        ] + [
-                            "-target",
-                            ctx.attr.target + ctx.attr.target_suffix,
-                            "-no-canonical-prefixes",
-                            "-Wno-builtin-macro-redefined",
-                            "-D__DATE__=\"redacted\"",
-                            "-D__TIMESTAMP__=\"redacted\"",
-                            "-D__TIME__=\"redacted\"",
-                        ] + ctx.attr.copts,
-                    ),
+                    flag_group(flags = no_gc_sections),
+                    flag_group(flags = compiler_flags + ctx.attr.copts),
+                ],
+            ),
+        ],
+    )
+
+    rest_compile_flags = feature(
+        name = "rest_compile_flags",
+        enabled = True,
+        flag_sets = [
+            flag_set(
+                actions = rest_compile_actions,
+                flag_groups = [
+                    flag_group(flags = compiler_flags + ctx.attr.copts),
                 ],
             ),
         ],
@@ -63,10 +81,9 @@ def _zig_cc_toolchain_config_impl(ctx):
                 actions = all_link_actions,
                 flag_groups = ([
                     flag_group(
-                        flags = [
-                            "-target",
-                            ctx.attr.target,
-                        ] + ctx.attr.linkopts,
+                        flags = ["-target", ctx.attr.target] +
+                                no_gc_sections +
+                                ctx.attr.linkopts,
                     ),
                 ]),
             ),
@@ -74,7 +91,8 @@ def _zig_cc_toolchain_config_impl(ctx):
     )
 
     features = [
-        default_compiler_flags,
+        compile_and_link_flags,
+        rest_compile_flags,
         default_linker_flags,
     ]
 
