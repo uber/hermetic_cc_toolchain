@@ -388,9 +388,16 @@ This repository is used on the following (host) platforms:
 The tests are running (CId) on linux-amd64, and are assuming the kernel is
 configured to run arm64 binaries. There are two reasonably convenient ways to
 configure arm64 emulation:
-- `$ apt install qemu-user-static binfmt-support`; this should correctly setup
-  [`binfmt_misc`][binfmt_misc].
-- `$ docker run --rm --privileged multiarch/qemu-user-static --reset -p yes`.
+
+1. Install and configure [`binfmt_misc`][binfmt_misc]:
+   ```
+   apt install qemu-user-static binfmt-support
+   ```
+
+2. Magic of the internet:
+   ```
+   docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+   ```
 
 ## Transient docker environment
 
