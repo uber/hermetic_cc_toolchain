@@ -57,7 +57,7 @@ def toolchains(
         url_formats = url_formats,
         host_platform_sha256 = host_platform_sha256,
         host_platform_include_root = {
-            "linux-aarch64": "lib/",
+            "linux-aarch64": "lib/zig/",
             "linux-x86_64": "lib/",
             "macos-aarch64": "lib/zig/",
             "macos-x86_64": "lib/zig/",
