@@ -292,7 +292,7 @@ This flag encourages program authors to fix the undefined behavior. There are
 
 `zig cc` passes `--gc-sections` to the ld.lld linker by default, this causes
 problems for CGo. See
-[below][#go-linker-does-not-put-libc-onto-the-linker-line].
+[below](#go-linker-does-not-put-libc-onto-the-linker-line).
 
 # Known Issues In bazel-zig-cc
 
