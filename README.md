@@ -382,7 +382,7 @@ This repository is used on the following (host) platforms:
 
 - `linux_amd64`, a.k.a. `x86_64`.
 - `linux_arm64`, a.k.a. `AArch64`.
-- `darwin_amd64`, the post-PowerPC models.
+- `darwin_amd64`, the 64-bit post-PowerPC models.
 - `darwin_arm64`, the M1.
 
 The tests are running (CId) on linux-amd64, and are assuming the kernel is
