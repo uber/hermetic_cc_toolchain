@@ -43,7 +43,7 @@ _HOST_PLATFORM_SHA256 = {
 
 def toolchains(
         version = _VERSION,
-        url_formats = [URL_FORMAT_JAKSTYS],
+        url_formats = [URL_FORMAT_NIGHTLY, URL_FORMAT_JAKSTYS],
         host_platform_sha256 = _HOST_PLATFORM_SHA256):
     """
         Download zig toolchain and declare bazel toolchains.
