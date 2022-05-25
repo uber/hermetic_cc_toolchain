@@ -435,9 +435,9 @@ Copyright is retained by the contributors.
 
 This section lists notable uses or mentions of bazel-zig-cc.
 
-- 2022-05-23 [How Zig is used at Uber][yt-how-zig-is-used-at-uber]: Yours Truly
-  (the author) talks about how bazel-zig-cc came to existence and how it's used
-  at Uber in Milan Zig Meetup.
+- 2022-05-23 [How Zig is used at Uber (youtube)][yt-how-zig-is-used-at-uber]:
+  Yours Truly (the author) talks about how bazel-zig-cc came to existence and
+  how it's used at Uber in Milan Zig Meetup.
 - 2022-05-23 [How Uber uses Zig][how-uber-uses-zig]: text version of the above.
 - 2022-03-30 [Google Open Source Peer Bonus Program][google-award] awarded the
   author $250 for bazel-zig-cc.
