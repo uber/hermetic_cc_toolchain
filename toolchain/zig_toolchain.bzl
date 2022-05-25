@@ -14,6 +14,11 @@ all_link_actions = [
     ACTION_NAMES.cpp_link_nodeps_dynamic_library,
 ]
 
+dynamic_library_link_actions = [
+    ACTION_NAMES.cpp_link_dynamic_library,
+    ACTION_NAMES.cpp_link_nodeps_dynamic_library,
+]
+
 compile_and_link_actions = [
     ACTION_NAMES.c_compile,
     ACTION_NAMES.cpp_compile,
@@ -73,21 +78,31 @@ def _zig_cc_toolchain_config_impl(ctx):
         ],
     )
 
+    if ctx.attr.dynamic_library_linkopts:
+        dynamic_library_flag_sets = [
+            flag_set(
+                actions = dynamic_library_link_actions,
+                flag_groups = [flag_group(flags = ctx.attr.dynamic_library_linkopts)],
+            ),
+        ]
+    else:
+        dynamic_library_flag_sets = []
+
     default_linker_flags = feature(
         name = "default_linker_flags",
         enabled = True,
         flag_sets = [
             flag_set(
                 actions = all_link_actions,
-                flag_groups = ([
+                flag_groups = [
                     flag_group(
                         flags = ["-target", ctx.attr.target] +
                                 no_gc_sections +
                                 ctx.attr.linkopts,
                     ),
-                ]),
+                ],
             ),
-        ],
+        ] + dynamic_library_flag_sets,
     )
 
     features = [
@@ -119,6 +134,7 @@ zig_cc_toolchain_config = rule(
     attrs = {
         "cxx_builtin_include_directories": attr.string_list(),
         "linkopts": attr.string_list(),
+        "dynamic_library_linkopts": attr.string_list(),
         "copts": attr.string_list(),
         "tool_paths": attr.string_dict(),
         "target": attr.string(),

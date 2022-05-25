@@ -32,6 +32,7 @@ def declare_cc_toolchains(absolute_path, zig_include_root):
             absolute_tool_paths[name] = "%s/%s" % (absolute_path, tool_path)
 
         linkopts = target_config.linkopts
+        dynamic_library_linkopts = target_config.dynamic_library_linkopts
         copts = target_config.copts
         for s in getattr(target_config, "linker_version_scripts", []):
             linkopts = linkopts + ["-Wl,--version-script,%s/%s" % (absolute_path, s)]
@@ -45,6 +46,7 @@ def declare_cc_toolchains(absolute_path, zig_include_root):
             cxx_builtin_include_directories = cxx_builtin_include_directories,
             copts = copts,
             linkopts = linkopts,
+            dynamic_library_linkopts = dynamic_library_linkopts,
             target_cpu = target_config.bazel_target_cpu,
             target_system_name = "unknown",
             target_libc = "unknown",

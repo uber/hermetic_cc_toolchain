@@ -54,6 +54,7 @@ def _target_darwin(gocpu, zigcpu):
             "libc/include/any-macos-any",
         ],
         linkopts = [],
+        dynamic_library_linkopts = [],
         copts = [],
         bazel_target_cpu = "darwin",
         constraint_values = [
@@ -84,6 +85,7 @@ def _target_linux_gnu(gocpu, zigcpu, glibc_version):
         compiler_extra_includes = ["glibc-hacks/glibchack-fcntl.h"] if fcntl_hack else [],
         linker_version_scripts = ["glibc-hacks/fcntl.map"] if fcntl_hack else [],
         linkopts = ["-lc++", "-lc++abi"],
+        dynamic_library_linkopts = [],
         copts = [],
         bazel_target_cpu = "k8",
         constraint_values = [
@@ -105,6 +107,7 @@ def _target_linux_musl(gocpu, zigcpu):
             "libc/include/{}-linux-any".format(zigcpu),
         ] + (["libc/include/x86-linux-any"] if zigcpu == "x86_64" else []),
         linkopts = ["-s", "-w"],
+        dynamic_library_linkopts = [],
         copts = ["-D_LIBCPP_HAS_MUSL_LIBC", "-D_LIBCPP_HAS_THREAD_API_PTHREAD"],
         bazel_target_cpu = "k8",
         constraint_values = [
