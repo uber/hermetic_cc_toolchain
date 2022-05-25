@@ -431,6 +431,21 @@ To contribute, send your patches to the mailing list, as described in
 
 Copyright is retained by the contributors.
 
+# Publicity
+
+This section lists notable uses or mentions of bazel-zig-cc.
+
+- 2022-05-23 [How Zig is used at Uber][yt-how-zig-is-used-at-uber]: Yours Truly
+  (the author) talks about how bazel-zig-cc came to existence and how it's used
+  at Uber in Milan Zig Meetup.
+- 2022-05-23 [How Uber uses Zig][how-uber-uses-zig]: text version of the above.
+- 2022-03-30 [Google Open Source Peer Bonus Program][google-award] awarded the
+  author $250 for bazel-zig-cc.
+- 2022-01-13 [bazel-zig-cc building Envoy][zig-cc-envoy].
+
+If you'd like your blog post, company or a project added here, do not hesitate
+and send a patch.
+
 # Thanks
 
 Many thanks to Adam Bouhenguel and his [bazel-zig-cc][ajbouh], the parent of
@@ -449,3 +464,7 @@ the issues promptly.
 [ubsan2]: https://github.com/ziglang/zig/issues/5163
 [transitions]: https://docs.bazel.build/versions/main/skylark/config.html#user-defined-transitions
 [subset]: https://en.wikipedia.org/wiki/Subset
+[yt-how-zig-is-used-at-uber]: https://www.youtube.com/watch?v=SCj2J3HcEfc
+[how-uber-uses-zig]: https://jakstys.lt/2022/how-uber-uses-zig/
+[zig-cc-envoy]: https://github.com/envoyproxy/envoy/issues/19535
+[google-award]: https://opensource.googleblog.com/2022/03/Announcing-First-Group-of-Google-Open-Source-Peer-Bonus-Winners-in-2022.html
