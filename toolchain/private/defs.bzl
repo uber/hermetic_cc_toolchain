@@ -54,7 +54,7 @@ def _target_darwin(gocpu, zigcpu):
             "libc/include/any-macos-any",
         ],
         linkopts = [],
-        dynamic_library_linkopts = [],
+        dynamic_library_linkopts = ["-Wl,-undefined=dynamic_lookup"],
         copts = [],
         bazel_target_cpu = "darwin",
         constraint_values = [
