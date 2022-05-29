@@ -1,4 +1,4 @@
-load(":defs.bzl", "DEFAULT_INCLUDE_DIRECTORIES", "ZIG_TOOL_PATH", "target_structs")
+load(":defs.bzl", "DEFAULT_INCLUDE_DIRECTORIES", "target_structs", "zig_tool_path")
 load("@bazel-zig-cc//toolchain:zig_toolchain.bzl", "zig_cc_toolchain_config")
 
 DEFAULT_TOOL_PATHS = {
@@ -11,7 +11,7 @@ DEFAULT_TOOL_PATHS = {
     "strip": "/usr/bin/false",
 }.items()
 
-def declare_cc_toolchains(absolute_path, zig_include_root):
+def declare_cc_toolchains(os, absolute_path, zig_include_root):
     for target_config in target_structs():
         gotarget = target_config.gotarget
         zigtarget = target_config.zigtarget
@@ -28,7 +28,7 @@ def declare_cc_toolchains(absolute_path, zig_include_root):
             if path[0] == "/":
                 absolute_tool_paths[name] = path
                 continue
-            tool_path = ZIG_TOOL_PATH.format(zig_tool = path)
+            tool_path = zig_tool_path(os).format(zig_tool = path)
             absolute_tool_paths[name] = "%s/%s" % (absolute_path, tool_path)
 
         linkopts = target_config.linkopts

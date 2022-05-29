@@ -4,7 +4,7 @@ DEFAULT_INCLUDE_DIRECTORIES = [
     "libcxxabi/include",
 ]
 
-ZIG_TOOL_PATH = "tools/{zig_tool}"
+_ZIG_TOOL_PATH = "tools/{zig_tool}"
 
 # Zig supports even older glibcs than defined below, but we have tested only
 # down to 2.17.
@@ -29,6 +29,12 @@ _GLIBCS = [
 ]
 
 LIBCS = ["musl"] + ["gnu.{}".format(glibc) for glibc in _GLIBCS]
+
+def zig_tool_path(os):
+    if os == "windows":
+        return _ZIG_TOOL_PATH + ".bat"
+    else:
+        return _ZIG_TOOL_PATH
 
 def target_structs():
     ret = []
