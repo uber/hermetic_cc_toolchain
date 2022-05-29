@@ -1,4 +1,4 @@
-load("@bazel-zig-cc//rules:platform.bzl", "platform_binary")
+load("@bazel-zig-cc//rules:platform.bzl", "platform_binary", "platform_test")
 
 cc_binary(
     name = "which_libc",
@@ -34,3 +34,25 @@ cc_binary(
         ("linux_arm64", "//platform:linux_arm64", "glibc_2.28"),
     ]
 ]
+
+cc_binary(
+    name = "winver",
+    srcs = ["main_winver.c"],
+    target_compatible_with = [
+        "@platforms//os:windows",
+    ],
+)
+
+platform_test(
+    name = "winver_windows_amd64",
+    src = "winver",
+    platform = "//platform:windows_amd64",
+    tags = ["manual"],
+)
+
+platform_binary(
+    name = "winver_windows_arm64",
+    src = "winver",
+    platform = "//platform:windows_arm64",
+    tags = ["manual"],
+)

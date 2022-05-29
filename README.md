@@ -401,8 +401,9 @@ This repository is used on the following (host) platforms:
 - `windows_amd64`, a.k.a. `x64`.
 
 The tests are running (CId) on linux-amd64, and are assuming the kernel is
-configured to run arm64 binaries. There are two reasonably convenient ways to
-configure arm64 emulation:
+configured to run `linux_arm64` and `windows_amd64` binaries.
+
+There are two reasonably convenient ways to configure `linux_arm64` emulation:
 
 1. Install and configure [`binfmt_misc`][binfmt_misc]:
    ```
@@ -413,6 +414,11 @@ configure arm64 emulation:
    ```
    docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
    ```
+
+In order to install and configure `windows_amd64` emulation:
+```
+apt install wine-binfmt
+```
 
 ## Transient docker environment
 

@@ -51,11 +51,13 @@ zig_toolchains()
 
 register_toolchains(
     # if no `--platform` is specified, these toolchains will be used for
-    # (linux,darwin)x(amd64,arm64)
+    # (linux,darwin,windows)x(amd64,arm64)
     "@zig_sdk//toolchain:linux_amd64_gnu.2.19",
     "@zig_sdk//toolchain:linux_arm64_gnu.2.28",
     "@zig_sdk//toolchain:darwin_amd64",
     "@zig_sdk//toolchain:darwin_arm64",
+    "@zig_sdk//toolchain:windows_amd64",
+    "@zig_sdk//toolchain:windows_arm64",
 
     # amd64 toolchains for libc-aware platforms:
     "@zig_sdk//libc_aware/toolchain:linux_amd64_gnu.2.19",
