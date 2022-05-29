@@ -152,6 +152,8 @@ register_toolchains(
     "@zig_sdk//toolchain:linux_arm64_gnu.2.28",
     "@zig_sdk//toolchain:darwin_amd64",
     "@zig_sdk//toolchain:darwin_arm64",
+    "@zig_sdk//toolchain:windows_amd64",
+    "@zig_sdk//toolchain:windows_arm64",
 )
 ```
 
@@ -317,6 +319,18 @@ is currently not implemented.
 [Zig 0.9.0](https://ziglang.org/download/0.9.0/release-notes.html#macOS) may
 target macos.10 (Catalina), macos.11 (Big Sur) or macos.12 (Monterey). It
 currently targets the lowest version, without ability to change it.
+
+## Windows: output file extensions
+
+Bazel won't use common Windows file extensions for built output binaries.
+Instead, it will generate binaries with common Unix extensions that you might
+have to manually rename before deploying them to an actual Windows system:
+
+| Binary type    | Bazel extension | Windows extension |
+|----------------|-----------------|-------------------|
+| Static library | .a              | .lib              |
+| Shared library | .so             | .dll              |
+| Executable     | (no extension)  | .exe              |
 
 # Known Issues In Upstream
 

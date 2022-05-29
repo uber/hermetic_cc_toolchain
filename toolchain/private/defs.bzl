@@ -40,6 +40,7 @@ def target_structs():
     ret = []
     for zigcpu, gocpu in (("x86_64", "amd64"), ("aarch64", "arm64")):
         ret.append(_target_darwin(gocpu, zigcpu))
+        ret.append(_target_windows(gocpu, zigcpu))
         ret.append(_target_linux_musl(gocpu, zigcpu))
         for glibc in _GLIBCS:
             ret.append(_target_linux_gnu(gocpu, zigcpu, glibc))
@@ -65,6 +66,24 @@ def _target_darwin(gocpu, zigcpu):
         bazel_target_cpu = "darwin",
         constraint_values = [
             "@platforms//os:macos",
+            "@platforms//cpu:{}".format(zigcpu),
+        ],
+        tool_paths = {"ld": "ld64.lld"},
+    )
+
+def _target_windows(gocpu, zigcpu):
+    return struct(
+        gotarget = "windows_{}".format(gocpu),
+        zigtarget = "{}-windows-gnu".format(zigcpu),
+        includes = [
+            "libunwind/include",
+            "libc/include/any-windows-any",
+        ],
+        linkopts = [],
+        copts = [],
+        bazel_target_cpu = "x64_windows",
+        constraint_values = [
+            "@platforms//os:windows",
             "@platforms//cpu:{}".format(zigcpu),
         ],
         tool_paths = {"ld": "ld64.lld"},
