@@ -1,10 +1,11 @@
-#/bin/bash
+#!/bin/bash
 
 set -euo pipefail
 
+# shellcheck disable=SC2153
 want=$WANT
+# shellcheck disable=SC2153
 binary=$BINARY
-
 got=$($binary)
 
 if [[ "$got" != "$want" ]]; then

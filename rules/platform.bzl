@@ -1,3 +1,10 @@
+def _vars_script(env, run_under, cmd):
+    ret = ["#!/bin/sh"]
+    for k, v in env.items():
+        ret += ['export {}="{}"'.format(k, v)]
+    ret += ['exec {} {} "$@"'.format(run_under, cmd)]
+    return "\n".join(ret) + "\n"  # trailing newline is easier on the eyes
+
 def _platform_transition_impl(settings, attr):
     _ignore = settings
     return {
@@ -17,16 +24,18 @@ def _platform_binary_impl(ctx):
 
     executable = None
     if source_info.files_to_run and source_info.files_to_run.executable:
+        command = _vars_script(ctx.attr.env, ctx.attr.run_under, source_info.files_to_run.executable.short_path)
         executable = ctx.actions.declare_file("{}_{}".format(ctx.file.src.basename, ctx.attr.platform))
-        ctx.actions.run_shell(
-            command = "cp {} {}".format(source_info.files_to_run.executable.path, executable.path),
-            inputs = [source_info.files_to_run.executable],
-            outputs = [executable],
+        ctx.actions.write(
+            output = executable,
+            content = command,
+            is_executable = True,
         )
 
     return [DefaultInfo(
-        files = depset(ctx.files.src),
         executable = executable,
+        files = depset([executable]),
+        runfiles = ctx.runfiles(files = ctx.files.src),
     )]
 
 _attrs = {
@@ -37,6 +46,12 @@ _attrs = {
     ),
     "platform": attr.string(
         doc = "The platform to build the target for.",
+    ),
+    "run_under": attr.string(
+        doc = "wrapper executable",
+    ),
+    "env": attr.string_dict(
+        doc = "Environment variables for the test",
     ),
     "_allowlist_function_transition": attr.label(
         default = "@bazel_tools//tools/allowlists/function_transition_allowlist",

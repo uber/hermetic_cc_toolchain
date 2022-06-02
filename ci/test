@@ -1,13 +1,4 @@
 #!/bin/bash
-set -euo pipefail
+set -xeuo pipefail
 
 bazel test ...
-
-# Windows tests
-# Unfortunately wine-binfmt breaks within the bazel sandbox, so we disable it
-# to run this test.
-bazel test //test/c:winver_windows_amd64 \
-    --spawn_strategy=standalone
-# There is no no easy way to run windows_arm64 binaries on Linux, so we just
-# cross compile one for testing.
-bazel build //test/c:winver_windows_arm64
