@@ -29,7 +29,7 @@ http_archive(
     name = "bazel-zig-cc",
     sha256 = "cd2629843fe4ba20cf29e1d73cc02559afba640f884e519b6a194a35627cbbf3",
     strip_prefix = "bazel-zig-cc-{}".format(BAZEL_ZIG_CC_VERSION),
-    urls = ["https://git.sr.ht/~motiejus/bazel-zig-cc/archive/{}.tar.gz".format(BAZEL_ZIG_CC_VERSION)],
+    urls = ["https://git.sr.ht/~motiejus/bazel-zig-cc/archive/{}.{_ext}".format(BAZEL_ZIG_CC_VERSION)],
 )
 
 load("@bazel-zig-cc//toolchain:defs.bzl", zig_toolchains = "toolchains")
@@ -40,7 +40,7 @@ load("@bazel-zig-cc//toolchain:defs.bzl", zig_toolchains = "toolchains")
 zig_toolchains(
     version = "<...>",
     url_formats = [
-        "https://example.org/zig/zig-{host_platform}-{version}.tar.xz",
+        "https://example.org/zig/zig-{host_platform}-{version}.{_ext}",
     ],
     host_platform_sha256 = { ... },
 )
@@ -320,11 +320,10 @@ is currently not implemented.
 target macos.10 (Catalina), macos.11 (Big Sur) or macos.12 (Monterey). It
 currently targets the lowest version, without ability to change it.
 
-## Windows: output file extensions
+## Windows only: output file extensions
 
-Bazel won't use common Windows file extensions for built output binaries.
-Instead, it will generate binaries with common Unix extensions that you might
-have to manually rename before deploying them to an actual Windows system:
+For Windows targets Bazel uses Unix extensions for output binaries. Those may
+need to be renamed before deploying to the Windows system. Here is a primer:
 
 | Binary type    | Bazel extension | Windows extension |
 |----------------|-----------------|-------------------|

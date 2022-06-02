@@ -16,21 +16,21 @@ __asm__(".symver fcntl64, fcntl@GLIBC_2.2.5");
 """
 
 # Official recommended version. Should use this when we have a usable release.
-URL_FORMAT_RELEASE = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.{ext}"
+URL_FORMAT_RELEASE = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.{_ext}"
 
 # Caution: nightly releases are purged from ziglang.org after ~90 days. A real
 # solution would be to allow the downstream project specify their own mirrors.
 # This is explained in
 # https://sr.ht/~motiejus/bazel-zig-cc/#alternative-download-urls and is
 # awaiting my attention or your contribution.
-URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform}-{version}.{ext}"
+URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform}-{version}.{_ext}"
 
 # Author's mirror that doesn't purge the nightlies so aggressively. I will be
 # cleaning those up manually only after the artifacts are not in use for many
 # months in bazel-zig-cc. dl.jakstys.lt is a small x86_64 server with an NVMe
 # drive sitting in my home closet on a 1GB/s symmetric residential connection,
 # which, as of writing, has been quite reliable.
-URL_FORMAT_JAKSTYS = "https://dl.jakstys.lt/zig/zig-{host_platform}-{version}.{ext}"
+URL_FORMAT_JAKSTYS = "https://dl.jakstys.lt/zig/zig-{host_platform}-{version}.{_ext}"
 
 _VERSION = "0.10.0-dev.2252+a4369918b"
 
@@ -128,7 +128,7 @@ def _zig_repository_impl(repository_ctx):
     zig_sha256 = repository_ctx.attr.host_platform_sha256[host_platform]
     zig_ext = repository_ctx.attr.host_platform_ext[host_platform]
     format_vars = {
-        "ext": zig_ext,
+        "_ext": zig_ext,
         "version": repository_ctx.attr.version,
         "host_platform": host_platform,
     }
