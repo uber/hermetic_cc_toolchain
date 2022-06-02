@@ -80,6 +80,7 @@ def _target_windows(gocpu, zigcpu):
             "libc/include/any-windows-any",
         ],
         linkopts = [],
+        dynamic_library_linkopts = [],
         copts = [],
         bazel_target_cpu = "x64_windows",
         constraint_values = [
