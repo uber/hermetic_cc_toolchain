@@ -293,8 +293,8 @@ This flag encourages program authors to fix the undefined behavior. There are
 ## Use of `--gc-sections` by default
 
 `zig cc` passes `--gc-sections` to the ld.lld linker by default, this causes
-problems for CGo. See
-[below](#go-linker-does-not-put-libc-onto-the-linker-line).
+problems for CGo. This is [fixed for Go 1.19][go-gc-sections]. Until Go 1.19 is
+released, bazel-zig-cc will always be passing `--no-gc-sections` to the linker.
 
 # Known Issues In bazel-zig-cc
 
@@ -461,3 +461,4 @@ the issues promptly.
 [how-uber-uses-zig]: https://jakstys.lt/2022/how-uber-uses-zig/
 [zig-cc-envoy]: https://github.com/envoyproxy/envoy/issues/19535
 [google-award]: https://opensource.googleblog.com/2022/03/Announcing-First-Group-of-Google-Open-Source-Peer-Bonus-Winners-in-2022.html
+[go-gc-sections]: https://go-review.googlesource.com/c/go/+/407814
