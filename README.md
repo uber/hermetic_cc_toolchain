@@ -387,11 +387,6 @@ There are two reasonably convenient ways to configure `linux_arm64` emulation:
    docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
    ```
 
-In order to install and configure `windows_amd64` emulation:
-```
-apt install wine-binfmt
-```
-
 ## Transient docker environment
 
 A standalone Docker environment to play with bazel-zig-cc:
