@@ -336,34 +336,6 @@ need to be renamed before deploying to the Windows system. Here is a primer:
 This section lists issues that I've stumbled into when using `zig cc`, and is
 outside of bazel-zig-cc's control.
 
-## Go linker does not put libc onto the linker line
-
-**Severity: Low**
-
-Task: [golang/go #52690 Go linker does not put libc onto the linker line, causing undefined symbol errors](https://github.com/golang/go/issues/52690)
-
-Background: when linking CGo programs that do not have C code by itself,
-the Golang linker does not link the C library, causing undefined symbols and
-a message similar to this:
-
-```
-runtime/race(.text): relocation target getuid not defined
-runtime/race(.text): relocation target pthread_self not defined
-```
-
-This is because `zig cc` emits `--gc-sections` for the linker, which is
-incompatbile with what CGo thinks about linking.
-
-A workaround until [#52690](https://github.com/golang/go/issues/52690) is
-resolved: add `--no-gc-sections` to the link step. So the resulting command to
-compile CGo code on Linux is:
-
-```
-CGO_ENABLED=1 CC="zig cc -Wl,--no-gc-sections" go build main.go
-```
-
-This is done automatically in bazel-zig-cc.
-
 ## using glibc 2.27 or older
 
 **Severity: Low**
@@ -376,6 +348,7 @@ may apply to aarch64, but the author didn't find a need to test it (yet).
 
 # Closed Upstream Issues
 
+- [golang/go #52690 Go linker does not put libc onto the linker line](https://github.com/golang/go/issues/52690)(CLOSED, thanks andrewrk and motiejus)
 - [ziglang/zig #10386 zig cc regression in 0.9.0](https://github.com/ziglang/zig/issues/10386)(CLOSED, thanks Xavier)
 - [ziglang/zig #10312 macho: fail if requested -framework is not found](https://github.com/ziglang/zig/pull/10312) (CLOSED, thanks kubkon)
 - [ziglang/zig #10299 [darwin aarch64 cgo] regression](https://github.com/ziglang/zig/issues/10299) (CLOSED, thanks kubkon)
