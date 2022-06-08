@@ -29,7 +29,7 @@ http_archive(
     name = "bazel-zig-cc",
     sha256 = "cd2629843fe4ba20cf29e1d73cc02559afba640f884e519b6a194a35627cbbf3",
     strip_prefix = "bazel-zig-cc-{}".format(BAZEL_ZIG_CC_VERSION),
-    urls = ["https://git.sr.ht/~motiejus/bazel-zig-cc/archive/{}.tar.gz".format(BAZEL_ZIG_CC_VERSION)],
+    urls = ["https://git.sr.ht/~motiejus/bazel-zig-cc/archive/{}.{_ext}".format(BAZEL_ZIG_CC_VERSION)],
 )
 
 load("@bazel-zig-cc//toolchain:defs.bzl", zig_toolchains = "toolchains")
@@ -40,7 +40,7 @@ load("@bazel-zig-cc//toolchain:defs.bzl", zig_toolchains = "toolchains")
 zig_toolchains(
     version = "<...>",
     url_formats = [
-        "https://example.org/zig/zig-{host_platform}-{version}.tar.xz",
+        "https://example.org/zig/zig-{host_platform}-{version}.{_ext}",
     ],
     host_platform_sha256 = { ... },
 )
@@ -152,6 +152,8 @@ register_toolchains(
     "@zig_sdk//toolchain:linux_arm64_gnu.2.28",
     "@zig_sdk//toolchain:darwin_amd64",
     "@zig_sdk//toolchain:darwin_arm64",
+    "@zig_sdk//toolchain:windows_amd64",
+    "@zig_sdk//toolchain:windows_arm64",
 )
 ```
 
@@ -318,6 +320,17 @@ is currently not implemented.
 target macos.10 (Catalina), macos.11 (Big Sur) or macos.12 (Monterey). It
 currently targets the lowest version, without ability to change it.
 
+## Windows only: output file extensions
+
+For Windows targets Bazel uses Unix extensions for output binaries. Those may
+need to be renamed before deploying to the Windows system. Here is a primer:
+
+| Binary type    | Bazel extension | Windows extension |
+|----------------|-----------------|-------------------|
+| Static library | .a              | .lib              |
+| Shared library | .so             | .dll              |
+| Executable     | (no extension)  | .exe              |
+
 # Known Issues In Upstream
 
 This section lists issues that I've stumbled into when using `zig cc`, and is
@@ -384,10 +397,12 @@ This repository is used on the following (host) platforms:
 - `linux_arm64`, a.k.a. `AArch64`.
 - `darwin_amd64`, the 64-bit post-PowerPC models.
 - `darwin_arm64`, the M1.
+- `windows_amd64`, a.k.a. `x64`.
 
 The tests are running (CId) on linux-amd64, and are assuming the kernel is
-configured to run arm64 binaries. There are two reasonably convenient ways to
-configure arm64 emulation:
+configured to run `linux_arm64` and `windows_amd64` binaries.
+
+There are two reasonably convenient ways to configure `linux_arm64` emulation:
 
 1. Install and configure [`binfmt_misc`][binfmt_misc]:
    ```
@@ -398,6 +413,11 @@ configure arm64 emulation:
    ```
    docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
    ```
+
+In order to install and configure `windows_amd64` emulation:
+```
+apt install wine-binfmt
+```
 
 ## Transient docker environment
 

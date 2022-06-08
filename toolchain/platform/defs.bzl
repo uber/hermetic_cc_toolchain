@@ -1,11 +1,16 @@
 load("@bazel-zig-cc//toolchain/private:defs.bzl", "LIBCS")
 
 _CPUS = (("x86_64", "amd64"), ("aarch64", "arm64"))
+_OS = {
+    "linux": ["linux"],
+    "macos": ["macos", "darwin"],
+    "windows": ["windows"],
+}
 
 def declare_platforms():
     # create @zig_sdk//{os}_{arch}_platform entries with zig and go conventions
     for zigcpu, gocpu in _CPUS:
-        for bzlos, oss in {"linux": ["linux"], "macos": ["macos", "darwin"]}.items():
+        for bzlos, oss in _OS.items():
             for os in oss:
                 declare_platform(gocpu, zigcpu, bzlos, os)
 

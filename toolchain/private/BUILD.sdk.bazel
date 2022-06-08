@@ -1,6 +1,7 @@
 load("@bazel-zig-cc//toolchain/private:cc_toolchains.bzl", "declare_cc_toolchains")
 
 declare_cc_toolchains(
+    os = {os},
     absolute_path = {absolute_path},
     zig_include_root = {zig_include_root},
 )

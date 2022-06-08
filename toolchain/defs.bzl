@@ -1,6 +1,6 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "read_user_netrc", "use_netrc")
-load("@bazel-zig-cc//toolchain/private:defs.bzl", "DEFAULT_INCLUDE_DIRECTORIES", "ZIG_TOOL_PATH", "target_structs")
+load("@bazel-zig-cc//toolchain/private:defs.bzl", "DEFAULT_INCLUDE_DIRECTORIES", "target_structs", "zig_tool_path")
 
 _fcntl_map = """
 GLIBC_2.2.5 {
@@ -16,21 +16,21 @@ __asm__(".symver fcntl64, fcntl@GLIBC_2.2.5");
 """
 
 # Official recommended version. Should use this when we have a usable release.
-URL_FORMAT_RELEASE = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.tar.xz"
+URL_FORMAT_RELEASE = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.{_ext}"
 
 # Caution: nightly releases are purged from ziglang.org after ~90 days. A real
 # solution would be to allow the downstream project specify their own mirrors.
 # This is explained in
 # https://sr.ht/~motiejus/bazel-zig-cc/#alternative-download-urls and is
 # awaiting my attention or your contribution.
-URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform}-{version}.tar.xz"
+URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform}-{version}.{_ext}"
 
 # Author's mirror that doesn't purge the nightlies so aggressively. I will be
 # cleaning those up manually only after the artifacts are not in use for many
 # months in bazel-zig-cc. dl.jakstys.lt is a small x86_64 server with an NVMe
 # drive sitting in my home closet on a 1GB/s symmetric residential connection,
 # which, as of writing, has been quite reliable.
-URL_FORMAT_JAKSTYS = "https://dl.jakstys.lt/zig/zig-{host_platform}-{version}.tar.xz"
+URL_FORMAT_JAKSTYS = "https://dl.jakstys.lt/zig/zig-{host_platform}-{version}.{_ext}"
 
 _VERSION = "0.10.0-dev.2252+a4369918b"
 
@@ -39,12 +39,22 @@ _HOST_PLATFORM_SHA256 = {
     "linux-x86_64": "1d3c3769eba85a4334c93a3cfa35ad0ef914dd8cf9fd502802004c6908f5370c",
     "macos-aarch64": "ab46e7499e5bd7b6d6ff2ac331e1a4aa875a01b270dc40306bc29dbaf216fccf",
     "macos-x86_64": "fb213f996bcab805839e401292c42a92b63cd97deb1631e31bd61f534b7f6b1c",
+    "windows-x86_64": "14e43a64026512161f3d6201d8972a28f0508da2782c16e980f2ffa3bb7e6720",
+}
+
+_HOST_PLATFORM_EXT = {
+    "linux-aarch64": "tar.xz",
+    "linux-x86_64": "tar.xz",
+    "macos-aarch64": "tar.xz",
+    "macos-x86_64": "tar.xz",
+    "windows-x86_64": "zip",
 }
 
 def toolchains(
         version = _VERSION,
         url_formats = [URL_FORMAT_NIGHTLY, URL_FORMAT_JAKSTYS],
-        host_platform_sha256 = _HOST_PLATFORM_SHA256):
+        host_platform_sha256 = _HOST_PLATFORM_SHA256,
+        host_platform_ext = _HOST_PLATFORM_EXT):
     """
         Download zig toolchain and declare bazel toolchains.
         The platforms are not registered automatically, that should be done by
@@ -56,11 +66,13 @@ def toolchains(
         version = version,
         url_formats = url_formats,
         host_platform_sha256 = host_platform_sha256,
+        host_platform_ext = host_platform_ext,
         host_platform_include_root = {
             "linux-aarch64": "lib/zig/",
             "linux-x86_64": "lib/",
             "macos-aarch64": "lib/zig/",
             "macos-x86_64": "lib/zig/",
+            "windows-x86_64": "lib/",
         },
     )
 
@@ -79,6 +91,10 @@ export ZIG_LOCAL_CACHE_DIR="$_cache_prefix/bazel-zig-cc"
 export ZIG_GLOBAL_CACHE_DIR=$ZIG_LOCAL_CACHE_DIR
 
 exec "{zig}" "{zig_tool}" "$@"
+"""
+
+ZIG_TOOL_WRAPPER_WINDOWS = """@echo off
+"{zig}" "{zig_tool}" %*
 """
 
 _ZIG_TOOLS = [
@@ -103,11 +119,16 @@ def _zig_repository_impl(repository_ctx):
     if os.startswith("mac os"):
         os = "macos"
 
+    if os.startswith("windows"):
+        os = "windows"
+
     host_platform = "{}-{}".format(os, arch)
 
     zig_include_root = repository_ctx.attr.host_platform_include_root[host_platform]
     zig_sha256 = repository_ctx.attr.host_platform_sha256[host_platform]
+    zig_ext = repository_ctx.attr.host_platform_ext[host_platform]
     format_vars = {
+        "_ext": zig_ext,
         "version": repository_ctx.attr.version,
         "host_platform": host_platform,
     }
@@ -121,12 +142,19 @@ def _zig_repository_impl(repository_ctx):
     )
 
     for zig_tool in _ZIG_TOOLS:
-        repository_ctx.file(
-            ZIG_TOOL_PATH.format(zig_tool = zig_tool),
-            ZIG_TOOL_WRAPPER.format(
-                zig = str(repository_ctx.path("zig")),
+        zig_tool_wrapper = ZIG_TOOL_WRAPPER.format(
+            zig = str(repository_ctx.path("zig")),
+            zig_tool = zig_tool,
+        )
+        if os == "windows":
+            zig_tool_wrapper = ZIG_TOOL_WRAPPER_WINDOWS.format(
+                zig = str(repository_ctx.path("zig")).replace("/", "\\") + ".exe",
                 zig_tool = zig_tool,
-            ),
+            )
+
+        repository_ctx.file(
+            zig_tool_path(os).format(zig_tool = zig_tool),
+            zig_tool_wrapper,
         )
 
     repository_ctx.file(
@@ -157,6 +185,7 @@ def _zig_repository_impl(repository_ctx):
             executable = False,
             substitutions = {
                 "{absolute_path}": _quote(str(repository_ctx.path(""))),
+                "{os}": _quote(os),
                 "{zig_include_root}": _quote(zig_include_root),
             },
         )
@@ -167,6 +196,7 @@ zig_repository = repository_rule(
         "host_platform_sha256": attr.string_dict(),
         "url_formats": attr.string_list(allow_empty = False),
         "host_platform_include_root": attr.string_dict(),
+        "host_platform_ext": attr.string_dict(),
     },
     implementation = _zig_repository_impl,
 )
@@ -175,9 +205,13 @@ def filegroup(name, **kwargs):
     native.filegroup(name = name, **kwargs)
     return ":" + name
 
-def declare_files(zig_include_root):
+def declare_files(os, zig_include_root):
     filegroup(name = "empty")
-    native.exports_files(["zig"], visibility = ["//visibility:public"])
+    if os == "windows":
+        native.exports_files(["zig.exe"], visibility = ["//visibility:public"])
+        native.alias(name = "zig", actual = ":zig.exe")
+    else:
+        native.exports_files(["zig"], visibility = ["//visibility:public"])
     filegroup(name = "lib/std", srcs = native.glob(["lib/std/**"]))
 
     lazy_filegroups = {}

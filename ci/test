@@ -1,3 +1,4 @@
-#!/bin/sh
+#!/bin/bash
+set -xeuo pipefail
 
-exec bazel test ...
+bazel test ...

@@ -14,7 +14,7 @@ BEGIN {stage=0};
     print "    name = \"bazel-zig-cc\","
     print "    sha256 = \""sha256sum"\","
     print "    strip_prefix = \"bazel-zig-cc-{}\".format(BAZEL_ZIG_CC_VERSION),"
-    print "    urls = [\"https://git.sr.ht/~motiejus/bazel-zig-cc/archive/{}.tar.gz\".format(BAZEL_ZIG_CC_VERSION)],"
+    print "    urls = [\"https://git.sr.ht/~motiejus/bazel-zig-cc/archive/{}.{_ext}\".format(BAZEL_ZIG_CC_VERSION)],"
     print ")"
     stage=1
     next
