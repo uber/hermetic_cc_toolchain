@@ -398,8 +398,21 @@ A standalone Docker environment to play with bazel-zig-cc:
 
 ```
 $ docker run -e CC=/usr/bin/false -ti --rm -v "$PWD:/x" -w /x debian:bullseye-slim
+# apt update
+# apt install --no-install-recommends -y direnv git shellcheck ca-certificates
+# eval "$(direnv hook bash)" && direnv allow
+# ./ci/test
+# ./ci/lint
+```
+
+Some of the tests rely on `qemu-aarch64` to run arm64 binaries and wine for
+Windows binaries. Therefore, with the setup above, these tests will fail.
+To install *all* dependencies, so all tests can pass:
+
+```
+$ docker run -e CC=/usr/bin/false -ti --rm -v "$PWD:/x" -w /x debian:bullseye-slim
 # dpkg --add-architecture arm64 && apt update
-# apt install --no-install-recommends -y direnv git shellcheck ca-certificates libc6:arm64 qemu-user-static
+# apt install --no-install-recommends -y direnv git shellcheck ca-certificates libc6:arm64 qemu-user-static wine64
 # eval "$(direnv hook bash)" && direnv allow
 # ./ci/test
 # ./ci/lint
