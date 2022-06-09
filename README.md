@@ -432,6 +432,25 @@ To contribute, send your patches to the mailing list, as described in
 
 Copyright is retained by the contributors.
 
+# Maintainers
+
+This section lists the driving forces behind bazel-zig-cc. Committers have push
+access, maintainers have their areas. Should make it easier to understand our
+interests when reading patches or mailing lists.
+
+- Owner: Motiejus Jakštys. Applies others' patches, writes documentation,
+  emails, and occasionally contributes. Signs releases.
+- Committer: Laurynas Lubys. Bazel expert with regards to tests, transitions
+  and overall structure. Rewrote bazel-zig-cc to cater for platforms when libc
+  platforms were added.
+- Committer: Ken Micklas. Ken is leading hermetic toolchain effort at Uber, of
+  which bazel-zig-cc is a part of.
+- Maintainer for Windows: Fabian Hahn. If you make a change that breaks
+  Windows, Fabian will find you. Please don't break Windows, so Fabian doesn't
+  have to look for you. Instead, send him your patches first.
+
+You may find contact information of the individuals in the commit logs.
+
 # Publicity
 
 This section lists notable uses or mentions of bazel-zig-cc.
