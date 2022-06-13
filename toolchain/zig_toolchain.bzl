@@ -2,6 +2,7 @@ load("@bazel_tools//tools/build_defs/cc:action_names.bzl", "ACTION_NAMES")
 load(
     "@bazel_tools//tools/cpp:cc_toolchain_config_lib.bzl",
     "feature",
+    "feature_set",
     "flag_group",
     "flag_set",
     "tool",
@@ -35,6 +36,57 @@ rest_compile_actions = [
     ACTION_NAMES.lto_backend,
     ACTION_NAMES.preprocess_assemble,
 ]
+
+def _compilation_mode_features(ctx):
+    actions = all_link_actions + compile_and_link_actions + rest_compile_actions
+
+    dbg_feature = feature(
+        name = "dbg",
+        flag_sets = [
+            flag_set(
+                actions = actions,
+                flag_groups = [
+                    flag_group(
+                        flags = ["-g"],
+                    ),
+                ],
+            ),
+        ],
+    )
+
+    opt_feature = feature(
+        name = "opt",
+        flag_sets = [
+            flag_set(
+                actions = actions,
+                flag_groups = [
+                    flag_group(
+                        flags = ["-O2", "-DNDEBUG"],
+                    ),
+                ],
+            ),
+        ],
+    )
+
+    fastbuild_feature = feature(
+        name = "fastbuild",
+        flag_sets = [
+            flag_set(
+                actions = actions,
+                flag_groups = [
+                    flag_group(
+                        flags = ["-gmlt", "-Wl,-S"],
+                    ),
+                ],
+            ),
+        ],
+    )
+
+    return [
+        dbg_feature,
+        opt_feature,
+        fastbuild_feature,
+    ]
 
 def _zig_cc_toolchain_config_impl(ctx):
     compiler_flags = [
@@ -109,7 +161,7 @@ def _zig_cc_toolchain_config_impl(ctx):
         compile_and_link_flags,
         rest_compile_flags,
         default_linker_flags,
-    ]
+    ] + _compilation_mode_features(ctx)
 
     return cc_common.create_cc_toolchain_config_info(
         ctx = ctx,
