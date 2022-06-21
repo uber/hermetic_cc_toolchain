@@ -75,7 +75,7 @@ def _compilation_mode_features(ctx):
                 actions = actions,
                 flag_groups = [
                     flag_group(
-                        flags = ["-gmlt", "-Wl,-S"],
+                        flags = ["-gmlt", "-fno-lto", "-Wl,-S"],
                     ),
                 ],
             ),
