@@ -52,7 +52,7 @@ def _target_darwin(gocpu, zigcpu):
         min_os = "11"
     return struct(
         gotarget = "darwin_{}".format(gocpu),
-        zigtarget = "{}-macos-gnu".format(zigcpu),
+        zigtarget = "{}-macos-none".format(zigcpu),
         includes = [
             "libunwind/include",
             # TODO: Define a toolchain for each minimum OS version
