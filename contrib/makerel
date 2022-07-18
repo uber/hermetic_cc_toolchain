@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-zigdir=out/zig-x86_64-linux-musl-baseline
+zigdir=out/zig-x86_64-linux-musl-x86_64_v3
 
 if [[ ! "$PWD" =~ /zig-bootstrap$ ]]; then
     >&2 echo "expected to be in zig-bootstrap directory. Bailing"
@@ -11,7 +11,7 @@ fi
 
 if [[ ! -f "$zigdir/bin/zig" ]]; then
     >&2 echo "$zigdir/bin/zig not found. Please run:"
-    >&2 echo "    ./build -j\$(nproc) x86_64-linux-musl baseline"
+    >&2 echo "    ./build -j\$(nproc) x86_64-linux-musl x86_64_v3"
     exit 1
 fi
 
@@ -22,7 +22,7 @@ pushd "$zigdir"
     cp -r "bin/zig" "$outdir"
     cp -r "lib/zig" "$outdir/lib"
     tar -cf "$outdir.tar" "$outdir"
-    xz -vk --fast "$outdir.tar"
+    xz -vk -9 -T0 "$outdir.tar"
 popd
 
 echo "$zigdir/$outdir.tar.xz is ready for use"
