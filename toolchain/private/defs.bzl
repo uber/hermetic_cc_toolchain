@@ -57,6 +57,7 @@ def _target_darwin(gocpu, zigcpu):
             "libunwind/include",
             # TODO: Define a toolchain for each minimum OS version
             "libc/include/{}-macos.{}-gnu".format(zigcpu, min_os),
+            "libc/include/{}-macos.{}-none".format(zigcpu, min_os),
             "libc/include/any-macos.{}-any".format(min_os),
             "libc/include/any-macos-any",
         ],
