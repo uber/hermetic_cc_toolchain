@@ -76,7 +76,7 @@ def toolchains(
         },
     )
 
-ZIG_TOOL_WRAPPER = """#!/bin/bash
+ZIG_TOOL_WRAPPER = """#!/usr/bin/env bash
 set -e
 
 if [[ -n "$TMPDIR" ]]; then
