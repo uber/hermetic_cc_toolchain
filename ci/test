@@ -1,4 +1,2 @@
-#!/usr/bin/env bash
-set -xeuo pipefail
-
-bazel test ...
+#!/usr/bin/env sh
+exec bazel test ...
