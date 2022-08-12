@@ -80,12 +80,15 @@ ZIG_TOOL_WRAPPER = """#!/usr/bin/env bash
 set -e
 
 if [[ -n "$TMPDIR" ]]; then
-  _cache_prefix=$TMPDIR
+    _cache_prefix=$TMPDIR
+elif [[ -n "$HOME" ]]; then
+    if [[ "$(uname)" = Darwin ]]; then
+        _cache_prefix="$HOME/Library/Caches"
+    else
+        _cache_prefix="$HOME/.cache"
+    fi
 else
-  _cache_prefix="$HOME/.cache"
-  if [[ "$(uname)" = Darwin ]]; then
-    _cache_prefix="$HOME/Library/Caches"
-  fi
+    _cache_prefix=/tmp
 fi
 
 export ZIG_LOCAL_CACHE_DIR="$_cache_prefix/bazel-zig-cc"
