@@ -290,12 +290,6 @@ SIGILL: illegal instruction
 This flag encourages program authors to fix the undefined behavior. There are
 [many ways][ubsan2] to find the undefined behavior.
 
-## Use of `--gc-sections` by default
-
-`zig cc` passes `--gc-sections` to the ld.lld linker by default, this causes
-problems for CGo. This is [fixed for Go 1.19][go-gc-sections]. Until Go 1.19 is
-released, bazel-zig-cc will always be passing `--no-gc-sections` to the linker.
-
 # Known Issues In bazel-zig-cc
 
 These are the things you may stumble into when using bazel-zig-cc. I am
@@ -303,10 +297,27 @@ unlikely to implement them any time soon, but patches implementing those will
 be accepted. See [Questions & Contributions](#questions-amp-contributions) on
 how to contribute.
 
-## Zig cache
+## Zig cache location
 
 Currently zig cache is in `$HOME`, so `bazel clean --expunge` does not clear
 the zig cache. Zig's cache should be stored somewhere in the project's path.
+
+## zig cc concurrency
+
+- Bazel spawns up to `nproc` workers.
+- For each of those, Go may spawn up to `nproc` processes while compiling.
+- Zig may do the same.
+
+... causing explosion of heavy compiler processes. This causes CPU to spike.
+Tracked in [ziglang/zig #12101  RFC: -j/--jobs for zig
+subcommands](https://github.com/ziglang/zig/issues/12101).
+
+## zig cc cache
+
+Both Zig and Bazel cache the artifacts, requiring double disk space for cache.
+Zig may remove caching for external builds. Tracked in [ziglang/zig #12317
+Possibility to disable caching for user
+code](https://github.com/ziglang/zig/issues/12317)
 
 ## OSX: sysroot
 
