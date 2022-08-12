@@ -101,7 +101,6 @@ def _zig_cc_toolchain_config_impl(ctx):
         "-D__TIMESTAMP__=\"redacted\"",
         "-D__TIME__=\"redacted\"",
     ]
-    no_gc_sections = ["-Wl,--no-gc-sections"]
 
     compile_and_link_flags = feature(
         name = "compile_and_link_flags",
@@ -109,20 +108,6 @@ def _zig_cc_toolchain_config_impl(ctx):
         flag_sets = [
             flag_set(
                 actions = compile_and_link_actions,
-                flag_groups = [
-                    flag_group(flags = no_gc_sections),
-                    flag_group(flags = compiler_flags + ctx.attr.copts),
-                ],
-            ),
-        ],
-    )
-
-    rest_compile_flags = feature(
-        name = "rest_compile_flags",
-        enabled = True,
-        flag_sets = [
-            flag_set(
-                actions = rest_compile_actions,
                 flag_groups = [
                     flag_group(flags = compiler_flags + ctx.attr.copts),
                 ],
@@ -149,7 +134,6 @@ def _zig_cc_toolchain_config_impl(ctx):
                 flag_groups = [
                     flag_group(
                         flags = ["-target", ctx.attr.target] +
-                                no_gc_sections +
                                 ctx.attr.linkopts,
                     ),
                 ],
@@ -159,7 +143,6 @@ def _zig_cc_toolchain_config_impl(ctx):
 
     features = [
         compile_and_link_flags,
-        rest_compile_flags,
         default_linker_flags,
     ] + _compilation_mode_features(ctx)
 
