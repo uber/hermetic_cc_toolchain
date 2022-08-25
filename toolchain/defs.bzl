@@ -79,7 +79,9 @@ def toolchains(
 ZIG_TOOL_WRAPPER = """#!/usr/bin/env bash
 set -e
 
-if [[ -n "$TMPDIR" ]]; then
+if [[ -n "{cache_prefix}" ]]; then
+  _cache_prefix="{cache_prefix}"
+elif [[ -n "$TMPDIR" ]]; then
     _cache_prefix=$TMPDIR
 elif [[ -n "$HOME" ]]; then
     if [[ "$(uname)" = Darwin ]]; then
@@ -149,6 +151,7 @@ def _zig_repository_impl(repository_ctx):
         zig_tool_wrapper = ZIG_TOOL_WRAPPER.format(
             zig = str(repository_ctx.path("zig")),
             zig_tool = zig_tool,
+            cache_prefix = repository_ctx.os.environ.get("BAZEL_ZIG_CC_CACHE_PREFIX", ""),
         )
         if os == "windows":
             zig_tool_wrapper = ZIG_TOOL_WRAPPER_WINDOWS.format(
