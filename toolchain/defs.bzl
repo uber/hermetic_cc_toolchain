@@ -76,15 +76,19 @@ def toolchains(
         },
     )
 
-ZIG_TOOL_WRAPPER = """#!/usr/bin/env bash
-set -e
+ZIG_TOOL_WRAPPER_CACHE_KNOWN = """#!/usr/bin/env sh
+_cache_prefix="{cache_prefix}"
+export ZIG_LOCAL_CACHE_DIR="$_cache_prefix/bazel-zig-cc"
+export ZIG_GLOBAL_CACHE_DIR=$ZIG_LOCAL_CACHE_DIR
+exec "{zig}" "{zig_tool}" "$@"
+"""
 
-if [[ -n "{cache_prefix}" ]]; then
-  _cache_prefix="{cache_prefix}"
-elif [[ -n "$TMPDIR" ]]; then
+ZIG_TOOL_WRAPPER_CACHE_GUESS = """#!/usr/bin/env sh
+set -e
+if [ -n "$TMPDIR" ]; then
     _cache_prefix=$TMPDIR
-elif [[ -n "$HOME" ]]; then
-    if [[ "$(uname)" = Darwin ]]; then
+elif [ -n "$HOME" ]; then
+    if [ "$(uname)" = Darwin ]; then
         _cache_prefix="$HOME/Library/Caches"
     else
         _cache_prefix="$HOME/.cache"
@@ -92,10 +96,8 @@ elif [[ -n "$HOME" ]]; then
 else
     _cache_prefix=/tmp
 fi
-
 export ZIG_LOCAL_CACHE_DIR="$_cache_prefix/bazel-zig-cc"
 export ZIG_GLOBAL_CACHE_DIR=$ZIG_LOCAL_CACHE_DIR
-
 exec "{zig}" "{zig_tool}" "$@"
 """
 
@@ -148,14 +150,21 @@ def _zig_repository_impl(repository_ctx):
     )
 
     for zig_tool in _ZIG_TOOLS:
-        zig_tool_wrapper = ZIG_TOOL_WRAPPER.format(
-            zig = str(repository_ctx.path("zig")),
-            zig_tool = zig_tool,
-            cache_prefix = repository_ctx.os.environ.get("BAZEL_ZIG_CC_CACHE_PREFIX", ""),
-        )
+        cache_prefix = repository_ctx.os.environ.get("BAZEL_ZIG_CC_CACHE_PREFIX", "")
         if os == "windows":
             zig_tool_wrapper = ZIG_TOOL_WRAPPER_WINDOWS.format(
                 zig = str(repository_ctx.path("zig")).replace("/", "\\") + ".exe",
+                zig_tool = zig_tool,
+            )
+        elif cache_prefix:
+            zig_tool_wrapper = ZIG_TOOL_WRAPPER_CACHE_KNOWN.format(
+                zig = str(repository_ctx.path("zig")),
+                zig_tool = zig_tool,
+                cache_prefix = cache_prefix,
+            )
+        else:
+            zig_tool_wrapper = ZIG_TOOL_WRAPPER_CACHE_GUESS.format(
+                zig = str(repository_ctx.path("zig")),
                 zig_tool = zig_tool,
             )
 
