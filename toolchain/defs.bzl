@@ -101,7 +101,20 @@ export ZIG_GLOBAL_CACHE_DIR=$ZIG_LOCAL_CACHE_DIR
 exec "{zig}" "{zig_tool}" "$@"
 """
 
-ZIG_TOOL_WRAPPER_WINDOWS = """@echo off
+ZIG_TOOL_WRAPPER_WINDOWS_CACHE_KNOWN = """@echo off
+set ZIG_LOCAL_CACHE_DIR={cache_prefix}\\bazel-zig-cc
+set ZIG_GLOBAL_CACHE_DIR=%ZIG_LOCAL_CACHE_DIR%
+"{zig}" "{zig_tool}" %*
+"""
+
+ZIG_TOOL_WRAPPER_WINDOWS_CACHE_GUESS = """@echo off
+if exist "%TMP%\\*" goto :usertmp
+set ZIG_LOCAL_CACHE_DIR=C:\\Temp\\bazel-zig-cc
+goto zig
+:usertmp
+set ZIG_LOCAL_CACHE_DIR=%TMP%\\bazel-zig-cc
+:zig
+set ZIG_GLOBAL_CACHE_DIR=%ZIG_LOCAL_CACHE_DIR%
 "{zig}" "{zig_tool}" %*
 """
 
@@ -152,10 +165,17 @@ def _zig_repository_impl(repository_ctx):
     for zig_tool in _ZIG_TOOLS:
         cache_prefix = repository_ctx.os.environ.get("BAZEL_ZIG_CC_CACHE_PREFIX", "")
         if os == "windows":
-            zig_tool_wrapper = ZIG_TOOL_WRAPPER_WINDOWS.format(
-                zig = str(repository_ctx.path("zig")).replace("/", "\\") + ".exe",
-                zig_tool = zig_tool,
-            )
+            if cache_prefix:
+                zig_tool_wrapper = ZIG_TOOL_WRAPPER_WINDOWS_CACHE_KNOWN.format(
+                    zig = str(repository_ctx.path("zig")).replace("/", "\\") + ".exe",
+                    zig_tool = zig_tool,
+                    cache_prefix = cache_prefix,
+                )
+            else:
+                zig_tool_wrapper = ZIG_TOOL_WRAPPER_WINDOWS_CACHE_GUESS.format(
+                    zig = str(repository_ctx.path("zig")).replace("/", "\\") + ".exe",
+                    zig_tool = zig_tool,
+                )
         elif cache_prefix:
             zig_tool_wrapper = ZIG_TOOL_WRAPPER_CACHE_KNOWN.format(
                 zig = str(repository_ctx.path("zig")),
