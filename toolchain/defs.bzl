@@ -104,9 +104,8 @@ set ZIG_GLOBAL_CACHE_DIR=%ZIG_LOCAL_CACHE_DIR%
 """
 
 _ZIG_TOOL_WRAPPER_CACHE_KNOWN = """#!/usr/bin/env sh
-_cache_prefix="{cache_prefix}"
-export ZIG_LOCAL_CACHE_DIR="$_cache_prefix/bazel-zig-cc"
-export ZIG_GLOBAL_CACHE_DIR=$ZIG_LOCAL_CACHE_DIR
+export ZIG_LOCAL_CACHE_DIR="{cache_prefix}/bazel-zig-cc"
+export ZIG_GLOBAL_CACHE_DIR="{cache_prefix}/bazel-zig-cc"
 exec "{zig}" "{zig_tool}" "$@"
 """
 
