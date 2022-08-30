@@ -1,6 +1,5 @@
-#!/usr/bin/env bash
-
-set -xeuo pipefail
+#!/bin/sh
+set -eu
 
 cd "$(git rev-parse --show-toplevel)/"
 bazel run @go_sdk//:bin/go -- mod tidy

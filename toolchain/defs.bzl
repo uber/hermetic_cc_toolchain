@@ -103,13 +103,13 @@ set ZIG_GLOBAL_CACHE_DIR=%ZIG_LOCAL_CACHE_DIR%
 "{zig}" "{zig_tool}" %*
 """
 
-_ZIG_TOOL_WRAPPER_CACHE_KNOWN = """#!/usr/bin/env sh
+_ZIG_TOOL_WRAPPER_CACHE_KNOWN = """#!/bin/sh
 export ZIG_LOCAL_CACHE_DIR="{cache_prefix}/bazel-zig-cc"
 export ZIG_GLOBAL_CACHE_DIR="{cache_prefix}/bazel-zig-cc"
 exec "{zig}" "{zig_tool}" "$@"
 """
 
-_ZIG_TOOL_WRAPPER_CACHE_GUESS = """#!/usr/bin/env sh
+_ZIG_TOOL_WRAPPER_CACHE_GUESS = """#!/bin/sh
 set -e
 if [ -n "$TMPDIR" ]; then
     _cache_prefix=$TMPDIR

@@ -1,6 +1,5 @@
-#!/usr/bin/env bash
-
-set -euo pipefail
+#!/bin/sh
+set -eu
 
 # shellcheck disable=SC2153
 want=$WANT
