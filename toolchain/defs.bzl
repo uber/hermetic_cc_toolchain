@@ -232,6 +232,7 @@ zig_repository = repository_rule(
         "host_platform_include_root": attr.string_dict(),
         "host_platform_ext": attr.string_dict(),
     },
+    environ = ["BAZEL_ZIG_CC_CACHE_PREFIX"],
     implementation = _zig_repository_impl,
 )
 
