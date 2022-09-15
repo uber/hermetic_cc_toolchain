@@ -70,7 +70,7 @@ def toolchains(
         host_platform_include_root = {
             "linux-aarch64": "lib/zig/",
             "linux-x86_64": "lib/",
-            "macos-aarch64": "lib/zig/",
+            "macos-aarch64": "lib/",
             "macos-x86_64": "lib/zig/",
             "windows-x86_64": "lib/",
         },
