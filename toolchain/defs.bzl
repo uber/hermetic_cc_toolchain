@@ -170,6 +170,35 @@ def _zig_repository_impl(repository_ctx):
         "host_platform": host_platform,
     }
 
+    # Fetch Label dependencies before doing download/extract.
+    # The Bazel docs are not very clear about this behavior but see:
+    # https://bazel.build/extending/repo#when_is_the_implementation_function_executed
+    # and a related rules_go PR:
+    # https://github.com/bazelbuild/bazel-gazelle/pull/1206
+    for dest, src in {
+        "platform/BUILD": "//toolchain/platform:BUILD",
+        "toolchain/BUILD": "//toolchain/toolchain:BUILD",
+        "libc/BUILD": "//toolchain/libc:BUILD",
+        "libc_aware/platform/BUILD": "//toolchain/libc_aware/platform:BUILD",
+        "libc_aware/toolchain/BUILD": "//toolchain/libc_aware/toolchain:BUILD",
+    }.items():
+        repository_ctx.symlink(Label(src), dest)
+
+    for dest, src in {
+        "BUILD": "//toolchain:BUILD.sdk.bazel",
+        "private/BUILD": "//toolchain/private:BUILD.sdk.bazel",
+    }.items():
+        repository_ctx.template(
+            dest,
+            Label(src),
+            executable = False,
+            substitutions = {
+                "{absolute_path}": _quote(str(repository_ctx.path(""))),
+                "{os}": _quote(os),
+                "{zig_include_root}": _quote(zig_include_root),
+            },
+        )
+
     urls = [uf.format(**format_vars) for uf in repository_ctx.attr.url_formats]
     repository_ctx.download_and_extract(
         auth = use_netrc(read_user_netrc(repository_ctx), urls, {}),
@@ -199,30 +228,6 @@ def _zig_repository_impl(repository_ctx):
         "glibc-hacks/glibchack-fcntl.h",
         content = _fcntl_h,
     )
-
-    for dest, src in {
-        "platform/BUILD": "//toolchain/platform:BUILD",
-        "toolchain/BUILD": "//toolchain/toolchain:BUILD",
-        "libc/BUILD": "//toolchain/libc:BUILD",
-        "libc_aware/platform/BUILD": "//toolchain/libc_aware/platform:BUILD",
-        "libc_aware/toolchain/BUILD": "//toolchain/libc_aware/toolchain:BUILD",
-    }.items():
-        repository_ctx.symlink(Label(src), dest)
-
-    for dest, src in {
-        "BUILD": "//toolchain:BUILD.sdk.bazel",
-        "private/BUILD": "//toolchain/private:BUILD.sdk.bazel",
-    }.items():
-        repository_ctx.template(
-            dest,
-            Label(src),
-            executable = False,
-            substitutions = {
-                "{absolute_path}": _quote(str(repository_ctx.path(""))),
-                "{os}": _quote(os),
-                "{zig_include_root}": _quote(zig_include_root),
-            },
-        )
 
 zig_repository = repository_rule(
     attrs = {
