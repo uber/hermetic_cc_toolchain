@@ -32,7 +32,7 @@ def _declare_toolchain(gotarget, zigtarget, target_compatible_with):
         name = gotarget,
         exec_compatible_with = None,
         target_compatible_with = target_compatible_with,
-        toolchain = "@zig_sdk//private:%s_cc" % zigtarget,
+        toolchain = "@zig_sdk//:%s_cc" % zigtarget,
         toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
     )
 
@@ -41,6 +41,6 @@ def _declare_toolchain(gotarget, zigtarget, target_compatible_with):
         name = zigtarget,
         exec_compatible_with = None,
         target_compatible_with = target_compatible_with,
-        toolchain = "@zig_sdk//private:%s_cc" % zigtarget,
+        toolchain = "@zig_sdk//:%s_cc" % zigtarget,
         toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
     )

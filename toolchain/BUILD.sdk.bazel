@@ -1,10 +1,9 @@
 load("@bazel-zig-cc//toolchain:defs.bzl", "declare_files")
+load("@bazel-zig-cc//toolchain/private:cc_toolchains.bzl", "declare_cc_toolchains")
 
 package(
     default_visibility = ["//visibility:public"],
 )
-
-
 
 declare_files(
     os = {os},
@@ -15,3 +14,9 @@ exports_files([
     "glibc-hacks/fcntl.map",
     "glibc-hacks/glibchack-fcntl.h",
 ])
+
+declare_cc_toolchains(
+    os = {os},
+    absolute_path = {absolute_path},
+    zig_include_root = {zig_include_root},
+)

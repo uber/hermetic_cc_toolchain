@@ -110,7 +110,7 @@ toolchain(
   generator_location = "toolchain/BUILD:7:19",
   toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
   target_compatible_with = ["@platforms//os:linux", "@platforms//cpu:aarch64", "@zig_sdk//libc:unconstrained"],
-  toolchain = "@zig_sdk//private:aarch64-linux-musl_cc",
+  toolchain = "@zig_sdk//:aarch64-linux-musl_cc",
 )
 ```
 

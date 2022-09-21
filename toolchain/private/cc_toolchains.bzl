@@ -29,7 +29,7 @@ def declare_cc_toolchains(os, absolute_path, zig_include_root):
                 absolute_tool_paths[name] = path
                 continue
             tool_path = zig_tool_path(os).format(zig_tool = path)
-            absolute_tool_paths[name] = "%s/%s" % (absolute_path, tool_path)
+            absolute_tool_paths[name] = tool_path
 
         linkopts = target_config.linkopts
         dynamic_library_linkopts = target_config.dynamic_library_linkopts
@@ -53,18 +53,20 @@ def declare_cc_toolchains(os, absolute_path, zig_include_root):
             compiler = "clang",
             abi_version = "unknown",
             abi_libc_version = "unknown",
+            # visibility = ["//visibility:private"],
         )
 
         native.cc_toolchain(
             name = zigtarget + "_cc",
             toolchain_identifier = zigtarget + "-toolchain",
             toolchain_config = ":%s_cc_config" % zigtarget,
-            all_files = "@zig_sdk//:zig",
-            ar_files = "@zig_sdk//:zig",
-            compiler_files = "@zig_sdk//:zig",
-            linker_files = "@zig_sdk//:zig",
+            all_files = "@zig_sdk//:all",
+            ar_files = "@zig_sdk//:all",
+            compiler_files = "@zig_sdk//:all",
+            linker_files = "@zig_sdk//:all",
             dwp_files = "@zig_sdk//:empty",
             objcopy_files = "@zig_sdk//:empty",
             strip_files = "@zig_sdk//:empty",
             supports_param_files = 0,
+            # visibility = ["//visibility:private"],
         )

@@ -186,14 +186,14 @@ def _zig_repository_impl(repository_ctx):
 
     for dest, src in {
         "BUILD": "//toolchain:BUILD.sdk.bazel",
-        "private/BUILD": "//toolchain/private:BUILD.sdk.bazel",
+        # "private/BUILD": "//toolchain/private:BUILD.sdk.bazel",
     }.items():
         repository_ctx.template(
             dest,
             Label(src),
             executable = False,
             substitutions = {
-                "{absolute_path}": _quote(str(repository_ctx.path(""))),
+                "{absolute_path}": _quote("external/zig_sdk"),
                 "{os}": _quote(os),
                 "{zig_include_root}": _quote(zig_include_root),
             },
@@ -246,6 +246,7 @@ def filegroup(name, **kwargs):
     return ":" + name
 
 def declare_files(os, zig_include_root):
+    filegroup(name = "all", srcs = native.glob(["**"]))
     filegroup(name = "empty")
     if os == "windows":
         native.exports_files(["zig.exe"], visibility = ["//visibility:public"])
