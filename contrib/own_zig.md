@@ -11,7 +11,7 @@ Assume you want to test an unreleased version of zig. Here's how:
 2. Copy over zig/ from ~/zig:
 
       $ rm -fr zig
-      $ tar -C ~/zig archive --format=tar --prefix=zig/ master | tar -xv
+      $ git -C ~/zig archive --format=tar --prefix=zig/ master | tar -xv
 
 3. Build it (assuming `x86_64-linux`):
 
@@ -24,7 +24,7 @@ Assume you want to test an unreleased version of zig. Here's how:
 
 This gives us a usable Zig SDK. Now:
 
-- Send the .tar.gz it to your mirror.
+- Send the .tar.xz it to your mirror.
 - Point toolchain/defs.bzl to the new version.
 - Run tests.
 
