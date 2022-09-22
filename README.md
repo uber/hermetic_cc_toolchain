@@ -312,13 +312,6 @@ the zig cache. Zig's cache should be stored somewhere in the project's path.
 Tracked in [ziglang/zig #12101  RFC: -j/--jobs for zig
 subcommands](https://github.com/ziglang/zig/issues/12101).
 
-## zig cc cache
-
-Both Zig and Bazel cache the artifacts, requiring double disk space for cache.
-Zig may remove caching for external builds. Tracked in [ziglang/zig #12317
-Possibility to disable caching for user
-code](https://github.com/ziglang/zig/issues/12317)
-
 ## OSX: sysroot
 
 For non-trivial programs (and for all darwin/arm64 cgo programs) MacOS SDK may
@@ -349,7 +342,7 @@ outside of bazel-zig-cc's control.
 
 ## using glibc 2.27 or older
 
-**Severity: Low**
+**Severity: Medium**
 
 Task: [ziglang/zig #9485 glibc 2.27 or older: fcntl64 not found, but zig's glibc headers refer it](https://github.com/ziglang/zig/issues/9485)
 
@@ -357,8 +350,15 @@ Background: when glibc 2.27 or older is selected, it may miss `fcntl64`. A
 workaround is applied for `x86_64`, but not for aarch64. The same workaround
 may apply to aarch64, but the author didn't find a need to test it (yet).
 
+In September 2022 the severity has been bumped to Medium, because glibc header
+updates cause a lot of churn when upgrading the SDK, when it shouldn't cause
+any at all.
+
+Feel free to track [Universal headers][universal-headers] project for a fix.
+
 # Closed Upstream Issues
 
+- [ziglang/zig #12317 Possibility to disable caching for user](https://github.com/ziglang/zig/issues/12317) (CLOSED, thanks andrewrk and motiejus)
 - [golang/go #52690 Go linker does not put libc onto the linker line](https://github.com/golang/go/issues/52690) (CLOSED, thanks andrewrk and motiejus)
 - [ziglang/zig #10386 zig cc regression in 0.9.0](https://github.com/ziglang/zig/issues/10386) (CLOSED, thanks Xavier)
 - [ziglang/zig #10312 macho: fail if requested -framework is not found](https://github.com/ziglang/zig/pull/10312) (CLOSED, thanks kubkon)
@@ -426,8 +426,8 @@ $ docker run -e CC=/usr/bin/false -ti --rm -v "$PWD:/x" -w /x debian:bullseye-sl
 
 # Questions & Contributions
 
-Project's mailing list is [~motiejus/bazel-zig-cc][mailing-list]. The mailing
-list is used for:
+Project's mailing list is [~motiejus/bazel-zig-cc@lists.sr.ht][mailing-list].
+Used for:
 
 - announcements (I am aiming to send an email with every release).
 - user discussions.
@@ -500,3 +500,4 @@ the issues promptly.
 [zig-cc-envoy]: https://github.com/envoyproxy/envoy/issues/19535
 [google-award]: https://opensource.googleblog.com/2022/03/Announcing-First-Group-of-Google-Open-Source-Peer-Bonus-Winners-in-2022.html
 [go-gc-sections]: https://go-review.googlesource.com/c/go/+/407814
+[universal-headers]: https://github.com/ziglang/universal-headers
