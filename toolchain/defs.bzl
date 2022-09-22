@@ -32,14 +32,14 @@ URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform}-{version}.{
 # which, as of writing, has been quite reliable.
 URL_FORMAT_JAKSTYS = "https://dl.jakstys.lt/zig/zig-{host_platform}-{version}.{_ext}"
 
-_VERSION = "0.10.0-dev.3999+fda6d4477"
+_VERSION = "0.10.0-dev.3838+77f31ebbb"
 
 _HOST_PLATFORM_SHA256 = {
-    "linux-aarch64": "18c49fe333b46c29878e3f2f1afe53de1fa361b04b99725be3bb4dd37c3e2dcc",
-    "linux-x86_64": "3c98d3c66359a70d70fd2acebdae6b145996307b5e808ff35526a853f8ea4e95",
-    "macos-aarch64": "43a13b74f6a80fc3dfd73043e4cc9a361f4cae611d1ad810cee46a602d79ee10",
-    "macos-x86_64": "bbea45efaa89c96b1b9965a2fd1817b417ef7e8491898c49034a1fd9c6a7d3fa",
-    "windows-x86_64": "655d1e2a44abd41c6f1058230d703c272c7ee85fdb8296d0262f06dae4cb0075",
+    "linux-aarch64": "33ec5b5f2b8cfe2050786b173d3027c95cc0ad43b0501bf07f6f067f1b98c80a",
+    "linux-x86_64": "a9a6ab59e70017fe33d1fc3f366383825941fe2f97e12ff4d54c9ef1d5c9accf",
+    "macos-aarch64": "9e45cde60b8894968b868e910eb9b6649b50add9c0febfd9860da0180a1d44d3",
+    "macos-x86_64": "62747d1e923fb59a59e5d7c1d3ca85b4d5f16708233baecb1182c2a001d8a8f3",
+    "windows-x86_64": "2b1f3316421edc59609fd2380352ff1f6aa1cbc6e5232c478c9872a6c3cf13a7",
 }
 
 _HOST_PLATFORM_EXT = {
