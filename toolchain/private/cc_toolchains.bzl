@@ -1,4 +1,4 @@
-load(":defs.bzl", "DEFAULT_INCLUDE_DIRECTORIES", "target_structs", "zig_tool_path")
+load(":defs.bzl", "target_structs", "zig_tool_path")
 load("@bazel-zig-cc//toolchain:zig_toolchain.bzl", "zig_cc_toolchain_config")
 
 DEFAULT_TOOL_PATHS = {
@@ -17,9 +17,6 @@ def declare_cc_toolchains(os, absolute_path, zig_include_root):
         zigtarget = target_config.zigtarget
 
         cxx_builtin_include_directories = []
-        for d in DEFAULT_INCLUDE_DIRECTORIES + target_config.includes:
-            d = zig_include_root + d
-            cxx_builtin_include_directories.append(absolute_path + "/" + d)
         for d in getattr(target_config, "toplevel_include", []):
             cxx_builtin_include_directories.append(absolute_path + "/" + d)
 
@@ -53,7 +50,7 @@ def declare_cc_toolchains(os, absolute_path, zig_include_root):
             compiler = "clang",
             abi_version = "unknown",
             abi_libc_version = "unknown",
-            # visibility = ["//visibility:private"],
+            visibility = ["//visibility:private"],
         )
 
         native.cc_toolchain(
@@ -68,5 +65,5 @@ def declare_cc_toolchains(os, absolute_path, zig_include_root):
             objcopy_files = "@zig_sdk//:empty",
             strip_files = "@zig_sdk//:empty",
             supports_param_files = 0,
-            # visibility = ["//visibility:private"],
+            visibility = ["//visibility:private"],
         )

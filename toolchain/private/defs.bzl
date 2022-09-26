@@ -1,9 +1,3 @@
-DEFAULT_INCLUDE_DIRECTORIES = [
-    "include",
-    "libcxx/include",
-    "libcxxabi/include",
-]
-
 _ZIG_TOOL_PATH = "tools/{zig_tool}"
 
 # Zig supports even older glibcs than defined below, but we have tested only
@@ -101,12 +95,14 @@ def _target_linux_gnu(gocpu, zigcpu, glibc_version):
         gotarget = "linux_{}_{}".format(gocpu, glibc_suffix),
         zigtarget = "{}-linux-{}".format(zigcpu, glibc_suffix),
         includes = [
-            "libunwind/include",
-            "libc/include/generic-glibc",
+                       "libc/include/{}-linux-gnu".format(zigcpu),
+                       "libc/include/generic-glibc",
+                   ] +
+                   # x86_64-linux-any is x86_64-linux and x86-linux combined.
+                   (["libc/include/x86-linux-any"] if zigcpu == "x86_64" else []) +
+                   (["libc/include/{}-linux-any".format(zigcpu)] if zigcpu != "x86_64" else []) + [
             "libc/include/any-linux-any",
-            "libc/include/{}-linux-gnu".format(zigcpu),
-            "libc/include/{}-linux-any".format(zigcpu),
-        ] + (["libc/include/x86-linux-any"] if zigcpu == "x86_64" else []),
+        ],
         toplevel_include = ["glibc-hacks"] if fcntl_hack else [],
         compiler_extra_includes = ["glibc-hacks/glibchack-fcntl.h"] if fcntl_hack else [],
         linker_version_scripts = ["glibc-hacks/fcntl.map"] if fcntl_hack else [],
@@ -127,11 +123,14 @@ def _target_linux_musl(gocpu, zigcpu):
         gotarget = "linux_{}_musl".format(gocpu),
         zigtarget = "{}-linux-musl".format(zigcpu),
         includes = [
-            "libc/include/generic-musl",
+                       "libc/include/{}-linux-musl".format(zigcpu),
+                       "libc/include/generic-musl",
+                   ] +
+                   # x86_64-linux-any is x86_64-linux and x86-linux combined.
+                   (["libc/include/x86-linux-any"] if zigcpu == "x86_64" else []) +
+                   (["libc/include/{}-linux-any".format(zigcpu)] if zigcpu != "x86_64" else []) + [
             "libc/include/any-linux-any",
-            "libc/include/{}-linux-musl".format(zigcpu),
-            "libc/include/{}-linux-any".format(zigcpu),
-        ] + (["libc/include/x86-linux-any"] if zigcpu == "x86_64" else []),
+        ],
         linkopts = [],
         dynamic_library_linkopts = [],
         copts = ["-D_LIBCPP_HAS_MUSL_LIBC", "-D_LIBCPP_HAS_THREAD_API_PTHREAD"],

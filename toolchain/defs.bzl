@@ -1,6 +1,13 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "read_user_netrc", "use_netrc")
-load("@bazel-zig-cc//toolchain/private:defs.bzl", "DEFAULT_INCLUDE_DIRECTORIES", "target_structs", "zig_tool_path")
+load("@bazel-zig-cc//toolchain/private:defs.bzl", "target_structs", "zig_tool_path")
+
+# Directories that `zig c++` includes behind the scenes.
+_DEFAULT_INCLUDE_DIRECTORIES = [
+    "libcxx/include",
+    "libcxxabi/include",
+    "libunwind/include",
+]
 
 _fcntl_map = """
 GLIBC_2.2.5 {
@@ -86,12 +93,14 @@ _ZIG_TOOLS = [
     "wasm-ld",  # WebAssembly
 ]
 
+# TODO: ZIG_LIB_DIR equivalent in powershell?
 _ZIG_TOOL_WRAPPER_WINDOWS_CACHE_KNOWN = """@echo off
 set ZIG_LOCAL_CACHE_DIR={cache_prefix}\\bazel-zig-cc
 set ZIG_GLOBAL_CACHE_DIR=%ZIG_LOCAL_CACHE_DIR%
 "{zig}" "{zig_tool}" %*
 """
 
+# TODO: ZIG_LIB_DIR equivalent in powershell?
 _ZIG_TOOL_WRAPPER_WINDOWS_CACHE_GUESS = """@echo off
 if exist "%TMP%\\*" goto :usertmp
 set ZIG_LOCAL_CACHE_DIR=C:\\Temp\\bazel-zig-cc
@@ -104,6 +113,12 @@ set ZIG_GLOBAL_CACHE_DIR=%ZIG_LOCAL_CACHE_DIR%
 """
 
 _ZIG_TOOL_WRAPPER_CACHE_KNOWN = """#!/bin/sh
+set -e
+if [ -d external/zig_sdk/lib ]; then
+    export ZIG_LIB_DIR=external/zig_sdk/lib
+else
+    export ZIG_LIB_DIR="$(dirname "$0")/../lib"
+fi
 export ZIG_LOCAL_CACHE_DIR="{cache_prefix}/bazel-zig-cc"
 export ZIG_GLOBAL_CACHE_DIR="{cache_prefix}/bazel-zig-cc"
 exec "{zig}" "{zig_tool}" "$@"
@@ -111,6 +126,11 @@ exec "{zig}" "{zig_tool}" "$@"
 
 _ZIG_TOOL_WRAPPER_CACHE_GUESS = """#!/bin/sh
 set -e
+if [ -d external/zig_sdk/lib ]; then
+    export ZIG_LIB_DIR=external/zig_sdk/lib
+else
+    export ZIG_LIB_DIR="$(dirname "$0")/../lib"
+fi
 if [ -n "$TMPDIR" ]; then
     _cache_prefix=$TMPDIR
 elif [ -n "$HOME" ]; then
@@ -258,7 +278,7 @@ def declare_files(os, zig_include_root):
     lazy_filegroups = {}
 
     for target_config in target_structs():
-        for d in DEFAULT_INCLUDE_DIRECTORIES + target_config.includes:
+        for d in _DEFAULT_INCLUDE_DIRECTORIES + target_config.includes:
             d = zig_include_root + d
             if d not in lazy_filegroups:
                 lazy_filegroups[d] = filegroup(name = d, srcs = native.glob([d + "/**"]))
