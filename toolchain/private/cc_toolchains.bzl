@@ -11,14 +11,14 @@ DEFAULT_TOOL_PATHS = {
     "strip": "/usr/bin/false",
 }.items()
 
-def declare_cc_toolchains(os, absolute_path, zig_include_root):
+def declare_cc_toolchains(os, zig_sdk_path, zig_include_root):
     for target_config in target_structs():
         gotarget = target_config.gotarget
         zigtarget = target_config.zigtarget
 
         cxx_builtin_include_directories = []
         for d in getattr(target_config, "toplevel_include", []):
-            cxx_builtin_include_directories.append(absolute_path + "/" + d)
+            cxx_builtin_include_directories.append(zig_sdk_path + "/" + d)
 
         absolute_tool_paths = {}
         for name, path in target_config.tool_paths.items() + DEFAULT_TOOL_PATHS:
@@ -32,9 +32,9 @@ def declare_cc_toolchains(os, absolute_path, zig_include_root):
         dynamic_library_linkopts = target_config.dynamic_library_linkopts
         copts = target_config.copts
         for s in getattr(target_config, "linker_version_scripts", []):
-            linkopts = linkopts + ["-Wl,--version-script,%s/%s" % (absolute_path, s)]
+            linkopts = linkopts + ["-Wl,--version-script,%s/%s" % (zig_sdk_path, s)]
         for incl in getattr(target_config, "compiler_extra_includes", []):
-            copts = copts + ["-include", absolute_path + "/" + incl]
+            copts = copts + ["-include", zig_sdk_path + "/" + incl]
 
         zig_cc_toolchain_config(
             name = zigtarget + "_cc_config",

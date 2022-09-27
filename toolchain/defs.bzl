@@ -213,7 +213,7 @@ def _zig_repository_impl(repository_ctx):
             Label(src),
             executable = False,
             substitutions = {
-                "{absolute_path}": _quote("external/zig_sdk"),
+                "{zig_sdk_path}": _quote("external/zig_sdk"),
                 "{os}": _quote(os),
                 "{zig_include_root}": _quote(zig_include_root),
             },
