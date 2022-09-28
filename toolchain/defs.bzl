@@ -93,15 +93,25 @@ _ZIG_TOOLS = [
     "wasm-ld",  # WebAssembly
 ]
 
-# TODO: ZIG_LIB_DIR equivalent in powershell?
 _ZIG_TOOL_WRAPPER_WINDOWS_CACHE_KNOWN = """@echo off
+if exist "external\\zig_sdk\\lib\\*" goto :have_external_zig_sdk_lib
+set ZIG_LIB_DIR=%~dp0\\..\\lib
+goto :set_zig_lib_dir
+:have_external_zig_sdk_lib
+set ZIG_LIB_DIR=external\\zig_sdk\\lib
+:set_zig_lib_dir
 set ZIG_LOCAL_CACHE_DIR={cache_prefix}\\bazel-zig-cc
 set ZIG_GLOBAL_CACHE_DIR=%ZIG_LOCAL_CACHE_DIR%
 "{zig}" "{zig_tool}" %*
 """
 
-# TODO: ZIG_LIB_DIR equivalent in powershell?
 _ZIG_TOOL_WRAPPER_WINDOWS_CACHE_GUESS = """@echo off
+if exist "external\\zig_sdk\\lib\\*" goto :have_external_zig_sdk_lib
+set ZIG_LIB_DIR=%~dp0\\..\\lib
+goto :set_zig_lib_dir
+:have_external_zig_sdk_lib
+set ZIG_LIB_DIR=external\\zig_sdk\\lib
+:set_zig_lib_dir
 if exist "%TMP%\\*" goto :usertmp
 set ZIG_LOCAL_CACHE_DIR=C:\\Temp\\bazel-zig-cc
 goto zig
