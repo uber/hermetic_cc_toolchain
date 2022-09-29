@@ -23,11 +23,11 @@ scratching, I promise.
 Add this to your `WORKSPACE`:
 
 ```
-BAZEL_ZIG_CC_VERSION = "v1.0.0-rc1"
+BAZEL_ZIG_CC_VERSION = "v1.0.0-rc2"
 
 http_archive(
     name = "bazel-zig-cc",
-    sha256 = "07c8cc88faed737f5e7fc74b2bce94382486c40245b1ce718c6cd3774ba6be5f",
+    sha256 = "95f1204856fed7ff93257a36a39b904bbb43a72369f175d43a50063002232e0d",
     strip_prefix = "bazel-zig-cc-{}".format(BAZEL_ZIG_CC_VERSION),
     urls = ["https://git.sr.ht/~motiejus/bazel-zig-cc/archive/{}.tar.gz".format(BAZEL_ZIG_CC_VERSION)],
 )
@@ -45,11 +45,6 @@ zig_toolchains(
     host_platform_sha256 = { ... },
 )
 ```
-
-Note for Windows users: please use
-[v0.9.2](https://git.sr.ht/~motiejus/bazel-zig-cc/tree/f0f2ce597eff0d3a1237ad84136ef930919173de/item/README.md)
-until Windows support is added to v1.0. Also see [this
-announcement](https://lists.sr.ht/~motiejus/bazel-zig-cc/patches/35627).
 
 And this to `.bazelrc`:
 
