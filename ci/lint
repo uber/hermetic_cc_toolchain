@@ -12,10 +12,19 @@ mapfile -t buildfiles < \
 
 >&2 echo "shellcheck"
 for f in "${scripts[@]}"; do >&2 echo "  $f"; done
-shellcheck -x "${scripts[@]}"
+shellcheck "${scripts[@]}"
 >&2 echo -e "OK\n"
 
->&2 echo "buildifier"
+>&2 echo "buildifier -mode diff"
 for f in "${buildfiles[@]}"; do >&2 echo "  $f"; done
-buildifier "${buildfiles[@]}"
+fail=0
+out=$(buildifier -mode diff -diff_command='diff -u' "${buildfiles[@]}") || fail=1
+if [[ "$fail" == 1 ]]; then
+    >&2 echo "ERROR: buildifier:"
+    echo "$out"
+    >&2 echo
+    >&2 echo "You may try running:"
+    >&2 echo "  buildifier ${buildfiles[*]}"
+    exit 1
+fi
 >&2 echo -e "OK\n"
