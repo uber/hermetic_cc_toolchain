@@ -131,7 +131,8 @@ else
 fi
 export ZIG_LOCAL_CACHE_DIR="{cache_prefix}/bazel-zig-cc"
 export ZIG_GLOBAL_CACHE_DIR="{cache_prefix}/bazel-zig-cc"
-exec "{zig}" "{zig_tool}" "$@"
+{common}
+exec "{zig}" "{zig_tool}" "$@" $maybe_o2
 """
 
 _ZIG_TOOL_WRAPPER_CACHE_GUESS = """#!/bin/sh
@@ -154,7 +155,22 @@ else
 fi
 export ZIG_LOCAL_CACHE_DIR="$_cache_prefix/bazel-zig-cc"
 export ZIG_GLOBAL_CACHE_DIR=$ZIG_LOCAL_CACHE_DIR
-exec "{zig}" "{zig_tool}" "$@"
+{common}
+exec "{zig}" "{zig_tool}" "$@" $maybe_o2
+"""
+
+# The abomination below adds "-O2" to Go's link-prober command. Saves around
+# 25s for the first compilation for a particular architecture. Can be deleted
+# if/after https://go-review.googlesource.com/c/go/+/436884 is merged.
+# Shell hackery taken from
+# https://web.archive.org/web/20100129154217/http://www.seanius.net/blog/2009/03/saving-and-restoring-positional-params
+_ZIG_TOOL_COMMON_UNIX = """
+quote(){ echo "$1" | sed -e "s,','\\\\'',g"; }
+for arg in "$@"; do saved="${saved:+$saved }'$(quote "$arg")'"; done
+maybe_o2=
+while [ "$#" -gt 6 ]; do shift; done
+[ "$*" = "-Wl,--no-gc-sections -x c - -o /dev/null" ] && maybe_o2="-O2"
+eval set -- "$saved"
 """
 
 def _zig_tool_wrapper(zig_tool, zig, is_windows, cache_prefix):
@@ -169,10 +185,12 @@ def _zig_tool_wrapper(zig_tool, zig, is_windows, cache_prefix):
             return _ZIG_TOOL_WRAPPER_WINDOWS_CACHE_KNOWN.format(**kwargs)
         else:
             return _ZIG_TOOL_WRAPPER_WINDOWS_CACHE_GUESS.format(**kwargs)
-    elif cache_prefix:
-        return _ZIG_TOOL_WRAPPER_CACHE_KNOWN.format(**kwargs)
     else:
-        return _ZIG_TOOL_WRAPPER_CACHE_GUESS.format(**kwargs)
+        kwargs['common'] = _ZIG_TOOL_COMMON_UNIX
+        if cache_prefix:
+            return _ZIG_TOOL_WRAPPER_CACHE_KNOWN.format(**kwargs)
+        else:
+            return _ZIG_TOOL_WRAPPER_CACHE_GUESS.format(**kwargs)
 
 def _quote(s):
     return "'" + s.replace("'", "'\\''") + "'"
