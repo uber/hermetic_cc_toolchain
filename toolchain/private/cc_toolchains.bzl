@@ -31,11 +31,11 @@ def declare_cc_toolchains(os, zig_sdk_path, zig_include_root):
             )
             absolute_tool_paths[name] = tool_path
 
-        linkopts = target_config.linkopts
         dynamic_library_linkopts = target_config.dynamic_library_linkopts
         copts = target_config.copts
+        linkopts = []
         for s in getattr(target_config, "linker_version_scripts", []):
-            linkopts = linkopts + ["-Wl,--version-script,%s/%s" % (zig_sdk_path, s)]
+            linkopts = ["-Wl,--version-script,%s/%s" % (zig_sdk_path, s)]
         for incl in getattr(target_config, "compiler_extra_includes", []):
             copts = copts + ["-include", zig_sdk_path + "/" + incl]
 

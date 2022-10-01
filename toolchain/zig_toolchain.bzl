@@ -93,8 +93,6 @@ def _zig_cc_toolchain_config_impl(ctx):
         "-I" + d
         for d in ctx.attr.cxx_builtin_include_directories
     ] + [
-        "-target",
-        ctx.attr.target + ctx.attr.target_suffix,
         "-no-canonical-prefixes",
         "-Wno-builtin-macro-redefined",
         "-D__DATE__=\"redacted\"",
@@ -128,17 +126,7 @@ def _zig_cc_toolchain_config_impl(ctx):
     default_linker_flags = feature(
         name = "default_linker_flags",
         enabled = True,
-        flag_sets = [
-            flag_set(
-                actions = all_link_actions,
-                flag_groups = [
-                    flag_group(
-                        flags = ["-target", ctx.attr.target] +
-                                ctx.attr.linkopts,
-                    ),
-                ],
-            ),
-        ] + dynamic_library_flag_sets,
+        flag_sets = dynamic_library_flag_sets,
     )
 
     features = [
