@@ -1,4 +1,4 @@
-_ZIG_TOOL_PATH = "tools/{zig_tool}"
+_ZIG_TOOL_PATH = "tools/{zigtarget}/{zig_tool}"
 
 # Zig supports even older glibcs than defined below, but we have tested only
 # down to 2.17.

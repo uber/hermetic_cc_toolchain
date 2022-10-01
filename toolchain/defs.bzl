@@ -102,7 +102,7 @@ set ZIG_LIB_DIR=external\\zig_sdk\\lib
 :set_zig_lib_dir
 set ZIG_LOCAL_CACHE_DIR={cache_prefix}\\bazel-zig-cc
 set ZIG_GLOBAL_CACHE_DIR=%ZIG_LOCAL_CACHE_DIR%
-"{zig}" "{zig_tool}" %*
+"{zig}" "{zig_tool}" {maybe_target} %*
 """
 
 _ZIG_TOOL_WRAPPER_WINDOWS_CACHE_GUESS = """@echo off
@@ -119,28 +119,29 @@ goto zig
 set ZIG_LOCAL_CACHE_DIR=%TMP%\\bazel-zig-cc
 :zig
 set ZIG_GLOBAL_CACHE_DIR=%ZIG_LOCAL_CACHE_DIR%
-"{zig}" "{zig_tool}" %*
+"{zig}" "{zig_tool}" {maybe_target} %*
 """
 
 _ZIG_TOOL_WRAPPER_CACHE_KNOWN = """#!/bin/sh
 set -e
 if [ -d external/zig_sdk/lib ]; then
-    export ZIG_LIB_DIR=external/zig_sdk/lib
+    ZIG_LIB_DIR=external/zig_sdk/lib
 else
-    export ZIG_LIB_DIR="$(dirname "$0")/../lib"
+    ZIG_LIB_DIR="$(dirname "$0")/../lib"
 fi
+export ZIG_LIB_DIR
 export ZIG_LOCAL_CACHE_DIR="{cache_prefix}/bazel-zig-cc"
 export ZIG_GLOBAL_CACHE_DIR="{cache_prefix}/bazel-zig-cc"
 {common}
-exec "{zig}" "{zig_tool}" "$@" $maybe_o2
+exec "{zig}" "{zig_tool}" {maybe_target} "$@" $maybe_o2
 """
 
 _ZIG_TOOL_WRAPPER_CACHE_GUESS = """#!/bin/sh
 set -e
 if [ -d external/zig_sdk/lib ]; then
-    export ZIG_LIB_DIR=external/zig_sdk/lib
+    ZIG_LIB_DIR=external/zig_sdk/lib
 else
-    export ZIG_LIB_DIR="$(dirname "$0")/../lib"
+    ZIG_LIB_DIR="$(dirname "$0")/../../lib"
 fi
 if [ -n "$TMPDIR" ]; then
     _cache_prefix=$TMPDIR
@@ -153,10 +154,11 @@ elif [ -n "$HOME" ]; then
 else
     _cache_prefix=/tmp
 fi
+export ZIG_LIB_DIR
 export ZIG_LOCAL_CACHE_DIR="$_cache_prefix/bazel-zig-cc"
 export ZIG_GLOBAL_CACHE_DIR=$ZIG_LOCAL_CACHE_DIR
 {common}
-exec "{zig}" "{zig_tool}" "$@" $maybe_o2
+exec "{zig}" "{zig_tool}" {maybe_target} "$@" $maybe_o2
 """
 
 # The abomination below adds "-O2" to Go's link-prober command. Saves around
@@ -173,12 +175,13 @@ while [ "$#" -gt 6 ]; do shift; done
 eval set -- "$saved"
 """
 
-def _zig_tool_wrapper(zig_tool, zig, is_windows, cache_prefix):
+def _zig_tool_wrapper(zig_tool, zig, is_windows, cache_prefix, zigtarget):
     kwargs = dict(
         zig = str(zig).replace("/", "\\") + ".exe" if is_windows else zig,
         zig_tool = zig_tool,
         cache_prefix = cache_prefix,
         common = "" if is_windows else _ZIG_TOOL_COMMON_UNIX,
+        maybe_target = "-target {}".format(zigtarget) if zig_tool == "c++" else "",
     )
 
     if is_windows:
@@ -186,7 +189,7 @@ def _zig_tool_wrapper(zig_tool, zig, is_windows, cache_prefix):
             return _ZIG_TOOL_WRAPPER_WINDOWS_CACHE_KNOWN.format(**kwargs)
         else:
             return _ZIG_TOOL_WRAPPER_WINDOWS_CACHE_GUESS.format(**kwargs)
-    else:  # linux. Keeping this comment for buildifier to shut up.
+    else:  # keep this comment to shut up buildifier.
         if cache_prefix:
             return _ZIG_TOOL_WRAPPER_CACHE_KNOWN.format(**kwargs)
         else:
@@ -256,17 +259,22 @@ def _zig_repository_impl(repository_ctx):
     )
 
     for zig_tool in _ZIG_TOOLS:
-        zig_tool_wrapper = _zig_tool_wrapper(
-            zig_tool,
-            str(repository_ctx.path("zig")),
-            os == "windows",
-            repository_ctx.os.environ.get("BAZEL_ZIG_CC_CACHE_PREFIX", ""),
-        )
+        for target_config in target_structs():
+            zig_tool_wrapper = _zig_tool_wrapper(
+                zig_tool,
+                str(repository_ctx.path("zig")),
+                os == "windows",
+                repository_ctx.os.environ.get("BAZEL_ZIG_CC_CACHE_PREFIX", ""),
+                zigtarget = target_config.zigtarget,
+            )
 
-        repository_ctx.file(
-            zig_tool_path(os).format(zig_tool = zig_tool),
-            zig_tool_wrapper,
-        )
+            repository_ctx.file(
+                zig_tool_path(os).format(
+                    zig_tool = zig_tool,
+                    zigtarget = target_config.zigtarget,
+                ),
+                zig_tool_wrapper,
+            )
 
     repository_ctx.file(
         "glibc-hacks/fcntl.map",

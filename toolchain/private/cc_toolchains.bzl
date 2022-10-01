@@ -25,7 +25,10 @@ def declare_cc_toolchains(os, zig_sdk_path, zig_include_root):
             if path[0] == "/":
                 absolute_tool_paths[name] = path
                 continue
-            tool_path = zig_tool_path(os).format(zig_tool = path)
+            tool_path = zig_tool_path(os).format(
+                zig_tool = path,
+                zigtarget = zigtarget,
+            )
             absolute_tool_paths[name] = tool_path
 
         linkopts = target_config.linkopts
