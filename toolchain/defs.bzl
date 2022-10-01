@@ -178,6 +178,7 @@ def _zig_tool_wrapper(zig_tool, zig, is_windows, cache_prefix):
         zig = str(zig).replace("/", "\\") + ".exe" if is_windows else zig,
         zig_tool = zig_tool,
         cache_prefix = cache_prefix,
+        common = "" if is_windows else _ZIG_TOOL_COMMON_UNIX
     )
 
     if is_windows:
@@ -186,7 +187,6 @@ def _zig_tool_wrapper(zig_tool, zig, is_windows, cache_prefix):
         else:
             return _ZIG_TOOL_WRAPPER_WINDOWS_CACHE_GUESS.format(**kwargs)
     else:
-        kwargs["common"] = _ZIG_TOOL_COMMON_UNIX
         if cache_prefix:
             return _ZIG_TOOL_WRAPPER_CACHE_KNOWN.format(**kwargs)
         else:
