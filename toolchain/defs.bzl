@@ -95,7 +95,7 @@ _ZIG_TOOLS = [
 
 _ZIG_TOOL_WRAPPER_WINDOWS_CACHE_KNOWN = """@echo off
 if exist "external\\zig_sdk\\lib\\*" goto :have_external_zig_sdk_lib
-set ZIG_LIB_DIR=%~dp0\\..\\lib
+set ZIG_LIB_DIR=%~dp0\\..\\..\\lib
 goto :set_zig_lib_dir
 :have_external_zig_sdk_lib
 set ZIG_LIB_DIR=external\\zig_sdk\\lib
@@ -107,7 +107,7 @@ set ZIG_GLOBAL_CACHE_DIR=%ZIG_LOCAL_CACHE_DIR%
 
 _ZIG_TOOL_WRAPPER_WINDOWS_CACHE_GUESS = """@echo off
 if exist "external\\zig_sdk\\lib\\*" goto :have_external_zig_sdk_lib
-set ZIG_LIB_DIR=%~dp0\\..\\lib
+set ZIG_LIB_DIR=%~dp0\\..\\..\\lib
 goto :set_zig_lib_dir
 :have_external_zig_sdk_lib
 set ZIG_LIB_DIR=external\\zig_sdk\\lib
@@ -127,7 +127,7 @@ set -e
 if [ -d external/zig_sdk/lib ]; then
     ZIG_LIB_DIR=external/zig_sdk/lib
 else
-    ZIG_LIB_DIR="$(dirname "$0")/../lib"
+    ZIG_LIB_DIR="$(dirname "$0")/../../lib"
 fi
 export ZIG_LIB_DIR
 export ZIG_LOCAL_CACHE_DIR="{cache_prefix}/bazel-zig-cc"
