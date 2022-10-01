@@ -132,7 +132,7 @@ fi
 export ZIG_LIB_DIR
 export ZIG_LOCAL_CACHE_DIR="{cache_prefix}/bazel-zig-cc"
 export ZIG_GLOBAL_CACHE_DIR="{cache_prefix}/bazel-zig-cc"
-{common}
+{maybe_gohack}
 exec "{zig}" "{zig_tool}" {maybe_target} "$@" $maybe_o2
 """
 
@@ -157,7 +157,7 @@ fi
 export ZIG_LIB_DIR
 export ZIG_LOCAL_CACHE_DIR="$_cache_prefix/bazel-zig-cc"
 export ZIG_GLOBAL_CACHE_DIR=$ZIG_LOCAL_CACHE_DIR
-{common}
+{maybe_gohack}
 exec "{zig}" "{zig_tool}" {maybe_target} "$@" $maybe_o2
 """
 
@@ -166,7 +166,7 @@ exec "{zig}" "{zig_tool}" {maybe_target} "$@" $maybe_o2
 # if/after https://go-review.googlesource.com/c/go/+/436884 is merged.
 # Shell hackery taken from
 # https://web.archive.org/web/20100129154217/http://www.seanius.net/blog/2009/03/saving-and-restoring-positional-params
-_ZIG_TOOL_COMMON_UNIX = """
+_ZIG_TOOL_GOHACK = """
 quote(){ echo "$1" | sed -e "s,','\\\\'',g"; }
 for arg in "$@"; do saved="${saved:+$saved }'$(quote "$arg")'"; done
 maybe_o2=
@@ -180,7 +180,7 @@ def _zig_tool_wrapper(zig_tool, zig, is_windows, cache_prefix, zigtarget):
         zig = str(zig).replace("/", "\\") + ".exe" if is_windows else zig,
         zig_tool = zig_tool,
         cache_prefix = cache_prefix,
-        common = "" if is_windows else _ZIG_TOOL_COMMON_UNIX,
+        maybe_gohack = _ZIG_TOOL_GOHACK if (zig_tool == "c++" and not is_windows) else "",
         maybe_target = "-target {}".format(zigtarget) if zig_tool == "c++" else "",
     )
 
