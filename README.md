@@ -297,6 +297,20 @@ unlikely to implement them any time soon, but patches implementing those will
 be accepted. See [Questions & Contributions](#questions-amp-contributions) on
 how to contribute.
 
+## Sharing of libc shims/libc++.a
+
+Zig does not always share `libc++.a` and the glibc shims. We have observed
+to be caused for 2 reasons:
+
+- For some commands Go `chdir`s to `/tmp/`. This causes `ZIG_LIB_DIR` to be
+  absolute, which blows the cache key to find the right `libc++.a` (because Zig
+  thinks we are using a different lib dir to compile libc++). This is currently
+  worked around in `toolchain/defs.bzl` by overfitting to Go and returning
+  early from that particular invocation.
+- Sometimes Bazel's sandbox messes up Zig's cache keys. If one runs without the
+  sandbox (`--spawn_strategy=standalone`), the cache hit rate and thus the
+  build time are much better.
+
 ## Zig cache location
 
 Currently zig cache is in `$HOME`, so `bazel clean --expunge` does not clear

@@ -133,7 +133,7 @@ export ZIG_LIB_DIR
 export ZIG_LOCAL_CACHE_DIR="{cache_prefix}/bazel-zig-cc"
 export ZIG_GLOBAL_CACHE_DIR="{cache_prefix}/bazel-zig-cc"
 {maybe_gohack}
-exec "{zig}" "{zig_tool}" {maybe_target} "$@" $maybe_o2
+exec "{zig}" "{zig_tool}" {maybe_target} "$@"
 """
 
 _ZIG_TOOL_WRAPPER_CACHE_GUESS = """#!/bin/sh
@@ -158,7 +158,7 @@ export ZIG_LIB_DIR
 export ZIG_LOCAL_CACHE_DIR="$_cache_prefix/bazel-zig-cc"
 export ZIG_GLOBAL_CACHE_DIR=$ZIG_LOCAL_CACHE_DIR
 {maybe_gohack}
-exec "{zig}" "{zig_tool}" {maybe_target} "$@" $maybe_o2
+exec "{zig}" "{zig_tool}" {maybe_target} "$@"
 """
 
 # The abomination below adds "-O2" to Go's link-prober command. Saves around
@@ -169,9 +169,14 @@ exec "{zig}" "{zig_tool}" {maybe_target} "$@" $maybe_o2
 _ZIG_TOOL_GOHACK = """
 quote(){ echo "$1" | sed -e "s,','\\\\'',g"; }
 for arg in "$@"; do saved="${saved:+$saved }'$(quote "$arg")'"; done
-maybe_o2=
 while [ "$#" -gt 6 ]; do shift; done
-[ "$*" = "-Wl,--no-gc-sections -x c - -o /dev/null" ] && maybe_o2="-O2"
+if [ "$*" = "-Wl,--no-gc-sections -x c - -o /dev/null" ]; then
+  # This command probes if `--no-gc-sections` is accepted by the linker.
+  # Since it is executed in /tmp, the ZIG_LIB_DIR is absolute,
+  # glibc stubs and libc++ cannot be shared with other invocations (which use
+  # a relative ZIG_LIB_DIR).
+  exit 0;
+fi
 eval set -- "$saved"
 """
 
