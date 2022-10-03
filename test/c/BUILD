@@ -31,7 +31,6 @@ cc_binary(
         ("linux_amd64_musl", "//libc_aware/platform:linux_amd64_musl", "non-glibc", False),
         ("linux_amd64_gnu.2.19", "//libc_aware/platform:linux_amd64_gnu.2.19", "glibc_2.19", False),
         ("linux_amd64_gnu.2.28", "//libc_aware/platform:linux_amd64_gnu.2.28", "glibc_2.28", False),
-        ("linux_amd64_gnu.2.31", "//libc_aware/platform:linux_amd64_gnu.2.31", "glibc_2.31", False),
         ("linux_amd64", "//platform:linux_amd64", "glibc_2.19", False),
         ("linux_arm64", "//platform:linux_arm64", "glibc_2.28", True),
     ]
