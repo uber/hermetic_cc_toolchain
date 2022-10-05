@@ -127,7 +127,7 @@ set -e
 if [ -d external/zig_sdk/lib ]; then
     ZIG_LIB_DIR=external/zig_sdk/lib
 else
-    ZIG_LIB_DIR="$(realpath "$(dirname "$0")/../../lib")"
+    ZIG_LIB_DIR="$(dirname "$0")/../../lib"
 fi
 export ZIG_LIB_DIR
 export ZIG_LOCAL_CACHE_DIR="{cache_prefix}/bazel-zig-cc"
@@ -141,7 +141,7 @@ set -e
 if [ -d external/zig_sdk/lib ]; then
     ZIG_LIB_DIR=external/zig_sdk/lib
 else
-    ZIG_LIB_DIR="$(realpath "$(dirname "$0")/../../lib")"
+    ZIG_LIB_DIR="$(dirname "$0")/../../lib"
 fi
 if [ -n "$TMPDIR" ]; then
     _cache_prefix=$TMPDIR
