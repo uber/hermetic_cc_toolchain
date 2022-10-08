@@ -23,7 +23,7 @@ scratching, I promise.
 Add this to your `WORKSPACE`:
 
 ```
-BAZEL_ZIG_CC_VERSION = "0.9.2"
+BAZEL_ZIG_CC_VERSION = "v0.9.2"
 
 http_archive(
     name = "bazel-zig-cc",
@@ -185,7 +185,7 @@ when building for a specific libc. For example, in `WORKSPACE`:
 ```
 register_toolchains(
     "@zig_sdk//libc_aware/toolchain:linux_amd64_gnu.2.19",
-    "@zig_sdk//libc_aware/toolchain:linux_amd64_gnu.2.28",
+    "@zig_sdk//libc_aware/toolchain:linux_arm64_gnu.2.28",
     "@zig_sdk//libc_aware/toolchain:x86_64-linux-musl",
 )
 ```
