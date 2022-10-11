@@ -125,9 +125,9 @@ set ZIG_GLOBAL_CACHE_DIR=%ZIG_LOCAL_CACHE_DIR%
 _ZIG_TOOL_WRAPPER_CACHE_KNOWN = """#!/bin/sh
 set -e
 if [ -d external/zig_sdk/lib ]; then
-    ZIG_LIB_DIR=external/zig_sdk/lib
+    ZIG_LIB_DIR=external/zig_sdk/{zig_include_root}
 else
-    ZIG_LIB_DIR="$(dirname "$0")/../../lib"
+    ZIG_LIB_DIR="$(dirname "$0")/../../{zig_include_root}"
 fi
 export ZIG_LIB_DIR
 export ZIG_LOCAL_CACHE_DIR="{cache_prefix}/bazel-zig-cc"
@@ -139,9 +139,9 @@ exec "{zig}" "{zig_tool}" {maybe_target} "$@"
 _ZIG_TOOL_WRAPPER_CACHE_GUESS = """#!/bin/sh
 set -e
 if [ -d external/zig_sdk/lib ]; then
-    ZIG_LIB_DIR=external/zig_sdk/lib
+    ZIG_LIB_DIR=external/zig_sdk/{zig_include_root}
 else
-    ZIG_LIB_DIR="$(dirname "$0")/../../lib"
+    ZIG_LIB_DIR="$(dirname "$0")/../../{zig_include_root}"
 fi
 if [ -n "$TMPDIR" ]; then
     _cache_prefix=$TMPDIR
@@ -180,13 +180,14 @@ fi
 eval set -- "$saved"
 """
 
-def _zig_tool_wrapper(zig_tool, zig, is_windows, cache_prefix, zigtarget):
+def _zig_tool_wrapper(zig_tool, zig, is_windows, cache_prefix, zigtarget, zig_include_root):
     kwargs = dict(
         zig = str(zig).replace("/", "\\") + ".exe" if is_windows else zig,
         zig_tool = zig_tool,
         cache_prefix = cache_prefix,
         maybe_gohack = _ZIG_TOOL_GOHACK if (zig_tool == "c++" and not is_windows) else "",
         maybe_target = "-target {}".format(zigtarget) if zig_tool == "c++" else "",
+        zig_include_root = zig_include_root,
     )
 
     if is_windows:
@@ -271,6 +272,7 @@ def _zig_repository_impl(repository_ctx):
                 os == "windows",
                 repository_ctx.os.environ.get("BAZEL_ZIG_CC_CACHE_PREFIX", ""),
                 zigtarget = target_config.zigtarget,
+                zig_include_root = zig_include_root,
             )
 
             repository_ctx.file(
