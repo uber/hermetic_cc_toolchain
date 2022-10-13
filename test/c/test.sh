@@ -7,7 +7,7 @@ want=$WANT
 binary=$BINARY
 got=$($binary)
 
-if [[ "$got" != "$want" ]]; then
+if [ "$got" != "$want" ]; then
     echo wanted:
     echo \ \ "$want"
     echo got:

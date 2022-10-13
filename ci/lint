@@ -6,7 +6,7 @@ cd "$(git rev-parse --show-toplevel)"
 mapfile -t files < \
     <(git ls-files)
 mapfile -t scripts < \
-    <(awk '/#!\/usr\/bin\/env/&&FNR==1{print FILENAME}' "${files[@]}")
+    <(awk '/#!(\/usr\/bin\/env bash|\/bin\/sh)/&&FNR==1{print FILENAME}' "${files[@]}")
 mapfile -t buildfiles < \
     <(find . \( -name 'WORKSPACE' -o -name 'BUILD' -o -name '*.bzl' \))
 
