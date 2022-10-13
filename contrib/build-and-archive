@@ -36,11 +36,12 @@ for os_arch in linux-{x86_64,aarch64} macos-{x86_64,aarch64} windows-x86_64; do
     cp 13051.patch "$0" zig-${os_arch}-"${zig_version}"/patches/
 done
 
-# x86_64 should have libs in lib/, rather than in lib/zig/.
-for os in linux macos windows; do
-    mv zig-${os}-x86_64-"${zig_version}"/{lib,lib2}
-    mv zig-${os}-x86_64-"${zig_version}"/{lib2/zig,lib}
-    rmdir zig-${os}-x86_64-"${zig_version}"/lib2
+# linux-x86_64, windows-x86_64 and macos-aarch64 have libs in lib/, rather than
+# in lib/zig/.
+for os_arch in linux-x86_64 windows-x86_64 macos-aarch64; do
+    mv zig-${os_arch}-"${zig_version}"/{lib,lib2}
+    mv zig-${os_arch}-"${zig_version}"/{lib2/zig,lib}
+    rmdir zig-${os_arch}-"${zig_version}"/lib2
 done
 
 tar cJf zig-linux-x86_64-"${zig_version}".tar.xz zig-linux-x86_64-"${zig_version}"/ &
