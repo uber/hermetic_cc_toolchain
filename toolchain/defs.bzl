@@ -95,10 +95,10 @@ _ZIG_TOOLS = [
 
 _ZIG_TOOL_WRAPPER_WINDOWS_CACHE_KNOWN = """@echo off
 if exist "external\\zig_sdk\\lib\\*" goto :have_external_zig_sdk_lib
-set ZIG_LIB_DIR=%~dp0\\..\\..\\lib
+set ZIG_LIB_DIR=%~dp0\\..\\..\\{zig_include_root}
 goto :set_zig_lib_dir
 :have_external_zig_sdk_lib
-set ZIG_LIB_DIR=external\\zig_sdk\\lib
+set ZIG_LIB_DIR=external\\zig_sdk\\{zig_include_root}
 :set_zig_lib_dir
 set ZIG_LOCAL_CACHE_DIR={cache_prefix}\\bazel-zig-cc
 set ZIG_GLOBAL_CACHE_DIR=%ZIG_LOCAL_CACHE_DIR%
@@ -107,10 +107,10 @@ set ZIG_GLOBAL_CACHE_DIR=%ZIG_LOCAL_CACHE_DIR%
 
 _ZIG_TOOL_WRAPPER_WINDOWS_CACHE_GUESS = """@echo off
 if exist "external\\zig_sdk\\lib\\*" goto :have_external_zig_sdk_lib
-set ZIG_LIB_DIR=%~dp0\\..\\..\\lib
+set ZIG_LIB_DIR=%~dp0\\..\\..\\{zig_include_root}
 goto :set_zig_lib_dir
 :have_external_zig_sdk_lib
-set ZIG_LIB_DIR=external\\zig_sdk\\lib
+set ZIG_LIB_DIR=external\\zig_sdk\\{zig_include_root}
 :set_zig_lib_dir
 if exist "%TMP%\\*" goto :usertmp
 set ZIG_LOCAL_CACHE_DIR=C:\\Temp\\bazel-zig-cc
@@ -187,7 +187,7 @@ def _zig_tool_wrapper(zig_tool, zig, is_windows, cache_prefix, zigtarget, zig_in
         cache_prefix = cache_prefix,
         maybe_gohack = _ZIG_TOOL_GOHACK if (zig_tool == "c++" and not is_windows) else "",
         maybe_target = "-target {}".format(zigtarget) if zig_tool == "c++" else "",
-        zig_include_root = zig_include_root,
+        zig_include_root = zig_include_root.replace("/", "\\") if is_windows else zig_include_root,
     )
 
     if is_windows:
