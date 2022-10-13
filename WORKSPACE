@@ -30,7 +30,7 @@ go_rules_dependencies()
 # use latest stable.
 go_download_sdk(
     name = "go_sdk",
-    version = "1.19",
+    version = "1.19.2",
 )
 
 go_register_toolchains()
