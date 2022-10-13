@@ -1,0 +1,3 @@
+      5 ./mutex_destructor.o: ELF 64-bit LSB relocatable, x86-64, version 1 (SYSV), not stripped
+      3 ./mutex_destructor.o: ELF 64-bit LSB relocatable, ARM aarch64, version 1 (SYSV), not stripped
+      1 ./mutex_destructor.o: Mach-O 64-bit x86_64 object, flags:<|SUBSECTIONS_VIA_SYMBOLS>
