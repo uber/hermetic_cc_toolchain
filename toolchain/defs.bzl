@@ -91,6 +91,9 @@ _ZIG_TOOLS = [
     "ld64.lld",  # Mach-O
     "lld-link",  # COFF
     "wasm-ld",  # WebAssembly
+    "build-exe", # building zig files
+    "build-lib", # building zig files
+    "build-obj"  # building zig files
 ]
 
 _ZIG_TOOL_WRAPPER_WINDOWS_CACHE_KNOWN = """@echo off
