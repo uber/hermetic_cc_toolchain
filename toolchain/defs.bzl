@@ -184,12 +184,17 @@ eval set -- "$saved"
 """
 
 def _zig_tool_wrapper(zig_tool, zig, is_windows, cache_prefix, zigtarget, zig_include_root):
+    if zig_tool in ["c++", "build-exe", "build-lib", "build-obj"]:
+        maybe_target = "-target {}".format(zigtarget)
+    else:
+        maybe_target = ""
+
     kwargs = dict(
         zig = str(zig).replace("/", "\\") + ".exe" if is_windows else zig,
         zig_tool = zig_tool,
         cache_prefix = cache_prefix,
         maybe_gohack = _ZIG_TOOL_GOHACK if (zig_tool == "c++" and not is_windows) else "",
-        maybe_target = "-target {}".format(zigtarget) if zig_tool == "c++" else "",
+        maybe_target = maybe_target,
         zig_include_root = zig_include_root.replace("/", "\\") if is_windows else zig_include_root,
     )
 
