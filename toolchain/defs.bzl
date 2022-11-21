@@ -75,11 +75,11 @@ def toolchains(
         host_platform_sha256 = host_platform_sha256,
         host_platform_ext = host_platform_ext,
         host_platform_include_root = {
-            "linux-aarch64": "lib/zig/",
-            "linux-x86_64": "lib/",
-            "macos-aarch64": "lib/",
-            "macos-x86_64": "lib/zig/",
-            "windows-x86_64": "lib/",
+            "linux-aarch64": "lib/zig",
+            "linux-x86_64": "lib",
+            "macos-aarch64": "lib",
+            "macos-x86_64": "lib/zig",
+            "windows-x86_64": "lib",
         },
     )
 
@@ -330,6 +330,6 @@ def declare_files(os, zig_include_root):
 
     for target_config in target_structs():
         for d in _DEFAULT_INCLUDE_DIRECTORIES + target_config.includes:
-            d = zig_include_root + d
+            d = zig_include_root + ("\\" if os == "windows" else "/") + d
             if d not in lazy_filegroups:
                 lazy_filegroups[d] = filegroup(name = d, srcs = native.glob([d + "/**"]))

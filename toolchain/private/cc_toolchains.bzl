@@ -11,7 +11,7 @@ DEFAULT_TOOL_PATHS = {
     "strip": "/usr/bin/false",
 }.items()
 
-def declare_cc_toolchains(os, zig_sdk_path, zig_include_root):
+def declare_cc_toolchains(os, zig_sdk_path):
     for target_config in target_structs():
         gotarget = target_config.gotarget
         zigtarget = target_config.zigtarget
