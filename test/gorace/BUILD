@@ -20,5 +20,6 @@ go_test(
     name = "gorace_test",
     srcs = ["main_test.go"],
     embed = [":gorace_lib"],
+    gc_linkopts = ["-linkmode=external"],
     race = "on",
 )
