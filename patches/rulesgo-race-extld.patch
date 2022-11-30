@@ -1,0 +1,54 @@
+From 4c15193a7f1a94895a5e0af0f0a15879af040ce2 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Motiejus=20Jak=C5=A1tys?= <motiejus@uber.com>
+Date: Wed, 30 Nov 2022 10:38:18 +0200
+Subject: [PATCH] go link: use external linker when in race mode
+
+As of clang 15.0.3 (via zig v0.10), when building with `race = "on"` on
+x86_64 Linux, we observe the following:
+
+    runtime/cgo(.text): relocation target memset not defined
+
+From my past experience, reporting a Go linker error when the external
+linker works has a high chance to get the ticket closed as unactionable;
+so it makes sense to just use an external linker, when it works.
+
+Also, do not set the flag if external cpp toolchain is not set up.
+---
+ go/private/actions/link.bzl | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/go/private/actions/link.bzl b/go/private/actions/link.bzl
+index 7f059e2d..ddc9cd0e 100644
+--- a/go/private/actions/link.bzl
++++ b/go/private/actions/link.bzl
+@@ -80,12 +80,14 @@ def emit_link(
+     tool_args = go.tool_args(go)
+ 
+     # Add in any mode specific behaviours
+-    tool_args.add_all(extld_from_cc_toolchain(go))
++    extld = extld_from_cc_toolchain(go)
++    tool_args.add_all(extld)
+     if go.mode.race:
+         tool_args.add("-race")
+     if go.mode.msan:
+         tool_args.add("-msan")
+     if ((go.mode.static and not go.mode.pure) or
++        (go.mode.race and extld) or
+         go.mode.link != LINKMODE_NORMAL or
+         go.mode.goos == "windows" and (go.mode.race or go.mode.msan)):
+         # Force external linking for the following conditions:
+@@ -97,6 +99,11 @@ def emit_link(
+         #   incompatibilities with mingw, and we get link errors in race mode.
+         #   Using the C linker avoids that. Race and msan always require a
+         #   a C toolchain. See #2614.
++        # * Linux race builds: we get linker errors during build with Go's
++        #   internal linker. For example, when using zig cc v0.10
++        #   (clang-15.0.3):
++        #
++        #       runtime/cgo(.text): relocation target memset not defined
+         tool_args.add("-linkmode", "external")
+     if go.mode.pure:
+         # Force internal linking in pure mode. We don't have a C toolchain,
+-- 
+2.34.1
+
