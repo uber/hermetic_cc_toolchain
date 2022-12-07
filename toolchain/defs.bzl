@@ -74,13 +74,6 @@ def toolchains(
         url_formats = url_formats,
         host_platform_sha256 = host_platform_sha256,
         host_platform_ext = host_platform_ext,
-        host_platform_include_root = {
-            "linux-aarch64": "lib/zig",
-            "linux-x86_64": "lib",
-            "macos-aarch64": "lib",
-            "macos-x86_64": "lib/zig",
-            "windows-x86_64": "lib",
-        },
     )
 
 _ZIG_TOOLS = [
@@ -98,10 +91,10 @@ _ZIG_TOOLS = [
 
 _ZIG_TOOL_WRAPPER_WINDOWS_CACHE_KNOWN = """@echo off
 if exist "external\\zig_sdk\\lib\\*" goto :have_external_zig_sdk_lib
-set ZIG_LIB_DIR=%~dp0\\..\\..\\{zig_include_root}
+set ZIG_LIB_DIR=%~dp0\\..\\..\\lib
 goto :set_zig_lib_dir
 :have_external_zig_sdk_lib
-set ZIG_LIB_DIR=external\\zig_sdk\\{zig_include_root}
+set ZIG_LIB_DIR=external\\zig_sdk\\lib
 :set_zig_lib_dir
 set ZIG_LOCAL_CACHE_DIR={cache_prefix}\\bazel-zig-cc
 set ZIG_GLOBAL_CACHE_DIR=%ZIG_LOCAL_CACHE_DIR%
@@ -110,10 +103,10 @@ set ZIG_GLOBAL_CACHE_DIR=%ZIG_LOCAL_CACHE_DIR%
 
 _ZIG_TOOL_WRAPPER_WINDOWS_CACHE_GUESS = """@echo off
 if exist "external\\zig_sdk\\lib\\*" goto :have_external_zig_sdk_lib
-set ZIG_LIB_DIR=%~dp0\\..\\..\\{zig_include_root}
+set ZIG_LIB_DIR=%~dp0\\..\\..\\lib
 goto :set_zig_lib_dir
 :have_external_zig_sdk_lib
-set ZIG_LIB_DIR=external\\zig_sdk\\{zig_include_root}
+set ZIG_LIB_DIR=external\\zig_sdk\\lib
 :set_zig_lib_dir
 if exist "%TMP%\\*" goto :usertmp
 set ZIG_LOCAL_CACHE_DIR=C:\\Temp\\bazel-zig-cc
@@ -128,9 +121,9 @@ set ZIG_GLOBAL_CACHE_DIR=%ZIG_LOCAL_CACHE_DIR%
 _ZIG_TOOL_WRAPPER_CACHE_KNOWN = """#!/bin/sh
 set -e
 if [ -d external/zig_sdk/lib ]; then
-    ZIG_LIB_DIR=external/zig_sdk/{zig_include_root}
+    ZIG_LIB_DIR=external/zig_sdk/lib
 else
-    ZIG_LIB_DIR="$(dirname "$0")/../../{zig_include_root}"
+    ZIG_LIB_DIR="$(dirname "$0")/../../lib"
 fi
 export ZIG_LIB_DIR
 export ZIG_LOCAL_CACHE_DIR="{cache_prefix}/bazel-zig-cc"
@@ -142,9 +135,9 @@ exec "{zig}" "{zig_tool}" {maybe_target} "$@"
 _ZIG_TOOL_WRAPPER_CACHE_GUESS = """#!/bin/sh
 set -e
 if [ -d external/zig_sdk/lib ]; then
-    ZIG_LIB_DIR=external/zig_sdk/{zig_include_root}
+    ZIG_LIB_DIR=external/zig_sdk/lib
 else
-    ZIG_LIB_DIR="$(dirname "$0")/../../{zig_include_root}"
+    ZIG_LIB_DIR="$(dirname "$0")/../../lib"
 fi
 if [ -n "$TMPDIR" ]; then
     _cache_prefix=$TMPDIR
@@ -183,7 +176,7 @@ fi
 eval set -- "$saved"
 """
 
-def _zig_tool_wrapper(zig_tool, zig, is_windows, cache_prefix, zigtarget, zig_include_root):
+def _zig_tool_wrapper(zig_tool, zig, is_windows, cache_prefix, zigtarget):
     if zig_tool in ["c++", "build-exe", "build-lib", "build-obj"]:
         maybe_target = "-target {}".format(zigtarget)
     else:
@@ -195,7 +188,6 @@ def _zig_tool_wrapper(zig_tool, zig, is_windows, cache_prefix, zigtarget, zig_in
         cache_prefix = cache_prefix,
         maybe_gohack = _ZIG_TOOL_GOHACK if (zig_tool == "c++" and not is_windows) else "",
         maybe_target = maybe_target,
-        zig_include_root = zig_include_root.replace("/", "\\") if is_windows else zig_include_root,
     )
 
     if is_windows:
@@ -226,7 +218,6 @@ def _zig_repository_impl(repository_ctx):
 
     host_platform = "{}-{}".format(os, arch)
 
-    zig_include_root = repository_ctx.attr.host_platform_include_root[host_platform]
     zig_sha256 = repository_ctx.attr.host_platform_sha256[host_platform]
     zig_ext = repository_ctx.attr.host_platform_ext[host_platform]
     format_vars = {
@@ -260,7 +251,6 @@ def _zig_repository_impl(repository_ctx):
             substitutions = {
                 "{zig_sdk_path}": _quote("external/zig_sdk"),
                 "{os}": _quote(os),
-                "{zig_include_root}": _quote(zig_include_root),
             },
         )
 
@@ -280,7 +270,6 @@ def _zig_repository_impl(repository_ctx):
                 os == "windows",
                 repository_ctx.os.environ.get("BAZEL_ZIG_CC_CACHE_PREFIX", ""),
                 zigtarget = target_config.zigtarget,
-                zig_include_root = zig_include_root,
             )
 
             repository_ctx.file(
@@ -305,7 +294,6 @@ zig_repository = repository_rule(
         "version": attr.string(),
         "host_platform_sha256": attr.string_dict(),
         "url_formats": attr.string_list(allow_empty = False),
-        "host_platform_include_root": attr.string_dict(),
         "host_platform_ext": attr.string_dict(),
     },
     environ = ["BAZEL_ZIG_CC_CACHE_PREFIX"],
@@ -316,7 +304,7 @@ def filegroup(name, **kwargs):
     native.filegroup(name = name, **kwargs)
     return ":" + name
 
-def declare_files(os, zig_include_root):
+def declare_files(os):
     filegroup(name = "all", srcs = native.glob(["**"]))
     filegroup(name = "empty")
     if os == "windows":
@@ -330,6 +318,6 @@ def declare_files(os, zig_include_root):
 
     for target_config in target_structs():
         for d in _DEFAULT_INCLUDE_DIRECTORIES + target_config.includes:
-            d = zig_include_root + ("\\" if os == "windows" else "/") + d
+            d = "lib" + ("\\" if os == "windows" else "/") + d
             if d not in lazy_filegroups:
                 lazy_filegroups[d] = filegroup(name = d, srcs = native.glob([d + "/**"]))

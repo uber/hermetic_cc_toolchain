@@ -7,7 +7,6 @@ package(
 
 declare_files(
     os = {os},
-    zig_include_root = {zig_include_root},
 )
 
 exports_files([
