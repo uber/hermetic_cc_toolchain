@@ -92,21 +92,25 @@ _ZIG_TOOLS = [
 _ZIG_TOOL_WRAPPER_WINDOWS_CACHE_KNOWN = """@echo off
 if exist "external\\zig_sdk\\lib\\*" goto :have_external_zig_sdk_lib
 set ZIG_LIB_DIR=%~dp0\\..\\..\\lib
+set ZIG_EXE=%~dp0\\..\\..\\zig.exe
 goto :set_zig_lib_dir
 :have_external_zig_sdk_lib
 set ZIG_LIB_DIR=external\\zig_sdk\\lib
+set ZIG_EXE=external\\zig_sdk\\zig.exe
 :set_zig_lib_dir
 set ZIG_LOCAL_CACHE_DIR={cache_prefix}\\bazel-zig-cc
 set ZIG_GLOBAL_CACHE_DIR=%ZIG_LOCAL_CACHE_DIR%
-"{zig}" "{zig_tool}" {maybe_target} %*
+"%ZIG_EXE%" "{zig_tool}" {maybe_target} %*
 """
 
 _ZIG_TOOL_WRAPPER_WINDOWS_CACHE_GUESS = """@echo off
 if exist "external\\zig_sdk\\lib\\*" goto :have_external_zig_sdk_lib
 set ZIG_LIB_DIR=%~dp0\\..\\..\\lib
+set ZIG_EXE=%~dp0\\..\\..\\zig.exe
 goto :set_zig_lib_dir
 :have_external_zig_sdk_lib
 set ZIG_LIB_DIR=external\\zig_sdk\\lib
+set ZIG_EXE=external\\zig_sdk\\zig.exe
 :set_zig_lib_dir
 if exist "%TMP%\\*" goto :usertmp
 set ZIG_LOCAL_CACHE_DIR=C:\\Temp\\bazel-zig-cc
@@ -115,29 +119,33 @@ goto zig
 set ZIG_LOCAL_CACHE_DIR=%TMP%\\bazel-zig-cc
 :zig
 set ZIG_GLOBAL_CACHE_DIR=%ZIG_LOCAL_CACHE_DIR%
-"{zig}" "{zig_tool}" {maybe_target} %*
+"%ZIG_EXE%" "{zig_tool}" {maybe_target} %*
 """
 
 _ZIG_TOOL_WRAPPER_CACHE_KNOWN = """#!/bin/sh
 set -e
 if [ -d external/zig_sdk/lib ]; then
     ZIG_LIB_DIR=external/zig_sdk/lib
+    ZIG_EXE=external/zig_sdk/zig
 else
     ZIG_LIB_DIR="$(dirname "$0")/../../lib"
+    ZIG_EXE="$(dirname "$0")/../../zig"
 fi
 export ZIG_LIB_DIR
 export ZIG_LOCAL_CACHE_DIR="{cache_prefix}/bazel-zig-cc"
 export ZIG_GLOBAL_CACHE_DIR="{cache_prefix}/bazel-zig-cc"
 {maybe_gohack}
-exec "{zig}" "{zig_tool}" {maybe_target} "$@"
+exec "$ZIG_EXE" "{zig_tool}" {maybe_target} "$@"
 """
 
 _ZIG_TOOL_WRAPPER_CACHE_GUESS = """#!/bin/sh
 set -e
 if [ -d external/zig_sdk/lib ]; then
     ZIG_LIB_DIR=external/zig_sdk/lib
+    ZIG_EXE=external/zig_sdk/zig
 else
     ZIG_LIB_DIR="$(dirname "$0")/../../lib"
+    ZIG_EXE="$(dirname "$0")/../../zig"
 fi
 if [ -n "$TMPDIR" ]; then
     _cache_prefix=$TMPDIR
@@ -154,7 +162,7 @@ export ZIG_LIB_DIR
 export ZIG_LOCAL_CACHE_DIR="$_cache_prefix/bazel-zig-cc"
 export ZIG_GLOBAL_CACHE_DIR=$ZIG_LOCAL_CACHE_DIR
 {maybe_gohack}
-exec "{zig}" "{zig_tool}" {maybe_target} "$@"
+exec "$ZIG_EXE" "{zig_tool}" {maybe_target} "$@"
 """
 
 # The abomination below adds "-O2" to Go's link-prober command. Saves around
@@ -176,14 +184,13 @@ fi
 eval set -- "$saved"
 """
 
-def _zig_tool_wrapper(zig_tool, zig, is_windows, cache_prefix, zigtarget):
+def _zig_tool_wrapper(zig_tool, is_windows, cache_prefix, zigtarget):
     if zig_tool in ["c++", "build-exe", "build-lib", "build-obj"]:
         maybe_target = "-target {}".format(zigtarget)
     else:
         maybe_target = ""
 
     kwargs = dict(
-        zig = str(zig).replace("/", "\\") + ".exe" if is_windows else zig,
         zig_tool = zig_tool,
         cache_prefix = cache_prefix,
         maybe_gohack = _ZIG_TOOL_GOHACK if (zig_tool == "c++" and not is_windows) else "",
@@ -266,7 +273,6 @@ def _zig_repository_impl(repository_ctx):
         for target_config in target_structs():
             zig_tool_wrapper = _zig_tool_wrapper(
                 zig_tool,
-                str(repository_ctx.path("zig")),
                 os == "windows",
                 repository_ctx.os.environ.get("BAZEL_ZIG_CC_CACHE_PREFIX", ""),
                 zigtarget = target_config.zigtarget,
