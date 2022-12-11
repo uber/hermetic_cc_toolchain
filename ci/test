@@ -6,7 +6,7 @@ bazel test "$@" ...
 # /tmp/bazel-zig-cc should be empty for the test below to be valid.
 # This test ensures that github.com/ziglang/zig/issues/13050 does not
 # regress
-find /tmp/bazel-zig-cc -name mutex_destructor.o -execdir file {} \; | \
+find /tmp/bazel-zig-cc -name mutex_destructor.o -execdir file '{}' \; | \
     sort | uniq -c | sort -rn > /tmp/got_cache
 
 diff -u ci/testdata/want_cache /tmp/got_cache || {
