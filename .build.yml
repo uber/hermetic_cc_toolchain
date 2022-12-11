@@ -5,6 +5,7 @@ packages:
   - qemu-user-static
   - binfmt-support
   - moreutils
+  - file
   - wine64
 sources:
   - https://git.sr.ht/~motiejus/bazel-zig-cc
