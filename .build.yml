@@ -3,7 +3,6 @@ packages:
   - direnv
   - shellcheck
   - qemu-user-static
-  - binfmt-support
   - moreutils
   - file
   - wine64
