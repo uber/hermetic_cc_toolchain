@@ -318,6 +318,6 @@ def declare_files(os):
 
     for target_config in target_structs():
         for d in _DEFAULT_INCLUDE_DIRECTORIES + target_config.includes:
-            d = "lib" + ("\\" if os == "windows" else "/") + d
+            d = "lib/" + d
             if d not in lazy_filegroups:
                 lazy_filegroups[d] = filegroup(name = d, srcs = native.glob([d + "/**"]))
