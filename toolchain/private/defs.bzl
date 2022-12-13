@@ -22,6 +22,8 @@ _GLIBCS = [
     "2.34",
 ]
 
+_INCLUDE_TAIL = ["libcxx/include", "include"]
+
 LIBCS = ["musl"] + ["gnu.{}".format(glibc) for glibc in _GLIBCS]
 
 def zig_tool_path(os):
@@ -51,8 +53,7 @@ def _target_darwin(gocpu, zigcpu):
             "libc/include/{}-macos.{}-none".format(zigcpu, min_os),
             "libc/include/any-macos.{}-any".format(min_os),
             "libc/include/any-macos-any",
-            "include",
-        ],
+        ] + _INCLUDE_TAIL,
         dynamic_library_linkopts = ["-Wl,-undefined=dynamic_lookup"],
         copts = [],
         libc = "darwin",
@@ -72,8 +73,7 @@ def _target_windows(gocpu, zigcpu):
             "libc/mingw",
             "libunwind/include",
             "libc/include/any-windows-any",
-            "include",
-        ],
+        ] + _INCLUDE_TAIL,
         dynamic_library_linkopts = [],
         copts = [],
         libc = "mingw",
@@ -103,8 +103,7 @@ def _target_linux_gnu(gocpu, zigcpu, glibc_version):
                    (["libc/include/x86-linux-any"] if zigcpu == "x86_64" else []) +
                    (["libc/include/{}-linux-any".format(zigcpu)] if zigcpu != "x86_64" else []) + [
             "libc/include/any-linux-any",
-            "include",
-        ],
+        ] + _INCLUDE_TAIL,
         toplevel_include = ["glibc-hacks"] if fcntl_hack else [],
         compiler_extra_includes = ["glibc-hacks/glibchack-fcntl.h"] if fcntl_hack else [],
         linker_version_scripts = ["glibc-hacks/fcntl.map"] if fcntl_hack else [],
@@ -132,8 +131,7 @@ def _target_linux_musl(gocpu, zigcpu):
                    (["libc/include/x86-linux-any"] if zigcpu == "x86_64" else []) +
                    (["libc/include/{}-linux-any".format(zigcpu)] if zigcpu != "x86_64" else []) + [
             "libc/include/any-linux-any",
-            "include",
-        ],
+        ] + _INCLUDE_TAIL,
         dynamic_library_linkopts = [],
         copts = ["-D_LIBCPP_HAS_MUSL_LIBC", "-D_LIBCPP_HAS_THREAD_API_PTHREAD"],
         libc = "musl",

@@ -363,10 +363,22 @@ def declare_files(os):
         )
 
         filegroup(
+            name = "{}_ar_files".format(target_config.zigtarget),
+            srcs = [
+                ":zig",
+                ":" + zig_tool_path(os).format(
+                        zig_tool = "ar",
+                        zigtarget = target_config.zigtarget,
+                    )
+                ],
+        )
+
+        filegroup(
             name = "{}_all_files".format(target_config.zigtarget),
             srcs = [
                 ":{}_linker_files".format(target_config.zigtarget),
                 ":{}_compiler_files".format(target_config.zigtarget),
+                ":{}_ar_files".format(target_config.zigtarget),
             ],
         )
 
