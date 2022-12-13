@@ -367,10 +367,10 @@ def declare_files(os):
             srcs = [
                 ":zig",
                 ":" + zig_tool_path(os).format(
-                        zig_tool = "ar",
-                        zigtarget = target_config.zigtarget,
-                    )
-                ],
+                    zig_tool = "ar",
+                    zigtarget = target_config.zigtarget,
+                ),
+            ],
         )
 
         filegroup(
