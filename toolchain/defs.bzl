@@ -319,11 +319,64 @@ def declare_files(os):
     else:
         native.exports_files(["zig"], visibility = ["//visibility:public"])
     filegroup(name = "lib/std", srcs = native.glob(["lib/std/**"]))
-
     lazy_filegroups = {}
 
     for target_config in target_structs():
+        all_includes = [native.glob(["lib/{}/**".format(i)]) for i in target_config.includes]
+        all_includes.append(getattr(target_config, "compiler_extra_includes", []))
+
+        cxx_tool_label = ":" + zig_tool_path(os).format(
+            zig_tool = "c++",
+            zigtarget = target_config.zigtarget,
+        )
+
+        filegroup(
+            name = "{}_includes".format(target_config.zigtarget),
+            srcs = _flatten(all_includes),
+        )
+
+        filegroup(
+            name = "{}_compiler_files".format(target_config.zigtarget),
+            srcs = [
+                ":zig",
+                ":{}_includes".format(target_config.zigtarget),
+                cxx_tool_label,
+            ],
+        )
+
+        filegroup(
+            name = "{}_linker_files".format(target_config.zigtarget),
+            srcs = [
+                ":zig",
+                ":{}_includes".format(target_config.zigtarget),
+                cxx_tool_label,
+            ] + native.glob([
+                "lib/libc/{}/**".format(target_config.libc),
+                "lib/libcxx/**",
+                "lib/libcxxabi/**",
+                "lib/libunwind/**",
+                "lib/compiler_rt/**",
+                "lib/std/**",
+                "lib/*.zig",
+                "lib/*.h",
+            ]),
+        )
+
+        filegroup(
+            name = "{}_all_files".format(target_config.zigtarget),
+            srcs = [
+                ":{}_linker_files".format(target_config.zigtarget),
+                ":{}_compiler_files".format(target_config.zigtarget),
+            ],
+        )
+
         for d in _DEFAULT_INCLUDE_DIRECTORIES + target_config.includes:
             d = "lib/" + d
             if d not in lazy_filegroups:
                 lazy_filegroups[d] = filegroup(name = d, srcs = native.glob([d + "/**"]))
+
+def _flatten(iterable):
+    result = []
+    for element in iterable:
+        result += element
+    return result

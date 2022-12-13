@@ -41,9 +41,7 @@ def target_structs():
     return ret
 
 def _target_darwin(gocpu, zigcpu):
-    min_os = "10"
-    if zigcpu == "aarch64":
-        min_os = "11"
+    min_os = "11"
     return struct(
         gotarget = "darwin_{}".format(gocpu),
         zigtarget = "{}-macos-none".format(zigcpu),
@@ -53,9 +51,11 @@ def _target_darwin(gocpu, zigcpu):
             "libc/include/{}-macos.{}-none".format(zigcpu, min_os),
             "libc/include/any-macos.{}-any".format(min_os),
             "libc/include/any-macos-any",
+            "include",
         ],
         dynamic_library_linkopts = ["-Wl,-undefined=dynamic_lookup"],
         copts = [],
+        libc = "darwin",
         bazel_target_cpu = "darwin",
         constraint_values = [
             "@platforms//os:macos",
@@ -69,11 +69,14 @@ def _target_windows(gocpu, zigcpu):
         gotarget = "windows_{}".format(gocpu),
         zigtarget = "{}-windows-gnu".format(zigcpu),
         includes = [
+            "libc/mingw",
             "libunwind/include",
             "libc/include/any-windows-any",
+            "include",
         ],
         dynamic_library_linkopts = [],
         copts = [],
+        libc = "mingw",
         bazel_target_cpu = "x64_windows",
         constraint_values = [
             "@platforms//os:windows",
@@ -100,12 +103,14 @@ def _target_linux_gnu(gocpu, zigcpu, glibc_version):
                    (["libc/include/x86-linux-any"] if zigcpu == "x86_64" else []) +
                    (["libc/include/{}-linux-any".format(zigcpu)] if zigcpu != "x86_64" else []) + [
             "libc/include/any-linux-any",
+            "include",
         ],
         toplevel_include = ["glibc-hacks"] if fcntl_hack else [],
         compiler_extra_includes = ["glibc-hacks/glibchack-fcntl.h"] if fcntl_hack else [],
         linker_version_scripts = ["glibc-hacks/fcntl.map"] if fcntl_hack else [],
         dynamic_library_linkopts = [],
         copts = [],
+        libc = "glibc",
         bazel_target_cpu = "k8",
         constraint_values = [
             "@platforms//os:linux",
@@ -127,9 +132,11 @@ def _target_linux_musl(gocpu, zigcpu):
                    (["libc/include/x86-linux-any"] if zigcpu == "x86_64" else []) +
                    (["libc/include/{}-linux-any".format(zigcpu)] if zigcpu != "x86_64" else []) + [
             "libc/include/any-linux-any",
+            "include",
         ],
         dynamic_library_linkopts = [],
         copts = ["-D_LIBCPP_HAS_MUSL_LIBC", "-D_LIBCPP_HAS_THREAD_API_PTHREAD"],
+        libc = "musl",
         bazel_target_cpu = "k8",
         constraint_values = [
             "@platforms//os:linux",
