@@ -22,7 +22,11 @@ _GLIBCS = [
     "2.34",
 ]
 
-_INCLUDE_TAIL = ["libcxx/include", "include"]
+_INCLUDE_TAIL = [
+    "libcxx/include",
+    "libcxxabi/include",
+    "include",
+]
 
 LIBCS = ["musl"] + ["gnu.{}".format(glibc) for glibc in _GLIBCS]
 
