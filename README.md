@@ -23,11 +23,11 @@ scratching, I promise.
 Add this to your `WORKSPACE`:
 
 ```
-BAZEL_ZIG_CC_VERSION = "v0.9.2"
+BAZEL_ZIG_CC_VERSION = "v1.0.0-rc4"
 
 http_archive(
     name = "bazel-zig-cc",
-    sha256 = "73afa7e1af49e3dbfa1bae9362438cdc51cb177c359a6041a7a403011179d0b5",
+    sha256 = "af784b604c08f385358113dc41e22736369a8ad09951fecf31dd13c35f4aaa62",
     strip_prefix = "bazel-zig-cc-{}".format(BAZEL_ZIG_CC_VERSION),
     urls = ["https://git.sr.ht/~motiejus/bazel-zig-cc/archive/{}.tar.gz".format(BAZEL_ZIG_CC_VERSION)],
 )
