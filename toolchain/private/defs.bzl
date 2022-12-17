@@ -39,14 +39,14 @@ def zig_tool_path(os):
 def target_structs():
     ret = []
     for zigcpu, gocpu in (("x86_64", "amd64"), ("aarch64", "arm64")):
-        ret.append(_target_darwin(gocpu, zigcpu))
+        ret.append(_target_macos(gocpu, zigcpu))
         ret.append(_target_windows(gocpu, zigcpu))
         ret.append(_target_linux_musl(gocpu, zigcpu))
         for glibc in _GLIBCS:
             ret.append(_target_linux_gnu(gocpu, zigcpu, glibc))
     return ret
 
-def _target_darwin(gocpu, zigcpu):
+def _target_macos(gocpu, zigcpu):
     min_os = "11"
     return struct(
         gotarget = "darwin_{}".format(gocpu),
