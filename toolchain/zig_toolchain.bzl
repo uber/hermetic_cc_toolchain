@@ -129,9 +129,15 @@ def _zig_cc_toolchain_config_impl(ctx):
         flag_sets = dynamic_library_flag_sets,
     )
 
+    supports_dynamic_linker = feature(
+        name = "supports_dynamic_linker",
+        enabled = True,
+    )
+
     features = [
         compile_and_link_flags,
         default_linker_flags,
+        supports_dynamic_linker,
     ] + _compilation_mode_features(ctx)
 
     return cc_common.create_cc_toolchain_config_info(
