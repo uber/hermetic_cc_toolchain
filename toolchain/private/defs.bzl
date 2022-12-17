@@ -48,6 +48,11 @@ def target_structs():
 
 def _target_macos(gocpu, zigcpu):
     min_os = "11"
+    copts = []
+
+    if zigcpu == "aarch64":
+        copts = ["-mcpu=apple_m1"]
+
     return struct(
         gotarget = "darwin_{}".format(gocpu),
         zigtarget = "{}-macos-none".format(zigcpu),
@@ -59,7 +64,7 @@ def _target_macos(gocpu, zigcpu):
             "libc/include/any-macos-any",
         ] + _INCLUDE_TAIL,
         dynamic_library_linkopts = ["-Wl,-undefined=dynamic_lookup"],
-        copts = [],
+        copts = copts,
         libc = "darwin",
         bazel_target_cpu = "darwin",
         constraint_values = [
