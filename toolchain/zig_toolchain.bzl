@@ -1,6 +1,7 @@
 load("@bazel_tools//tools/build_defs/cc:action_names.bzl", "ACTION_NAMES")
 load(
     "@bazel_tools//tools/cpp:cc_toolchain_config_lib.bzl",
+    "artifact_name_pattern",
     "feature",
     "feature_set",
     "flag_group",
@@ -140,6 +141,11 @@ def _zig_cc_toolchain_config_impl(ctx):
         supports_dynamic_linker,
     ] + _compilation_mode_features(ctx)
 
+    artifact_name_patterns = [
+        artifact_name_pattern(**json.decode(p))
+        for p in ctx.attr.artifact_name_patterns
+    ]
+
     return cc_common.create_cc_toolchain_config_info(
         ctx = ctx,
         features = features,
@@ -156,6 +162,7 @@ def _zig_cc_toolchain_config_impl(ctx):
             for name, path in ctx.attr.tool_paths.items()
         ],
         cxx_builtin_include_directories = ctx.attr.cxx_builtin_include_directories,
+        artifact_name_patterns = artifact_name_patterns,
     )
 
 zig_cc_toolchain_config = rule(
@@ -174,6 +181,7 @@ zig_cc_toolchain_config = rule(
         "compiler": attr.string(),
         "abi_version": attr.string(),
         "abi_libc_version": attr.string(),
+        "artifact_name_patterns": attr.string_list(),
     },
     provides = [CcToolchainConfigInfo],
 )

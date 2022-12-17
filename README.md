@@ -338,17 +338,6 @@ is currently not implemented.
 target macos.10 (Catalina), macos.11 (Big Sur) or macos.12 (Monterey). It
 currently targets the lowest version, without ability to change it.
 
-## Windows only: output file extensions
-
-For Windows targets Bazel uses Unix extensions for output binaries. Those may
-need to be renamed before deploying to the Windows system. Here is a primer:
-
-| Binary type    | Bazel extension | Windows extension |
-|----------------|-----------------|-------------------|
-| Static library | .a              | .lib              |
-| Shared library | .so             | .dll              |
-| Executable     | (no extension)  | .exe              |
-
 # Known Issues In Upstream
 
 This section lists issues that I've stumbled into when using `zig cc`, and is

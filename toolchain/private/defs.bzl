@@ -72,6 +72,13 @@ def _target_macos(gocpu, zigcpu):
             "@platforms//cpu:{}".format(zigcpu),
         ],
         tool_paths = {"ld": "ld64.lld"},
+        artifact_name_patterns = [
+            {
+                "category_name": "dynamic_library",
+                "prefix": "lib",
+                "extension": ".dylib",
+            },
+        ],
     )
 
 def _target_windows(gocpu, zigcpu):
@@ -92,6 +99,23 @@ def _target_windows(gocpu, zigcpu):
             "@platforms//cpu:{}".format(zigcpu),
         ],
         tool_paths = {"ld": "ld64.lld"},
+        artifact_name_patterns = [
+            {
+                "category_name": "static_library",
+                "prefix": "",
+                "extension": ".lib",
+            },
+            {
+                "category_name": "dynamic_library",
+                "prefix": "",
+                "extension": ".dll",
+            },
+            {
+                "category_name": "executable",
+                "prefix": "",
+                "extension": ".exe",
+            },
+        ],
     )
 
 def _target_linux_gnu(gocpu, zigcpu, glibc_version):
@@ -126,6 +150,7 @@ def _target_linux_gnu(gocpu, zigcpu, glibc_version):
         ],
         libc_constraint = "@zig_sdk//libc:{}".format(glibc_suffix),
         tool_paths = {"ld": "ld.lld"},
+        artifact_name_patterns = [],
     )
 
 def _target_linux_musl(gocpu, zigcpu):
@@ -151,4 +176,5 @@ def _target_linux_musl(gocpu, zigcpu):
         ],
         libc_constraint = "@zig_sdk//libc:musl",
         tool_paths = {"ld": "ld.lld"},
+        artifact_name_patterns = [],
     )

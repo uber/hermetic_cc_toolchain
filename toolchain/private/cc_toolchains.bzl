@@ -39,6 +39,10 @@ def declare_cc_toolchains(os, zig_sdk_path):
         for incl in getattr(target_config, "compiler_extra_includes", []):
             copts = copts + ["-include", zig_sdk_path + "/" + incl]
 
+        # We can't pass a list of structs to a rule, so we use json encoding.
+        artifact_name_patterns = getattr(target_config, "artifact_name_patterns", [])
+        artifact_name_pattern_strings = [json.encode(p) for p in artifact_name_patterns]
+
         zig_cc_toolchain_config(
             name = zigtarget + "_cc_config",
             target = zigtarget,
@@ -53,6 +57,7 @@ def declare_cc_toolchains(os, zig_sdk_path):
             compiler = "clang",
             abi_version = "unknown",
             abi_libc_version = "unknown",
+            artifact_name_patterns = artifact_name_pattern_strings,
             visibility = ["//visibility:private"],
         )
 
