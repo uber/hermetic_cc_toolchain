@@ -89,7 +89,7 @@ _ZIG_TOOLS = [
     "build-obj",  # zig
 ]
 
-_ZIG_TOOL_WRAPPER_WINDOWS_CACHE_KNOWN = """@echo off
+_ZIG_TOOL_WRAPPER_WINDOWS_CACHE = """@echo off
 if exist "external\\zig_sdk\\lib\\*" goto :have_external_zig_sdk_lib
 set ZIG_LIB_DIR=%~dp0\\..\\..\\lib
 set ZIG_EXE=%~dp0\\..\\..\\zig.exe
@@ -103,26 +103,7 @@ set ZIG_GLOBAL_CACHE_DIR=%ZIG_LOCAL_CACHE_DIR%
 "%ZIG_EXE%" "{zig_tool}" {maybe_target} %*
 """
 
-_ZIG_TOOL_WRAPPER_WINDOWS_CACHE_GUESS = """@echo off
-if exist "external\\zig_sdk\\lib\\*" goto :have_external_zig_sdk_lib
-set ZIG_LIB_DIR=%~dp0\\..\\..\\lib
-set ZIG_EXE=%~dp0\\..\\..\\zig.exe
-goto :set_zig_lib_dir
-:have_external_zig_sdk_lib
-set ZIG_LIB_DIR=external\\zig_sdk\\lib
-set ZIG_EXE=external\\zig_sdk\\zig.exe
-:set_zig_lib_dir
-if exist "%TMP%\\*" goto :usertmp
-set ZIG_LOCAL_CACHE_DIR=C:\\Temp\\bazel-zig-cc
-goto zig
-:usertmp
-set ZIG_LOCAL_CACHE_DIR=%TMP%\\bazel-zig-cc
-:zig
-set ZIG_GLOBAL_CACHE_DIR=%ZIG_LOCAL_CACHE_DIR%
-"%ZIG_EXE%" "{zig_tool}" {maybe_target} %*
-"""
-
-_ZIG_TOOL_WRAPPER_CACHE_KNOWN = """#!/bin/sh
+_ZIG_TOOL_WRAPPER_CACHE = """#!/bin/sh
 set -e
 if [ -d external/zig_sdk/lib ]; then
     ZIG_LIB_DIR=external/zig_sdk/lib
@@ -138,37 +119,9 @@ export ZIG_GLOBAL_CACHE_DIR="{cache_prefix}/bazel-zig-cc"
 exec "$ZIG_EXE" "{zig_tool}" {maybe_target} "$@"
 """
 
-_ZIG_TOOL_WRAPPER_CACHE_GUESS = """#!/bin/sh
-set -e
-if [ -d external/zig_sdk/lib ]; then
-    ZIG_LIB_DIR=external/zig_sdk/lib
-    ZIG_EXE=external/zig_sdk/zig
-else
-    ZIG_LIB_DIR="$(dirname "$0")/../../lib"
-    ZIG_EXE="$(dirname "$0")/../../zig"
-fi
-if [ -n "$TMPDIR" ]; then
-    _cache_prefix=$TMPDIR
-elif [ -n "$HOME" ]; then
-    if [ "$(uname)" = Darwin ]; then
-        _cache_prefix="$HOME/Library/Caches"
-    else
-        _cache_prefix="$HOME/.cache"
-    fi
-else
-    _cache_prefix=/tmp
-fi
-export ZIG_LIB_DIR
-export ZIG_LOCAL_CACHE_DIR="$_cache_prefix/bazel-zig-cc"
-export ZIG_GLOBAL_CACHE_DIR=$ZIG_LOCAL_CACHE_DIR
-{maybe_gohack}
-exec "$ZIG_EXE" "{zig_tool}" {maybe_target} "$@"
-"""
-
-# The abomination below adds "-O2" to Go's link-prober command. Saves around
-# 25s for the first compilation for a particular architecture. Can be deleted
-# if/after https://go-review.googlesource.com/c/go/+/436884 is merged.
-# Shell hackery taken from
+# The hackery below will be deleted after Go 1.20 is released (in particular,
+# if/after https://go-review.googlesource.com/c/go/+/436884 )
+# Arg-messing snippet from
 # https://web.archive.org/web/20100129154217/http://www.seanius.net/blog/2009/03/saving-and-restoring-positional-params
 _ZIG_TOOL_GOHACK = """
 quote(){ echo "$1" | sed -e "s,','\\\\'',g"; }
@@ -190,6 +143,12 @@ def _zig_tool_wrapper(zig_tool, is_windows, cache_prefix, zigtarget):
     else:
         maybe_target = ""
 
+    if not cache_prefix:
+        if is_windows:
+            cache_prefix = "C:\\Temp\\bazel-zig-cc"
+        else:
+            cache_prefix = "/tmp/bazel-zig-cc"
+
     kwargs = dict(
         zig_tool = zig_tool,
         cache_prefix = cache_prefix,
@@ -198,15 +157,9 @@ def _zig_tool_wrapper(zig_tool, is_windows, cache_prefix, zigtarget):
     )
 
     if is_windows:
-        if cache_prefix:
-            return _ZIG_TOOL_WRAPPER_WINDOWS_CACHE_KNOWN.format(**kwargs)
-        else:
-            return _ZIG_TOOL_WRAPPER_WINDOWS_CACHE_GUESS.format(**kwargs)
-    else:  # keep this comment to shut up buildifier.
-        if cache_prefix:
-            return _ZIG_TOOL_WRAPPER_CACHE_KNOWN.format(**kwargs)
-        else:
-            return _ZIG_TOOL_WRAPPER_CACHE_GUESS.format(**kwargs)
+        return _ZIG_TOOL_WRAPPER_WINDOWS_CACHE.format(**kwargs)
+    else:
+        return _ZIG_TOOL_WRAPPER_CACHE.format(**kwargs)
 
 def _quote(s):
     return "'" + s.replace("'", "'\\''") + "'"
