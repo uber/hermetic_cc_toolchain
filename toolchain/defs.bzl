@@ -78,15 +78,10 @@ def toolchains(
 
 _ZIG_TOOLS = [
     "c++",
-    "cc",
     "ar",
-    "ld.lld",  # ELF
-    "ld64.lld",  # Mach-O
-    "lld-link",  # COFF
-    "wasm-ld",  # WebAssembly
-    "build-exe",  # zig
-    "build-lib",  # zig
-    "build-obj",  # zig
+    "build-exe",
+    "build-lib",
+    "build-obj",
 ]
 
 _ZIG_TOOL_WRAPPER_WINDOWS_CACHE = """@echo off
@@ -222,8 +217,8 @@ def _zig_repository_impl(repository_ctx):
         sha256 = zig_sha256,
     )
 
-    for zig_tool in _ZIG_TOOLS:
-        for target_config in target_structs():
+    for target_config in target_structs():
+        for zig_tool in _ZIG_TOOLS + target_config.tool_paths.values():
             zig_tool_wrapper = _zig_tool_wrapper(
                 zig_tool,
                 os == "windows",
