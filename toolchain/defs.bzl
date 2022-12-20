@@ -1,3 +1,4 @@
+load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "read_user_netrc", "use_netrc")
 load("@bazel-zig-cc//toolchain/private:defs.bzl", "target_structs", "zig_tool_path")
@@ -79,82 +80,7 @@ def toolchains(
 _ZIG_TOOLS = [
     "c++",
     "ar",
-    "build-exe",
-    "build-lib",
-    "build-obj",
 ]
-
-_ZIG_TOOL_WRAPPER_WINDOWS_CACHE = """@echo off
-if exist "external\\zig_sdk\\lib\\*" goto :have_external_zig_sdk_lib
-set ZIG_LIB_DIR=%~dp0\\..\\..\\lib
-set ZIG_EXE=%~dp0\\..\\..\\zig.exe
-goto :set_zig_lib_dir
-:have_external_zig_sdk_lib
-set ZIG_LIB_DIR=external\\zig_sdk\\lib
-set ZIG_EXE=external\\zig_sdk\\zig.exe
-:set_zig_lib_dir
-set ZIG_LOCAL_CACHE_DIR={cache_prefix}\\bazel-zig-cc
-set ZIG_GLOBAL_CACHE_DIR=%ZIG_LOCAL_CACHE_DIR%
-"%ZIG_EXE%" "{zig_tool}" {maybe_target} %*
-"""
-
-_ZIG_TOOL_WRAPPER_CACHE = """#!/bin/sh
-set -e
-if [ -d external/zig_sdk/lib ]; then
-    ZIG_LIB_DIR=external/zig_sdk/lib
-    ZIG_EXE=external/zig_sdk/zig
-else
-    ZIG_LIB_DIR="$(dirname "$0")/../../lib"
-    ZIG_EXE="$(dirname "$0")/../../zig"
-fi
-export ZIG_LIB_DIR
-export ZIG_LOCAL_CACHE_DIR="{cache_prefix}/bazel-zig-cc"
-export ZIG_GLOBAL_CACHE_DIR="{cache_prefix}/bazel-zig-cc"
-{maybe_gohack}
-exec "$ZIG_EXE" "{zig_tool}" {maybe_target} "$@"
-"""
-
-# The hackery below will be deleted after Go 1.20 is released (in particular,
-# if/after https://go-review.googlesource.com/c/go/+/436884 )
-# Arg-messing snippet from
-# https://web.archive.org/web/20100129154217/http://www.seanius.net/blog/2009/03/saving-and-restoring-positional-params
-_ZIG_TOOL_GOHACK = """
-quote(){ echo "$1" | sed -e "s,','\\\\'',g"; }
-for arg in "$@"; do saved="${saved:+$saved }'$(quote "$arg")'"; done
-while [ "$#" -gt 6 ]; do shift; done
-if [ "$*" = "-Wl,--no-gc-sections -x c - -o /dev/null" ]; then
-  # This command probes if `--no-gc-sections` is accepted by the linker.
-  # Since it is executed in /tmp, the ZIG_LIB_DIR is absolute,
-  # glibc stubs and libc++ cannot be shared with other invocations (which use
-  # a relative ZIG_LIB_DIR).
-  exit 0;
-fi
-eval set -- "$saved"
-"""
-
-def _zig_tool_wrapper(zig_tool, is_windows, cache_prefix, zigtarget):
-    if zig_tool in ["c++", "build-exe", "build-lib", "build-obj"]:
-        maybe_target = "-target {}".format(zigtarget)
-    else:
-        maybe_target = ""
-
-    if not cache_prefix:
-        if is_windows:
-            cache_prefix = "C:\\Temp\\bazel-zig-cc"
-        else:
-            cache_prefix = "/tmp/bazel-zig-cc"
-
-    kwargs = dict(
-        zig_tool = zig_tool,
-        cache_prefix = cache_prefix,
-        maybe_gohack = _ZIG_TOOL_GOHACK if (zig_tool == "c++" and not is_windows) else "",
-        maybe_target = maybe_target,
-    )
-
-    if is_windows:
-        return _ZIG_TOOL_WRAPPER_WINDOWS_CACHE.format(**kwargs)
-    else:
-        return _ZIG_TOOL_WRAPPER_CACHE.format(**kwargs)
 
 def _quote(s):
     return "'" + s.replace("'", "'\\''") + "'"
@@ -217,22 +143,50 @@ def _zig_repository_impl(repository_ctx):
         sha256 = zig_sha256,
     )
 
+    cache_prefix = repository_ctx.os.environ.get("BAZEL_ZIG_CC_CACHE_PREFIX", "")
+    if cache_prefix == "":
+        if os == "windows":
+            cache_prefix = "C:\\\\Temp\\\\bazel-zig-cc"
+        else:
+            cache_prefix = "/tmp/bazel-zig-cc"
+
+    repository_ctx.template(
+        "tools/launcher.zig",
+        Label("//toolchain:launcher.zig"),
+        executable = False,
+        substitutions = {
+            "{BAZEL_ZIG_CC_CACHE_PREFIX}": cache_prefix,
+        },
+    )
+
+    ret = repository_ctx.execute(
+        [
+            paths.join("..", "zig"),
+            "build-exe",
+            "-OReleaseSafe",
+            "launcher.zig",
+        ] + (["-static"] if os == "linux" else []),
+        working_directory = "tools",
+        environment = {
+            "ZIG_LOCAL_CACHE_DIR": cache_prefix,
+            "ZIG_GLOBAL_CACHE_DIR": cache_prefix,
+        },
+    )
+    if ret.return_code != 0:
+        fail("compilation failed:\nreturn_code={}\nstderr={}\nstdout={}".format(
+            ret.return_code,
+            ret.stdout,
+            ret.stderr,
+        ))
+
+    exe = ".exe" if os == "windows" else ""
     for target_config in target_structs():
         for zig_tool in _ZIG_TOOLS + target_config.tool_paths.values():
-            zig_tool_wrapper = _zig_tool_wrapper(
-                zig_tool,
-                os == "windows",
-                repository_ctx.os.environ.get("BAZEL_ZIG_CC_CACHE_PREFIX", ""),
+            tool_path = zig_tool_path(os).format(
+                zig_tool = zig_tool,
                 zigtarget = target_config.zigtarget,
             )
-
-            repository_ctx.file(
-                zig_tool_path(os).format(
-                    zig_tool = zig_tool,
-                    zigtarget = target_config.zigtarget,
-                ),
-                zig_tool_wrapper,
-            )
+            repository_ctx.symlink("tools/launcher{}".format(exe), tool_path)
 
     repository_ctx.file(
         "glibc-hacks/fcntl.map",

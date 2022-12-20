@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -xeuo pipefail
+
+ZIG=${ZIG:-bazel run "$@" @zig_sdk//:zig --}
+
+# until bazel-zig-cc gets a zig toolchain, run launcher's unit tests here.
+$ZIG test toolchain/launcher.zig
+
+# ReleaseSafe because of https://github.com/ziglang/zig/issues/14036
+$ZIG test \
+    -OReleaseSafe \
+    -target x86_64-windows-gnu \
+    --test-cmd wine64-stable \
+    --test-cmd-bin \
+    toolchain/launcher.zig

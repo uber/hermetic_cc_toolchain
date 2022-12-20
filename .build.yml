@@ -31,6 +31,13 @@ tasks:
   - list_toolchains_platforms: |
       cd bazel-zig-cc; . .envrc
       ./ci/list_toolchains_platforms
+  - test_launcher: |
+      cd bazel-zig-cc; . .envrc
+      ./ci/launcher --color=yes --curses=yes
   - test: |
       cd bazel-zig-cc; . .envrc
-      ./ci/test --color=yes --curses=yes
+      export BAZEL_ZIG_CC_CACHE_PREFIX=/tmp/bazel-zig-cc-2
+      ./ci/test \
+        --color=yes --curses=yes \
+        --repo_env BAZEL_ZIG_CC_CACHE_PREFIX=$BAZEL_ZIG_CC_CACHE_PREFIX \
+        --sandbox_writable_path "$BAZEL_ZIG_CC_CACHE_PREFIX"
