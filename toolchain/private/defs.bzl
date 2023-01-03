@@ -32,7 +32,7 @@ LIBCS = ["musl"] + ["gnu.{}".format(glibc) for glibc in _GLIBCS]
 
 def zig_tool_path(os):
     if os == "windows":
-        return _ZIG_TOOL_PATH + ".bat"
+        return _ZIG_TOOL_PATH + ".exe"
     else:
         return _ZIG_TOOL_PATH
 
