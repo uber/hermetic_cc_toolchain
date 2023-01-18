@@ -21,9 +21,10 @@ tasks:
       sudo dpkg --add-architecture arm64
       sudo apt-get update
       sudo apt-get install libc6:arm64 -y
-  - lint: |
+  - lint_gazelle: |
       cd bazel-zig-cc; . .envrc
       ./ci/lint
+      bazel run --color=yes --curses=yes //:gazelle
       git diff --exit-code
   - test_release: |
       cd bazel-zig-cc; . .envrc
