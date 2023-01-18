@@ -128,8 +128,8 @@ def _target_linux_gnu(gocpu, zigcpu, glibc_version):
         compiler_extra_includes.append("glibc-hacks/fcntl.h")
         linker_version_scripts.append("glibc-hacks/fcntl.map")
     if glibc_version < "2.34":
-        compiler_extra_includes.append("glibc-hacks/res_search.h")
-        linker_version_scripts.append("glibc-hacks/res_search.map")
+        compiler_extra_includes.append("glibc-hacks/res_search-{}.h".format(gocpu))
+        linker_version_scripts.append("glibc-hacks/res_search-{}.map".format(gocpu))
 
     return struct(
         gotarget = "linux_{}_{}".format(gocpu, glibc_suffix),

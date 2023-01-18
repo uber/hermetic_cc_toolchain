@@ -208,9 +208,12 @@ def _zig_repository_impl(repository_ctx):
     fcntl_hack = _glibc_hack("fcntl64", "fcntl@GLIBC_2.2.5")
     repository_ctx.file("glibc-hacks/fcntl.map", content = fcntl_hack.mapfile)
     repository_ctx.file("glibc-hacks/fcntl.h", content = fcntl_hack.header)
-    res_search_hack = _glibc_hack("res_search", "__res_search@GLIBC_2.2.5")
-    repository_ctx.file("glibc-hacks/res_search.map", content = res_search_hack.mapfile)
-    repository_ctx.file("glibc-hacks/res_search.h", content = res_search_hack.header)
+    res_search_amd64 = _glibc_hack("res_search", "__res_search@GLIBC_2.2.5")
+    repository_ctx.file("glibc-hacks/res_search-amd64.map", content = res_search_amd64.mapfile)
+    repository_ctx.file("glibc-hacks/res_search-amd64.h", content = res_search_amd64.header)
+    res_search_arm64 = _glibc_hack("res_search", "__res_search@GLIBC_2.17")
+    repository_ctx.file("glibc-hacks/res_search-arm64.map", content = res_search_arm64.mapfile)
+    repository_ctx.file("glibc-hacks/res_search-arm64.h", content = res_search_arm64.header)
 
 zig_repository = repository_rule(
     attrs = {
