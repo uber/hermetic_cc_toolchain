@@ -7,6 +7,7 @@ package main
 // #include <resolv.h>
 // char* hello() { return "hello, world"; }
 // void phello() { printf("%s, your lucky numbers are %p and %p\n", hello(), fcntl, res_search); }
+// #cgo LDFLAGS: -lresolv
 import "C"
 
 func main() {
