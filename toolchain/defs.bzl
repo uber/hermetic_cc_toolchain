@@ -10,19 +10,6 @@ _DEFAULT_INCLUDE_DIRECTORIES = [
     "libunwind/include",
 ]
 
-_fcntl_map = """
-GLIBC_2.2.5 {
-   fcntl;
-};
-"""
-_fcntl_h = """
-#ifdef __ASSEMBLER__
-.symver fcntl64, fcntl@GLIBC_2.2.5
-#else
-__asm__(".symver fcntl64, fcntl@GLIBC_2.2.5");
-#endif
-"""
-
 # Official recommended version. Should use this when we have a usable release.
 URL_FORMAT_RELEASE = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.{_ext}"
 
@@ -81,6 +68,36 @@ _ZIG_TOOLS = [
     "c++",
     "ar",
 ]
+
+_template_mapfile = """
+%s {
+    %s;
+};
+"""
+
+_template_linker = """
+#ifdef __ASSEMBLER__
+.symver {from_function}, {to_function_abi}
+#else
+__asm__(".symver {from_function}, {to_function_abi}");
+#endif
+"""
+
+def _glibc_hack(from_function, to_function_abi):
+    # Cannot use .format(...) here, because starlark thinks
+    # that the byte 3 (the opening brace on the first line)
+    # is a nested { ... }, returning an error:
+    # Error in format: Nested replacement fields are not supported
+    to_function, to_abi = to_function_abi.split("@")
+    mapfile = _template_mapfile % (to_abi, to_function)
+    header = _template_linker.format(
+        from_function = from_function,
+        to_function_abi = to_function_abi,
+    )
+    return struct(
+        mapfile = mapfile,
+        header = header,
+    )
 
 def _quote(s):
     return "'" + s.replace("'", "'\\''") + "'"
@@ -188,14 +205,12 @@ def _zig_repository_impl(repository_ctx):
             )
             repository_ctx.symlink("tools/launcher{}".format(exe), tool_path)
 
-    repository_ctx.file(
-        "glibc-hacks/fcntl.map",
-        content = _fcntl_map,
-    )
-    repository_ctx.file(
-        "glibc-hacks/glibchack-fcntl.h",
-        content = _fcntl_h,
-    )
+    fcntl_hack = _glibc_hack("fcntl64", "fcntl@GLIBC_2.2.5")
+    repository_ctx.file("glibc-hacks/fcntl.map", content = fcntl_hack.mapfile)
+    repository_ctx.file("glibc-hacks/fcntl.h", content = fcntl_hack.header)
+    res_search_hack = _glibc_hack("res_search", "__res_search@GLIBC_2.2.5")
+    repository_ctx.file("glibc-hacks/res_search.map", content = res_search_hack.mapfile)
+    repository_ctx.file("glibc-hacks/res_search.h", content = res_search_hack.header)
 
 zig_repository = repository_rule(
     attrs = {

@@ -17,9 +17,6 @@ def declare_cc_toolchains(os, zig_sdk_path):
         zigtarget = target_config.zigtarget
 
         cxx_builtin_include_directories = []
-        for d in getattr(target_config, "toplevel_include", []):
-            cxx_builtin_include_directories.append(zig_sdk_path + "/" + d)
-
         absolute_tool_paths = {}
         for name, path in target_config.tool_paths.items() + DEFAULT_TOOL_PATHS:
             if path[0] == "/":

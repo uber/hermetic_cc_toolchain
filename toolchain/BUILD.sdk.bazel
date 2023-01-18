@@ -11,7 +11,9 @@ declare_files(
 
 exports_files([
     "glibc-hacks/fcntl.map",
-    "glibc-hacks/glibchack-fcntl.h",
+    "glibc-hacks/fcntl.h",
+    "glibc-hacks/res_search.map",
+    "glibc-hacks/res_search.h",
 ])
 
 declare_cc_toolchains(

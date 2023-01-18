@@ -4,8 +4,9 @@ package main
 // #include <unistd.h>
 // #include <fcntl.h>
 // #include <stdio.h>
+// #include <resolv.h>
 // char* hello() { return "hello, world"; }
-// void phello() { printf("%s, your lucky number is %p\n", hello(), fcntl); }
+// void phello() { printf("%s, your lucky numbers are %p and %p\n", hello(), fcntl, res_search); }
 import "C"
 
 func main() {
