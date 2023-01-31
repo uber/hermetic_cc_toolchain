@@ -297,20 +297,6 @@ unlikely to implement them any time soon, but patches implementing those will
 be accepted. See [Questions & Contributions](#questions-amp-contributions) on
 how to contribute.
 
-## Sharing of libc shims/libc++.a
-
-Zig does not always share `libc++.a` and the glibc shims. We have observed
-to be caused for 2 reasons:
-
-- For some commands Go `chdir`s to `/tmp/`. This causes `ZIG_LIB_DIR` to be
-  absolute, which blows the cache key to find the right `libc++.a` (because Zig
-  thinks we are using a different lib dir to compile libc++). This is currently
-  worked around in `toolchain/defs.bzl` by overfitting to Go and returning
-  early from that particular invocation.
-- Sometimes Bazel's sandbox messes up Zig's cache keys. If one runs without the
-  sandbox (`--spawn_strategy=standalone`), the cache hit rate and thus the
-  build time are much better.
-
 ## Zig cache location
 
 Currently zig cache is in `$HOME`, so `bazel clean --expunge` does not clear
@@ -376,6 +362,8 @@ Feel free to track [Universal headers][universal-headers] project for a fix.
 - [rules/go #2894 Per-arch_target linker flags](https://github.com/bazelbuild/rules_go/issues/2894) (CLOSED, thanks mjonaitis)
 - [golang/go #46644 cmd/link: with CC=zig: SIGSERV when cross-compiling to darwin/amd64](https://github.com/golang/go/issues/46644) (CLOSED, thanks kubkon)
 
+... and more.
+
 # Host Environments
 
 This repository is used on the following (host) platforms:
@@ -410,8 +398,9 @@ $ docker run -e CC=/usr/bin/false -ti --rm -v "$PWD:/x" -w /x debian:bullseye-sl
 # apt update
 # apt install --no-install-recommends -y direnv git shellcheck ca-certificates
 # eval "$(direnv hook bash)" && direnv allow
-# ./ci/test
 # ./ci/lint
+# ./ci/launcher
+# ./ci/test
 ```
 
 Some of the tests rely on `qemu-aarch64` to run arm64 binaries and wine for
@@ -423,8 +412,7 @@ $ docker run -e CC=/usr/bin/false -ti --rm -v "$PWD:/x" -w /x debian:bullseye-sl
 # dpkg --add-architecture arm64 && apt update
 # apt install --no-install-recommends -y direnv git shellcheck ca-certificates libc6:arm64 qemu-user-static wine64
 # eval "$(direnv hook bash)" && direnv allow
-# ./ci/test
-# ./ci/lint
+<... run the ci/ commands as above>
 ```
 
 # Questions & Contributions
@@ -457,8 +445,8 @@ interests when reading patches or mailing lists.
 - Committer: Laurynas Lubys. Bazel expert with regards to tests, transitions
   and overall structure. Rewrote bazel-zig-cc to cater for platforms when libc
   platforms were added.
-- Committer: Ken Micklas. Ken is leading hermetic toolchain effort at Uber, of
-  which bazel-zig-cc is a part of.
+- Committer: Ken Micklas. Ken was leading hermetic toolchain effort at Uber
+  throughout 2022, of which bazel-zig-cc is a part of.
 - Maintainer for Windows: Fabian Hahn. If you make a change that breaks
   Windows, Fabian will find you. Please don't break Windows, so Fabian doesn't
   have to look for you. Instead, send him your patches first.
@@ -469,6 +457,12 @@ You may find contact information of the individuals in the commit logs.
 
 This section lists notable uses or mentions of bazel-zig-cc.
 
+- 2023-01-24 [bazel-zig-cc v1.0.0][bazel-zig-cc-v1]: releasing bazel-zig-cc and
+  admitting that bazel-zig-cc is used in production to compile all of Uber's
+  [Go Monorepo][go-monorepo].
+- 2022-11-18 [BazelCon 2022: Making Uber's hermetic C++
+  toolchain][bazelcon2022]: Laurynas Lubys presents the story of how this
+  repository came into being and how it was used (as of the conference).
 - 2022-05-23 [How Zig is used at Uber (youtube)][yt-how-zig-is-used-at-uber]:
   Yours Truly (the author) talks about how bazel-zig-cc came to existence and
   how it's used at Uber in Milan Zig Meetup.
@@ -476,9 +470,6 @@ This section lists notable uses or mentions of bazel-zig-cc.
 - 2022-03-30 [Google Open Source Peer Bonus Program][google-award] awarded the
   author $250 for bazel-zig-cc.
 - 2022-01-13 [bazel-zig-cc building Envoy][zig-cc-envoy].
-
-If you'd like your blog post, company or a project added here, do not hesitate
-and send a patch.
 
 # Thanks
 
@@ -504,3 +495,6 @@ the issues promptly.
 [google-award]: https://opensource.googleblog.com/2022/03/Announcing-First-Group-of-Google-Open-Source-Peer-Bonus-Winners-in-2022.html
 [go-gc-sections]: https://go-review.googlesource.com/c/go/+/407814
 [universal-headers]: https://github.com/ziglang/universal-headers
+[bazel-zig-cc-v1]: https://lists.sr.ht/~motiejus/bazel-zig-cc/%3CCAFVMu-rYbf_jDTT4p%3DCS2KV1asdS5Ovo5AyuCwgv2AXr8OOP0g%40mail.gmail.com%3E
+[go-monorepo]: https://www.uber.com/blog/go-monorepo-bazel/
+[bazelcon2022]: https://www.youtube.com/watch?v=a1jXzx3884g
