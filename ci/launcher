@@ -3,6 +3,16 @@ set -xeuo pipefail
 
 ZIG=${ZIG:-bazel run "$@" @zig_sdk//:zig --}
 
+for target in \
+    aarch64-linux-gnu.2.19 \
+    aarch64-macos-none \
+    x86_64-linux-gnu.2.19 \
+    x86_64-macos-none \
+    x86_64-windows-gnu
+do
+    $ZIG build-exe -fno-emit-bin -target $target toolchain/launcher.zig
+done
+
 # until bazel-zig-cc gets a zig toolchain, run launcher's unit tests here.
 $ZIG test toolchain/launcher.zig
 

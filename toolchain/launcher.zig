@@ -121,7 +121,7 @@ pub fn main() u8 {
 
     switch (action) {
         .early_ok => return 0,
-        .early_err => |msg| return fatal(msg),
+        .early_err => |msg| return fatal("{s}", .{msg}),
         .exec => |params| {
             if (builtin.os.tag == .windows)
                 return spawnWindows(arena, params)
@@ -240,7 +240,7 @@ fn parseFatal(
 }
 
 pub fn fatal(comptime fmt: []const u8, args: anytype) u8 {
-    fmt.debug.print(fmt, args);
+    std.debug.print(fmt, args);
     return 1;
 }
 
