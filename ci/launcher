@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -xeuo pipefail
 
-ZIG=${ZIG:-bazel run "$@" @zig_sdk//:zig --}
+ZIG=${ZIG:-$(bazel run --run_under=echo @zig_sdk//:zig)}
 
 for target in \
     aarch64-linux-gnu.2.19 \
