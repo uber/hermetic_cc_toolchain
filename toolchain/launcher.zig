@@ -113,28 +113,20 @@ pub fn main() u8 {
     defer arena_allocator.deinit();
     const arena = arena_allocator.allocator();
 
-    var argv_it = process.argsWithAllocator(arena) catch |err| {
-        std.debug.print("error parsing args: {s}\n", .{@errorName(err)});
-        return 1;
-    };
+    var argv_it = process.argsWithAllocator(arena) catch |err|
+        return fatal("error parsing args: {s}\n", .{@errorName(err)});
 
-    const action = parseArgs(arena, fs.cwd(), &argv_it) catch |err| {
-        std.debug.print("error: {s}\n", .{@errorName(err)});
-        return 1;
-    };
+    const action = parseArgs(arena, fs.cwd(), &argv_it) catch |err|
+        return fatal("error: {s}\n", .{@errorName(err)});
 
     switch (action) {
         .early_ok => return 0,
-        .early_err => |msg| {
-            std.io.getStdErr().writeAll(msg) catch {};
-            return 1;
-        },
+        .early_err => |msg| return fatal(msg),
         .exec => |params| {
-            if (builtin.os.tag == .windows) {
-                return spawnWindows(arena, params);
-            } else {
+            if (builtin.os.tag == .windows)
+                return spawnWindows(arena, params)
+            else
                 return execUnix(arena, params);
-            }
         },
     }
 }
@@ -142,20 +134,15 @@ pub fn main() u8 {
 fn spawnWindows(arena: mem.Allocator, params: ExecParams) u8 {
     var proc = ChildProcess.init(params.args.items, arena);
     proc.env_map = &params.env;
-    const ret = proc.spawnAndWait() catch |err| {
-        std.debug.print(
-            "error spawning {s}: {s}\n",
-            .{ params.args.items[0], @errorName(err) },
-        );
-        return 1;
-    };
+    const ret = proc.spawnAndWait() catch |err|
+        return fatal(
+        "error spawning {s}: {s}\n",
+        .{ params.args.items[0], @errorName(err) },
+    );
 
     switch (ret) {
         .Exited => |code| return code,
-        else => |other| {
-            std.debug.print("abnormal exit: {any}\n", .{other});
-            return 1;
-        },
+        else => |other| return fatal("abnormal exit: {any}\n", .{other}),
     }
 }
 
@@ -178,7 +165,7 @@ fn parseArgs(
     argv_it: anytype,
 ) error{OutOfMemory}!ParseResults {
     const arg0 = argv_it.next() orelse
-        return fatal(arena, "error: argv[0] cannot be null", .{});
+        return parseFatal(arena, "error: argv[0] cannot be null", .{});
 
     const zig_tool = blk: {
         const b = fs.path.basename(arg0);
@@ -191,9 +178,10 @@ fn parseArgs(
     const maybe_target = getTarget(arg0) catch |err| switch (err) {
         error.BadParent => {
             const fmt_args = .{ .zig_tool = zig_tool, .exe = EXE };
-            if (mem.eql(u8, zig_tool, "c++")) {
-                return fatal(arena, usage_cpp, fmt_args);
-            } else return fatal(arena, usage_other, fmt_args);
+            if (mem.eql(u8, zig_tool, "c++"))
+                return parseFatal(arena, usage_cpp, fmt_args)
+            else
+                return parseFatal(arena, usage_other, fmt_args);
         },
         else => |e| return e,
     };
@@ -220,13 +208,9 @@ fn parseArgs(
         &[_][]const u8{ root, "zig" ++ EXE },
     );
 
-    var env = process.getEnvMap(arena) catch |err| {
-        return fatal(
-            arena,
-            "error getting process environment: {s}",
-            .{@errorName(err)},
-        );
-    };
+    var env = process.getEnvMap(arena) catch |err|
+        return parseFatal(arena, "error getting env: {s}", .{@errorName(err)});
+
     try env.put("ZIG_LIB_DIR", zig_lib_dir);
     try env.put("ZIG_LOCAL_CACHE_DIR", CACHE_DIR);
     try env.put("ZIG_GLOBAL_CACHE_DIR", CACHE_DIR);
@@ -246,13 +230,18 @@ fn parseArgs(
     return ParseResults{ .exec = .{ .args = args, .env = env } };
 }
 
-fn fatal(
+fn parseFatal(
     arena: mem.Allocator,
     comptime fmt: []const u8,
     args: anytype,
 ) error{OutOfMemory}!ParseResults {
     const msg = try std.fmt.allocPrint(arena, fmt ++ "\n", args);
     return ParseResults{ .early_err = msg };
+}
+
+pub fn fatal(comptime fmt: []const u8, args: anytype) u8 {
+    fmt.debug.print(fmt, args);
+    return 1;
 }
 
 // Golang probing for a particular linker flag causes many unneeded stubs to be
@@ -278,28 +267,25 @@ fn getTarget(self_exe: []const u8) error{BadParent}!?[]const u8 {
     // strings `is.it.x86_64?-stallinux,macos-`; we are trying to aid users
     // that run things from the wrong directory, not trying to punish the ones
     // having fun.
-    {
-        var it = mem.split(u8, triple, "-");
-        if (it.next()) |arch| {
-            if (mem.indexOf(u8, "aarch64,x86_64", arch) == null)
-                return error.BadParent;
-        } else return error.BadParent;
+    var it = mem.split(u8, triple, "-");
 
-        if (it.next()) |got_os| {
-            if (mem.indexOf(u8, "linux,macos,windows", got_os) == null)
-                return error.BadParent;
-        } else return error.BadParent;
+    const arch = it.next() orelse return error.BadParent;
+    if (mem.indexOf(u8, "aarch64,x86_64", arch) == null)
+        return error.BadParent;
 
-        // ABI triple is too much of a moving target
-        if (it.next() == null) return error.BadParent;
+    const got_os = it.next() orelse return error.BadParent;
+    if (mem.indexOf(u8, "linux,macos,windows", got_os) == null)
+        return error.BadParent;
 
-        // but the target needs to have 3 dashes.
-        if (it.next() != null) return error.BadParent;
-    }
+    // ABI triple is too much of a moving target
+    if (it.next() == null) return error.BadParent;
+    // but the target needs to have 3 dashes.
+    if (it.next() != null) return error.BadParent;
 
-    if (mem.eql(u8, "c++" ++ EXE, fs.path.basename(self_exe))) {
-        return triple;
-    } else return null;
+    if (mem.eql(u8, "c++" ++ EXE, fs.path.basename(self_exe)))
+        return triple
+    else
+        return null;
 }
 
 fn comptimeSplit(comptime str: []const u8) [countWords(str)][]const u8 {
