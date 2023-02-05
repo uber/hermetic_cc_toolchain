@@ -1,0 +1,6 @@
+steps:
+  - label: "Build"
+    command: tools/bazel build //...
+agents:
+    - "queue=init"
+    - "docker=*"
