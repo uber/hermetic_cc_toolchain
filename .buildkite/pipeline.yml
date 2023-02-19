@@ -2,7 +2,7 @@ steps:
   - label: "Build"
     command: tools/bazel build //...
   - label: "Lint"
-    command: bin/buildifier -r -mode check $PWD
+    command: ci/lint
 agents:
     - "queue=init"
     - "docker=*"

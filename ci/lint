@@ -3,28 +3,18 @@ set -euo pipefail
 
 cd "$(git rev-parse --show-toplevel)"
 
-mapfile -t files < \
-    <(git ls-files)
-mapfile -t scripts < \
-    <(awk '/#!(\/usr\/bin\/env bash|\/bin\/sh)/&&FNR==1{print FILENAME}' "${files[@]}")
-mapfile -t buildfiles < \
-    <(find . \( -name 'WORKSPACE' -o -name 'BUILD' -o -name '*.bzl' \))
 
->&2 echo "shellcheck"
-for f in "${scripts[@]}"; do >&2 echo "  $f"; done
-shellcheck "${scripts[@]}"
->&2 echo -e "OK\n"
-
->&2 echo "buildifier -mode diff"
-for f in "${buildfiles[@]}"; do >&2 echo "  $f"; done
-fail=0
-out=$(buildifier -mode diff -diff_command='diff -u' "${buildfiles[@]}") || fail=1
-if [[ "$fail" == 1 ]]; then
-    >&2 echo "ERROR: buildifier:"
-    echo "$out"
-    >&2 echo
-    >&2 echo "You may try running:"
-    >&2 echo "  buildifier ${buildfiles[*]}"
-    exit 1
+if command -v shellcheck &> /dev/null; then
+    mapfile -t files < \
+        <(git ls-files)
+    mapfile -t scripts < \
+        <(awk '/#!(\/usr\/bin\/env bash|\/bin\/sh)/&&FNR==1{print FILENAME}' "${files[@]}")
+    >&2 echo "shellcheck"
+    for f in "${scripts[@]}"; do >&2 echo "  $f"; done
+    shellcheck "${scripts[@]}"
+    >&2 echo -e "OK\n"
 fi
+
+>&2 echo "--- buildifier :bazel:"
+bin/buildifier -r -mode check "$PWD"
 >&2 echo -e "OK\n"
