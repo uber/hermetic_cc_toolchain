@@ -4,6 +4,8 @@ load("@bazel_gazelle//:def.bzl", "gazelle")
 
 # gazelle:build_file_name BUILD
 # gazelle:prefix github.com/uber/bazel-zig-cc
+# gazelle:exclude tools.go
+
 gazelle(name = "gazelle")
 
 gazelle(

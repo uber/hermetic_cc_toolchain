@@ -6,7 +6,7 @@ go_library(
     srcs = ["main.go"],
     # keep
     cgo = True,
-    importpath = "git.sr.ht/~motiejus/bazel-zig-cc/test/gorace",
+    importpath = "github.com/uber/bazel-zig-cc/test/gorace",
     visibility = ["//visibility:private"],
 )
 
