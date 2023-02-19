@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eu
+
+bazel run @com_github_bazelbuild_buildtools//buildifier -- $@
