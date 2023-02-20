@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eu
+
+"$(git rev-parse --show-toplevel)/tools/bazel" run @com_github_bazelbuild_buildtools//buildifier -- $@

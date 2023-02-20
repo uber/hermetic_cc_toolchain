@@ -6,7 +6,4 @@ set -eu
 
 cd "$(git rev-parse --show-toplevel)/"
 bazel run @go_sdk//:bin/go -- mod tidy
-exec bazel run //:gazelle -- update-repos \
-    -from_file=go.mod \
-    -prune \
-    -to_macro=repositories.bzl%go_repositories
+exec bazel run //:gazelle-update-repos

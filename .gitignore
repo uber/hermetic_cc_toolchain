@@ -1,10 +1,6 @@
 *~
 *.sw[op]
 
-/bin/bazel
-/bin/buildifier
-/bin/bazelisk-*
-
 /bazel-bazel-zig-cc
 /bazel-bin
 /bazel-out

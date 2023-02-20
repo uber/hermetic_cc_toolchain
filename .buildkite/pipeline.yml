@@ -1,6 +1,8 @@
 steps:
   - label: "Build"
     command: tools/bazel build //...
+  - label: "Lint"
+    command: ci/lint
 agents:
     - "queue=init"
     - "docker=*"

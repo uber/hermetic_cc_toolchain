@@ -9,7 +9,7 @@ go_library(
     name = "cgo_lib",
     srcs = ["cgo.go"],
     cgo = True,
-    importpath = "git.sr.ht/~motiejus/bazel-zig-cc/test/cgo",
+    importpath = "github.com/uber/bazel-zig-cc/test/cgo",
     visibility = ["//visibility:private"],
 )
 
