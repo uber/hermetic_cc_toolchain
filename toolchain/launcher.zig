@@ -252,9 +252,15 @@ fn shouldReturnEarly(args: []const []const u8) bool {
     const prelude = comptimeSplit("-Wl,--no-gc-sections -x c - -o /dev/null");
     if (args.len < prelude.len)
         return false;
-    for (prelude) |arg, i|
+
+    // TODO: replace with:
+    // for (prelude, 0..) |arg, i|
+    var i: usize = 0;
+    for (prelude) |arg| {
         if (!mem.eql(u8, arg, args[args.len - prelude.len + i]))
             return false;
+        i += 1;
+    }
     return true;
 }
 
@@ -336,8 +342,13 @@ fn compareExec(
 ) !void {
     try testing.expectEqual(want_args.len, res.exec.args.items.len);
 
-    for (want_args) |want_arg, i|
+    // TODO: replace with:
+    // for (prelude, 0..) |arg, i|
+    var i: usize = 0;
+    for (want_args) |want_arg| {
         try testing.expectEqualStrings(want_arg, res.exec.args.items[i]);
+        i += 1;
+    }
 
     try testing.expectEqualStrings(
         want_env_zig_lib_dir,
