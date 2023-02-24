@@ -66,24 +66,25 @@ const EXE = switch (builtin.target.os.tag) {
 
 const CACHE_DIR = "{BAZEL_ZIG_CC_CACHE_PREFIX}";
 
-// cannot use multiline constant syntax due to
-// https://github.com/ziglang/zig/issues/9257#issuecomment-878534090
-const usage_cpp = "" ++
-    "Usage: <...>/tools/<target-triple>/{[zig_tool]s}{[exe]s} <args>...\n" ++
-    "\n" ++
-    "Wraps the \"zig\" multi-call binary. It determines the target platform from\n" ++
-    "the directory where it was called. Then sets ZIG_LIB_DIR,\n" ++
-    "ZIG_GLOBAL_CACHE_DIR, ZIG_LOCAL_CACHE_DIR and then calls:\n" ++
-    "\n" ++
-    "  zig c++ -target <target-triple> <args>...\n";
+const usage_cpp =
+    \\
+    \\Usage: <...>/tools/<target-triple>/{[zig_tool]s}{[exe]s} <args>...
+    \\
+    \\Wraps the "zig" multi-call binary. It determines the target platform from
+    \\the directory where it was called. Then sets ZIG_LIB_DIR,
+    \\ZIG_GLOBAL_CACHE_DIR, ZIG_LOCAL_CACHE_DIR and then calls:
+    \\
+    \\  zig c++ -target <target-triple> <args>...
+;
 
-const usage_other = "" ++
-    "Usage: <...>/tools/<target-triple>/{[zig_tool]s}{[exe]s} <args>...\n" ++
-    "\n" ++
-    "Wraps the \"zig\" multi-call binary. It sets ZIG_LIB_DIR,\n" ++
-    "ZIG_GLOBAL_CACHE_DIR, ZIG_LOCAL_CACHE_DIR, and then calls:\n" ++
-    "\n" ++
-    "  zig {[zig_tool]s} <args>...\n";
+const usage_other =
+    \\Usage: <...>/tools/<target-triple>/{[zig_tool]s}{[exe]s} <args>...
+    \\
+    \\Wraps the "zig" multi-call binary. It sets ZIG_LIB_DIR,
+    \\ZIG_GLOBAL_CACHE_DIR, ZIG_LOCAL_CACHE_DIR, and then calls:
+    \\
+    \\  zig {[zig_tool]s} <args>...
+;
 
 const Action = enum {
     err,
@@ -268,10 +269,6 @@ fn getTarget(self_exe: []const u8) error{BadParent}!?[]const u8 {
         return null;
 }
 
-fn countWords(str: []const u8) usize {
-    return mem.count(u8, str, " ") + 1;
-}
-
 const testing = std.testing;
 
 pub const TestArgIterator = struct {
@@ -293,13 +290,8 @@ fn compareExec(
 ) !void {
     try testing.expectEqual(want_args.len, res.exec.args.items.len);
 
-    // TODO: replace with:
-    // for (prelude, 0..) |arg, i|
-    var i: usize = 0;
-    for (want_args) |want_arg| {
-        try testing.expectEqualStrings(want_arg, res.exec.args.items[i]);
-        i += 1;
-    }
+    for (want_args, res.exec.args.items) |want_arg, got_arg|
+        try testing.expectEqualStrings(want_arg, got_arg);
 
     try testing.expectEqualStrings(
         want_env_zig_lib_dir,
