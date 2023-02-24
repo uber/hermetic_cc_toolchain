@@ -16,14 +16,13 @@ bazel build "$@" \
 # then test everything else with the standard sandbox
 bazel test "$@" ...
 
-# TODO: Go 1.20 regressed this. Find a way to re-enable. See README.
-# $BAZEL_ZIG_CC_CACHE_PREFIX should be empty for the test below to be valid.
 # Ensure that github.com/ziglang/zig/issues/13050 does not regress
-#find "$BAZEL_ZIG_CC_CACHE_PREFIX" -name mutex_destructor.o -execdir file '{}' \; | \
-#    sort | uniq -c | sort -rn > /tmp/got_cache
-#
-#diff -u ci/testdata/want_cache /tmp/got_cache || {
-#    >&2 echo "ERROR: unexpected artifacts."
-#    >&2 echo "Was $BAZEL_ZIG_CC_CACHE_PREFIX empty before the test?"
-#    exit 1
-#}
+find "$BAZEL_ZIG_CC_CACHE_PREFIX" -name mutex_destructor.o -execdir file '{}' \; | \
+    sort | uniq -c | sort -rn > /tmp/got_cache
+
+diff -u ci/testdata/want_cache /tmp/got_cache || {
+    >&2 echo "ERROR: unexpected artifacts. This is TODO."
+    # TODO: Go 1.20 regressed this. Find a way to re-enable. See README.
+    #exit 1
+    exit 0
+}
