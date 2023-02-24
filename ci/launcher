@@ -13,7 +13,7 @@ do
     $ZIG build-exe -fno-emit-bin -target $target toolchain/launcher.zig
 done
 
-$ZIG fmt --color=on --check toolchain/launcher.zig
+$ZIG fmt --check toolchain/launcher.zig
 
 # until bazel-zig-cc gets a zig toolchain, run launcher's unit tests here.
 $ZIG test toolchain/launcher.zig
