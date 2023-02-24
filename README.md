@@ -345,6 +345,14 @@ any at all.
 
 Feel free to track [Universal headers][universal-headers] project for a fix.
 
+## Number of libc stubs with Go 1.20+
+
+Until Go 1.19 the number of glibc stubs that needed to be compiled was strictly
+controlled. Go 1.20 no longer ships with pre-compiled archive files for the
+standard library, and it generates them on the fly, causing many extraneous
+libc stubs. Therefore, the initial compilation will take longer until those
+stubs are pre-cached.
+
 # Closed Upstream Issues
 
 - [ziglang/zig #12317 Possibility to disable caching for user](https://github.com/ziglang/zig/issues/12317) (CLOSED, thanks andrewrk and motiejus)

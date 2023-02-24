@@ -86,8 +86,7 @@ const usage_other = "" ++
     "  zig {[zig_tool]s} <args>...\n";
 
 const Action = enum {
-    early_ok,
-    early_err,
+    err,
     exec,
 };
 
@@ -97,8 +96,7 @@ const ExecParams = struct {
 };
 
 const ParseResults = union(Action) {
-    early_ok,
-    early_err: []const u8,
+    err: []const u8,
     exec: ExecParams,
 };
 
@@ -120,8 +118,7 @@ pub fn main() u8 {
         return fatal("error: {s}\n", .{@errorName(err)});
 
     switch (action) {
-        .early_ok => return 0,
-        .early_err => |msg| return fatal("{s}", .{msg}),
+        .err => |msg| return fatal("{s}", .{msg}),
         .exec => |params| {
             if (builtin.os.tag == .windows)
                 return spawnWindows(arena, params)
@@ -224,9 +221,6 @@ fn parseArgs(
     while (argv_it.next()) |arg|
         try args.append(arena, arg);
 
-    if (mem.eql(u8, zig_tool, "c++") and shouldReturnEarly(args.items))
-        return .early_ok;
-
     return ParseResults{ .exec = .{ .args = args, .env = env } };
 }
 
@@ -236,32 +230,12 @@ fn parseFatal(
     args: anytype,
 ) error{OutOfMemory}!ParseResults {
     const msg = try std.fmt.allocPrint(arena, fmt ++ "\n", args);
-    return ParseResults{ .early_err = msg };
+    return ParseResults{ .err = msg };
 }
 
 pub fn fatal(comptime fmt: []const u8, args: anytype) u8 {
     std.debug.print(fmt, args);
     return 1;
-}
-
-// Golang probing for a particular linker flag causes many unneeded stubs to be
-// built, e.g. glibc, musl, libc++. The hackery can probably be deleted after
-// Go 1.20 is released. In particular,
-// https://go-review.googlesource.com/c/go/+/436884
-fn shouldReturnEarly(args: []const []const u8) bool {
-    const prelude = comptimeSplit("-Wl,--no-gc-sections -x c - -o /dev/null");
-    if (args.len < prelude.len)
-        return false;
-
-    // TODO: replace with:
-    // for (prelude, 0..) |arg, i|
-    var i: usize = 0;
-    for (prelude) |arg| {
-        if (!mem.eql(u8, arg, args[args.len - prelude.len + i]))
-            return false;
-        i += 1;
-    }
-    return true;
 }
 
 fn getTarget(self_exe: []const u8) error{BadParent}!?[]const u8 {
@@ -294,34 +268,11 @@ fn getTarget(self_exe: []const u8) error{BadParent}!?[]const u8 {
         return null;
 }
 
-fn comptimeSplit(comptime str: []const u8) [countWords(str)][]const u8 {
-    var arr: [countWords(str)][]const u8 = undefined;
-    var i: usize = 0;
-    var it = mem.split(u8, str, " ");
-    while (it.next()) |arg| : (i += 1)
-        arr[i] = arg;
-    return arr;
-}
-
 fn countWords(str: []const u8) usize {
     return mem.count(u8, str, " ") + 1;
 }
 
 const testing = std.testing;
-
-test "launcher:shouldReturnEarly" {
-    inline for (.{
-        "-Wl,--no-gc-sections -x c - -o /dev/null",
-        "foo.c -o main -Wl,--no-gc-sections -x c - -o /dev/null",
-    }) |tt| try testing.expect(shouldReturnEarly(comptimeSplit(tt)[0..]));
-
-    inline for (.{
-        "",
-        "cc -Wl,--no-gc-sections -x c - -o /dev/null x",
-        "-Wl,--no-gc-sections -x c - -o",
-        "incorrect-value -x c - -o /dev/null",
-    }) |tt| try testing.expect(!shouldReturnEarly(comptimeSplit(tt)[0..]));
-}
 
 pub const TestArgIterator = struct {
     index: usize = 0,
@@ -366,8 +317,7 @@ test "launcher:parseArgs" {
         args: []const [:0]const u8,
         precreate_dir: ?[]const u8 = null,
         want_result: union(Action) {
-            early_ok,
-            early_err: []const u8,
+            err: []const u8,
             exec: struct {
                 args: []const [:0]const u8,
                 env_zig_lib_dir: []const u8,
@@ -377,7 +327,7 @@ test "launcher:parseArgs" {
         .{
             .args = &[_][:0]const u8{"ar" ++ EXE},
             .want_result = .{
-                .early_err = std.fmt.comptimePrint(usage_other ++ "\n", .{
+                .err = std.fmt.comptimePrint(usage_other ++ "\n", .{
                     .zig_tool = "ar",
                     .exe = EXE,
                 }),
@@ -386,24 +336,11 @@ test "launcher:parseArgs" {
         .{
             .args = &[_][:0]const u8{"c++" ++ EXE},
             .want_result = .{
-                .early_err = std.fmt.comptimePrint(usage_cpp ++ "\n", .{
+                .err = std.fmt.comptimePrint(usage_cpp ++ "\n", .{
                     .zig_tool = "c++",
                     .exe = EXE,
                 }),
             },
-        },
-        .{
-            .args = &[_][:0]const u8{
-                "external" ++ sep ++ "zig_sdk" ++ "tools" ++ sep ++
-                    "x86_64-linux-musl" ++ sep ++ "c++" ++ EXE,
-                "-Wl,--no-gc-sections",
-                "-x",
-                "c",
-                "-",
-                "-o",
-                "/dev/null",
-            },
-            .want_result = .early_ok,
         },
         .{
             .args = &[_][:0]const u8{
@@ -492,10 +429,9 @@ test "launcher:parseArgs" {
         });
 
         switch (tt.want_result) {
-            .early_ok => try testing.expectEqual(res, .early_ok),
-            .early_err => |want_msg| try testing.expectEqualStrings(
+            .err => |want_msg| try testing.expectEqualStrings(
                 want_msg,
-                res.early_err,
+                res.err,
             ),
             .exec => |want| {
                 try compareExec(res, want.args, want.env_zig_lib_dir);
