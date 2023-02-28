@@ -42,6 +42,25 @@ _HOST_PLATFORM_EXT = {
     "windows-x86_64": "zip",
 }
 
+_compile_failed = """
+Compilation of launcher.zig failed:
+command={compile_cmd}
+return_code={return_code}
+stderr={stderr}
+stdout={stdout}
+
+You most likely hit a rare but known race in Zig SDK. Congratulations?
+
+We are working on fixing it with Zig Software Foundation. If you are curious,
+feel free to follow along in https://github.com/ziglang/zig/issues/14815
+
+There isn't much to do now but wait. Now apply the following workaround:
+$ rm -fr {cache_prefix}
+$ <... re-run your command ...>
+
+... and proceed with your life.
+"""
+
 def toolchains(
         version = _VERSION,
         url_formats = [URL_FORMAT_BAZELMIRROR, URL_FORMAT_NIGHTLY],
@@ -173,24 +192,30 @@ def _zig_repository_impl(repository_ctx):
         },
     )
 
+    compile_env = {
+        "ZIG_LOCAL_CACHE_DIR": cache_prefix,
+        "ZIG_GLOBAL_CACHE_DIR": cache_prefix,
+    }
+    compile_cmd = [
+        paths.join("..", "zig"),
+        "build-exe",
+        "-OReleaseSafe",
+        "launcher.zig",
+    ] + (["-static"] if os == "linux" else [])
+
     ret = repository_ctx.execute(
-        [
-            paths.join("..", "zig"),
-            "build-exe",
-            "-OReleaseSafe",
-            "launcher.zig",
-        ] + (["-static"] if os == "linux" else []),
+        compile_cmd,
         working_directory = "tools",
-        environment = {
-            "ZIG_LOCAL_CACHE_DIR": cache_prefix,
-            "ZIG_GLOBAL_CACHE_DIR": cache_prefix,
-        },
+        environment = compile_env,
     )
     if ret.return_code != 0:
-        fail("compilation failed:\nreturn_code={}\nstderr={}\nstdout={}".format(
-            ret.return_code,
-            ret.stdout,
-            ret.stderr,
+        full_cmd = [k + "=" + v for k, v in compile_env.items()] + compile_cmd
+        fail(_compile_failed.format(
+            compile_cmd = " ".join(full_cmd),
+            return_code = ret.return_code,
+            stdout = ret.stdout,
+            stderr = ret.stderr,
+            cache_prefix = cache_prefix,
         ))
 
     exe = ".exe" if os == "windows" else ""
