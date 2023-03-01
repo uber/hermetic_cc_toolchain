@@ -20,12 +20,9 @@ URL_FORMAT_RELEASE = "https://ziglang.org/download/{version}/zig-{host_platform}
 # awaiting my attention or your contribution.
 URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform}-{version}.{_ext}"
 
-# Author's mirror that doesn't purge the nightlies so aggressively. I will be
-# cleaning those up manually only after the artifacts are not in use for many
-# months in bazel-zig-cc. dl.jakstys.lt is a small x86_64 server with an NVMe
-# drive sitting in my home closet on a 1GB/s symmetric residential connection,
-# which, as of writing, has been quite reliable.
-URL_FORMAT_JAKSTYS = "https://dl.jakstys.lt/zig/zig-{host_platform}-{version}.{_ext}"
+# Official Bazel's mirror with selected Zig SDK versions. Bazel community is
+# generous enough to host the artifacts, which we use.
+URL_FORMAT_BAZELMIRROR = "https://mirror.bazel.build/" + URL_FORMAT_NIGHTLY.lstrip("https://")
 
 _VERSION = "0.11.0-dev.1796+c9e02d3e6"
 
@@ -47,7 +44,7 @@ _HOST_PLATFORM_EXT = {
 
 def toolchains(
         version = _VERSION,
-        url_formats = [URL_FORMAT_NIGHTLY, URL_FORMAT_JAKSTYS],
+        url_formats = [URL_FORMAT_BAZELMIRROR, URL_FORMAT_NIGHTLY],
         host_platform_sha256 = _HOST_PLATFORM_SHA256,
         host_platform_ext = _HOST_PLATFORM_EXT):
     """

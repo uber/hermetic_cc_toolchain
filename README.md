@@ -34,9 +34,8 @@ http_archive(
 
 load("@bazel-zig-cc//toolchain:defs.bzl", zig_toolchains = "toolchains")
 
-# version, url_formats and host_platform_sha256 are optional, but highly
-# recommended. Zig SDK is by default downloaded from dl.jakstys.lt, which is a
-# tiny server in the closet of Yours Truly.
+# version, url_formats and host_platform_sha256 are optional for those who
+# want to control their Zig SDK version.
 zig_toolchains(
     version = "<...>",
     url_formats = [
