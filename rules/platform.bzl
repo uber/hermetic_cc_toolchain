@@ -1,3 +1,6 @@
+# Copyright 2023 Uber Technologies, Inc.
+# Licensed under the Apache License, Version 2.0
+
 def _vars_script(env, run_under, cmd):
     ret = ["#!/bin/sh"]
     for k, v in env.items():

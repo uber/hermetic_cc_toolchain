@@ -1,3 +1,6 @@
+// Copyright 2023 Uber Technologies, Inc.
+// Licensed under the Apache License, Version 2.0
+//
 // A wrapper for `zig` subcommands.
 //
 // In simple cases it is usually enough to:

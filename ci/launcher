@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+
+# Copyright 2023 Uber Technologies, Inc.
+# Licensed under the Apache License, Version 2.0
+
 set -xeuo pipefail
 
 ZIG=${ZIG:-$(bazel run "$@" --run_under=echo @zig_sdk//:zig)}

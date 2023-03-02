@@ -1,5 +1,8 @@
 #!/usr/bin/awk -f
 
+# Copyright 2023 Uber Technologies, Inc.
+# Licensed under the Apache License, Version 2.0
+
 BEGIN {stage=0};
 
 !/```/ && stage==0 {

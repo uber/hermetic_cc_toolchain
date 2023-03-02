@@ -1,3 +1,6 @@
+// Copyright 2023 Uber Technologies, Inc.
+// Licensed under the Apache License, Version 2.0
+//
 // Package main tests that Zig can compile race-enabled tests.
 //
 // As of writing, this fails:

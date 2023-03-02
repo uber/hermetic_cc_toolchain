@@ -1,0 +1,8 @@
+bazel-zig-cc
+
+Originally from development at https://github.com/ajbouh/bazel-zig-cc
+Copyright 2021 Adam Bouhenguel and licensed under the MIT license
+
+Portions of the code
+Copyright 2023 Uber Technologies, Inc. and by the bazel-zig-cc authors
+originally licensed under MIT. License changed to Apache 2.0 as of v1.0.1

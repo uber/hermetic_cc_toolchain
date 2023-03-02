@@ -1,4 +1,8 @@
 #!/bin/sh
+
+# Copyright 2023 Uber Technologies, Inc.
+# Licensed under the Apache License, Version 2.0
+
 set -eu
 
 # shellcheck disable=SC2153

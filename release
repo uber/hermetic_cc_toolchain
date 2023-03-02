@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+
+# Copyright 2023 Uber Technologies, Inc.
+# Licensed under the Apache License, Version 2.0
+
 set -xeuo pipefail
 
 sign=(-u motiejus@jakstys.lt)

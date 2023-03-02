@@ -1,3 +1,6 @@
+# Copyright 2023 Uber Technologies, Inc.
+# Licensed under the Apache License, Version 2.0
+
 load("@bazel-zig-cc//toolchain/libc:defs.bzl", "declare_libcs")
 
 package(
