@@ -7,7 +7,6 @@ set -euo pipefail
 
 cd "$(git rev-parse --show-toplevel)"
 
-
 if command -v shellcheck &> /dev/null; then
     mapfile -t files < \
         <(git ls-files)
