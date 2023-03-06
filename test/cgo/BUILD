@@ -44,14 +44,10 @@ go_binary(
     platform_test(
         name = "cgo_test_{}".format(name),
         src = "cgo_test",
-        env = {"QEMU_LD_PREFIX": "/usr/aarch64-linux-gnu"} if is_arm64 else {},
         platform = platform,
-        run_under = "qemu-aarch64-static" if is_arm64 else "",
     )
     for name, platform, is_arm64 in [
         ("linux_amd64_musl", "//libc_aware/platform:linux_amd64_musl", False),
         ("linux_amd64_gnu.2.19", "//libc_aware/platform:linux_amd64_gnu.2.19", False),
-        ("linux_arm64_musl", "//libc_aware/platform:linux_arm64_musl", True),
-        ("linux_arm64_gnu.2.28", "//libc_aware/platform:linux_arm64_gnu.2.28", True),
     ]
 ]

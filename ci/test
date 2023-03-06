@@ -5,24 +5,26 @@
 
 set -xeuo pipefail
 
-BAZEL_ZIG_CC_CACHE_PREFIX=${BAZEL_ZIG_CC_CACHE_PREFIX:-/tmp/bazel-zig-cc}
-mkdir -p "${BAZEL_ZIG_CC_CACHE_PREFIX}"
-
 # check a very hermetic setup with a single target. Re-building all of
 # them takes a long time, so using only one. If we ever decide to build all
 # targets, we will need to exclude Go, since go dynamically links to glibc on
 # linux.
-bazel build "$@" \
+echo "--- build a single target with very hermetic sandbox"
+tools/bazel build "$@" \
     --experimental_use_hermetic_linux_sandbox \
     --sandbox_add_mount_pair=/proc \
     //test/c:which_libc_linux_amd64_gnu.2.19
 
 # then test everything else with the standard sandbox
-bazel test "$@" ...
+echo "--- bazel test $@ ..."
+tools/bazel test "$@" ...
 
-# Ensure that github.com/ziglang/zig/issues/13050 does not regress
-find "$BAZEL_ZIG_CC_CACHE_PREFIX" -name mutex_destructor.o -execdir file '{}' \; | \
-    sort | uniq -c | sort -rn > /tmp/got_cache
+echo "--- ensure github.com/ziglang/zig/issues/13050 does not regress"
+find "${BAZEL_ZIG_CC_CACHE_PREFIX:-/tmp/bazel-zig-cc}" \
+    -name mutex_destructor.o -execdir file '{}' \; \
+    | sort \
+    | uniq -c \
+    | sort -rn > /tmp/got_cache
 
 diff -u ci/testdata/want_cache /tmp/got_cache || {
     >&2 echo "ERROR: unexpected artifacts. This is TODO."

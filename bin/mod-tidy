@@ -2,8 +2,11 @@
 
 # Copyright 2023 Uber Technologies, Inc.
 # Licensed under the Apache License, Version 2.0
-set -eu
+set -xeu
 
 cd "$(git rev-parse --show-toplevel)/"
-bazel run @go_sdk//:bin/go -- mod tidy
-exec bazel run //:gazelle-update-repos
+echo "--- go mod tidy"
+tools/bazel run @go_sdk//:bin/go -- mod tidy
+
+echo "--- gazelle-update-repos"
+exec tools/bazel run //:gazelle-update-repos
