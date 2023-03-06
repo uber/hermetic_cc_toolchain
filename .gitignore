@@ -6,3 +6,5 @@
 /bazel-out
 /bazel-testlogs
 /bazel-x
+
+.custom.ci.bazelrc

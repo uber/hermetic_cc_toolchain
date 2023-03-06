@@ -1,8 +1,39 @@
+# Copyright 2023 Uber Technologies, Inc.
+# Licensed under the Apache License, Version 2.0
+
 steps:
-  - label: "Build"
-    command: tools/bazel build //...
+  - label: "Test"
+    command: |
+      . .buildkite/setup-bazelrc.sh
+      ci/test
   - label: "Lint"
-    command: ci/lint
+    command: |
+      . .buildkite/setup-bazelrc.sh
+      ci/lint
+  - label: "List Platforms"
+    command: "ci/list_toolchains_platforms"
+  - label: "Test Release and Launcher scripts"
+    command: |
+      git config --global user.email "buildkite@example.com"
+      git config --global user.name "Buildkite Bot"
+
+      echo "--- ci/release"
+      ci/release
+      echo "--- ci/launcher"
+      ci/launcher
+  - label: "Test Launcher on wine64"
+    plugins:
+      - docker#v5.5.0:
+          image: "debian:stable"
+    command: |
+      apt-get update && apt-get install --no-install-recommends -y \
+        wine64 python3 ca-certificates
+      ci/launcher-wine64
+  - label: "mod-tidy and update-repos"
+    command: |
+      . .buildkite/setup-bazelrc.sh
+      bin/mod-tidy
+      git diff --exit-code
 agents:
     - "queue=init"
     - "docker=*"

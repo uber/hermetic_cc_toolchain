@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# Copyright 2023 Uber Technologies, Inc.
+# Licensed under the Apache License, Version 2.0
+
+set -xeuo pipefail
+
+echo "--- which zig"
+ZIG=${ZIG:-$(tools/bazel run "$@" --run_under=echo @zig_sdk//:zig)}
+
+echo "--- test toolchain/launcher.zig via wine64"
+# ReleaseSafe because of https://github.com/ziglang/zig/issues/14036
+$ZIG test \
+    -OReleaseSafe \
+    -target x86_64-windows-gnu \
+    --test-cmd wine64-stable \
+    --test-cmd-bin \
+    toolchain/launcher.zig

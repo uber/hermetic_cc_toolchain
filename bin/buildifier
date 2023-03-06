@@ -1,4 +1,8 @@
 #!/bin/sh
-set -eu
 
-"$(git rev-parse --show-toplevel)/tools/bazel" run @com_github_bazelbuild_buildtools//buildifier -- $@
+# Copyright 2023 Uber Technologies, Inc.
+# Licensed under the Apache License, Version 2.0
+
+set -xeu
+
+exec "$(git rev-parse --show-toplevel)/tools/bazel" run @com_github_bazelbuild_buildtools//buildifier -- "$@"

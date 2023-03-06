@@ -7,3 +7,5 @@ build --worker_sandboxing
 build --experimental_reuse_sandbox_directories
 build --incompatible_enable_cc_toolchain_resolution
 build --action_env BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
+
+try-import %workspace%/.custom.ci.bazelrc
