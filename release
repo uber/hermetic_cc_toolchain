@@ -19,7 +19,7 @@ git status --porcelain | grep -q "" &&
 git tag | grep -q "^$1$" &&
     _err "tag $1 already exists"
 
-last_tag=$(git tag | tail -1)
+last_tag=$(git -c 'versionsort.suffix=-' tag -l --sort=v:refname | tail -1)
 
 {
     echo bazel-zig-cc "$1"
