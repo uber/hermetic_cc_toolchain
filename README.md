@@ -381,20 +381,7 @@ This repository is used on the following (host) platforms:
 - `darwin_arm64`, the M1.
 - `windows_amd64`, a.k.a. `x64`.
 
-The tests are running (CId) on linux-amd64, and are assuming the kernel is
-configured to run `linux_arm64` and `windows_amd64` binaries.
-
-There are two reasonably convenient ways to configure `linux_arm64` emulation:
-
-1. Install and configure [`binfmt_misc`][binfmt_misc]:
-   ```
-   apt install qemu-user-static binfmt-support
-   ```
-
-2. Magic of the internet:
-   ```
-   docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-   ```
+The tests are running (CId) on linux-amd64.
 
 ## Transient docker environment
 
@@ -402,44 +389,17 @@ A standalone Docker environment to play with bazel-zig-cc:
 
 ```
 $ docker run -e CC=/usr/bin/false -ti --rm -v "$PWD:/x" -w /x debian:bullseye-slim
-# apt update
-# apt install --no-install-recommends -y direnv git shellcheck ca-certificates
-# eval "$(direnv hook bash)" && direnv allow
+# apt update && apt install --no-install-recommends -y shellcheck ca-certificates python3
 # ./ci/lint
 # ./ci/launcher
 # ./ci/test
 ```
 
-Some of the tests rely on `qemu-aarch64` to run arm64 binaries and wine for
-Windows binaries. Therefore, with the setup above, these tests will fail.
-To install *all* dependencies, so all tests can pass:
+# Communication
 
-```
-$ docker run -e CC=/usr/bin/false -ti --rm -v "$PWD:/x" -w /x debian:bullseye-slim
-# dpkg --add-architecture arm64 && apt update
-# apt install --no-install-recommends -y direnv git shellcheck ca-certificates libc6:arm64 qemu-user-static wine64
-# eval "$(direnv hook bash)" && direnv allow
-<... run the ci/ commands as above>
-```
-
-# Questions & Contributions
-
-Project's mailing list is [~motiejus/bazel-zig-cc@lists.sr.ht][mailing-list].
-Used for:
-
-- announcements (I am aiming to send an email with every release).
-- user discussions.
-- raising issues.
-- contributions.
-
-I will generally respond to emails about issues. I may even be able to fix
-them. However, no promises: you are much more likely (and welcome!) to get it
-fixed by submitting a patch.
-
-To contribute, send your patches to the mailing list, as described in
-[git-send-email.io][git-send-email] or via [Sourcehut web UI][video].
-
-Copyright is retained by the contributors.
+We maintain two channels for comms:
+- Github issues and pull requests.
+- Slack: `#zig` in bazel.slack.com.
 
 # Maintainers
 
@@ -447,14 +407,9 @@ This section lists the driving forces behind bazel-zig-cc. Committers have push
 access, maintainers have their areas. Should make it easier to understand our
 interests when reading patches or mailing lists.
 
-- Owner: Motiejus Jakštys. Applies others' patches, writes documentation,
-  emails, and occasionally contributes. Signs releases.
-- Committer: Laurynas Lubys. Bazel expert with regards to tests, transitions
-  and overall structure. Rewrote bazel-zig-cc to cater for platforms when libc
-  platforms were added.
-- Committer: Ken Micklas. Ken was leading hermetic toolchain effort at Uber
-  throughout 2022, of which bazel-zig-cc is a part of.
-- Maintainer for Windows: Fabian Hahn. If you make a change that breaks
+- Maintainers: Motiejus Jakštys, Laurynas Lubys, Zhongpeng Lin and Sung Yoon
+  Whang.
+- Committer for Windows: Fabian Hahn. If you make a change that breaks
   Windows, Fabian will find you. Please don't break Windows, so Fabian doesn't
   have to look for you. Instead, send him your patches first.
 
@@ -486,11 +441,7 @@ the issues promptly.
 
 [^1]: a [mathematical subset][subset]: both can be equal.
 
-[binfmt_misc]: https://en.wikipedia.org/wiki/Binfmt_misc
-[mailing-list]: https://lists.sr.ht/~motiejus/bazel-zig-cc
 [ajbouh]: https://github.com/ajbouh/bazel-zig-cc/
-[git-send-email]: https://git-send-email.io/
-[video]: https://spacepub.space/w/no6jnhHeUrt2E5ST168tRL
 [sysroot]: https://github.com/ziglang/zig/issues/10299#issuecomment-989153750
 [ubsan1]: https://github.com/ziglang/zig/issues/4830#issuecomment-605491606
 [ubsan2]: https://github.com/ziglang/zig/issues/5163
