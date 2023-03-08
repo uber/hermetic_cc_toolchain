@@ -401,6 +401,11 @@ We maintain two channels for comms:
 - Github issues and pull requests.
 - Slack: `#zig` in bazel.slack.com.
 
+Previously communications were over email; the past archive is in
+`mailing-list-archive.mbox`. It can be accessed like this:
+
+    mutt -f -R mailing-list-archive.mbox
+
 # Maintainers
 
 This section lists the driving forces behind bazel-zig-cc. Committers have push
