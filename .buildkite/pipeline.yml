@@ -3,15 +3,11 @@
 
 steps:
   - label: "Test"
-    command: |
-      . .buildkite/setup-bazelrc.sh
-      ci/test
+    command: ci/test
   - label: "Lint"
-    command: |
-      . .buildkite/setup-bazelrc.sh
-      ci/lint
+    command: ci/lint
   - label: "List Platforms"
-    command: "ci/list_toolchains_platforms"
+    command: ci/list_toolchains_platforms
   - label: "Test Release and Launcher scripts"
     command: |
       git config --global user.email "buildkite@example.com"
@@ -31,7 +27,6 @@ steps:
       ci/launcher-wine64
   - label: "mod-tidy and update-repos"
     command: |
-      . .buildkite/setup-bazelrc.sh
       bin/mod-tidy
       git diff --exit-code
 agents:
