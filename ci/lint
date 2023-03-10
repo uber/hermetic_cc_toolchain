@@ -19,7 +19,7 @@ if command -v shellcheck &> /dev/null; then
 fi
 
 >&2 echo "--- buildifier :bazel:"
-bin/buildifier -r -mode check "$PWD"
+tools/buildifier -r -mode check "$PWD"
 >&2 echo -e "OK\n"
 
 >&2 echo "--- Gazelle :goat:"
