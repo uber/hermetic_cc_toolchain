@@ -27,7 +27,7 @@ steps:
       ci/launcher-wine64
   - label: "mod-tidy and update-repos"
     command: |
-      bin/mod-tidy
+      tools/mod-tidy
       git diff --exit-code
 agents:
     - "queue=init"
