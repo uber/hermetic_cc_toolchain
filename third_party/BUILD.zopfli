@@ -1,0 +1,20 @@
+# Copyright 2023 Uber Technologies, Inc.
+# Licensed under the Apache License, Version 2.0
+
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "go_zopfli",
+    srcs = glob(
+        [
+            "go/zopfli/zopfli.go",
+            "src/zopfli/*.c",
+            "src/zopfli/*.h",
+        ],
+        exclude = ["src/zopfli/zopfli_bin.c"],
+    ),
+    cgo = True,
+    copts = ["-O2"],
+    importpath = "github.com/google/zopfli/go/zopfli",
+    visibility = ["//visibility:public"],
+)
