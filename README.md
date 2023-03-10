@@ -29,7 +29,7 @@ http_archive(
     name = "bazel-zig-cc",
     sha256 = "e9f82bfb74b3df5ca0e67f4d4989e7f1f7ce3386c295fd7fda881ab91f83e509",
     strip_prefix = "bazel-zig-cc-{}".format(BAZEL_ZIG_CC_VERSION),
-    urls = ["https://git.sr.ht/~motiejus/bazel-zig-cc/archive/{}.tar.gz".format(BAZEL_ZIG_CC_VERSION)],
+    urls = ["https://github.com/uber/bazel-zig-cc/archive/{}.tar.gz".format(BAZEL_ZIG_CC_VERSION)],
 )
 
 load("@bazel-zig-cc//toolchain:defs.bzl", zig_toolchains = "toolchains")
