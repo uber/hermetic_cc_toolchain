@@ -6,13 +6,9 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "releaser_lib",
-    srcs = [
-        "main.go",
-        "zopfli.go",  # keep
-    ],
+    srcs = ["main.go"],
     importpath = "github.com/uber/bazel-zig-cc/tools/releaser",
     visibility = ["//visibility:private"],
-    deps = ["@zopfli//:go_zopfli"],  # keep
 )
 
 go_binary(

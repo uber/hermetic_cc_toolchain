@@ -8,17 +8,8 @@ set -xeuo pipefail
 cd "$(git rev-parse --show-toplevel)"
 prev_ref=$(git rev-parse HEAD)
 git commit --allow-empty -m "this is a test commit"
-./release --nosign v99.0
-cleanup() { git tag -d v99.0; git reset --hard "$prev_ref"; }
+tools/bazel run //tools/releaser -- -tag v99.0.0
+cleanup() { git tag -d v99.0.0; git reset --hard "$prev_ref"; }
 trap cleanup EXIT
 
-want=" 1 file changed, 2 insertions(+), 2 deletions(-)"
-got=$(git show --shortstat HEAD | tail -1)
-
-if [[ "$want" != "$got" ]]; then
-    echo wanted:
-    echo \ \ "$want"
-    echo got:
-    echo \ \ "$got"
-    exit 1
-fi
+file bazel-zig-cc-v99.0.0.tar.gz | grep -q 'gzip compressed data'
