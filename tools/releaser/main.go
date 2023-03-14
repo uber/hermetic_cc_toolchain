@@ -5,17 +5,18 @@
 package main
 
 import (
+	"bytes"
+	"compress/gzip"
 	"crypto/sha256"
 	"errors"
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"path"
 	"regexp"
-	"strconv"
 	"strings"
-
 )
 
 var (
@@ -28,14 +29,14 @@ var (
 	}
 
 	// regexp for valid tags
-	tagRegexp = regexp.MustCompile(`^v([0-9]+)\\.([0-9]+)(\\.([0-9]+))(-rc([0-9]+))?$`)
+	tagRegexp = regexp.MustCompile(`^v([0-9]+)\.([0-9]+)(\.([0-9]+))(-rc([0-9]+))?$`)
 
 	errTag = errors.New("tag accepts the following formats: v1.0.0 v1.0.1-rc1")
 )
 
 func main() {
 	if err := run(); err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		fmt.Fprintf(os.Stderr, "error: %s\n", err)
 		os.Exit(1)
 	}
 }
@@ -44,18 +45,14 @@ func log(msg string, format ...any) {
 	fmt.Fprintf(flag.CommandLine.Output(), msg+"\n", format...)
 }
 
-func run() error {
+func run() (_err error) {
 	var (
-		goVersion    string
-		repoRoot     string
-		skipUpgrades bool
-		tag          string
+		repoRoot string
+		tag      string
 	)
 
-	flag.StringVar(&goVersion, "go_version", "", "go version for go.mod")
 	flag.StringVar(&repoRoot, "repo_root", os.Getenv("BUILD_WORKSPACE_DIRECTORY"), "root directory of bazel-zig-cc repo")
 	flag.StringVar(&tag, "tag", "", "tag for this release")
-	flag.BoolVar(&skipUpgrades, "skip_upgrades", false, "skip upgrade checks (testing only)")
 
 	flag.Usage = func() {
 		fmt.Fprint(flag.CommandLine.Output(), `usage: bazel run //tools/releaser -- -go_version <version> -tag <tag>
@@ -69,54 +66,27 @@ This utility is intended to handle many of the steps to release a new version.
 	flag.Parse()
 
 	if tag == "" {
-		return fmt.Errorf("ERROR: tag is required")
+		return fmt.Errorf("tag is required")
 	}
 
 	if !tagRegexp.MatchString(tag) {
 		return errTag
 	}
 
-	var goVersionArgs []string
-	if goVersion != "" {
-		versionParts := strings.Split(goVersion, ".")
-		if len(versionParts) < 2 {
-			flag.Usage()
-			return errors.New("please provide a valid Go version")
-		}
-		if minorVersion, err := strconv.Atoi(versionParts[1]); err != nil {
-			return fmt.Errorf("%q is not a valid Go version", goVersion)
-		} else if minorVersion > 0 {
-			versionParts[1] = strconv.Itoa(minorVersion - 1)
-		}
-		goVersionArgs = append(goVersionArgs, "-go", goVersion, "-compat", strings.Join(versionParts, "."))
-	}
-
-	// external dependency checks
-	depChecks := [][]string{
-		{"go", "get", "-t", "-u", "./..."},
-		append([]string{"tools/mod-tidy"}, goVersionArgs...),
-	}
-
 	// commands that Must Not Fail
 	cmds := [][]string{
-		{"tools/bazel", "run", "//:gazelle"},
 		{"git", "diff", "--stat", "--exit-code"},
 		{"git", "tag", tag},
 	}
 
 	log("Cutting a release:")
-	if skipUpgrades {
-		log("SKIPPING: go update commands")
-	} else {
-		cmds = append(depChecks, cmds...)
-	}
 
 	for _, c := range cmds {
 		cmd := exec.Command(c[0], c[1:]...)
 		cmd.Dir = repoRoot
 		if out, err := cmd.CombinedOutput(); err != nil {
 			return fmt.Errorf(
-				"ERROR: running %s:%w\n%s",
+				"run %s: %w\n%s",
 				strings.Join(c, " "),
 				err,
 				out,
@@ -124,35 +94,56 @@ This utility is intended to handle many of the steps to release a new version.
 		}
 	}
 
-	log("Creating archive bazel-zig-cc-%s.tar", tag)
+	fpath := path.Join(repoRoot, fmt.Sprintf("bazel-zig-cc-%s.tar.gz", tag))
+	tgz, err := os.Create(fpath)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if _err != nil {
+			os.Remove(fpath)
+		}
+	}()
+	hashw := sha256.New()
 
+	gzw, err := gzip.NewWriterLevel(io.MultiWriter(tgz, hashw), gzip.BestCompression)
+	if err != nil {
+		return fmt.Errorf("create gzip writer: %w", err)
+	}
+
+	log("- creating %s", fpath)
+
+	var stderr bytes.Buffer
 	cmd := exec.Command(
 		"git",
-		append([]string{"archive", "--format=tar", tag}, _paths...)...,
+		append([]string{
+			"archive",
+			"--format=tar",
+			// WORKSPACE in the resulting tarball needs to be much
+			// smaller than of bazel-zig-cc. See #15.
+			"--add-file=tools/releaser/WORKSPACE",
+			tag,
+		}, _paths...)...,
 	)
 	cmd.Dir = repoRoot
+	cmd.Stdout = gzw
+	cmd.Stderr = &stderr
 
-	out, err := cmd.Output()
-	if err != nil {
+	if err := cmd.Run(); err != nil {
 		var exitError *exec.ExitError
 		errors.As(err, &exitError)
-		return fmt.Errorf("ERROR: failed to create git archive: %w\n%s", err, exitError.Stderr)
+		return fmt.Errorf("create git archive: %w\n%s", err, stderr.Bytes())
 	}
 
-	log("Compressing bazel-zig-cc-%s.tar", tag)
-
-	tgz := Gzip(out)
-
-	fpath := path.Join(repoRoot, fmt.Sprintf("bazel-zig-cc-%s.tar.gz", tag))
-	if err := os.WriteFile(fpath, tgz, 0o644); err != nil {
-		return fmt.Errorf("ERROR: write %q: %w", fpath, err)
+	if err := gzw.Close(); err != nil {
+		return fmt.Errorf("close gzip stream: %w", err)
 	}
 
-	log("Wrote %s", fpath)
-
-	shasum := sha256.Sum256(tgz)
-
-	log("Release boilerplate:\n-----\n" + genBoilerplate(tag, fmt.Sprintf("%x", shasum)))
+	if err := tgz.Close(); err != nil {
+		return err
+	}
+	log("- wrote %s", fpath)
+	log("Release:\n-----\n" + genBoilerplate(tag, fmt.Sprintf("%x", hashw.Sum(nil))))
 
 	return nil
 }
@@ -171,16 +162,7 @@ http_archive(
 
 load("@bazel-zig-cc//toolchain:defs.bzl", zig_toolchains = "toolchains")
 
-# Argument-free will pick reasonable defaults.
-zig_toolchains()
-
-# version, url_formats and host_platform_sha256 are can be set for those who
-# wish to control their Zig SDK version and where it is downloaded from
-zig_toolchains(
-    version = "<...>",
-    url_formats = [
-        "https://example.org/zig/zig-{host_platform}-{version}.{_ext}",
-    ],
-    host_platform_sha256 = { ... },
-)`, version, shasum)
+# plain zig_toolchains() will pick reasonable defaults. See
+# toolchain/defs.bzl:toolchains on how to change the Zig SDK path and version.
+zig_toolchains()`, version, shasum)
 }

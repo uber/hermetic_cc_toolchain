@@ -82,13 +82,3 @@ http_archive(
 load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
 
 protobuf_deps()
-
-ZOPFLI_COMMIT = "831773bc28e318b91a3255fa12c9fcde1606058b"
-
-http_archive(
-    name = "zopfli",
-    build_file = "//:third_party/BUILD.zopfli",
-    sha256 = "dbc695ae30c815973dc38b39e2f95dc2b249263b7222427d96e5e785092b0f78",
-    strip_prefix = "zopfli-{}".format(ZOPFLI_COMMIT),
-    urls = ["https://github.com/google/zopfli/archive/{}.tar.gz".format(ZOPFLI_COMMIT)],
-)
