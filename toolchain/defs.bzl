@@ -49,16 +49,15 @@ return_code={return_code}
 stderr={stderr}
 stdout={stdout}
 
-You most likely hit a rare but known race in Zig SDK. Congratulations?
+You stumbled into a problem with Zig SDK that bazel-zig-cc was not able to fix.
+Please file a new issue to github.com/uber/bazel-zig-cc with:
+- Full output of this Bazel run, including the Bazel command.
+- Version of the Zig SDK if you have a non-default.
+- Version of bazel-zig-cc.
 
-We are working on fixing it with Zig Software Foundation. If you are curious,
-feel free to follow along in https://github.com/ziglang/zig/issues/14815
-
-There isn't much to do now but wait. Now apply the following workaround:
-$ rm -fr {cache_prefix}
-$ <... re-run your command ...>
-
-... and proceed with your life.
+Note: this *may* have been https://github.com/ziglang/zig/issues/14815, for
+which bazel-zig-cc has a workaround and you may have been "struck by lightning"
+three times in a row.
 """
 
 def toolchains(
@@ -203,20 +202,50 @@ def _zig_repository_impl(repository_ctx):
         "launcher.zig",
     ] + (["-static"] if os == "linux" else [])
 
-    ret = repository_ctx.execute(
-        compile_cmd,
-        working_directory = "tools",
-        environment = compile_env,
-    )
-    if ret.return_code != 0:
+    # The elaborate code below is a workaround for ziglang/zig#14815:
+    # Sometimes, when Zig's cache is empty, compiling the launcher may fail
+    # with `error: FileNotFound`. The remedy is to clear the cache and try
+    # again. Until this change, we have been asking users to clear the Zig
+    # cache themselves and re-run the Bazel command.
+    #
+    # We can do better than that: if we detect the launcher failed, we can
+    # purge the zig cache and retry the compilation. It will be retried for up
+    # to two times.
+    launcher_success = True
+    launcher_err_msg = ""
+    for _ in range(3):
+        # Do not remove the cache_prefix itself, because it is not controlled
+        # by this script. Instead, clear the cache subdirs that we know Zig
+        # populates.
+        zig_cache_dirs = ["h", "o", "tmp", "z"]
+        if not launcher_success:
+            print("Launcher compilation failed. Clearing %s/{%s} and retrying" %
+                  (cache_prefix, ",".join(zig_cache_dirs)))
+            for d in zig_cache_dirs:
+                repository_ctx.delete(paths.join(cache_prefix, d))
+
+        ret = repository_ctx.execute(
+            compile_cmd,
+            working_directory = "tools",
+            environment = compile_env,
+        )
+
+        if ret.return_code == 0:
+            launcher_success = True
+            break
+
+        launcher_success = False
         full_cmd = [k + "=" + v for k, v in compile_env.items()] + compile_cmd
-        fail(_compile_failed.format(
+        launcher_err_msg = _compile_failed.format(
             compile_cmd = " ".join(full_cmd),
             return_code = ret.return_code,
             stdout = ret.stdout,
             stderr = ret.stderr,
             cache_prefix = cache_prefix,
-        ))
+        )
+
+    if not launcher_success:
+        fail(launcher_err_msg)
 
     exe = ".exe" if os == "windows" else ""
     for target_config in target_structs():
