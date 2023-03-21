@@ -16,7 +16,12 @@ for target in \
     x86_64-macos-none \
     x86_64-windows-gnu
 do
-    $ZIG build-exe -fno-emit-bin -target $target toolchain/launcher.zig
+    if [[ $target == aarch64-macos-none ]]; then
+        mcpu=apple_a14
+    else
+        mcpu=baseline
+    fi
+    $ZIG build-exe -fno-emit-bin -target $target -mcpu=$mcpu toolchain/launcher.zig
 done
 
 echo "--- zig fmt --check toolchain/launcher.zig"

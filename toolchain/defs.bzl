@@ -38,6 +38,14 @@ _HOST_PLATFORM_EXT = {
     "windows-x86_64": "zip",
 }
 
+_MCPU = {
+    "linux-aarch64": "baseline",
+    "linux-x86_64": "baseline",
+    "macos-aarch64": "apple_a14",
+    "macos-x86_64": "baseline",
+    "windows-x86_64": "baseline",
+}
+
 _compile_failed = """
 Compilation of launcher.zig failed:
 command={compile_cmd}
@@ -164,6 +172,7 @@ def _zig_repository_impl(repository_ctx):
     compile_cmd = [
         _paths_join("..", "zig"),
         "build-exe",
+        "-mcpu={}".format(_MCPU[host_platform]),
         "-OReleaseSafe",
         "launcher.zig",
     ] + (["-static"] if os == "linux" else [])
