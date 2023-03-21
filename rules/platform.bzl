@@ -1,12 +1,7 @@
 # Copyright 2023 Uber Technologies, Inc.
 # Licensed under the Apache License, Version 2.0
 
-def _vars_script(env, run_under, cmd):
-    ret = ["#!/bin/sh"]
-    for k, v in env.items():
-        ret += ['export {}="{}"'.format(k, v)]
-    ret += ['exec {} {} "$@"'.format(run_under, cmd)]
-    return "\n".join(ret) + "\n"  # trailing newline is easier on the eyes
+load("@bazel_skylib//lib:paths.bzl", "paths")
 
 def _platform_transition_impl(settings, attr):
     _ignore = settings
@@ -23,22 +18,18 @@ _platform_transition = transition(
 )
 
 def _platform_binary_impl(ctx):
-    source_info = ctx.attr.src[DefaultInfo]
-
-    executable = None
-    if source_info.files_to_run and source_info.files_to_run.executable:
-        command = _vars_script(ctx.attr.env, ctx.attr.run_under, source_info.files_to_run.executable.short_path)
-        executable = ctx.actions.declare_file("{}_{}".format(ctx.file.src.basename, ctx.attr.platform))
-        ctx.actions.write(
-            output = executable,
-            content = command,
-            is_executable = True,
-        )
-
+    platform_sanitized = ctx.attr.platform.replace("/", "_").replace(":", "_")
+    dst = ctx.actions.declare_file("{}-{}".format(paths.basename(ctx.file.src.path), platform_sanitized))
+    src = ctx.file.src
+    ctx.actions.run_shell(
+        outputs = [dst],
+        inputs = [src],
+        command = "cp $1 $2",
+        arguments = [src.path, dst.path],
+    )
     return [DefaultInfo(
-        executable = executable,
-        files = depset([executable]),
-        runfiles = ctx.runfiles(files = ctx.files.src),
+        files = depset([dst]),
+        executable = dst,
     )]
 
 _attrs = {
@@ -49,12 +40,6 @@ _attrs = {
     ),
     "platform": attr.string(
         doc = "The platform to build the target for.",
-    ),
-    "run_under": attr.string(
-        doc = "wrapper executable",
-    ),
-    "env": attr.string_dict(
-        doc = "Environment variables for the test",
     ),
     "_allowlist_function_transition": attr.label(
         default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
