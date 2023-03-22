@@ -21,10 +21,10 @@ def _platform_binary_impl(ctx):
     platform_sanitized = ctx.attr.platform.replace("/", "_").replace(":", "_")
     dst = ctx.actions.declare_file("{}-{}".format(paths.basename(ctx.file.src.path), platform_sanitized))
     src = ctx.file.src
-    ctx.actions.run_shell(
+    ctx.actions.run(
         outputs = [dst],
         inputs = [src],
-        command = "cp $1 $2",
+        executable = "cp",
         arguments = [src.path, dst.path],
     )
     return [DefaultInfo(
