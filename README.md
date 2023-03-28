@@ -1,3 +1,5 @@
+[![Build status](https://badge.buildkite.com/58cd1ecad012ad0ddee9a868ec11464025a979045318a0bc3f.svg)](https://buildkite.com/uberopensource/hermetic-cc-toolchain)
+
 # Hermetic CC toolchain
 
 This is a C/C++ toolchain that can (cross-)compile C/C++ programs on top of
