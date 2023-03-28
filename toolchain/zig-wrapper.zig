@@ -286,8 +286,9 @@ fn getRunMode(self_exe: []const u8, self_base_noexe: []const u8) error{BadParent
     if (mem.indexOf(u8, "linux,macos,windows,wasi", got_os) == null)
         return error.BadParent;
 
+    const got_abi = it.next();
     // ABI triple is too much of a moving target
-    if (it.next() == null) return error.BadParent;
+    if (got_abi == null) return error.BadParent;
     // but the target needs to have 3 dashes.
     if (it.next() != null) return error.BadParent;
 

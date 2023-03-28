@@ -4,4 +4,6 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
-declare_toolchains()
+declare_toolchains(
+    macos_sdk_versions = {macos_sdk_versions},
+)

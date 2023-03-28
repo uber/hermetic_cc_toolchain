@@ -1,10 +1,10 @@
 load(":defs.bzl", "target_structs", "zig_tool_path")
 load("@hermetic_cc_toolchain//toolchain:zig_toolchain.bzl", "zig_cc_toolchain_config")
 
-def declare_cc_toolchains(os, zig_sdk_path):
+def declare_cc_toolchains(os, zig_sdk_path, macos_sdk_versions):
     exe = ".exe" if os == "windows" else ""
 
-    for target_config in target_structs():
+    for target_config in target_structs(macos_sdk_versions):
         gotarget = target_config.gotarget
         zigtarget = target_config.zigtarget
 
@@ -40,7 +40,11 @@ def declare_cc_toolchains(os, zig_sdk_path):
             name = zigtarget + "_cc_config",
             target = zigtarget,
             tool_paths = tool_paths,
-            cxx_builtin_include_directories = cxx_builtin_include_directories,
+            cxx_builtin_include_directories = getattr(
+                target_config,
+                "cxx_builtin_include_directories",
+                [],
+            ),
             copts = copts,
             linkopts = linkopts,
             dynamic_library_linkopts = dynamic_library_linkopts,

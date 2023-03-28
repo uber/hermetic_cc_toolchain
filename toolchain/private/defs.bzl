@@ -40,36 +40,43 @@ def zig_tool_path(os):
     else:
         return _ZIG_TOOL_PATH
 
-def target_structs():
+def target_structs(macos_sdk_versions):
     ret = []
     for zigcpu, gocpu in (("x86_64", "amd64"), ("aarch64", "arm64")):
-        ret.append(_target_macos(gocpu, zigcpu))
         ret.append(_target_windows(gocpu, zigcpu))
         ret.append(_target_linux_musl(gocpu, zigcpu))
         for glibc in _GLIBCS:
             ret.append(_target_linux_gnu(gocpu, zigcpu, glibc))
+        for macos_sdk_version in macos_sdk_versions:
+            ret.append(_target_macos(gocpu, zigcpu, macos_sdk_version))
     ret.append(_target_wasm())
     return ret
 
-def _target_macos(gocpu, zigcpu):
-    copts = []
+def _target_macos(gocpu, zigcpu, macos_sdk_version):
+    macos_sdk_opts = [
+        "--sysroot",
+        "external/macos_sdk_{}".format(macos_sdk_version),
+        "-F",
+        "/System/Library/Frameworks",
+    ]
+
+    copts = macos_sdk_opts
 
     if zigcpu == "aarch64":
-        copts = ["-mcpu=apple_m1"]
+        copts.append("-mcpu=apple_m1")
 
     return struct(
-        gotarget = "darwin_{}".format(gocpu),
-        zigtarget = "{}-macos-none".format(zigcpu),
-        includes = [
-            "libunwind/include",
-            "libc/darwin",
-            "libc/include/any-macos-any",
-        ] + _INCLUDE_TAIL,
-        linkopts = ["-Wl,-headerpad_max_install_names"],
+        gotarget = "darwin_{}_sdk.{}".format(gocpu, macos_sdk_version),
+        zigtarget = "{}-macos-sdk.{}".format(zigcpu, macos_sdk_version),
+        includes = [],
+        linkopts = macos_sdk_opts,
         dynamic_library_linkopts = ["-Wl,-undefined=dynamic_lookup"],
         supports_dynamic_linker = True,
+        cxx_builtin_include_directories = ["external/macos_sdk_{}/usr/include".format(macos_sdk_version)],
+        sdk_include_files = ["@macos_sdk_{}//:usr_include".format(macos_sdk_version)],
+        sdk_lib_files = ["@macos_sdk_{}//:usr_lib".format(macos_sdk_version)],
         copts = copts,
-        libc = "darwin",
+        libc = "macos",
         bazel_target_cpu = "darwin",
         constraint_values = [
             "@platforms//os:macos",
@@ -86,6 +93,7 @@ def _target_macos(gocpu, zigcpu):
                 "extension": ".dylib",
             },
         ],
+        libc_constraint = "@zig_sdk//libc:macos.{}".format(macos_sdk_version),
     )
 
 def _target_windows(gocpu, zigcpu):
