@@ -24,14 +24,14 @@ URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform}-{version}.{
 # generous enough to host the artifacts, which we use.
 URL_FORMAT_BAZELMIRROR = "https://mirror.bazel.build/" + URL_FORMAT_NIGHTLY.lstrip("https://")
 
-_VERSION = "0.11.0-dev.1796+c9e02d3e6"
+_VERSION = "0.11.0-dev.2545+311d50f9d"
 
 _HOST_PLATFORM_SHA256 = {
-    "linux-aarch64": "5902b34b463635b25c11555650d095eb5030e2a05d8a4570c091313cd1a38b12",
-    "linux-x86_64": "aa9da2305fad89f648db2fd1fade9f0f9daf01d06f3b07887ad3098402794778",
-    "macos-aarch64": "51b4e88123d6cbb102f2a6665dd0d61467341f36b07bb0a8d46a37ea367b60d5",
-    "macos-x86_64": "dd8eeae5249aa21f9e51ff4ff536a3e7bf2c0686ee78bf6032d18e74c8416c56",
-    "windows-x86_64": "260f34d0d5312d2642097bb33c14ac552cd57c59a15383364df6764d01f0bfc9",
+    "linux-aarch64": "9a4582c534802454775d2c3db33c472f55285b5203032d55fb13c5a41cc31833",
+    "linux-x86_64": "b0895fe5d83dd361bd268580c9de5d5a3c42eaf966ea049bfae93eb537a88633",
+    "macos-aarch64": "6f9aabd01d5200fe419e5fa54846e67f8342bf4cbebb71f735a729f4daaf4190",
+    "macos-x86_64": "4bc1f1c28637b49b4ececdc819fc3d1a5d593560b8667183f26fe861b816279b",
+    "windows-x86_64": "7673a442a59492235157d6e6549698fd183bd90d43db74bf93ac3611cb3aad46",
 }
 
 _HOST_PLATFORM_EXT = {
@@ -84,36 +84,6 @@ _ZIG_TOOLS = [
     "c++",
     "ar",
 ]
-
-_template_mapfile = """
-%s {
-    %s;
-};
-"""
-
-_template_linker = """
-#ifdef __ASSEMBLER__
-.symver {from_function}, {to_function_abi}
-#else
-__asm__(".symver {from_function}, {to_function_abi}");
-#endif
-"""
-
-def _glibc_hack(from_function, to_function_abi):
-    # Cannot use .format(...) here, because starlark thinks
-    # that the byte 3 (the opening brace on the first line)
-    # is a nested { ... }, returning an error:
-    # Error in format: Nested replacement fields are not supported
-    to_function, to_abi = to_function_abi.split("@")
-    mapfile = _template_mapfile % (to_abi, to_function)
-    header = _template_linker.format(
-        from_function = from_function,
-        to_function_abi = to_function_abi,
-    )
-    return struct(
-        mapfile = mapfile,
-        header = header,
-    )
 
 def _quote(s):
     return "'" + s.replace("'", "'\\''") + "'"
@@ -226,16 +196,6 @@ def _zig_repository_impl(repository_ctx):
                 zigtarget = target_config.zigtarget,
             )
             repository_ctx.symlink("tools/launcher{}".format(exe), tool_path)
-
-    fcntl_hack = _glibc_hack("fcntl64", "fcntl@GLIBC_2.2.5")
-    repository_ctx.file("glibc-hacks/fcntl.map", content = fcntl_hack.mapfile)
-    repository_ctx.file("glibc-hacks/fcntl.h", content = fcntl_hack.header)
-    res_search_amd64 = _glibc_hack("res_search", "__res_search@GLIBC_2.2.5")
-    repository_ctx.file("glibc-hacks/res_search-amd64.map", content = res_search_amd64.mapfile)
-    repository_ctx.file("glibc-hacks/res_search-amd64.h", content = res_search_amd64.header)
-    res_search_arm64 = _glibc_hack("res_search", "__res_search@GLIBC_2.17")
-    repository_ctx.file("glibc-hacks/res_search-arm64.map", content = res_search_arm64.mapfile)
-    repository_ctx.file("glibc-hacks/res_search-arm64.h", content = res_search_arm64.header)
 
 zig_repository = repository_rule(
     attrs = {

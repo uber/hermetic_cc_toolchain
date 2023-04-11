@@ -121,16 +121,6 @@ def _target_windows(gocpu, zigcpu):
 def _target_linux_gnu(gocpu, zigcpu, glibc_version):
     glibc_suffix = "gnu.{}".format(glibc_version)
 
-    compiler_extra_includes = []
-    linker_version_scripts = []
-    if glibc_version < "2.28":
-        # https://github.com/ziglang/zig/issues/5882#issuecomment-888250676
-        compiler_extra_includes.append("glibc-hacks/fcntl.h")
-        linker_version_scripts.append("glibc-hacks/fcntl.map")
-    if glibc_version < "2.34":
-        compiler_extra_includes.append("glibc-hacks/res_search-{}.h".format(gocpu))
-        linker_version_scripts.append("glibc-hacks/res_search-{}.map".format(gocpu))
-
     return struct(
         gotarget = "linux_{}_{}".format(gocpu, glibc_suffix),
         zigtarget = "{}-linux-{}".format(zigcpu, glibc_suffix),
@@ -143,8 +133,6 @@ def _target_linux_gnu(gocpu, zigcpu, glibc_version):
                    (["libc/include/{}-linux-any".format(zigcpu)] if zigcpu != "x86_64" else []) + [
             "libc/include/any-linux-any",
         ] + _INCLUDE_TAIL,
-        compiler_extra_includes = compiler_extra_includes,
-        linker_version_scripts = linker_version_scripts,
         dynamic_library_linkopts = [],
         copts = [],
         libc = "glibc",

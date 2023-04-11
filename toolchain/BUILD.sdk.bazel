@@ -12,13 +12,6 @@ declare_files(
     os = {os},
 )
 
-exports_files([
-    "glibc-hacks/fcntl.map",
-    "glibc-hacks/fcntl.h",
-    "glibc-hacks/res_search.map",
-    "glibc-hacks/res_search.h",
-])
-
 declare_cc_toolchains(
     os = {os},
     zig_sdk_path = {zig_sdk_path},
