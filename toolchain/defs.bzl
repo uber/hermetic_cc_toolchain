@@ -1,4 +1,3 @@
-load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "read_user_netrc", "use_netrc")
 load("@hermetic_cc_toolchain//toolchain/private:defs.bzl", "target_structs", "zig_tool_path")
@@ -194,7 +193,7 @@ def _zig_repository_impl(repository_ctx):
         "ZIG_GLOBAL_CACHE_DIR": cache_prefix,
     }
     compile_cmd = [
-        paths.join("..", "zig"),
+        _paths_join("..", "zig"),
         "build-exe",
         "-OReleaseSafe",
         "launcher.zig",
@@ -330,4 +329,19 @@ def _flatten(iterable):
     result = []
     for element in iterable:
         result += element
+    return result
+
+## Copied from https://github.com/bazelbuild/bazel-skylib/blob/1.4.1/lib/paths.bzl#L59-L98
+def _paths_is_absolute(path):
+    return path.startswith("/") or (len(path) > 2 and path[1] == ":")
+
+def _paths_join(path, *others):
+    result = path
+    for p in others:
+        if _paths_is_absolute(p):
+            result = p
+        elif not result or result.endswith("/"):
+            result += p
+        else:
+            result += "/" + p
     return result
