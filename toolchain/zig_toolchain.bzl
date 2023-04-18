@@ -114,20 +114,28 @@ def _zig_cc_toolchain_config_impl(ctx):
         ],
     )
 
+    link_flag_sets = []
+
+    if ctx.attr.linkopts:
+        link_flag_sets += [
+            flag_set(
+                actions = all_link_actions,
+                flag_groups = [flag_group(flags = ctx.attr.linkopts)],
+            ),
+        ]
+
     if ctx.attr.dynamic_library_linkopts:
-        dynamic_library_flag_sets = [
+        link_flag_sets += [
             flag_set(
                 actions = dynamic_library_link_actions,
                 flag_groups = [flag_group(flags = ctx.attr.dynamic_library_linkopts)],
             ),
         ]
-    else:
-        dynamic_library_flag_sets = []
 
     default_linker_flags = feature(
         name = "default_linker_flags",
         enabled = True,
-        flag_sets = dynamic_library_flag_sets,
+        flag_sets = link_flag_sets,
     )
 
     supports_dynamic_linker = feature(

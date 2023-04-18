@@ -63,6 +63,7 @@ def _target_macos(gocpu, zigcpu):
             "libc/include/any-macos.{}-any".format(min_os),
             "libc/include/any-macos-any",
         ] + _INCLUDE_TAIL,
+        linkopts = ["-Wl,-headerpad_max_install_names"],
         dynamic_library_linkopts = ["-Wl,-undefined=dynamic_lookup"],
         copts = copts,
         libc = "darwin",
@@ -90,6 +91,7 @@ def _target_windows(gocpu, zigcpu):
             "libunwind/include",
             "libc/include/any-windows-any",
         ] + _INCLUDE_TAIL,
+        linkopts = [],
         dynamic_library_linkopts = [],
         copts = [],
         libc = "mingw",
@@ -133,6 +135,7 @@ def _target_linux_gnu(gocpu, zigcpu, glibc_version):
                    (["libc/include/{}-linux-any".format(zigcpu)] if zigcpu != "x86_64" else []) + [
             "libc/include/any-linux-any",
         ] + _INCLUDE_TAIL,
+        linkopts = [],
         dynamic_library_linkopts = [],
         copts = [],
         libc = "glibc",
@@ -159,6 +162,7 @@ def _target_linux_musl(gocpu, zigcpu):
                    (["libc/include/{}-linux-any".format(zigcpu)] if zigcpu != "x86_64" else []) + [
             "libc/include/any-linux-any",
         ] + _INCLUDE_TAIL,
+        linkopts = [],
         dynamic_library_linkopts = [],
         copts = ["-D_LIBCPP_HAS_MUSL_LIBC", "-D_LIBCPP_HAS_THREAD_API_PTHREAD"],
         libc = "musl",

@@ -30,7 +30,7 @@ def declare_cc_toolchains(os, zig_sdk_path):
 
         dynamic_library_linkopts = target_config.dynamic_library_linkopts
         copts = target_config.copts
-        linkopts = []
+        linkopts = target_config.linkopts
 
         # We can't pass a list of structs to a rule, so we use json encoding.
         artifact_name_patterns = getattr(target_config, "artifact_name_patterns", [])
