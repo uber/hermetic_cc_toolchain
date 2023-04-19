@@ -1,7 +1,7 @@
 *~
 *.sw[op]
 
-/bazel-bazel-zig-cc
+/bazel-hermetic_cc_toolchain
 /bazel-bin
 /bazel-out
 /bazel-testlogs

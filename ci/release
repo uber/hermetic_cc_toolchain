@@ -12,4 +12,4 @@ tools/bazel run //tools/releaser -- -tag v99.0.0
 cleanup() { git tag -d v99.0.0; git reset --hard "$prev_ref"; }
 trap cleanup EXIT
 
-file bazel-zig-cc-v99.0.0.tar.gz | grep -q 'gzip compressed data'
+file hermetic_cc_toolchain-v99.0.0.tar.gz | grep -q 'gzip compressed data'

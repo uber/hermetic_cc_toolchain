@@ -1,1 +1,1 @@
-workspace(name = "bazel-zig-cc")
+workspace(name = "hermetic_cc_toolchain")

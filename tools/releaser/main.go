@@ -1,7 +1,7 @@
 // Copyright 2023 Uber Technologies, Inc.
 // Licensed under the MIT License
 
-// releaser is a tool for managing part of the process to release a new version of bazel-zig-cc.
+// releaser is a tool for managing part of the process to release a new version of hermetic_cc_toolchain.
 package main
 
 import (
@@ -50,7 +50,7 @@ func run() (_err error) {
 		tag      string
 	)
 
-	flag.StringVar(&repoRoot, "repo_root", os.Getenv("BUILD_WORKSPACE_DIRECTORY"), "root directory of bazel-zig-cc repo")
+	flag.StringVar(&repoRoot, "repo_root", os.Getenv("BUILD_WORKSPACE_DIRECTORY"), "root directory of hermetic_cc_toolchain repo")
 	flag.StringVar(&tag, "tag", "", "tag for this release")
 
 	flag.Usage = func() {
@@ -93,7 +93,7 @@ This utility is intended to handle many of the steps to release a new version.
 		}
 	}
 
-	fpath := path.Join(repoRoot, fmt.Sprintf("bazel-zig-cc-%s.tar.gz", tag))
+	fpath := path.Join(repoRoot, fmt.Sprintf("hermetic_cc_toolchain-%s.tar.gz", tag))
 	tgz, err := os.Create(fpath)
 	if err != nil {
 		return err
@@ -119,7 +119,7 @@ This utility is intended to handle many of the steps to release a new version.
 			"archive",
 			"--format=tar",
 			// WORKSPACE in the resulting tarball needs to be much
-			// smaller than of bazel-zig-cc. See #15.
+			// smaller than of hermetic_cc_toolchain. See #15.
 			"--add-file=tools/releaser/WORKSPACE",
 			tag,
 		}, _paths...)...,
@@ -151,15 +151,15 @@ func genBoilerplate(version, shasum string) string {
 	return fmt.Sprintf(`load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
-    name = "bazel-zig-cc",
+    name = "hermetic_cc_toolchain",
     sha256 = "%[2]s",
     urls = [
-        "https://mirror.bazel.build/github.com/uber/bazel-zig-cc/releases/download/%[1]s/bazel-zig-cc-%[1]s.tar.gz",
-        "https://github.com/uber/bazel-zig-cc/releases/download/%[1]s/bazel-zig-cc-%[1]s.tar.gz",
+        "https://mirror.bazel.build/github.com/uber/hermetic_cc_toolchain/releases/download/%[1]s/hermetic_cc_toolchain-%[1]s.tar.gz",
+        "https://github.com/uber/hermetic_cc_toolchain/releases/download/%[1]s/hermetic_cc_toolchain-%[1]s.tar.gz",
     ],
 )
 
-load("@bazel-zig-cc//toolchain:defs.bzl", zig_toolchains = "toolchains")
+load("@hermetic_cc_toolchain//toolchain:defs.bzl", zig_toolchains = "toolchains")
 
 # plain zig_toolchains() will pick reasonable defaults. See
 # toolchain/defs.bzl:toolchains on how to change the Zig SDK path and version.

@@ -23,5 +23,5 @@ echo "--- zig fmt --check toolchain/launcher.zig"
 $ZIG fmt --check toolchain/launcher.zig
 
 echo "--- zig test toolchain/launcher.zig"
-# until bazel-zig-cc gets a zig toolchain, run launcher's unit tests here.
+# until hermetic_cc_toolchain gets a zig toolchain, run launcher's unit tests here.
 $ZIG test toolchain/launcher.zig

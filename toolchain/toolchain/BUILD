@@ -1,4 +1,4 @@
-load("@bazel-zig-cc//toolchain/toolchain:defs.bzl", "declare_toolchains")
+load("@hermetic_cc_toolchain//toolchain/toolchain:defs.bzl", "declare_toolchains")
 
 package(
     default_visibility = ["//visibility:public"],

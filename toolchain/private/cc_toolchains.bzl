@@ -1,5 +1,5 @@
 load(":defs.bzl", "target_structs", "zig_tool_path")
-load("@bazel-zig-cc//toolchain:zig_toolchain.bzl", "zig_cc_toolchain_config")
+load("@hermetic_cc_toolchain//toolchain:zig_toolchain.bzl", "zig_cc_toolchain_config")
 
 DEFAULT_TOOL_PATHS = {
     "ar": "ar",

@@ -1,4 +1,4 @@
-module github.com/uber/bazel-zig-cc
+module github.com/uber/hermetic_cc_toolchain
 
 go 1.19
 

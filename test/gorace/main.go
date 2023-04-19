@@ -9,7 +9,7 @@
 // More context: https://github.com/ziglang/zig/issues/11398
 //
 // This fails, because `zig cc` adds `--gc-sections` to the linker
-// flag by default, which is incompatible with cgo. bazel-zig-cc
+// flag by default, which is incompatible with cgo. hermetic_cc_toolchain
 // adds a workaround for it.
 package main
 

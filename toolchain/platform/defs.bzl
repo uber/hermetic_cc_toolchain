@@ -1,4 +1,4 @@
-load("@bazel-zig-cc//toolchain/private:defs.bzl", "LIBCS")
+load("@hermetic_cc_toolchain//toolchain/private:defs.bzl", "LIBCS")
 
 _CPUS = (("x86_64", "amd64"), ("aarch64", "arm64"))
 _OS = {
