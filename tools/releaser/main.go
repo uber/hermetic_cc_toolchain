@@ -1,5 +1,5 @@
 // Copyright 2023 Uber Technologies, Inc.
-// Licensed under the Apache License, Version 2.0
+// Licensed under the MIT License
 
 // releaser is a tool for managing part of the process to release a new version of bazel-zig-cc.
 package main
@@ -23,7 +23,6 @@ var (
 	// Paths to be included to the release
 	_paths = []string{
 		"LICENSE",
-		"NOTICE",
 		"README.md",
 		"toolchain/*",
 	}

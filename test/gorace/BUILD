@@ -1,5 +1,5 @@
 # Copyright 2023 Uber Technologies, Inc.
-# Licensed under the Apache License, Version 2.0
+# Licensed under the MIT License
 
 load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 load("//rules:rules_go.bzl", "go_binary")
