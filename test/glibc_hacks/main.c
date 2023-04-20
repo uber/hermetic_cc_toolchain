@@ -1,5 +1,5 @@
 // Copyright 2023 Uber Technologies, Inc.
-// Licensed under the Apache License, Version 2.0
+// Licensed under the MIT License
 
 // This file tests that problematic functions (glibc-hacks) work.
 // Also see https://github.com/ziglang/zig/issues/9485
