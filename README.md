@@ -18,6 +18,18 @@ While copy-pasting the code in your project, attempt to read and understand the
 text surrounding the code snippets. This will save you hours of head
 scratching, I promise.
 
+# Project Origin
+
+This repository is based on Adam Bouhenguel's [bazel-zig-cc][ajbouh], then
+developed at `sr.ht/~motiejus/bazel-zig-cc` and finally moved to
+[github.com/uber](https://github.com/uber). Many thanks to Adam who built the
+very first functional version of Bazel and Zig integration.
+
+Previously communications were done in an email list; the past archive is in
+`mailing-list-archive.mbox`. It can be accessed like this:
+
+    mutt -f -R mailing-list-archive.mbox
+
 # Usage
 
 Add this to your `WORKSPACE`:
@@ -404,11 +416,6 @@ We maintain two channels for comms:
 - Github issues and pull requests.
 - Slack: `#zig` in bazel.slack.com.
 
-Previously communications were over email; the past archive is in
-`mailing-list-archive.mbox`. It can be accessed like this:
-
-    mutt -f -R mailing-list-archive.mbox
-
 # Maintainers
 
 This section lists the driving forces behind bazel-zig-cc. Committers have push
@@ -441,11 +448,6 @@ This section lists notable uses or mentions of bazel-zig-cc.
   author $250 for bazel-zig-cc.
 - 2022-01-13 [bazel-zig-cc building Envoy][zig-cc-envoy].
 
-# Thanks
-
-Many thanks to Adam Bouhenguel and his [bazel-zig-cc][ajbouh], the parent of
-this repository. Also, the Zig team for making this all possible and handling
-the issues promptly.
 
 [^1]: a [mathematical subset][subset]: both can be equal.
 
