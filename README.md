@@ -43,7 +43,7 @@ http_archive(
     sha256 = "e9f82bfb74b3df5ca0e67f4d4989e7f1f7ce3386c295fd7fda881ab91f83e509",
     strip_prefix = "bazel-zig-cc-{}".format(HERMETIC_CC_TOOLCHAIN_VERSION),
     urls = [
-        "https://mirror.bazel.build/github.com/uber/hermetic_cc_toolchain/releases/download/{0}/{0}.tar.gz".format(HERMETIC_CC_TOOLCHAIN_VERSION),
+        "https://mirror.bazel.build/github.com/uber/bazel-zig-cc/releases/download/{0}/{0}.tar.gz".format(HERMETIC_CC_TOOLCHAIN_VERSION),
         "https://github.com/uber/hermetic_cc_toolchain/releases/download/{0}/{0}.tar.gz".format(HERMETIC_CC_TOOLCHAIN_VERSION),
     ],
 )
