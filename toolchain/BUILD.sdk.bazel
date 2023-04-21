@@ -1,8 +1,8 @@
 # Copyright 2023 Uber Technologies, Inc.
 # Licensed under the MIT License
 
-load("@bazel-zig-cc//toolchain:defs.bzl", "declare_files")
-load("@bazel-zig-cc//toolchain/private:cc_toolchains.bzl", "declare_cc_toolchains")
+load("@hermetic_cc_toolchain//toolchain:defs.bzl", "declare_files")
+load("@hermetic_cc_toolchain//toolchain/private:cc_toolchains.bzl", "declare_cc_toolchains")
 
 package(
     default_visibility = ["//visibility:public"],

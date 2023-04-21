@@ -9,7 +9,7 @@ go_library(
     srcs = ["main.go"],
     # keep
     cgo = True,
-    importpath = "github.com/uber/bazel-zig-cc/test/gorace",
+    importpath = "github.com/uber/hermetic_cc_toolchain/test/gorace",
     visibility = ["//visibility:private"],
 )
 

@@ -1,7 +1,7 @@
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "read_user_netrc", "use_netrc")
-load("@bazel-zig-cc//toolchain/private:defs.bzl", "target_structs", "zig_tool_path")
+load("@hermetic_cc_toolchain//toolchain/private:defs.bzl", "target_structs", "zig_tool_path")
 
 # Directories that `zig c++` includes behind the scenes.
 _DEFAULT_INCLUDE_DIRECTORIES = [
@@ -13,11 +13,8 @@ _DEFAULT_INCLUDE_DIRECTORIES = [
 # Official recommended version. Should use this when we have a usable release.
 URL_FORMAT_RELEASE = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.{_ext}"
 
-# Caution: nightly releases are purged from ziglang.org after ~90 days. A real
-# solution would be to allow the downstream project specify their own mirrors.
-# This is explained in
-# https://sr.ht/~motiejus/bazel-zig-cc/#alternative-download-urls and is
-# awaiting my attention or your contribution.
+# Caution: nightly releases are purged from ziglang.org after ~90 days. Use the
+# Bazel mirror or your own.
 URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform}-{version}.{_ext}"
 
 # Official Bazel's mirror with selected Zig SDK versions. Bazel community is
@@ -176,19 +173,19 @@ def _zig_repository_impl(repository_ctx):
         sha256 = zig_sha256,
     )
 
-    cache_prefix = repository_ctx.os.environ.get("BAZEL_ZIG_CC_CACHE_PREFIX", "")
+    cache_prefix = repository_ctx.os.environ.get("HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX", "")
     if cache_prefix == "":
         if os == "windows":
-            cache_prefix = "C:\\\\Temp\\\\bazel-zig-cc"
+            cache_prefix = "C:\\\\Temp\\\\hermetic_cc_toolchain"
         else:
-            cache_prefix = "/tmp/bazel-zig-cc"
+            cache_prefix = "/tmp/hermetic_cc_toolchain"
 
     repository_ctx.template(
         "tools/launcher.zig",
         Label("//toolchain:launcher.zig"),
         executable = False,
         substitutions = {
-            "{BAZEL_ZIG_CC_CACHE_PREFIX}": cache_prefix,
+            "{HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX}": cache_prefix,
         },
     )
 
@@ -244,7 +241,7 @@ zig_repository = repository_rule(
         "url_formats": attr.string_list(allow_empty = False),
         "host_platform_ext": attr.string_dict(),
     },
-    environ = ["BAZEL_ZIG_CC_CACHE_PREFIX"],
+    environ = ["HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX"],
     implementation = _zig_repository_impl,
 )
 

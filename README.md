@@ -1,18 +1,17 @@
-[![builds.sr.ht status](https://builds.sr.ht/~motiejus/bazel-zig-cc.svg)](https://builds.sr.ht/~motiejus/bazel-zig-cc)
+# Hermetic CC toolchain
 
-# Bazel zig cc toolchain
-
-This is a C/C++ toolchain that can (cross-)compile C/C++ programs. It contains
-clang-15, musl, glibc 2-2.34, all in a ~40MB package. Read
+This is a C/C++ toolchain that can (cross-)compile C/C++ programs on top of
+`zig cc`. It contains clang-16, musl, glibc 2-2.34, all in a ~40MB package.
+Read
 [here](https://andrewkelley.me/post/zig-cc-powerful-drop-in-replacement-gcc-clang.html)
 about zig-cc; the rest of the README will present how to use this toolchain
 from Bazel.
 
 Configuring toolchains in Bazel is complex, under-documented, and fraught with
-peril. I, the co-author of bazel-zig-cc, am still confused on how this all
-works, and often wonder why it works at all. That aside, we made the our best
-effort to make bazel-zig-cc usable for your C/C++/CGo projects, with as many
-guardrails as we could install.
+peril. I, the co-author of `hermetic_cc_toolchain`, am still confused on how
+this all works, and often wonder why it works at all. That aside, we made the
+our best effort to make `hermetic_cc_toolchain` usable for your C/C++/CGo
+projects, with as many guardrails as we could install.
 
 While copy-pasting the code in your project, attempt to read and understand the
 text surrounding the code snippets. This will save you hours of head
@@ -20,10 +19,12 @@ scratching, I promise.
 
 # Project Origin
 
-This repository is based on Adam Bouhenguel's [bazel-zig-cc][ajbouh], then
-developed at `sr.ht/~motiejus/bazel-zig-cc` and finally moved to
-[github.com/uber](https://github.com/uber). Many thanks to Adam who built the
-very first functional version of Bazel and Zig integration.
+This repository is based on Adam Bouhenguel's [bazel-zig-cc][ajbouh], later
+developed at `sr.ht/~motiejus/bazel-zig-cc`. After a while it was moved to
+[github.com/uber](https://github.com/uber) and renamed to
+`hermetic_cc_toolchain`. Our special thanks to Adam for creating the original
+version and publishing it, his contribution helped make the idea to use Zig
+with Bazel at Uber a reality; now we all can benefit from it.
 
 Previously communications were done in an email list; the past archive is in
 `mailing-list-archive.mbox`. It can be accessed like this:
@@ -35,19 +36,19 @@ Previously communications were done in an email list; the past archive is in
 Add this to your `WORKSPACE`:
 
 ```
-BAZEL_ZIG_CC_VERSION = "v1.0.1"
+HERMETIC_CC_TOOLCHAIN_VERSION = "v1.0.1"
 
 http_archive(
-    name = "bazel-zig-cc",
+    name = "hermetic_cc_toolchain",
     sha256 = "e9f82bfb74b3df5ca0e67f4d4989e7f1f7ce3386c295fd7fda881ab91f83e509",
-    strip_prefix = "bazel-zig-cc-{}".format(BAZEL_ZIG_CC_VERSION),
+    strip_prefix = "bazel-zig-cc-{}".format(HERMETIC_CC_TOOLCHAIN_VERSION),
     urls = [
-        "https://mirror.bazel.build/github.com/uber/bazel-zig-cc/releases/download/{0}/{0}.tar.gz".format(BAZEL_ZIG_CC_VERSION),
-        "https://github.com/uber/bazel-zig-cc/releases/download/{0}/{0}.tar.gz".format(BAZEL_ZIG_CC_VERSION),
+        "https://mirror.bazel.build/github.com/uber/hermetic_cc_toolchain/releases/download/{0}/{0}.tar.gz".format(HERMETIC_CC_TOOLCHAIN_VERSION),
+        "https://github.com/uber/hermetic_cc_toolchain/releases/download/{0}/{0}.tar.gz".format(HERMETIC_CC_TOOLCHAIN_VERSION),
     ],
 )
 
-load("@bazel-zig-cc//toolchain:defs.bzl", zig_toolchains = "toolchains")
+load("@hermetic_cc_toolchain//toolchain:defs.bzl", zig_toolchains = "toolchains")
 
 # version, url_formats and host_platform_sha256 are optional for those who
 # want to control their Zig SDK version.
@@ -70,13 +71,13 @@ The snippets above will download the zig toolchain and make the bazel
 toolchains available for registration and usage. If you do nothing else, this
 may work. The `.bazelrc` snippet instructs Bazel to use the registered "new
 kinds of toolchains". All above are required regardless of how wants to use it.
-The next steps depend on how one wants to use bazel-zig-cc. The descriptions
+The next steps depend on how one wants to use `hermetic_cc_toolchain`. The descriptions
 below is a gentle introduction to C++ toolchains from "user's perspective" too.
 
 ## Use case: manually build a single target with a specific zig cc toolchain
 
 This option is least disruptive to the workflow compared to no hermetic C++
-toolchain, and works best when trying out or getting started with bazel-zig-cc
+toolchain, and works best when trying out or getting started with `hermetic_cc_toolchain`
 for a subset of targets.
 
 To request Bazel to use a specific toolchain (compatible with the specified
@@ -180,7 +181,7 @@ build --action_env BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
 From Bazel's perspective, this is almost equivalent to always specifying
 `--extra_toolchains` on every `bazel <...>` command-line invocation. It also
 means there is no way to disable the toolchain with the command line. This is
-useful if you find bazel-zig-cc useful enough to compile for all of your
+useful if you find `hermetic_cc_toolchain` useful enough to compile for all of your
 targets and tools.
 
 With `BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1` Bazel stops detecting the default
@@ -304,9 +305,9 @@ SIGILL: illegal instruction
 This flag encourages program authors to fix the undefined behavior. There are
 [many ways][ubsan2] to find the undefined behavior.
 
-# Known Issues In bazel-zig-cc
+# Known Issues In `hermetic_cc_toolchain`
 
-These are the things you may stumble into when using bazel-zig-cc. I am
+These are the things you may stumble into when using `hermetic_cc_toolchain`. I am
 unlikely to implement them any time soon, but patches implementing those will
 be accepted. See [Questions & Contributions](#questions-amp-contributions) on
 how to contribute.
@@ -341,7 +342,7 @@ currently targets the lowest version, without ability to change it.
 # Known Issues In Upstream
 
 This section lists issues that I've stumbled into when using `zig cc`, and is
-outside of bazel-zig-cc's control.
+outside of `hermetic_cc_toolchain`'s control.
 
 ## using glibc 2.27 or older
 
@@ -400,7 +401,7 @@ The tests are running (CId) on linux-amd64.
 
 ## Transient docker environment
 
-A standalone Docker environment to play with bazel-zig-cc:
+A standalone Docker environment to play with `hermetic_cc_toolchain`:
 
 ```
 $ docker run -e CC=/usr/bin/false -ti --rm -v "$PWD:/x" -w /x debian:bullseye-slim
@@ -418,7 +419,7 @@ We maintain two channels for comms:
 
 # Maintainers
 
-This section lists the driving forces behind bazel-zig-cc. Committers have push
+This section lists the driving forces behind `hermetic_cc_toolchain`. Committers have push
 access, maintainers have their areas. Should make it easier to understand our
 interests when reading patches or mailing lists.
 
@@ -432,16 +433,17 @@ You may find contact information of the individuals in the commit logs.
 
 # Publicity
 
-This section lists notable uses or mentions of bazel-zig-cc.
+This section lists notable uses or mentions of `bazel-zig-cc` (before the
+rename) and afterwards of the `hermetic_cc_toolchain`.
 
-- 2023-01-24 [bazel-zig-cc v1.0.0][bazel-zig-cc-v1]: releasing bazel-zig-cc and
-  admitting that bazel-zig-cc is used in production to compile all of Uber's
-  [Go Monorepo][go-monorepo].
+- 2023-01-24 [bazel-zig-cc v1.0.0][bazel-zig-cc-v1]:
+  releasing `bazel-zig-cc` and telling that `bazel-zig-cc`
+  is used in production to compile all of Uber's [Go Monorepo][go-monorepo].
 - 2022-11-18 [BazelCon 2022: Making Uber's hermetic C++
   toolchain][bazelcon2022]: Laurynas Lubys presents the story of how this
   repository came into being and how it was used (as of the conference).
 - 2022-05-23 [How Zig is used at Uber (youtube)][yt-how-zig-is-used-at-uber]:
-  Yours Truly (the author) talks about how bazel-zig-cc came to existence and
+  Yours Truly (the author) talks about how `bazel-zig-cc` came to existence and
   how it's used at Uber in Milan Zig Meetup.
 - 2022-05-23 [How Uber uses Zig][how-uber-uses-zig]: text version of the above.
 - 2022-03-30 [Google Open Source Peer Bonus Program][google-award] awarded the

@@ -7,7 +7,7 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "releaser_lib",
     srcs = ["main.go"],
-    importpath = "github.com/uber/bazel-zig-cc/tools/releaser",
+    importpath = "github.com/uber/hermetic_cc_toolchain/tools/releaser",
     visibility = ["//visibility:private"],
 )
 

@@ -1,4 +1,4 @@
-load("@bazel-zig-cc//rules:platform.bzl", "platform_binary")
+load("@hermetic_cc_toolchain//rules:platform.bzl", "platform_binary")
 
 cc_binary(
     name = "which_libc",

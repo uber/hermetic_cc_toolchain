@@ -3,13 +3,13 @@
 
 load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 load("//rules:rules_go.bzl", "go_binary")
-load("@bazel-zig-cc//rules:platform.bzl", "platform_binary", "platform_test")
+load("@hermetic_cc_toolchain//rules:platform.bzl", "platform_binary", "platform_test")
 
 go_library(
     name = "cgo_lib",
     srcs = ["cgo.go"],
     cgo = True,
-    importpath = "github.com/uber/bazel-zig-cc/test/cgo",
+    importpath = "github.com/uber/hermetic_cc_toolchain/test/cgo",
     visibility = ["//visibility:private"],
 )
 

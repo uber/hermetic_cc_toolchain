@@ -36,14 +36,14 @@
 // complain that the compiler is using undeclared directories on the host file
 // system. We do not declare prerequisites using absolute paths, because that
 // busts Bazel's remote cache.
-// * BAZEL_ZIG_CC_CACHE_PREFIX is configurable per toolchain instance, and
+// * HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX is configurable per toolchain instance, and
 // ZIG_GLOBAL_CACHE_DIR and ZIG_LOCAL_CACHE_DIR must be set to its value for
 // all `zig` invocations.
 //
 // Originally this was a Bash script, then a POSIX shell script, then two
-// scripts (one with pre-defined BAZEL_ZIG_CC_CACHE_PREFIX, one without). Then
-// Windows came along with two PowerShell scripts (ports of the POSIX shell
-// scripts), which I kept breaking. Then Bazel 6 came with
+// scripts (one with pre-defined HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX, one
+// without). Then Windows came along with two PowerShell scripts (ports of the
+// POSIX shell scripts), which I kept breaking. Then Bazel 6 came with
 // `--experimental_use_hermetic_linux_sandbox`, which hermetizes the sandbox to
 // the extreme: the sandbox has nothing that is not declared. /bin/sh and its
 // dependencies (/lib/x86_64-linux-gnu/libc.so.6 on my system) are obviously
@@ -67,7 +67,7 @@ const EXE = switch (builtin.target.os.tag) {
     else => "",
 };
 
-const CACHE_DIR = "{BAZEL_ZIG_CC_CACHE_PREFIX}";
+const CACHE_DIR = "{HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX}";
 
 const usage_cpp =
     \\
