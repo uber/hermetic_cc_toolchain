@@ -218,7 +218,7 @@ def _zig_repository_impl(repository_ctx):
             print("Launcher compilation failed. Clearing %s/{%s} and retrying" %
                   (cache_prefix, ",".join(zig_cache_dirs)))
             for d in zig_cache_dirs:
-                repository_ctx.delete(paths.join(cache_prefix, d))
+                repository_ctx.delete(_paths_join(cache_prefix, d))
 
         ret = repository_ctx.execute(
             compile_cmd,
