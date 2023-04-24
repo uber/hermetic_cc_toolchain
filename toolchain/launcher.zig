@@ -322,7 +322,7 @@ test "launcher:parseArgs" {
         .{
             .args = &[_][:0]const u8{"ar" ++ EXE},
             .want_result = .{
-                .err = std.fmt.comptimePrint(usage_other ++ "\n", .{
+                .err = comptime std.fmt.comptimePrint(usage_other ++ "\n", .{
                     .zig_tool = "ar",
                     .exe = EXE,
                 }),
@@ -331,7 +331,7 @@ test "launcher:parseArgs" {
         .{
             .args = &[_][:0]const u8{"c++" ++ EXE},
             .want_result = .{
-                .err = std.fmt.comptimePrint(usage_cpp ++ "\n", .{
+                .err = comptime std.fmt.comptimePrint(usage_cpp ++ "\n", .{
                     .zig_tool = "c++",
                     .exe = EXE,
                 }),
