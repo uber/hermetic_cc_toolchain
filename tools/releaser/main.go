@@ -24,6 +24,7 @@ var (
 	_paths = []string{
 		"LICENSE",
 		"README.md",
+		"MODULE.bazel",
 		"toolchain/*",
 	}
 
