@@ -1,4 +1,4 @@
-From MAILER-DAEMON Wed Mar  8 11:59:03 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=uber.com header.i=@uber.com
 Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	by mail-b.sr.ht (Postfix) with ESMTPS id DDF2111EEC2
@@ -43,9 +43,6 @@ To: Adam Bouhenguel <adam@bouhenguel.com>, ~motiejus/bazel-zig-cc@lists.sr.ht
 Cc: Steeve Morin <steeve.morin@gmail.com>, Zhongpeng Lin <zplin@uber.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Status: RO
-Content-Length: 4092
-Lines: 104
 
 + ~motiejus/bazel-zig-cc@lists.sr.ht (please subscribe[0]). Also
 switching from top-down to bottom-up posting.
@@ -152,7 +149,7 @@ ms you've made good progress on that. Do you still need help on rules_go#28=
 you need.
 >>>>>
 
-From MAILER-DAEMON Wed Mar  8 11:59:03 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=uber.com header.i=@uber.com
 Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 7F60211F01D
@@ -201,9 +198,6 @@ To: Steeve Morin <steeve.morin@gmail.com>
 Cc: Adam Bouhenguel <adam@bouhenguel.com>, ~motiejus/bazel-zig-cc@lists.sr.ht, 
 	Zhongpeng Lin <zplin@uber.com>
 Content-Type: text/plain; charset="UTF-8"
-Status: RO
-Content-Length: 964
-Lines: 24
 
 On Tue, Sep 14, 2021 at 2:21 AM Steeve Morin <steeve.morin@gmail.com> wrote:
 >
@@ -230,7 +224,7 @@ into it sometime soon.
 Regards,
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:03 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 7AA8311EF38
@@ -292,9 +286,6 @@ Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 In-Reply-To: <CAK+t98Ww6cWU+MRtaPQ=_WVe_mwYmf0h9HHj_O0D-yuXyvoS3A@mail.gmail.com>
-Status: O
-Content-Length: 891
-Lines: 21
 
 On Tue, Sep 14, 2021 at 03:18:04PM +0300, Motiejus Jakštys wrote:
 > On Tue, Sep 14, 2021 at 2:21 AM Steeve Morin <steeve.morin@gmail.com> wrote:
@@ -318,7 +309,7 @@ this year is better than next year.
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:03 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 57B3B11EF37
@@ -333,9 +324,6 @@ To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Status: O
-Content-Length: 3856
-Lines: 124
 
 From: Mantas Jonaitis <mjonaitis@uber.com>
 
@@ -462,7 +450,7 @@ index 133fe5a..415b9c2 100644
 --=20
 2.32.0
 
-From MAILER-DAEMON Wed Mar  8 11:59:03 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 3B44211EF37
@@ -477,9 +465,6 @@ To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Status: O
-Content-Length: 3822
-Lines: 123
 
 From: Mantas Jonaitis <mjonaitis@uber.com>
 
@@ -605,7 +590,7 @@ index 133fe5a..415b9c2 100644
 --=20
 2.32.0
 
-From MAILER-DAEMON Wed Mar  8 11:59:03 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 758F711EF37
@@ -655,9 +640,6 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 In-Reply-To: <163611954593.18596.9121656084211429991-0@git.sr.ht>
-Status: O
-Content-Length: 808
-Lines: 20
 
 On Thu, Nov 04, 2021 at 06:54:42PM +0200, ~mjonaitis wrote:
 > From: Mantas Jonaitis <mjonaitis@uber.com>
@@ -680,7 +662,7 @@ Motiejus
 [1]: https://git.sr.ht/~motiejus/bazel-zig-cc/commit/523943bd35d33f96f946be653311787426149135
 [2]: https://git.sr.ht/~motiejus/bazel-zig-cc/commit/22b5d3e8e38e762a35adbfd4e13bfe5c2fb07972
 
-From MAILER-DAEMON Wed Mar  8 11:59:03 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 9413211EF81
@@ -732,9 +714,6 @@ Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 In-Reply-To: <CAO8CkMSaFSeYVsgczJPStPz9M3LDZCUdABRo8Pk1+=U6v-NT0Q@mail.gmail.com>
-Status: O
-Content-Length: 1502
-Lines: 36
 
 On Mon, Dec 06, 2021 at 05:57:46PM +0000, Thomas Way wrote:
 >    Hey Motiejus!
@@ -773,7 +752,7 @@ Motiejus
 [2]:
 https://git.sr.ht/~motiejus/bazel-zig-cc/commit/8f5f249227aa6a9d3de441058eb9d3aae330620b
 
-From MAILER-DAEMON Wed Mar  8 11:59:03 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 9975311EF93
@@ -821,9 +800,6 @@ Message-ID: <20211210075733.ihb2b57lyges4l6d@mtpad.i.jakstys.lt>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Status: O
-Content-Length: 1921
-Lines: 46
 
 Hi bazel-zig-cc users,
 
@@ -872,7 +848,7 @@ happens.
 [4]: https://github.com/ziglang/zig/issues/10299#issuecomment-990404953
 [5]: https://github.com/ziglang/zig/issues/10299#issuecomment-989153750
 
-From MAILER-DAEMON Wed Mar  8 11:59:03 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 6E05E11EF94
@@ -920,9 +896,6 @@ Message-ID: <20211213023816.obgjrpaxt445lzpn@mtpad.i.jakstys.lt>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Status: O
-Content-Length: 2091
-Lines: 63
 
 Hi folks,
 
@@ -988,7 +961,7 @@ Motiejus
 [3]: https://github.com/ziglang/zig/issues/4830#issuecomment-605491606
 [4]: https://github.com/google/brotli/blob/ce222e317e36aa362e83fc50c7a6226d238e03fd/CMakeLists.txt#L104-L108
 
-From MAILER-DAEMON Wed Mar  8 11:59:03 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 8F7BE11EFCB
@@ -1036,9 +1009,6 @@ Message-ID: <20211215131306.toz7czanzdhhukbe@mtpad.i.jakstys.lt>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Status: O
-Content-Length: 1430
-Lines: 42
 
 Hi folks,
 
@@ -1083,7 +1053,7 @@ Motiejus
 [5]: https://github.com/ziglang/zig/issues/4830#issuecomment-605491606
 [6]: https://lists.sr.ht/~motiejus/bazel-zig-cc/%3C20211213023816.obgjrpaxt445lzpn%40mtpad.i.jakstys.lt%3E
 
-From MAILER-DAEMON Wed Mar  8 11:59:03 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
 	by mail-b.sr.ht (Postfix) with ESMTPS id E229D11EF12
@@ -1131,9 +1101,6 @@ Message-ID: <20211227084152.mjkx33nbxhnls5qz@mtpad.i.jakstys.lt>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Status: O
-Content-Length: 693
-Lines: 20
 
 Hi folks,
 
@@ -1156,7 +1123,7 @@ Motiejus
 [1]: https://github.com/ziglang/zig/issues/10386
 [2]: https://builds.sr.ht/~motiejus/job/654617
 
-From MAILER-DAEMON Wed Mar  8 11:59:03 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 3EB8D11EFDB
@@ -1195,9 +1162,6 @@ Message-ID: <CAOGO9CoqMcAp=_9KVB3g9o5Jp45OtcAP7TT_Cn_Gom-YfQ9pew@mail.gmail.com>
 Subject: uname -m on M1 MacBook returns arm64
 To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 1664
-Lines: 38
 
 Hello,
 
@@ -1238,7 +1202,7 @@ from 2017. Maybe platforms provide a way out [3]?
 [2]: https://stackoverflow.com/a/45029999/30900
 [3]: https://github.com/bazelbuild/rules_go/blob/master/go/private/go_toolchain.bzl#L95
 
-From MAILER-DAEMON Wed Mar  8 11:59:03 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	by mail-b.sr.ht (Postfix) with ESMTPS id E27F211EEAC
@@ -1288,9 +1252,6 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 In-Reply-To: <CAOGO9CoqMcAp=_9KVB3g9o5Jp45OtcAP7TT_Cn_Gom-YfQ9pew@mail.gmail.com>
-Status: O
-Content-Length: 2531
-Lines: 58
 
 On Tue, Jan 04, 2022 at 09:16:33AM -0800, Joe Schafer wrote:
 > Hello,
@@ -1351,7 +1312,7 @@ Motiejus
 > [2]: https://stackoverflow.com/a/45029999/30900
 > [3]: https://github.com/bazelbuild/rules_go/blob/master/go/private/go_toolchain.bzl#L95
 
-From MAILER-DAEMON Wed Mar  8 11:59:03 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 51C2B11F170
@@ -1397,9 +1358,6 @@ To: =?UTF-8?Q?Motiejus_Jak=C5=A1tys?= <motiejus@jakstys.lt>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 3682
-Lines: 91
 
 > If you can dig in for more information why `uname -m` returns arm64 vs
 aarch64 (OSX minor version? something else?)
@@ -1493,7 +1451,7 @@ defs.bzl#L210
 > > [3]: https://github.com/bazelbuild/rules_go/blob/master/go/private/go_t=
 oolchain.bzl#L95
 
-From MAILER-DAEMON Wed Mar  8 11:59:03 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 5DC9611EF4B
@@ -1545,9 +1503,6 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 In-Reply-To: <CAOGO9Cr=foMi5dX8m_ygVxeX_YVMRU1D=Ex7mTxL9ew_VBpYQA@mail.gmail.com>
-Status: O
-Content-Length: 1629
-Lines: 41
 
 On Thu, Jan 06, 2022 at 02:43:28PM -0800, Joe Schafer wrote:
 > > If you can dig in for more information why `uname -m` returns arm64 vs
@@ -1591,7 +1546,7 @@ for how to send the patch. Thanks for your report!
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:03 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 9857111EF33
@@ -1639,9 +1594,6 @@ Message-ID: <20220117151129.kdvzdw3w2dnuaxrj@mtpad.i.jakstys.lt>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Status: O
-Content-Length: 491
-Lines: 14
 
 Hi all,
 
@@ -1658,7 +1610,7 @@ Motiejus
 [1]: https://github.com/ziglang/zig/issues/10386
 [2]: https://git.sr.ht/~motiejus/bazel-zig-cc#known-issues-in-bazel-zig-cc
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
 	by mail-b.sr.ht (Postfix) with ESMTPS id ABA1911EEB5
@@ -1706,9 +1658,6 @@ Message-ID: <20220126054357.h5jxh7jtg75k3g57@mtpad.i.jakstys.lt>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Status: O
-Content-Length: 612
-Lines: 22
 
 Hi all,
 
@@ -1733,7 +1682,7 @@ Motiejus
 [1]: https://github.com/envoyproxy/envoy/issues/19535
 [2]: https://jakstys.lt/mtpad/gpg.txt
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 3C7CC11EFBD
@@ -1781,9 +1730,6 @@ Message-ID: <20220127091527.oe53s3gm75354rdm@mtpad.i.jakstys.lt>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Status: O
-Content-Length: 564
-Lines: 17
 
 Hi all,
 
@@ -1803,7 +1749,7 @@ Motiejus
 [2]: https://github.com/ziglang/zig/commit/40c9ce2caf8f
 [3]: https://github.com/envoyproxy/envoy/issues/19535
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 7F1CF11EEDD
@@ -1851,9 +1797,6 @@ Message-ID: <20220202133213.g6c66zwont7qyrr4@mtpad.i.jakstys.lt>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Status: O
-Content-Length: 627
-Lines: 17
 
 Hi all,
 
@@ -1873,7 +1816,7 @@ https://github.com/envoyproxy/envoy/issues/19535#issuecomment-1024533163
 https://github.com/envoyproxy/envoy/issues/19535#issuecomment-1026111822
 [3]: https://github.com/grailbio/bazel-toolchain#quickstart
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 6C8BC11EFDA
@@ -1921,9 +1864,6 @@ Message-ID: <20220204115557.dhs7gvnyk3bapyja@mtpad.i.jakstys.lt>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Status: O
-Content-Length: 1092
-Lines: 35
 
 Hi folks,
 
@@ -1961,7 +1901,7 @@ Motiejus
 
 [1]: https://builds.sr.ht/~motiejus/job/687819
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
 	by mail-b.sr.ht (Postfix) with ESMTPS id DFEC611F2DA
@@ -2013,9 +1953,6 @@ Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 In-Reply-To: <20220204115557.dhs7gvnyk3bapyja@mtpad.i.jakstys.lt>
-Status: O
-Content-Length: 696
-Lines: 21
 
 On Fri, Feb 04, 2022 at 01:55:57PM +0200, Motiejus Jakštys wrote:
 > Hi folks,
@@ -2039,7 +1976,7 @@ Motiejus
 https://github.com/PiotrSikora/bazel-zig-cc/commit/10101bf7f11ff404e66f582bbb64a3a875f8e45f#commitcomment-66048081
 [2]: https://git.sr.ht/~motiejus/bazel-zig-cc/tree/main/item/ci/test
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 4707611F2DA
@@ -2087,9 +2024,6 @@ Message-ID: <20220205050628.3m6ewpkxnvqngcqw@mtpad.i.jakstys.lt>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Status: O
-Content-Length: 999
-Lines: 22
 
 Hi all,
 
@@ -2114,7 +2048,7 @@ Motiejus
 [1]: https://git.sr.ht/~motiejus/bazel-zig-cc/tree/v0.4.4/item/README.md#toolchain-and-platform-target-locations
 [2]: https://git.sr.ht/~motiejus/bazel-zig-cc/tree/v0.4.4/item/ci/test
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 2D5CC11F033;
@@ -2130,9 +2064,6 @@ To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Cc: kmicklas@uber.com
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Status: O
-Content-Length: 405
-Lines: 13
 
 With this I'm able to build a simple `cc_library` target on an M1.
 
@@ -2148,7 +2079,7 @@ Ken Micklas (3):
 -- 
 2.32.0
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 5AB6311F0C1;
@@ -2166,9 +2097,6 @@ Cc: kmicklas@uber.com
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Status: O
-Content-Length: 783
-Lines: 26
 
 From: Ken Micklas <kmicklas@uber.com>
 
@@ -2197,7 +2125,7 @@ me -m)"
 2.32.0
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 7571711F0C9;
@@ -2215,9 +2143,6 @@ Cc: kmicklas@uber.com
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Status: O
-Content-Length: 1126
-Lines: 34
 
 From: Ken Micklas <kmicklas@uber.com>
 
@@ -2254,7 +2179,7 @@ _platform]
 2.32.0
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 93FE611F189;
@@ -2272,9 +2197,6 @@ Cc: kmicklas@uber.com
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Status: O
-Content-Length: 1125
-Lines: 34
 
 From: Ken Micklas <kmicklas@uber.com>
 
@@ -2311,7 +2233,7 @@ index 2b572d3..8ed93c7 100644
 -- 
 2.32.0
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 DKIM-Signature: a=rsa-sha256; bh=iFZPni2s8+PUNzy+zRMfM/84OlUZYNc44+op1j+85vU=;
  c=simple/simple; d=sr.ht; h=Date:From:In-Reply-To:Subject:To:Cc;
  q=dns/txt; s=srht; t=1644536758; v=1;
@@ -2333,9 +2255,6 @@ To: "~kmicklas" <accounts@kmicklas.com>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 304
-Lines: 9
 
 bazel-zig-cc/patches/.build.yml: SUCCESS in 12m57s
 
@@ -2347,7 +2266,7 @@ bazel-zig-cc/patches/.build.yml: SUCCESS in 12m57s
 =E2=9C=93 #693103 SUCCESS bazel-zig-cc/patches/.build.yml https://builds.sr=
 .ht/~motiejus/job/693103
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 1A0A511F006
@@ -2398,9 +2317,6 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 In-Reply-To: <164453597791.17553.15415322179801626658-0@git.sr.ht>
-Status: O
-Content-Length: 463
-Lines: 13
 
 On Thu, Feb 10, 2022 at 11:32:57PM +0000, ~kmicklas wrote:
 > With this I'm able to build a simple `cc_library` target on an M1.
@@ -2416,7 +2332,7 @@ cc Joe, who had problems with M1 before. These are now fixed.
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 5024911EF37;
@@ -2432,9 +2348,6 @@ To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Cc: kmicklas@uber.com
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Status: O
-Content-Length: 347
-Lines: 12
 
 This adds support for netrc and multiple download mirrors.
 
@@ -2449,7 +2362,7 @@ Ken Micklas (3):
 -- 
 2.34.1
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 7FAB111EF43;
@@ -2467,9 +2380,6 @@ Cc: kmicklas@uber.com
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Status: O
-Content-Length: 2340
-Lines: 66
 
 From: Ken Micklas <kmicklas@uber.com>
 
@@ -2538,7 +2448,7 @@ a61a09b28",
 2.34.1
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id AFC4C11EF44;
@@ -2555,9 +2465,6 @@ Cc: kmicklas@uber.com
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Status: O
-Content-Length: 2412
-Lines: 67
 
 From: Ken Micklas <kmicklas@uber.com>
 
@@ -2627,7 +2534,7 @@ s"),
 2.34.1
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id D52B611EF52;
@@ -2644,9 +2551,6 @@ Cc: kmicklas@uber.com
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Status: O
-Content-Length: 2268
-Lines: 64
 
 From: Ken Micklas <kmicklas@uber.com>
 
@@ -2713,7 +2617,7 @@ bout them.
 --=20
 2.34.1
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 DKIM-Signature: a=rsa-sha256; bh=7E5ugq03gQepqZijHDKqWwmyoSoljjtR17dVHMYjfto=;
  c=simple/simple; d=sr.ht; h=Date:In-Reply-To:Subject:To:Cc:From;
  q=dns/txt; s=srht; t=1647548274; v=1;
@@ -2735,9 +2639,6 @@ Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 From: "builds.sr.ht" <builds@sr.ht>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 302
-Lines: 9
 
 bazel-zig-cc/patches/.build.yml: SUCCESS in 13m21s
 
@@ -2749,7 +2650,7 @@ bazel-zig-cc/patches/.build.yml: SUCCESS in 13m21s
 =E2=9C=93 #717171 SUCCESS bazel-zig-cc/patches/.build.yml https://builds.sr=
 .ht/~motiejus/job/717171
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 8FFDB11EFC0
@@ -2797,9 +2698,6 @@ Message-ID: <20220318055847.p3qo75w55piucvix@mtpad.i.jakstys.lt>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Status: O
-Content-Length: 909
-Lines: 23
 
 Hi all,
 
@@ -2825,7 +2723,7 @@ may want to use your mirror.
 Happy compiling,
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id B878611EF57;
@@ -2842,9 +2740,6 @@ To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Cc: kmicklas@uber.com
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Status: O
-Content-Length: 430
-Lines: 15
 
 Also pins the Go SDK version.
 
@@ -2862,7 +2757,7 @@ Ken Micklas (4):
 -- 
 2.34.1
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id D86DC11F01F;
@@ -2879,9 +2774,6 @@ Cc: kmicklas@uber.com
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Status: O
-Content-Length: 280
-Lines: 16
 
 From: Ken Micklas <kmicklas@uber.com>
 
@@ -2900,7 +2792,7 @@ index af8c8ec..831446c 100644
 2.34.1
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id F2C8E11F0F2;
@@ -2918,9 +2810,6 @@ Cc: kmicklas@uber.com
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Status: O
-Content-Length: 1105
-Lines: 38
 
 From: Ken Micklas <kmicklas@uber.com>
 
@@ -2961,7 +2850,7 @@ _platform]
 2.34.1
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 3AA1D11F178;
@@ -2978,9 +2867,6 @@ Cc: kmicklas@uber.com
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Status: O
-Content-Length: 2267
-Lines: 64
 
 From: Ken Micklas <kmicklas@uber.com>
 
@@ -3047,7 +2933,7 @@ bout them.
 2.34.1
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 5A3F711EF57;
@@ -3064,9 +2950,6 @@ Cc: kmicklas@uber.com
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Status: O
-Content-Length: 479
-Lines: 21
 
 From: Ken Micklas <kmicklas@uber.com>
 
@@ -3090,7 +2973,7 @@ index eeb098a..0aff5db 100644
 -- 
 2.34.1
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 DKIM-Signature: a=rsa-sha256; bh=vl6q2l7OOKEBhNt4qtJAxHIft46gdMwjqZrsBx08HLM=;
  c=simple/simple; d=sr.ht; h=Date:In-Reply-To:Subject:To:Cc:From;
  q=dns/txt; s=srht; t=1648224469; v=1;
@@ -3112,9 +2995,6 @@ Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 From: "builds.sr.ht" <builds@sr.ht>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 325
-Lines: 9
 
 bazel-zig-cc/patches/.build.yml: FAILED in 14m1s
 
@@ -3126,7 +3006,7 @@ bazel-zig-cc/patches/.build.yml: FAILED in 14m1s
 =E2=9C=97 #722785 FAILED bazel-zig-cc/patches/.build.yml https://builds.sr.=
 ht/~motiejus/job/722785
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 2AE3F11EEFB
@@ -3177,9 +3057,6 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 In-Reply-To: <164822362548.25319.8453123527885867890-4@git.sr.ht>
-Status: O
-Content-Length: 729
-Lines: 23
 
 On Fri, Mar 25, 2022 at 11:47:10AM -0400, ~kmicklas wrote:
 > From: Ken Micklas <kmicklas@uber.com>
@@ -3205,7 +3082,7 @@ right, leaving it like this for reproducibility.
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 942C011EEFB
@@ -3256,9 +3133,6 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 In-Reply-To: <164822362548.25319.8453123527885867890-0@git.sr.ht>
-Status: O
-Content-Length: 396
-Lines: 12
 
 On Fri, Mar 25, 2022 at 03:53:45PM +0000, ~kmicklas wrote:
 > Also pins the Go SDK version.
@@ -3273,7 +3147,7 @@ Thanks, applied all of them (+buildifier). Do you want me to cut v0.5.1?
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 150F811EF0D
@@ -3288,9 +3162,6 @@ Reply-to: ~laurynasl <laurynasl@uber.com>
 To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Status: O
-Content-Length: 1282
-Lines: 31
 
 Move platform and toochains definitions into their own "namespaces".
 
@@ -3324,7 +3195,7 @@ laurynasl (4):
 -- 
 2.34.1
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 30F8411EF31
@@ -3340,9 +3211,6 @@ To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Status: O
-Content-Length: 4658
-Lines: 126
 
 From: laurynasl <laurynasl@uber.com>
 
@@ -3471,7 +3339,7 @@ index 0000000..b02436b
 2.34.1
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 4D67411EF0D
@@ -3487,9 +3355,6 @@ To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Status: O
-Content-Length: 2927
-Lines: 77
 
 From: laurynasl <laurynasl@uber.com>
 
@@ -3569,7 +3434,7 @@ u),
 2.34.1
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 6C1EB11EF31
@@ -3585,9 +3450,6 @@ To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Status: O
-Content-Length: 10472
-Lines: 268
 
 From: laurynasl <laurynasl@uber.com>
 
@@ -3858,7 +3720,7 @@ index 0000000..4b505dc
 2.34.1
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id A38FF11EF0D
@@ -3874,9 +3736,6 @@ To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Status: O
-Content-Length: 19852
-Lines: 532
 
 From: laurynasl <laurynasl@uber.com>
 
@@ -4411,7 +4270,7 @@ ies,
 --=20
 2.34.1
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
 	by mail-b.sr.ht (Postfix) with ESMTPS id D9FEC11EF31
@@ -4459,9 +4318,6 @@ Message-ID: <20220407101625.aahrqx4fa4qme56i@mtpad.i.jakstys.lt>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Status: O
-Content-Length: 955
-Lines: 23
 
 Hi all,
 
@@ -4487,7 +4343,7 @@ Motiejus
 [1]: https://twitter.com/croloris/status/1511342711764303890
 [2]: https://opensource.googleblog.com/2022/03/Announcing-First-Group-of-Google-Open-Source-Peer-Bonus-Winners-in-2022.html
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
 	by mail-b.sr.ht (Postfix) with ESMTPS id EC4CF11EF0D
@@ -4535,9 +4391,6 @@ Message-ID: <20220407114650.uvdymzjjrdpwy6ei@mtpad.i.jakstys.lt>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Status: O
-Content-Length: 1775
-Lines: 52
 
 Hi all,
 
@@ -4592,7 +4445,7 @@ Looking forward to it!
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 26EB511EF0D
@@ -4644,9 +4497,6 @@ Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 In-Reply-To: <20220407101625.aahrqx4fa4qme56i@mtpad.i.jakstys.lt>
-Status: O
-Content-Length: 1048
-Lines: 26
 
 Hi all,
 
@@ -4675,7 +4525,7 @@ mailing list, which I reported to `#sr.ht:libera.chat`:
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 82D7C11EF2F
@@ -4691,9 +4541,6 @@ Reply-to: ~laurynasl <laurynasl@uber.com>
 To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Status: O
-Content-Length: 232
-Lines: 11
 
 Looks like this slipped through the CI. We should think about how to
 catch cases like these.
@@ -4707,7 +4554,7 @@ laurynasl (1):
 -- 
 2.34.1
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 9D4EB11EF52
@@ -4723,9 +4570,6 @@ To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Status: O
-Content-Length: 563
-Lines: 21
 
 From: laurynasl <laurynasl@uber.com>
 
@@ -4749,7 +4593,7 @@ index ebcb65e..9e34e6b 100644
 -- 
 2.34.1
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 DKIM-Signature: a=rsa-sha256; bh=YOJYgIRj5Efp6IEK+Upr03ayDJNyfjbPpxDgRvSeIe4=;
  c=simple/simple; d=sr.ht; h=Date:From:In-Reply-To:Subject:To:Cc;
  q=dns/txt; s=srht; t=1649423871; v=1;
@@ -4771,9 +4615,6 @@ To: "~laurynasl" <laurynasl@uber.com>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 333
-Lines: 9
 
 bazel-zig-cc/patches/.build.yml: SUCCESS in 13m56s
 
@@ -4785,7 +4626,7 @@ bazel-zig-cc/patches/.build.yml: SUCCESS in 13m56s
 =E2=9C=93 #732421 SUCCESS bazel-zig-cc/patches/.build.yml https://builds.sr=
 .ht/~motiejus/job/732421
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	by mail-b.sr.ht (Postfix) with ESMTPS id E328611EF8D
@@ -4836,9 +4677,6 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 In-Reply-To: <164942303327.26005.14403108374611803240-0@git.sr.ht>
-Status: O
-Content-Length: 917
-Lines: 27
 
 On Fri, Apr 08, 2022 at 01:03:53PM +0000, ~laurynasl wrote:
 > Looks like this slipped through the CI. We should think about how to
@@ -4868,7 +4706,7 @@ Applied and released v0.6.1. Thank you.
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
 	by mail-b.sr.ht (Postfix) with ESMTPS id D3B0811EF91
@@ -4916,9 +4754,6 @@ Message-ID: <20220415140730.xpx6sap4yu4bt3ix@mtpad.i.jakstys.lt>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Status: O
-Content-Length: 902
-Lines: 24
 
 Hi all,
 
@@ -4945,7 +4780,7 @@ Thanks Laurynai!
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
 	by mail-b.sr.ht (Postfix) with ESMTPS id D2AE611EEFE
@@ -4993,9 +4828,6 @@ Message-ID: <20220420093736.x4hjjpkkkzvjolsa@mtpad.i.jakstys.lt>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Status: O
-Content-Length: 1282
-Lines: 43
 
 Hi all,
 
@@ -5041,7 +4873,7 @@ Motiejus
 
 [1]: https://github.com/bazelbuild/rules_docker/pull/1963
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=uber.com header.i=@uber.com
 Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 7F24311EEFE
@@ -5084,9 +4916,6 @@ To: =?UTF-8?Q?Motiejus_Jak=C5=A1tys?= <motiejus@jakstys.lt>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 1955
-Lines: 63
 
 Regarding rules_docker:
 
@@ -5152,7 +4981,7 @@ E).
 >
 > [1]: https://github.com/bazelbuild/rules_docker/pull/1963
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 2FFBD11EFC9
@@ -5200,9 +5029,6 @@ Message-ID: <20220505122425.ipd2p6kykd7iph7b@mtpad.i.jakstys.lt>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Status: O
-Content-Length: 650
-Lines: 19
 
 Hi everyone,
 
@@ -5224,7 +5050,7 @@ Motiejus
 
 [1]: https://github.com/ziglang/zig/pull/11577
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 1CB2111EE04
@@ -5272,9 +5098,6 @@ Message-ID: <20220517121002.f4tnfcmgvk4nwbxe@mtpad.i.jakstys.lt>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Status: O
-Content-Length: 500
-Lines: 14
 
 Hi all,
 
@@ -5291,7 +5114,7 @@ hosting zig sdk yourself.
 Regards,
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=hahn.graphics header.i=@hahn.graphics
 Received: from mail.hahn.graphics (poliwhirl.hahn.graphics [139.162.183.182])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 2B1C411EEE1
@@ -5309,9 +5132,6 @@ Cc: Fabian Hahn <fabian@hahn.graphics>
 Subject: [PATCH bazel-zig-cc 0/3] Windows support
 Date: Fri, 20 May 2022 16:02:29 +0100
 Message-Id: <20220520150232.15515-1-fabian@hahn.graphics>
-Status: O
-Content-Length: 1604
-Lines: 39
 
 Hello there,
 
@@ -5353,7 +5173,7 @@ Fabian Hahn (3):
 2.17.1
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=hahn.graphics header.i=@hahn.graphics
 Received: from mail.hahn.graphics (poliwhirl.hahn.graphics [139.162.183.182])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 6FE2611EEFC
@@ -5373,9 +5193,6 @@ Date: Fri, 20 May 2022 16:02:30 +0100
 Message-Id: <20220520150232.15515-2-fabian@hahn.graphics>
 In-Reply-To: <20220520150232.15515-1-fabian@hahn.graphics>
 References: <20220520150232.15515-1-fabian@hahn.graphics>
-Status: O
-Content-Length: 10516
-Lines: 262
 
 ---
 This commit adds support for Windows as a host system. For example, given
@@ -5640,7 +5457,7 @@ index 6059065..6804104 100644
 2.17.1
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=hahn.graphics header.i=@hahn.graphics
 Received: from mail.hahn.graphics (poliwhirl.hahn.graphics [139.162.183.182])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 6BB9911EF8C
@@ -5660,9 +5477,6 @@ Date: Fri, 20 May 2022 16:02:31 +0100
 Message-Id: <20220520150232.15515-3-fabian@hahn.graphics>
 In-Reply-To: <20220520150232.15515-1-fabian@hahn.graphics>
 References: <20220520150232.15515-1-fabian@hahn.graphics>
-Status: O
-Content-Length: 3082
-Lines: 81
 
 ---
 This commit adds support for Windows targets to bazel-zig-cc by
@@ -5746,7 +5560,7 @@ index 6804104..2ba61f7 100644
 2.17.1
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=hahn.graphics header.i=@hahn.graphics
 Received: from mail.hahn.graphics (poliwhirl.hahn.graphics [139.162.183.182])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 21BA211EEE1
@@ -5766,9 +5580,6 @@ Date: Fri, 20 May 2022 16:02:32 +0100
 Message-Id: <20220520150232.15515-4-fabian@hahn.graphics>
 In-Reply-To: <20220520150232.15515-1-fabian@hahn.graphics>
 References: <20220520150232.15515-1-fabian@hahn.graphics>
-Status: O
-Content-Length: 2570
-Lines: 81
 
 ---
 This commit adds a constraint_setting that can be used to select()
@@ -5852,7 +5663,7 @@ index 07e69a6..05c0744 100644
 2.17.1
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 DKIM-Signature: a=rsa-sha256; bh=nPs7mO//26/A4dat0ZQHrPvplq+tqK8f6RDslDMAXe8=;
  c=simple/simple; d=sr.ht; h=Date:Cc:From:In-Reply-To:Subject:To;
  q=dns/txt; s=srht; t=1653059791; v=1;
@@ -5874,9 +5685,6 @@ Subject: [bazel-zig-cc/patches/.build.yml] build failed
 To: "Fabian Hahn" <fabian@hahn.graphics>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 300
-Lines: 9
 
 bazel-zig-cc/patches/.build.yml: FAILED in 13m9s
 
@@ -5888,7 +5696,7 @@ bazel-zig-cc/patches/.build.yml: FAILED in 13m9s
 =E2=9C=97 #762646 FAILED bazel-zig-cc/patches/.build.yml https://builds.sr.=
 ht/~motiejus/job/762646
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
 	by mail-b.sr.ht (Postfix) with ESMTPS id CDF6311EEB5
@@ -5938,9 +5746,6 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 In-Reply-To: <20220520150232.15515-1-fabian@hahn.graphics>
-Status: O
-Content-Length: 2068
-Lines: 52
 
 Hi Fabian,
 
@@ -5995,7 +5800,7 @@ quick glimpse.
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=uber.com header.i=@uber.com
 Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
 	by mail-b.sr.ht (Postfix) with ESMTPS id AD5A411EE06
@@ -6040,9 +5845,6 @@ Subject: Re: [PATCH bazel-zig-cc 3/3] added platform constraint setting for
 To: Fabian Hahn <fabian@hahn.graphics>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 3434
-Lines: 99
 
 Hi Fabian,
 
@@ -6144,7 +5946,7 @@ On Fri, May 20, 2022 at 6:03 PM Fabian Hahn <fabian@hahn.graphics> wrote:
 > 2.17.1
 >
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=hahn.graphics header.i=@hahn.graphics
 Received: from mail.hahn.graphics (poliwhirl.hahn.graphics [139.162.183.182])
 	by mail-b.sr.ht (Postfix) with ESMTPS id C52A811F09B
@@ -6171,9 +5973,6 @@ References: <20220520150232.15515-1-fabian@hahn.graphics>
  <20220521125628.dqwgp3p6m6n76jdl@mtpad.i.jakstys.lt>
 Message-ID: <4f67edd521daf91a7230b16e69275175@hahn.graphics>
 X-Sender: fabian@hahn.graphics
-Status: O
-Content-Length: 1602
-Lines: 40
 
 Hi Motiejus,
 
@@ -6216,7 +6015,7 @@ is also a linter failure that I'm going to address.
 Best,
 Fabian
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=hahn.graphics header.i=@hahn.graphics
 Received: from mail.hahn.graphics (poliwhirl.hahn.graphics [139.162.183.182])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 8C2C111F09B
@@ -6244,9 +6043,6 @@ References: <20220520150232.15515-1-fabian@hahn.graphics>
  <CAG09j49GZxNQJJZX5a5wZ0f12VPzfWqbLmzEfTKfS4KvwvwPtg@mail.gmail.com>
 Message-ID: <17e9d6378e74647834146edf5ca400c8@hahn.graphics>
 X-Sender: fabian@hahn.graphics
-Status: O
-Content-Length: 596
-Lines: 16
 
 Hi Laurynas,
 
@@ -6265,7 +6061,7 @@ platform could help here. I'll try this.
 Best,
 Fabian
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	by mail-b.sr.ht (Postfix) with ESMTPS id AEECB11EF44
@@ -6319,9 +6115,6 @@ Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 In-Reply-To: <4f67edd521daf91a7230b16e69275175@hahn.graphics>
-Status: O
-Content-Length: 1141
-Lines: 25
 
 On Mon, May 23, 2022 at 08:25:05PM +0100, fabian@hahn.graphics wrote:
 > Hi Motiejus,
@@ -6349,7 +6142,7 @@ At least we tried. :)
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id ED42B11F0BD;
@@ -6366,9 +6159,6 @@ To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Cc: jeremy@jvolkman.com
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 1488
-Lines: 37
 
 Hi,
 
@@ -6408,7 +6198,7 @@ Jeremy Volkman (2):
 --=20
 2.34.2
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 14A7D11F105;
@@ -6426,9 +6216,6 @@ Cc: jeremy@jvolkman.com
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Status: O
-Content-Length: 4617
-Lines: 118
 
 From: Jeremy Volkman <jeremy@jvolkman.com>
 
@@ -6549,7 +6336,7 @@ ry_linkopts)],
 2.34.2
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 3160A11F117;
@@ -6567,9 +6354,6 @@ Cc: jeremy@jvolkman.com
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Status: O
-Content-Length: 920
-Lines: 25
 
 From: Jeremy Volkman <jeremy@jvolkman.com>
 
@@ -6597,7 +6381,7 @@ index 053641c..42aaaeb 100644
 -- 
 2.34.2
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 DKIM-Signature: a=rsa-sha256; bh=uve8fTCVpt6Gdf7uz7dBrgAhQF80SbAq3lissg6dG5s=;
  c=simple/simple; d=sr.ht; h=Date:Subject:To:Cc:From:In-Reply-To;
  q=dns/txt; s=srht; t=1653443104; v=1;
@@ -6619,9 +6403,6 @@ Message-ID: <CK8GNVX9K24M.2M83AAZ0IL6QY@cirno>
 In-Reply-To: <165344290967.21743.14923213680999840378-2@git.sr.ht>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 351
-Lines: 10
 
 bazel-zig-cc/patches/.build.yml: FAILED in 3m12s
 
@@ -6634,7 +6415,7 @@ m [~jvolkman][1]
 =E2=9C=97 #765889 FAILED bazel-zig-cc/patches/.build.yml https://builds.sr.=
 ht/~motiejus/job/765889
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 21B9D11EF1E
@@ -6685,9 +6466,6 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 In-Reply-To: <165344290967.21743.14923213680999840378-0@git.sr.ht>
-Status: O
-Content-Length: 1586
-Lines: 38
 
 On Wed, May 25, 2022 at 01:41:49AM +0000, ~jvolkman wrote:
 > Hi,
@@ -6728,7 +6506,7 @@ Motiejus
 
 [1]: https://builds.sr.ht/~motiejus/job/765889
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=hahn.graphics header.i=@hahn.graphics
 Received: from mail.hahn.graphics (poliwhirl.hahn.graphics [139.162.183.182])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 30D7911EF8F
@@ -6748,9 +6526,6 @@ Date: Sun, 29 May 2022 17:35:15 +0100
 Message-Id: <20220529163518.182119-1-fabian@hahn.graphics>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Status: O
-Content-Length: 1433
-Lines: 42
 
 Hello,
 
@@ -6795,7 +6570,7 @@ Fabian Hahn (3):
 2.25.1
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=hahn.graphics header.i=@hahn.graphics
 Received: from mail.hahn.graphics (poliwhirl.hahn.graphics [139.162.183.182])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 037A311EFDA
@@ -6817,9 +6592,6 @@ In-Reply-To: <20220529163518.182119-1-fabian@hahn.graphics>
 References: <20220529163518.182119-1-fabian@hahn.graphics>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Status: O
-Content-Length: 4366
-Lines: 150
 
 ---
  .build.yml           |  1 +
@@ -6972,7 +6744,7 @@ index 0000000..b5302af
 2.25.1
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=hahn.graphics header.i=@hahn.graphics
 Received: from mail.hahn.graphics (poliwhirl.hahn.graphics [139.162.183.182])
 	by mail-b.sr.ht (Postfix) with ESMTPS id BFE6D11EFCE
@@ -6994,9 +6766,6 @@ In-Reply-To: <20220529163518.182119-1-fabian@hahn.graphics>
 References: <20220529163518.182119-1-fabian@hahn.graphics>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Status: O
-Content-Length: 10291
-Lines: 262
 
 ---
  README.md                           |  1 +
@@ -7261,7 +7030,7 @@ index 6059065..6804104 100644
 2.25.1
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=hahn.graphics header.i=@hahn.graphics
 Received: from mail.hahn.graphics (poliwhirl.hahn.graphics [139.162.183.182])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 4AC1111EFC5
@@ -7283,9 +7052,6 @@ In-Reply-To: <20220529163518.182119-1-fabian@hahn.graphics>
 References: <20220529163518.182119-1-fabian@hahn.graphics>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Status: O
-Content-Length: 3604
-Lines: 100
 
 ---
  README.md                   | 14 ++++++++++++++
@@ -7388,7 +7154,7 @@ index 6804104..2ba61f7 100644
 2.25.1
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 DKIM-Signature: a=rsa-sha256; bh=5nZe6SoH5njYr0DiIik//7O2RdQQvmVMMBKXvF8TMmU=;
  c=simple/simple; d=sr.ht; h=Date:Subject:To:Cc:From:In-Reply-To;
  q=dns/txt; s=srht; t=1653843929; v=1;
@@ -7410,9 +7176,6 @@ Message-ID: <CKCEQSA31LED.TXUT9YCT7H6C@cirno>
 In-Reply-To: <20220529163518.182119-3-fabian@hahn.graphics>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 304
-Lines: 9
 
 bazel-zig-cc/patches/.build.yml: FAILED in 29m34s
 
@@ -7424,7 +7187,7 @@ bazel-zig-cc/patches/.build.yml: FAILED in 29m34s
 =E2=9C=97 #769696 FAILED bazel-zig-cc/patches/.build.yml https://builds.sr.=
 ht/~motiejus/job/769696
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 7C40811EFC4
@@ -7469,9 +7232,6 @@ Subject: Re: [PATCH bazel-zig-cc v2 0/3] Windows support
 To: Fabian Hahn <fabian@hahn.graphics>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 1289
-Lines: 32
 
 On Sun, May 29, 2022 at 7:35 PM Fabian Hahn <fabian@hahn.graphics> wrote:
 >
@@ -7506,7 +7266,7 @@ Motiejus
 [1]: https://git.sr.ht/~motiejus/bazel-zig-cc/tree/main/item/.build.yml
 [2]: https://git.sr.ht/~motiejus/bazel-zig-cc#transient-docker-environment
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id C570811EEAC
@@ -7522,9 +7282,6 @@ Reply-to: ~jvolkman <jeremy@jvolkman.com>
 To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Status: O
-Content-Length: 678
-Lines: 20
 
 Hi,
 
@@ -7547,7 +7304,7 @@ Jeremy Volkman (2):
 -- 
 2.34.2
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id F408D11EF01
@@ -7564,9 +7321,6 @@ To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Status: O
-Content-Length: 4882
-Lines: 129
 
 From: Jeremy Volkman <jeremy@jvolkman.com>
 
@@ -7698,7 +7452,7 @@ ry_linkopts)],
 2.34.2
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 1C59911EEAC
@@ -7715,9 +7469,6 @@ To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Status: O
-Content-Length: 920
-Lines: 25
 
 From: Jeremy Volkman <jeremy@jvolkman.com>
 
@@ -7745,7 +7496,7 @@ index 053641c..42aaaeb 100644
 -- 
 2.34.2
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 DKIM-Signature: a=rsa-sha256; bh=ROrH1fl4aXGJDhhg7ecSxnS+aDbQ/KM1o2w4Tc4xcDU=;
  c=simple/simple; d=sr.ht; h=Date:From:In-Reply-To:Subject:To:Cc;
  q=dns/txt; s=srht; t=1654049536; v=1;
@@ -7767,9 +7518,6 @@ To: "~jvolkman" <jeremy@jvolkman.com>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 354
-Lines: 10
 
 bazel-zig-cc/patches/.build.yml: SUCCESS in 13m55s
 
@@ -7782,7 +7530,7 @@ m [~jvolkman][1]
 =E2=9C=93 #771513 SUCCESS bazel-zig-cc/patches/.build.yml https://builds.sr=
 .ht/~motiejus/job/771513
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 8750411EEB5
@@ -7828,9 +7576,6 @@ Subject: Re: [PATCH bazel-zig-cc 0/2] Ignore undefined symbols when building
 To: "~jvolkman" <jeremy@jvolkman.com>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 1042
-Lines: 28
 
 On Wed, Jun 1, 2022 at 4:58 AM ~jvolkman <jvolkman@git.sr.ht> wrote:
 >
@@ -7861,7 +7606,7 @@ CI passes, we're good.
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 8EC6211EEB5
@@ -7901,9 +7646,6 @@ Message-ID: <CAFVMu-qt+27Xq+SAZsJvNJjKG5DyXQ9Rp71GqWg+f-zgn3WFaA@mail.gmail.com>
 Subject: bazel-zig-cc v0.7.3 and published Zig Milan talk
 To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 826
-Lines: 20
 
 Hi folks,
 
@@ -7926,7 +7668,7 @@ Motiejus
 [2]: https://jakstys.lt/2022/how-uber-uses-zig/
 [3]: https://lists.sr.ht/~motiejus/bazel-zig-cc/%3C165404869855.21942.14779642481390967131-0%40git.sr.ht%3E#%3CCAFVMu-qEJGEUdQSpzYegi+3Z8c1iEDagdd8a1Jv2JP-6+pBy8Q@mail.gmail.com%3E
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oa1-f54.google.com (mail-oa1-f54.google.com [209.85.160.54])
 	by mail-b.sr.ht (Postfix) with ESMTPS id D569211EEC2
@@ -7973,9 +7715,6 @@ Subject: Re: [PATCH bazel-zig-cc 0/2] Ignore undefined symbols when building
 To: Jeremy Volkman <jeremy@jvolkman.com>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 697
-Lines: 16
 
 On Wed, Jun 1, 2022 at 12:30 PM Jeremy Volkman <jeremy@jvolkman.com> wrote:
 >
@@ -7994,7 +7733,7 @@ the side of more verbosity than less, always.
 Thanks,
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jvolkman-com.20210112.gappssmtp.com header.i=@jvolkman-com.20210112.gappssmtp.com
 Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 9F77E11EEB5
@@ -8043,9 +7782,6 @@ To: =?UTF-8?Q?Motiejus_Jak=C5=A1tys?= <motiejus@jakstys.lt>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 859
-Lines: 26
 
 Sounds good. Thanks!
 
@@ -8074,7 +7810,7 @@ I forgot to increment the version number, so it wasn't obvious.
 > Thanks,
 > Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=hahn.graphics header.i=@hahn.graphics
 Received: from mail.hahn.graphics (poliwhirl.hahn.graphics [139.162.183.182])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 39D5A11EEB5
@@ -8100,9 +7836,6 @@ References: <20220529163518.182119-1-fabian@hahn.graphics>
  <CAFVMu-ps+Pt5DqSnUZ323sDcQB-MmjBg01nMfHK+kxtgr0Ew_g@mail.gmail.com>
 Message-ID: <faee59d97f64ea7c368c583efe84db88@hahn.graphics>
 X-Sender: fabian@hahn.graphics
-Status: O
-Content-Length: 1577
-Lines: 32
 
 Hey Motiejus,
 
@@ -8137,7 +7870,7 @@ Fabian
 
 [1] https://builds.sr.ht/~motiejus/job/769696
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
 	by mail-b.sr.ht (Postfix) with ESMTPS id D313011EF41
@@ -8184,9 +7917,6 @@ To: Fabian Hahn <fabian@hahn.graphics>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 1878
-Lines: 38
 
 On Wed, Jun 01, 2022 at 06:05:37PM +0100, fabian@hahn.graphics wrote:
 > Hey Motiejus,
@@ -8227,7 +7957,7 @@ Motiejus
 
 [1]: https://builds.sr.ht/~motiejus/job/772421
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
 	by mail-b.sr.ht (Postfix) with ESMTPS id AA2D711EF01
@@ -8274,9 +8004,6 @@ To: Fabian Hahn <fabian@hahn.graphics>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 1126
-Lines: 29
 
 On Thu, Jun 2, 2022 at 6:06 AM Motiejus Jak=C5=A1tys <motiejus@jakstys.lt> =
 wrote:
@@ -8308,7 +8035,7 @@ Motiejus
 
 [1]: https://git.sr.ht/~motiejus/bazel-zig-cc/tree/motiejus_windows
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=hahn.graphics header.i=@hahn.graphics
 Received: from mail.hahn.graphics (poliwhirl.hahn.graphics [139.162.183.182])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 95D5511EF1B
@@ -8337,9 +8064,6 @@ References: <20220529163518.182119-1-fabian@hahn.graphics>
  <CAFVMu-o4DSj9H1qfJ8oBHGu6CXGszY79eERJRx6EXWeXPgtjKA@mail.gmail.com>
 Message-ID: <970d81eedf2eeed648ec06200b3d6567@hahn.graphics>
 X-Sender: fabian@hahn.graphics
-Status: O
-Content-Length: 1671
-Lines: 41
 
 Hey Motiejus,
 
@@ -8383,7 +8107,7 @@ this is good to go.
 Best,
 Fabian
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oa1-f53.google.com (mail-oa1-f53.google.com [209.85.160.53])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 13D1B11EFD1
@@ -8431,9 +8155,6 @@ To: Fabian Hahn <fabian@hahn.graphics>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 1648
-Lines: 49
 
 On Wed, Jun 8, 2022 at 8:03 PM <fabian@hahn.graphics> wrote:
 >
@@ -8485,7 +8206,7 @@ Will merge. Thank you for your contribution!
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
 	by mail-b.sr.ht (Postfix) with ESMTPS id BAC0E11EFD1
@@ -8526,9 +8247,6 @@ Subject: bazel-zig-cc v0.8.0
 To: ~motiejus/bazel-zig-cc@lists.sr.ht, Fabian Hahn <fabian@hahn.graphics>, 
 	"~laurynasl" <laurynasl@uber.com>
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 668
-Lines: 22
 
 Hi all,
 
@@ -8553,7 +8271,7 @@ Motiejus
 
 [1]: https://git.sr.ht/~motiejus/bazel-zig-cc#usage
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=hahn.graphics header.i=@hahn.graphics
 Received: from mail.hahn.graphics (poliwhirl.hahn.graphics [139.162.183.182])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 0BEFA11EFF7
@@ -8584,9 +8302,6 @@ References: <20220529163518.182119-1-fabian@hahn.graphics>
  <CAFVMu-p=dPLrsCbMnR26MHj22rTk3LhE09_Ps2=cB_0sOZjPCA@mail.gmail.com>
 Message-ID: <7b547394decea1653bb5b9b49cfcd3b8@hahn.graphics>
 X-Sender: fabian@hahn.graphics
-Status: O
-Content-Length: 439
-Lines: 13
 
 Hi Motiejus,
 
@@ -8602,7 +8317,7 @@ merging my patches and the release!
 Best,
 Fabian
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 1AB2111EFF7
@@ -8651,9 +8366,6 @@ Subject: Re: [PATCH bazel-zig-cc v2 0/3] Windows support
 To: Fabian Hahn <fabian@hahn.graphics>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 298
-Lines: 10
 
 On Thu, Jun 9, 2022 at 1:29 PM <fabian@hahn.graphics> wrote:
 > <...> and thank you for merging my patches and the release!
@@ -8666,7 +8378,7 @@ for. :)
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 6EACD11EEDB
@@ -8706,9 +8418,6 @@ Message-ID: <CAFVMu-rn=brG=37+bY2Zy6WPKUQYwbk5vz_yYJS6geEJApQ_Xw@mail.gmail.com>
 Subject: bazel-zig-cc v0.8.2
 To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 444
-Lines: 13
 
 Hi all,
 
@@ -8724,7 +8433,7 @@ these are caused by me trying to overly rush things today.
 
 [1]: https://github.com/ziglang/zig/issues/11921
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
 	by mail-b.sr.ht (Postfix) with ESMTPS id CDD8E11EF78
@@ -8764,9 +8473,6 @@ Message-ID: <CAFVMu-q9zJ7c7Us02ECHd-SfCBE+8UCjiADE9f03vYnVZhrt=A@mail.gmail.com>
 Subject: development tracks of bazel-zig-cc v0.9
 To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 2147
-Lines: 54
 
 Hi all,
 
@@ -8823,7 +8529,7 @@ Motiejus
 [4]: https://eng.uber.com/how-we-halved-go-monorepo-ci-build-time/
 [5]: https://github.com/ziglang/zig/pull/11949
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 7112F11EEF7
@@ -8870,9 +8576,6 @@ Message-Id: <20220727191305.1656332-1-luiscmholanda@gmail.com>
 X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Status: O
-Content-Length: 4892
-Lines: 87
 
 While integrating the project into our Bazel workspace, we had some
 problems while building protoc in an Intel MacBook.
@@ -8962,7 +8665,7 @@ index 4478947..6a536bc 100644
 2.36.1
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
 	by mail-b.sr.ht (Postfix) with ESMTPS id E327F11EF38
@@ -9009,9 +8712,6 @@ Message-Id: <20220727203353.1672954-1-luiscmholanda@gmail.com>
 X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Status: O
-Content-Length: 1075
-Lines: 30
 
 Currently, the project expects Bash to be in /bin/bash, but in certains
 Linux distributions, namely NixOS, this path doesn't exist as all
@@ -9044,7 +8744,7 @@ Luis Holanda (2):
 2.36.1
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 5DEA611EFBC
@@ -9093,9 +8793,6 @@ In-Reply-To: <20220727203353.1672954-1-luiscmholanda@gmail.com>
 References: <20220727203353.1672954-1-luiscmholanda@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Status: O
-Content-Length: 1053
-Lines: 39
 
 As it expects Bash to be at `/bin/bash`, the current implementation
 fails to execute on NixOS, given that there bash is in a non-standard
@@ -9137,7 +8834,7 @@ index d200588..f640aa4 100644
 2.36.1
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 2FD7911EF38
@@ -9186,9 +8883,6 @@ In-Reply-To: <20220727203353.1672954-1-luiscmholanda@gmail.com>
 References: <20220727203353.1672954-1-luiscmholanda@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Status: O
-Content-Length: 2459
-Lines: 95
 
 This patch continues the work to support NixOS and others non-FHS
 distributions by replacing instances of `/bin/bash` with
@@ -9286,7 +8980,7 @@ index c3a4976..d49de26 100755
 2.36.1
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
 	by mail-b.sr.ht (Postfix) with ESMTPS id C0C9A11EFC0
@@ -9331,9 +9025,6 @@ Subject: Re: [PATCH 0/2] Support NixOS and others non-FHS Linux distributions
 To: Luis Holanda <luiscmholanda@gmail.com>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 860
-Lines: 23
 
 On Wed, Jul 27, 2022 at 1:35 PM Luis Holanda <luiscmholanda@gmail.com> wrote:
 >
@@ -9359,7 +9050,7 @@ For next time don't sign-off -- that's unnecessary here.
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com [209.85.160.43])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 726A011EFC0
@@ -9413,9 +9104,6 @@ From: Luis Holanda <luiscmholanda@gmail.com>
 In-Reply-To: <CAFVMu-pRq0L35-7tV54WQWNT_6=ZLQwbc54P=zD9dNg-BBc=GA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Status: O
-Content-Length: 166
-Lines: 5
 
 On 7/28/22 16:47, Motiejus Jakštys wrote:
 
@@ -9423,7 +9111,7 @@ On 7/28/22 16:47, Motiejus Jakštys wrote:
 
 Thanks for the advice, first contribution in Source Hut.
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-oa1-f53.google.com (mail-oa1-f53.google.com [209.85.160.53])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 50E4011EF0D
@@ -9464,9 +9152,6 @@ Message-ID: <CAFVMu-pEXFq8oDmny92hv1vsdO_0Cw4a33BsEY_RykeTZHZ35g@mail.gmail.com>
 Subject: bazel-zig-cc v0.9.0
 To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 620
-Lines: 17
 
 Hi all,
 
@@ -9486,7 +9171,7 @@ debug builds.
 [1]: https://github.com/golang/go/commit/16e7613b2e1861b25c6549051337d1d8a850cf63
 [2]: https://github.com/ziglang/zig/pull/11863
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=tecton.ai header.i=@tecton.ai
 Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 54FCD11EE5E
@@ -9528,9 +9213,6 @@ Subject: Re: [PATCH] Add missing include path for MacOS platforms
 To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Cc: Luis Holanda <luiscmholanda@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 786
-Lines: 18
 
 I found this thread while preparing to submit a patch for the very same
 issue.  Hopefully it can be merged!
@@ -9551,7 +9233,7 @@ lib/zig/libc/include/x86_64-macos.10-none
 lib/zig/libc/include/x86_64-macos.11-none
 lib/zig/libc/include/x86_64-macos.12-none
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
 	by mail-b.sr.ht (Postfix) with ESMTPS id A572611EF31
@@ -9596,9 +9278,6 @@ Subject: Re: [PATCH] Add missing include path for MacOS platforms
 To: Mike Eastham <meastham@tecton.ai>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht, Luis Holanda <luiscmholanda@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 312
-Lines: 12
 
 On Mon, Aug 22, 2022 at 5:28 PM Mike Eastham <meastham@tecton.ai> wrote:
 >
@@ -9613,7 +9292,7 @@ patch itself.
 Thanks,
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=tecton.ai header.i=@tecton.ai
 Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
 	by mail-b.sr.ht (Postfix) with ESMTPS id AEC0E11EF83
@@ -9659,9 +9338,6 @@ Subject: Re: [PATCH] Add missing include path for MacOS platforms
 To: =?UTF-8?Q?Motiejus_Jak=C5=A1tys?= <motiejus@jakstys.lt>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht, Luis Holanda <luiscmholanda@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 304
-Lines: 8
 
 Hey Motiejus,
 
@@ -9672,7 +9348,7 @@ If it would be helpful for me to submit my own patch I would be happy to do so.
 
 [0] https://lists.sr.ht/~motiejus/bazel-zig-cc/patches/34242
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 0CA6811EF83
@@ -9718,9 +9394,6 @@ Subject: Re: [PATCH] Add missing include path for MacOS platforms
 To: Mike Eastham <meastham@tecton.ai>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht, Luis Holanda <luiscmholanda@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 459
-Lines: 13
 
 On Tue, Aug 23, 2022 at 4:52 PM Mike Eastham <meastham@tecton.ai> wrote:
 >
@@ -9736,7 +9409,7 @@ your suggestion removed the darwin-gnu ones.
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=tecton.ai header.i=@tecton.ai
 Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 3B24E11EFF5
@@ -9783,13 +9456,10 @@ Subject: Re: [PATCH] Add missing include path for MacOS platforms
 To: =?UTF-8?Q?Motiejus_Jak=C5=A1tys?= <motiejus@jakstys.lt>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht, Luis Holanda <luiscmholanda@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 12
-Lines: 1
 
 Thank you!
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 2FA7811EEDB
@@ -9805,9 +9475,6 @@ To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Status: O
-Content-Length: 1462
-Lines: 38
 
 From: Ken Micklas <kmicklas@uber.com>
 
@@ -9848,7 +9515,7 @@ HE_PREFIX", ""),
 --=20
 2.34.4
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 DKIM-Signature: a=rsa-sha256; bh=oJdQI8cGPBGSPfeNCNHqTUaYSI5F7OsizcNMwxO1CBc=;
  c=simple/simple; d=sr.ht; h=Date:From:In-Reply-To:Subject:To:Cc;
  q=dns/txt; s=srht; t=1661499911; v=1;
@@ -9870,9 +9537,6 @@ To: "~kmicklas" <git@kmicklas.com>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Status: O
-Content-Length: 346
-Lines: 10
 
 bazel-zig-cc/patches/.build.yml: SUCCESS in 17m14s
 
@@ -9885,7 +9549,7 @@ micklas][1]
 =E2=9C=93 #831878 SUCCESS bazel-zig-cc/patches/.build.yml https://builds.sr=
 .ht/~motiejus/job/831878
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 3E7C811EF6A
@@ -9931,9 +9595,6 @@ Subject: Re: [PATCH bazel-zig-cc] Support configuring cache prefix with an
 To: "~kmicklas" <git@kmicklas.com>, Fabian Hahn <fabian@hahn.graphics>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 741
-Lines: 16
 
 On Fri, Aug 26, 2022 at 10:28 AM ~kmicklas <kmicklas@git.sr.ht> wrote:
 >
@@ -9952,7 +9613,7 @@ Fabian, would you like to keep compatibility and do this[1] for Windows?
 
 [1]: https://git.sr.ht/~motiejus/bazel-zig-cc/commit/15f957859146deaf524bbdf1a4b537124b305405
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 9523611EF8C
@@ -9993,9 +9654,6 @@ Message-ID: <CAFVMu-rUhnfR3_86szyfw2XkOZfMo5zcDuexzzpyxinKH8sM8A@mail.gmail.com>
 Subject: bazel-zig-cc v0.9.1
 To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 629
-Lines: 17
 
 Hi all,
 
@@ -10015,7 +9673,7 @@ object files, saving disk space.
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=hahn.graphics header.i=@hahn.graphics
 Received: from mail.hahn.graphics (poliwhirl.hahn.graphics [139.162.183.182])
 	by mail-b.sr.ht (Postfix) with ESMTPS id B7DD711F00B
@@ -10042,9 +9700,6 @@ References: <166149887610.13477.8916629882571649449-0@git.sr.ht>
  <CAFVMu-oHOnGk7f3joqxPKcinZOR2C-PCrSc9C1dVz70a7Je8dQ@mail.gmail.com>
 Message-ID: <103137ae39e92e7032ed8b5998b5432e@hahn.graphics>
 X-Sender: fabian@hahn.graphics
-Status: O
-Content-Length: 173
-Lines: 5
 
 On 2022-08-26 09:08, Motiejus Jakštys wrote:
 > Fabian, would you like to keep compatibility and do this[1] for 
@@ -10052,7 +9707,7 @@ On 2022-08-26 09:08, Motiejus Jakštys wrote:
 
 Sure, I'll take a look at it this weekend.
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=hahn.graphics header.i=@hahn.graphics
 Received: from mail.hahn.graphics (poliwhirl.hahn.graphics [139.162.183.182])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 52F2F11EF56
@@ -10072,9 +9727,6 @@ Date: Sat, 27 Aug 2022 16:21:08 +0100
 Message-Id: <20220827152108.6422-1-fabian@hahn.graphics>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Status: O
-Content-Length: 2062
-Lines: 55
 
 ---
  toolchain/defs.bzl | 30 +++++++++++++++++++++++++-----
@@ -10132,7 +9784,7 @@ index a95f76e..53fd161 100644
 2.25.1
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 DKIM-Signature: a=rsa-sha256; bh=5E6sxSf2ZXX1a2DrcA3hWyb5G48e8Oph2Nv321KR9mc=;
  c=simple/simple; d=sr.ht; h=Date:From:In-Reply-To:Subject:To:Cc;
  q=dns/txt; s=srht; t=1661614790; v=1;
@@ -10154,9 +9806,6 @@ To: "Fabian Hahn" <fabian@hahn.graphics>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Status: O
-Content-Length: 330
-Lines: 9
 
 bazel-zig-cc/patches/.build.yml: SUCCESS in 18m16s
 
@@ -10168,7 +9817,7 @@ bazel-zig-cc/patches/.build.yml: SUCCESS in 18m16s
 =E2=9C=93 #832843 SUCCESS bazel-zig-cc/patches/.build.yml https://builds.sr=
 .ht/~motiejus/job/832843
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 6E23A11EF92
@@ -10213,9 +9862,6 @@ Subject: Re: [PATCH bazel-zig-cc] add cache prefix configuration for Windows
 To: Fabian Hahn <fabian@hahn.graphics>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 621
-Lines: 18
 
 On Sat, Aug 27, 2022 at 6:21 PM Fabian Hahn <fabian@hahn.graphics> wrote:
 >
@@ -10236,7 +9882,7 @@ Motiejus
 [1]: https://git.sr.ht/~motiejus/bazel-zig-cc/commit/e861c5b4bedb752adbdca9bfb863e9cc131c2a5c
 [2]: https://git.sr.ht/~motiejus/bazel-zig-cc/commit/342b239bb90e3bd8c35e64d6bc14924600e980c5
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oa1-f54.google.com (mail-oa1-f54.google.com [209.85.160.54])
 	by mail-b.sr.ht (Postfix) with ESMTPS id A21AB11EE64
@@ -10282,9 +9928,6 @@ To: Kevin King <4kevinking@gmail.com>, ~motiejus/bazel-zig-cc@lists.sr.ht,
 	Luis Holanda <luiscmholanda@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 1154
-Lines: 32
 
 On Tue, Aug 30, 2022 at 5:48 AM Kevin King <4kevinking@gmail.com> wrote:
 >
@@ -10319,7 +9962,7 @@ Let's try to find out.
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 85F4B11EEFB
@@ -10365,9 +10008,6 @@ Subject: Re: bazel-zig-cc + rust
 To: Kevin King <4kevinking@gmail.com>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht, Luis Holanda <luiscmholanda@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 826
-Lines: 18
 
 On Tue, Aug 30, 2022 at 6:58 AM Kevin King <4kevinking@gmail.com> wrote:
 >
@@ -10388,7 +10028,7 @@ I will make the change in bazel-zig-cc later today.
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 5855911EEFB
@@ -10435,13 +10075,10 @@ Subject: Re: bazel-zig-cc + rust
 To: =?UTF-8?Q?Motiejus_Jak=C5=A1tys?= <motiejus@jakstys.lt>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht, Luis Holanda <luiscmholanda@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 48
-Lines: 1
 
 Oh perfect! I'm glad there was a simple fix :)
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=avilabs-is.20210112.gappssmtp.com header.i=@avilabs-is.20210112.gappssmtp.com
 Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
 	by mail-b.sr.ht (Postfix) with ESMTPS id B2FDD11EF2F
@@ -10483,9 +10120,6 @@ Message-ID: <CAOY-u7ZbrLf8fiwS=BQLN8D4V_qUVpJGNfThcKYaND8gA2n3Dw@mail.gmail.com>
 Subject: Using with rules_rust
 To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 740
-Lines: 15
 
 I've been trying to build our Rust code with these rules as the C/C++
 toolchain but I'm encountering an issue.
@@ -10503,7 +10137,7 @@ I'm having a hard time figuring out if it's possible to fix this using
 rules_rust and these rules. I was wondering if
 anybody in this mailing list had found a way to get past this issue?
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 3006F11EEC6
@@ -10550,9 +10184,6 @@ To: =?UTF-8?B?RGFuw61lbCBQdXJraMO6cw==?= <danielp@avilabs.is>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 1507
-Lines: 36
 
 On Fri, Sep 9, 2022 at 10:52 PM Dan=C3=ADel Purkh=C3=BAs <danielp@avilabs.i=
 s> wrote:
@@ -10591,7 +10222,7 @@ understand what happened and fix this.
 Hope that helps,
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 3EFB511EF19
@@ -10633,9 +10264,6 @@ Message-ID: <CAFVMu-qPoYBqA0UJofqmkeJ-D0ZU4P-rH8Rh8L78zhLRyJdNnQ@mail.gmail.com>
 Subject: bazel-zig-cc v0.9.2
 To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 331
-Lines: 11
 
 Hi all,
 
@@ -10649,7 +10277,7 @@ and Andrew Kelley.
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
 	by mail-b.sr.ht (Postfix) with ESMTPS id EB5F911EF19
@@ -10695,9 +10323,6 @@ Subject: Re: bazel-zig-cc v0.9.2
 To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 508
-Lines: 14
 
 On Mon, Sep 12, 2022 at 1:52 PM Motiejus Jak=C5=A1tys <motiejus@jakstys.lt>=
  wrote:
@@ -10714,7 +10339,7 @@ binaries produced by bazel-zig-cc will no longer be stripped.
 [1]: https://git.sr.ht/~motiejus/bazel-zig-cc/commit/58a04fbfec10d98ac5cd8e=
 e44df441146085b780
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 9504811EF24;
@@ -10730,9 +10355,6 @@ To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Cc: kmicklas@uber.com
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Status: O
-Content-Length: 254
-Lines: 11
 
 Despite the odd inconsistency between OS/arch, the others appear correct
 from a latest nightly.
@@ -10746,7 +10368,7 @@ Ken Micklas (1):
 -- 
 2.34.4
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id B11A311F88A;
@@ -10763,9 +10385,6 @@ Cc: kmicklas@uber.com
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Status: O
-Content-Length: 608
-Lines: 21
 
 From: Ken Micklas <kmicklas@uber.com>
 
@@ -10789,7 +10408,7 @@ index 71214f6..f72412d 100644
 -- 
 2.34.4
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 DKIM-Signature: a=rsa-sha256; bh=DlXGYPf+otWnejEClYXaLB1lSlI9vZSkseK4QiVLjAc=;
  c=simple/simple; d=sr.ht; h=Date:From:In-Reply-To:Subject:To:Cc;
  q=dns/txt; s=srht; t=1663253908; v=1;
@@ -10811,9 +10430,6 @@ To: "~kmicklas" <git@kmicklas.com>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 321
-Lines: 9
 
 bazel-zig-cc/patches/.build.yml: SUCCESS in 17m45s
 
@@ -10825,7 +10441,7 @@ bazel-zig-cc/patches/.build.yml: SUCCESS in 17m45s
 =E2=9C=93 #845320 SUCCESS bazel-zig-cc/patches/.build.yml https://builds.sr=
 .ht/~motiejus/job/845320
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id C0EC011EEDB;
@@ -10842,9 +10458,6 @@ To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Cc: kmicklas@uber.com
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Status: O
-Content-Length: 579
-Lines: 14
 
 Before this, when running the repository rule, you might notice the
 Bazel output say it was extracting the SDK archive ~7 times. Each time a
@@ -10861,7 +10474,7 @@ Ken Micklas (1):
 -- 
 2.34.4
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id DE95911EF24;
@@ -10879,9 +10492,6 @@ Cc: kmicklas@uber.com
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Status: O
-Content-Length: 3069
-Lines: 83
 
 From: Ken Micklas <kmicklas@uber.com>
 
@@ -10967,7 +10577,7 @@ D",
 --=20
 2.34.4
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 DKIM-Signature: a=rsa-sha256; bh=ByBs1FjHk1lGGcjd5gBmc72N92u3A0Qyh2mWYaae3Oc=;
  c=simple/simple; d=sr.ht; h=Date:From:In-Reply-To:Subject:To:Cc;
  q=dns/txt; s=srht; t=1663267619; v=1;
@@ -10989,9 +10599,6 @@ To: "~kmicklas" <git@kmicklas.com>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 350
-Lines: 10
 
 bazel-zig-cc/patches/.build.yml: SUCCESS in 16m52s
 
@@ -11004,7 +10611,7 @@ bazel-zig-cc/patches/.build.yml: SUCCESS in 16m52s
 =E2=9C=93 #845473 SUCCESS bazel-zig-cc/patches/.build.yml https://builds.sr=
 .ht/~motiejus/job/845473
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 7666B11EEDB
@@ -11050,9 +10657,6 @@ Subject: Re: [PATCH bazel-zig-cc 1/1] Move Label dependencies above archive
 To: "~kmicklas" <git@kmicklas.com>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht, kmicklas@uber.com
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 286
-Lines: 11
 
 On Thu, Sep 15, 2022 at 9:30 PM ~kmicklas <kmicklas@git.sr.ht> wrote:
 >
@@ -11066,7 +10670,7 @@ Applied, thanks!
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 0AE1B11EEDB
@@ -11111,9 +10715,6 @@ Subject: Re: [PATCH bazel-zig-cc 1/1] Fix include root path for macos-aarch64
 To: "~kmicklas" <git@kmicklas.com>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht, kmicklas@uber.com
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 423
-Lines: 13
 
 On Thu, Sep 15, 2022 at 5:40 PM ~kmicklas <kmicklas@git.sr.ht> wrote:
 >
@@ -11129,7 +10730,7 @@ at some point. It's either landed, or there is an open PR.
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id A8BE811EE04;
@@ -11145,9 +10746,6 @@ To: ~motiejus/bazel-zig-cc@lists.sr.ht, fabian@hahn.graphics
 Cc: laurynasl@uber.com, mail@kmicklas.com
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 1174
-Lines: 31
 
 This patchset changes absolute paths to tools to relative paths. Work
 was started by @kmicklas and completed by myself and @laurynasl. Please
@@ -11181,7 +10779,7 @@ Motiejus Jak=C5=A1tys (1):
 --=20
 2.34.4
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id CC64611EE05;
@@ -11198,9 +10796,6 @@ Cc: laurynasl@uber.com, mail@kmicklas.com
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Status: O
-Content-Length: 6211
-Lines: 167
 
 From: Ken Micklas <kmicklas@uber.com>
 
@@ -11370,7 +10965,7 @@ le_with):
 2.34.4
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id EAD5C11EF5B;
@@ -11387,9 +10982,6 @@ To: ~motiejus/bazel-zig-cc@lists.sr.ht, fabian@hahn.graphics
 Cc: laurynasl@uber.com, mail@kmicklas.com
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 9326
-Lines: 238
 
 From: Motiejus Jak=C5=A1tys <motiejus@uber.com>
 
@@ -11630,7 +11222,7 @@ EAD"],
 --=20
 2.34.4
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 DKIM-Signature: a=rsa-sha256; bh=W7KlZflNVFjgKd628RF6PaVUJubT+rUOy4Q+3rHrpxM=;
  c=simple/simple; d=sr.ht; h=Date:Subject:To:Cc:From:In-Reply-To;
  q=dns/txt; s=srht; t=1664266328; v=1;
@@ -11652,9 +11244,6 @@ Message-ID: <CN716CKQL8QI.2KTA9DW8RGJVO@cirno2>
 In-Reply-To: <166426346839.12781.6953968828011257615-2@git.sr.ht>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 303
-Lines: 9
 
 bazel-zig-cc/patches/.build.yml: SUCCESS in 47m37s
 
@@ -11666,7 +11255,7 @@ bazel-zig-cc/patches/.build.yml: SUCCESS in 47m37s
 =E2=9C=93 #851368 SUCCESS bazel-zig-cc/patches/.build.yml https://builds.sr=
 .ht/~motiejus/job/851368
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=uber.com header.i=@uber.com
 Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
 	by mail-b.sr.ht (Postfix) with ESMTPS id A049611EE05
@@ -11711,9 +11300,6 @@ Cc: ~motiejus/bazel-zig-cc@lists.sr.ht, fabian@hahn.graphics,
 	mail@kmicklas.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 1543
-Lines: 40
 
 Mostly looks good.
 The `absolute_path` parameter can be inlined to avoid confusion.
@@ -11756,7 +11342,7 @@ On Tue, Sep 27, 2022 at 10:24 AM ~motiejus <motiejus@git.sr.ht> wrote:
 > --
 > 2.34.4
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 1B25911EE05
@@ -11799,9 +11385,6 @@ Subject: bazel-zig-cc v1.0.0-rc1
 To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 744
-Lines: 19
 
 Hi all,
 
@@ -11823,7 +11406,7 @@ close collaboration of Laurynas Lubys.
 
 [1]: https://lists.sr.ht/~motiejus/bazel-zig-cc/patches/35627
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
 	by mail-b.sr.ht (Postfix) with ESMTPS id B00F111EE05
@@ -11869,9 +11452,6 @@ Subject: Re: bazel-zig-cc v1.0.0-rc1
 To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 318
-Lines: 9
 
 On Tue, Sep 27, 2022 at 4:09 PM Motiejus Jak=C5=A1tys <motiejus@jakstys.lt>=
  wrote:
@@ -11883,7 +11463,7 @@ cache keys. Jackpot!
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=hahn.graphics header.i=@hahn.graphics
 Received: from mail.hahn.graphics (poliwhirl.hahn.graphics [139.162.183.182])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 5F91511EEE2
@@ -11903,9 +11483,6 @@ Date: Wed, 28 Sep 2022 17:38:11 +0100
 Message-Id: <20220928163811.4756-1-fabian@hahn.graphics>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Status: O
-Content-Length: 1450
-Lines: 43
 
 v1.0.0-rc1 indeed broke Windows host support, but it was trivial to fix.
 Also, the massive speedups gained from bazel not redownloading zig
@@ -11951,7 +11528,7 @@ index 0aba0fb..487271f 100644
 2.25.1
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 DKIM-Signature: a=rsa-sha256; bh=zczVT4eRYBkbCSg5ecsE3BwZfMagCqVvV0rebt+AFo8=;
  c=simple/simple; d=sr.ht; h=Date:From:In-Reply-To:Subject:To:Cc;
  q=dns/txt; s=srht; t=1664386011; v=1;
@@ -11973,9 +11550,6 @@ To: "Fabian Hahn" <fabian@hahn.graphics>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 332
-Lines: 9
 
 bazel-zig-cc/patches/.build.yml: SUCCESS in 48m21s
 
@@ -11987,7 +11561,7 @@ bazel-zig-cc/patches/.build.yml: SUCCESS in 48m21s
 =E2=9C=93 #852370 SUCCESS bazel-zig-cc/patches/.build.yml https://builds.sr=
 .ht/~motiejus/job/852370
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com [209.85.160.43])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 88C0911F04E
@@ -12032,9 +11606,6 @@ Subject: Re: [PATCH bazel-zig-cc] fix Windows host support with relative paths
 To: Fabian Hahn <fabian@hahn.graphics>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 997
-Lines: 33
 
 Hi Fabian,
 
@@ -12070,7 +11641,7 @@ Can you update the patch to add this?
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=hahn.graphics header.i=@hahn.graphics
 Received: from mail.hahn.graphics (poliwhirl.hahn.graphics [139.162.183.182])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 6588111F050
@@ -12090,9 +11661,6 @@ Date: Wed, 28 Sep 2022 19:58:17 +0100
 Message-Id: <20220928185817.4406-1-fabian@hahn.graphics>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Status: O
-Content-Length: 1493
-Lines: 47
 
 ---
 Fixed the Windows scripts to support changing working directories.
@@ -12142,7 +11710,7 @@ index 0aba0fb..284d2fe 100644
 2.25.1
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 DKIM-Signature: a=rsa-sha256; bh=um/H94u9uG3jiKqtK6opec6OVER4+3uYUPAM2kq5ODw=;
  c=simple/simple; d=sr.ht; h=Date:Subject:To:Cc:From:In-Reply-To;
  q=dns/txt; s=srht; t=1664394340; v=1;
@@ -12164,9 +11732,6 @@ Message-ID: <CN8AJW90THKD.PFIGC78CGNGR@cirno>
 In-Reply-To: <20220928185817.4406-1-fabian@hahn.graphics>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 334
-Lines: 9
 
 bazel-zig-cc/patches/.build.yml: SUCCESS in 47m9s
 
@@ -12178,7 +11743,7 @@ bazel-zig-cc/patches/.build.yml: SUCCESS in 47m9s
 =E2=9C=93 #852447 SUCCESS bazel-zig-cc/patches/.build.yml https://builds.sr=
 .ht/~motiejus/job/852447
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 1A38711F0DA
@@ -12223,9 +11788,6 @@ Subject: Re: [PATCH bazel-zig-cc v2] fix Windows host support with relative path
 To: Fabian Hahn <fabian@hahn.graphics>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 445
-Lines: 15
 
 On Wed, Sep 28, 2022 at 9:58 PM Fabian Hahn <fabian@hahn.graphics> wrote:
 >
@@ -12243,7 +11805,7 @@ Thanks! Applied and tagged v1.0.0-rc2.
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
 	by mail-b.sr.ht (Postfix) with ESMTPS id C420311EE64
@@ -12285,9 +11847,6 @@ Message-ID: <CAFVMu-oZUxT8fXH_JBFbmW+7yZDD3a4NiAZHHyZab4i6vKjGnQ@mail.gmail.com>
 Subject: what's cooking in bazel-zig-cc
 To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 941
-Lines: 24
 
 Hi folks,
 
@@ -12314,7 +11873,7 @@ Hold tight!
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=mobileink-com.20210112.gappssmtp.com header.i=@mobileink-com.20210112.gappssmtp.com
 Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 1A22211EE04
@@ -12356,9 +11915,6 @@ Message-ID: <CAO40MinKZyYCg3xBgJR0_70zrBxctm81pbYtwyg=UJ9fYTFdmw@mail.gmail.com>
 Subject: v1.0.0-rc1 fail on mac: stddef.h not found
 To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 1492
-Lines: 49
 
 First off: bazel-zig-cc is awesome, thanks so much!
 
@@ -12410,7 +11966,7 @@ Thanks,
 
 Gregg
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 0938D11EEE2
@@ -12462,9 +12018,6 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 In-Reply-To: <CAO40MinKZyYCg3xBgJR0_70zrBxctm81pbYtwyg=UJ9fYTFdmw@mail.gmail.com>
-Status: O
-Content-Length: 886
-Lines: 26
 
 On Thu, Nov 03, 2022 at 09:40:36AM -0500, Gregg Reynolds wrote:
 > First off: bazel-zig-cc is awesome, thanks so much!
@@ -12493,7 +12046,7 @@ It's not ready yet.
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=mobileink-com.20210112.gappssmtp.com header.i=@mobileink-com.20210112.gappssmtp.com
 Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 5902311EF1B
@@ -12542,9 +12095,6 @@ To: =?UTF-8?Q?Motiejus_Jak=C5=A1tys?= <motiejus@jakstys.lt>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 1049
-Lines: 31
 
 Ok, thanks for the update.
 
@@ -12578,7 +12128,7 @@ wrote:
 >
 > Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 206AC11F051;
@@ -12593,9 +12143,6 @@ Reply-to: ~motiejus <motiejus@jakstys.lt>
 To: ~motiejus/bazel-zig-cc@lists.sr.ht, fabian@hahn.graphics
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 1046
-Lines: 24
 
 I am doing a change in Windows wrapper, which I have no means to test
 nor know is correct. Fabian, please test/ack.
@@ -12622,7 +12169,7 @@ Motiejus Jak=C5=A1tys (1):
 --=20
 2.34.5
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 4841211F2BB;
@@ -12638,9 +12185,6 @@ In-Reply-To: <167073456185.10966.5711284970000433405-0@git.sr.ht>
 To: ~motiejus/bazel-zig-cc@lists.sr.ht, fabian@hahn.graphics
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 4250
-Lines: 118
 
 From: Motiejus Jak=C5=A1tys <motiejus@uber.com>
 
@@ -12761,7 +12305,7 @@ is_windows) else "",
 --=20
 2.34.5
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 DKIM-Signature: a=rsa-sha256; bh=SEhhsERM2tiN+zXwqVbO2CXOMOTdt0C5v57GnHy/avQ=;
  c=simple/simple; d=sr.ht; h=Date:To:Cc:From:In-Reply-To:Subject;
  q=dns/txt; s=srht; t=1670735653; v=1;
@@ -12783,9 +12327,6 @@ In-Reply-To: <167073456185.10966.5711284970000433405-1@git.sr.ht>
 Subject: [bazel-zig-cc/patches/.build.yml] build failed
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 322
-Lines: 9
 
 bazel-zig-cc/patches/.build.yml: FAILED in 18m9s
 
@@ -12797,7 +12338,7 @@ bazel-zig-cc/patches/.build.yml: FAILED in 18m9s
 =E2=9C=97 #902752 FAILED bazel-zig-cc/patches/.build.yml https://builds.sr.=
 ht/~motiejus/job/902752
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=hahn.graphics header.i=@hahn.graphics
 Received: from mail.hahn.graphics (poliwhirl.hahn.graphics [139.162.183.182])
 	by mail-b.sr.ht (Postfix) with ESMTPS id A706A11EF16
@@ -12817,9 +12358,6 @@ Date: Sun, 11 Dec 2022 14:53:37 +0000
 Message-Id: <20221211145337.4722-1-fabian@hahn.graphics>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Status: O
-Content-Length: 1306
-Lines: 30
 
 ---
 When trying to test the patch
@@ -12852,7 +12390,7 @@ index 3d08abd..aa2e4e6 100644
 2.25.1
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=hahn.graphics header.i=@hahn.graphics
 Received: from mail.hahn.graphics (poliwhirl.hahn.graphics [139.162.183.182])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 2823411EF16
@@ -12873,9 +12411,6 @@ Message-Id: <20221211145929.5701-1-fabian@hahn.graphics>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Status: O
-Content-Length: 716
-Lines: 23
 
 This is a revised version of
 https://lists.sr.ht/~motiejus/bazel-zig-cc/patches/37457 which fixes
@@ -12901,7 +12436,7 @@ Motiejus Jakštys (1):
 2.25.1
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=hahn.graphics header.i=@hahn.graphics
 Received: from mail.hahn.graphics (poliwhirl.hahn.graphics [139.162.183.182])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 09C9911EF16
@@ -12924,9 +12459,6 @@ References: <20221211145929.5701-1-fabian@hahn.graphics>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Status: O
-Content-Length: 4158
-Lines: 117
 
 From: Motiejus Jakštys <motiejus@uber.com>
 
@@ -13046,7 +12578,7 @@ index aa2e4e6..746156d 100644
 2.25.1
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 DKIM-Signature: a=rsa-sha256; bh=gT7xKJjOc/1EpJvoZQ71J0eekHIG+7u6QaPoSQv3F0E=;
  c=simple/simple; d=sr.ht; h=Date:From:In-Reply-To:Subject:To:Cc;
  q=dns/txt; s=srht; t=1670771490; v=1;
@@ -13068,9 +12600,6 @@ To: "Fabian Hahn" <fabian@hahn.graphics>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Status: O
-Content-Length: 317
-Lines: 9
 
 bazel-zig-cc/patches/.build.yml: SUCCESS in 17m38s
 
@@ -13082,7 +12611,7 @@ bazel-zig-cc/patches/.build.yml: SUCCESS in 17m38s
 =E2=9C=93 #902966 SUCCESS bazel-zig-cc/patches/.build.yml https://builds.sr=
 .ht/~motiejus/job/902966
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 DKIM-Signature: a=rsa-sha256; bh=dWs0WggYTNebMtC0i1Z/tFNbrDlbP48VuSL24yIPKF4=;
  c=simple/simple; d=sr.ht; h=Date:In-Reply-To:Subject:To:Cc:From;
  q=dns/txt; s=srht; t=1670771913; v=1;
@@ -13104,9 +12633,6 @@ Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 From: "builds.sr.ht" <builds@sr.ht>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 331
-Lines: 9
 
 bazel-zig-cc/patches/.build.yml: SUCCESS in 18m48s
 
@@ -13118,7 +12644,7 @@ bazel-zig-cc/patches/.build.yml: SUCCESS in 18m48s
 =E2=9C=93 #902967 SUCCESS bazel-zig-cc/patches/.build.yml https://builds.sr=
 .ht/~motiejus/job/902967
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 56CAB11EF2F
@@ -13171,9 +12697,6 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 In-Reply-To: <20221211145929.5701-1-fabian@hahn.graphics>
-Status: O
-Content-Length: 811
-Lines: 21
 
 On Sun, Dec 11, 2022 at 02:59:28PM +0000, Fabian Hahn wrote:
 > This is a revised version of
@@ -13197,7 +12720,7 @@ continued contributions.
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 986F411F284
@@ -13239,9 +12762,6 @@ Message-ID: <CAFVMu-pnKCOoK+KSqjiVvzME+eL6+N+Y83Q45bkY0rkKSc6xeQ@mail.gmail.com>
 Subject: bazel-zig-cc v1.0.0-rc4: call for testers
 To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 1024
-Lines: 21
 
 Hi all,
 
@@ -13265,7 +12785,7 @@ the sooner bazel-zig-cc can be put under Uber's open-source umbrella.
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=hahn.graphics header.i=@hahn.graphics
 Received: from mail.hahn.graphics (poliwhirl.hahn.graphics [139.162.183.182])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 14CE711EEFC
@@ -13289,9 +12809,6 @@ From: Fabian Hahn <fabian@hahn.graphics>
 In-Reply-To: <CAFVMu-pnKCOoK+KSqjiVvzME+eL6+N+Y83Q45bkY0rkKSc6xeQ@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Status: O
-Content-Length: 222
-Lines: 9
 
 Hi Motiejus,
 
@@ -13303,7 +12820,7 @@ Best,
 Fabian
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 4CB9411EF38
@@ -13318,9 +12835,6 @@ Reply-to: ~jvolkman <jeremy@jvolkman.com>
 To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Status: O
-Content-Length: 532
-Lines: 16
 
 I noticed that the default cc toolchain outputs .so files next to the
 .a, and provides a "dynamic_library" output group. With bazel-zig-cc, an
@@ -13339,7 +12853,7 @@ Jeremy Volkman (1):
 -- 
 2.34.5
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 7DDEA11EFC3
@@ -13355,9 +12869,6 @@ To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Status: O
-Content-Length: 894
-Lines: 30
 
 From: Jeremy Volkman <jeremy@jvolkman.com>
 
@@ -13390,7 +12901,7 @@ index f76aa80..2578973 100644
 -- 
 2.34.5
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 DKIM-Signature: a=rsa-sha256; bh=B4GNcGx65AMDP24hxZuXybpuduDUZjyLoGhAR8fLS3o=;
  c=simple/simple; d=sr.ht; h=Date:From:In-Reply-To:Subject:To:Cc;
  q=dns/txt; s=srht; t=1671239906; v=1;
@@ -13412,9 +12923,6 @@ To: "~jvolkman" <jeremy@jvolkman.com>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 320
-Lines: 9
 
 bazel-zig-cc/patches/.build.yml: SUCCESS in 18m7s
 
@@ -13426,7 +12934,7 @@ bazel-zig-cc/patches/.build.yml: SUCCESS in 18m7s
 =E2=9C=93 #906609 SUCCESS bazel-zig-cc/patches/.build.yml https://builds.sr=
 .ht/~motiejus/job/906609
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 3490811EF0D
@@ -13442,9 +12950,6 @@ Reply-to: ~jvolkman <jeremy@jvolkman.com>
 To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 1325
-Lines: 34
 
 I ran into a build failure using bazel-zig-cc to build BoringSSL -
 Google's OpenSSL fork that ships with Bazel rules. BoringSSL assumes
@@ -13481,7 +12986,7 @@ Jeremy Volkman (2):
 --=20
 2.34.5
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 4D5B511EF5B
@@ -13497,9 +13002,6 @@ To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Status: O
-Content-Length: 1018
-Lines: 31
 
 From: Jeremy Volkman <jeremy@cedarai.com>
 
@@ -13533,7 +13035,7 @@ index 96830ca..8387ce6 100644
 2.34.5
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 67C2811EF0D
@@ -13550,9 +13052,6 @@ To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Status: O
-Content-Length: 981
-Lines: 33
 
 From: Jeremy Volkman <jeremy@cedarai.com>
 
@@ -13588,7 +13087,7 @@ index 8387ce6..8571621 100644
 -- 
 2.34.5
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 DKIM-Signature: a=rsa-sha256; bh=4+EoGXdTYKSFBPZqzlT3wwpXHnnEGxav8ELNjt9LerM=;
  c=simple/simple; d=sr.ht; h=Date:From:In-Reply-To:Subject:To:Cc;
  q=dns/txt; s=srht; t=1671306380; v=1;
@@ -13610,9 +13109,6 @@ To: "~jvolkman" <jeremy@jvolkman.com>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 339
-Lines: 10
 
 bazel-zig-cc/patches/.build.yml: SUCCESS in 18m11s
 
@@ -13625,7 +13121,7 @@ bazel-zig-cc/patches/.build.yml: SUCCESS in 18m11s
 =E2=9C=93 #906945 SUCCESS bazel-zig-cc/patches/.build.yml https://builds.sr=
 .ht/~motiejus/job/906945
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id E89F411F103
@@ -13641,9 +13137,6 @@ Reply-to: ~jvolkman <jeremy@jvolkman.com>
 To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Status: O
-Content-Length: 1286
-Lines: 29
 
 I found that Bazel's cc toolchain system allows specifying artifact name
 patterns. So we can make shared libraries end with ".dylib" on macos and
@@ -13675,7 +13168,7 @@ Jeremy Volkman (1):
 -- 
 2.34.5
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 1EC9111F161
@@ -13692,9 +13185,6 @@ To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Status: O
-Content-Length: 5910
-Lines: 160
 
 From: Jeremy Volkman <jeremy@cedarai.com>
 
@@ -13857,7 +13347,7 @@ ectories,
 --=20
 2.34.5
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 DKIM-Signature: a=rsa-sha256; bh=lQ/sf/yE9eKxhnwauX7K3Ve92atirTQn6we2cXX7mcA=;
  c=simple/simple; d=sr.ht; h=Date:To:Cc:From:In-Reply-To:Subject;
  q=dns/txt; s=srht; t=1671321437; v=1;
@@ -13879,9 +13369,6 @@ In-Reply-To: <167132138766.5086.1705176352038753909-1@git.sr.ht>
 Subject: [bazel-zig-cc/patches/.build.yml] build failed
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Status: O
-Content-Length: 359
-Lines: 10
 
 bazel-zig-cc/patches/.build.yml: FAILED in 47s
 
@@ -13894,7 +13381,7 @@ es][0] from [~jvolkman][1]
 =E2=9C=97 #907041 FAILED bazel-zig-cc/patches/.build.yml https://builds.sr.=
 ht/~motiejus/job/907041
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id DB6C811F103
@@ -13910,9 +13397,6 @@ Reply-to: ~jvolkman <jeremy@jvolkman.com>
 To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Status: O
-Content-Length: 1228
-Lines: 29
 
 [This is the second revision which should apply cleanly to the main
 branch]
@@ -13944,7 +13428,7 @@ Jeremy Volkman (1):
 -- 
 2.34.5
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 019CA11F161
@@ -13961,9 +13445,6 @@ To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Status: O
-Content-Length: 5908
-Lines: 160
 
 From: Jeremy Volkman <jeremy@cedarai.com>
 
@@ -14126,7 +13607,7 @@ ectories,
 --=20
 2.34.5
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 DKIM-Signature: a=rsa-sha256; bh=8rBuJCAjAvEg2EB1R2O+D8aaQ7Nim31RACivz90X7bI=;
  c=simple/simple; d=sr.ht; h=Date:From:In-Reply-To:Subject:To:Cc;
  q=dns/txt; s=srht; t=1671321889; v=1;
@@ -14148,9 +13629,6 @@ To: "~jvolkman" <jeremy@jvolkman.com>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 363
-Lines: 10
 
 bazel-zig-cc/patches/.build.yml: FAILED in 1m0s
 
@@ -14163,7 +13641,7 @@ es][0] v2 from [~jvolkman][1]
 =E2=9C=97 #907046 FAILED bazel-zig-cc/patches/.build.yml https://builds.sr.=
 ht/~motiejus/job/907046
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 9353311F0F6
@@ -14179,9 +13657,6 @@ Reply-to: ~jvolkman <jeremy@jvolkman.com>
 To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Status: O
-Content-Length: 1236
-Lines: 30
 
 Changelog:
 # v2: should apply cleanly to the main branch
@@ -14214,7 +13689,7 @@ Jeremy Volkman (1):
 -- 
 2.34.5
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id B1BCD11F103
@@ -14231,9 +13706,6 @@ To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Status: O
-Content-Length: 5916
-Lines: 160
 
 From: Jeremy Volkman <jeremy@cedarai.com>
 
@@ -14396,7 +13868,7 @@ ectories,
 --=20
 2.34.5
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 DKIM-Signature: a=rsa-sha256; bh=24fbNqgKGb5+hnCSSGK5euIUNyLWMMmzDHdiEAKm20Y=;
  c=simple/simple; d=sr.ht; h=Date:Subject:To:Cc:From:In-Reply-To;
  q=dns/txt; s=srht; t=1671323784; v=1;
@@ -14418,9 +13890,6 @@ Message-ID: <CP4IU33AM0YO.2Y1R1A3B83MJJ@cirno>
 In-Reply-To: <167132270337.32399.6857496830832816046-1@git.sr.ht>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 367
-Lines: 10
 
 bazel-zig-cc/patches/.build.yml: SUCCESS in 17m59s
 
@@ -14433,7 +13902,7 @@ es][0] v3 from [~jvolkman][1]
 =E2=9C=93 #907052 SUCCESS bazel-zig-cc/patches/.build.yml https://builds.sr=
 .ht/~motiejus/job/907052
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 7E26911EF68
@@ -14480,9 +13949,6 @@ Subject: Re: [PATCH bazel-zig-cc v3 1/1] Use artifact_name_pattern to specify
 To: "~jvolkman" <jeremy@jvolkman.com>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 660
-Lines: 18
 
 On Sun, Dec 18, 2022 at 2:18 AM ~jvolkman <jvolkman@git.sr.ht> wrote:
 >
@@ -14503,7 +13969,7 @@ Thanks! Applied all 4 patches verbatim.
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id D675011EF44;
@@ -14519,9 +13985,6 @@ Reply-to: ~motiejus <motiejus@jakstys.lt>
 To: ~motiejus/bazel-zig-cc@lists.sr.ht, fabian@hahn.graphics
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 930
-Lines: 24
 
 TLDR: I am looking to replace the two (unix and windows) shell scripts
 with a single program with unit tests. Motivations and more discussion
@@ -14548,7 +14011,7 @@ Motiejus Jak=C5=A1tys (1):
 --=20
 2.34.5
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=none 
 Received: from git.sr.ht (unknown [173.195.146.142])
 	by mail-b.sr.ht (Postfix) with ESMTPSA id 0259E11EF68;
@@ -14565,9 +14028,6 @@ In-Reply-To: <167179347159.25324.12223141818448163553-0@git.sr.ht>
 To: ~motiejus/bazel-zig-cc@lists.sr.ht, fabian@hahn.graphics
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 29801
-Lines: 851
 
 From: Motiejus Jak=C5=A1tys <motiejus@uber.com>
 
@@ -15421,7 +14881,7 @@ GLIBCS]
 --=20
 2.34.5
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 DKIM-Signature: a=rsa-sha256; bh=MCi9WbpoJ4f9XVbwrKOVO3MbBdlb8SYntje2gmBylJY=;
  c=simple/simple; d=sr.ht; h=Date:Cc:From:In-Reply-To:Subject:To;
  q=dns/txt; s=srht; t=1671794655; v=1;
@@ -15443,9 +14903,6 @@ Subject: [bazel-zig-cc/patches/.build.yml] build success
 To: "~motiejus" <motiejus@jakstys.lt>
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Status: O
-Content-Length: 335
-Lines: 9
 
 bazel-zig-cc/patches/.build.yml: SUCCESS in 19m41s
 
@@ -15457,7 +14914,7 @@ bazel-zig-cc/patches/.build.yml: SUCCESS in 19m41s
 =E2=9C=93 #910438 SUCCESS bazel-zig-cc/patches/.build.yml https://builds.sr=
 .ht/~motiejus/job/910438
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=deepjudge.ai header.i=@deepjudge.ai
 Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 2BF5A11EF31
@@ -15498,9 +14955,6 @@ Subject: Re: [PATCH bazel-zig-cc 1/1] zig launcher: replace shell wrappers
 To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Cc: "~motiejus" <motiejus@git.sr.ht>
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 291
-Lines: 5
 
 I ran into problems with missing shell utilities (dirname and sed)
 when using bazel-zig-cc with rules_rust. rustc seems to unset PATH
@@ -15508,7 +14962,7 @@ when calling tools like the linker, which causes problems with the zig
 tool wrapper scripts. I guess this patch would solve the issues that
 I'm seeing?
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 4377111EF31
@@ -15555,9 +15009,6 @@ Subject: Re: [PATCH bazel-zig-cc 1/1] zig launcher: replace shell wrappers
 To: Philippe Voinov <philippe@deepjudge.ai>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht, "~motiejus" <motiejus@git.sr.ht>
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 747
-Lines: 18
 
 On Fri, Dec 30, 2022 at 8:55 PM Philippe Voinov <philippe@deepjudge.ai> wrote:
 >
@@ -15578,7 +15029,7 @@ on Windows though.
 
 [1]: https://git.sr.ht/~motiejus/bazel-zig-cc/tree/motiejus_launcher_zig
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=hahn.graphics header.i=@hahn.graphics
 Received: from mail.hahn.graphics (poliwhirl.hahn.graphics [139.162.183.182])
 	by mail-b.sr.ht (Postfix) with ESMTPS id B1A7D11EFBC
@@ -15603,9 +15054,6 @@ From: Fabian Hahn <fabian@hahn.graphics>
 In-Reply-To: <167179347159.25324.12223141818448163553-1@git.sr.ht>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Status: O
-Content-Length: 2197
-Lines: 61
 
 Hi Motiejus,
 
@@ -15669,7 +15117,7 @@ Fabian
 
 
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 82C7E11EFBC
@@ -15716,9 +15164,6 @@ Subject: Re: [PATCH bazel-zig-cc 1/1] zig launcher: replace shell wrappers
 To: Fabian Hahn <fabian@hahn.graphics>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht, "~motiejus" <motiejus@git.sr.ht>
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 1213
-Lines: 41
 
 On Mon, Jan 2, 2023 at 11:53 PM Fabian Hahn <fabian@hahn.graphics> wrote:
 >
@@ -15762,7 +15207,7 @@ before I merge it?
 Thanks,
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=hahn.graphics header.i=@hahn.graphics
 Received: from mail.hahn.graphics (poliwhirl.hahn.graphics [139.162.183.182])
 	by mail-b.sr.ht (Postfix) with ESMTPS id D672011EED7
@@ -15790,9 +15235,6 @@ References: <167179347159.25324.12223141818448163553-1@git.sr.ht>
  <CAFVMu-q9QmVd+rTxHMqX==8E_-fZ=7x8Sq6St_q9YXcJz451Xg@mail.gmail.com>
 Message-ID: <ff04585641095da2b75f8f802ade9715@hahn.graphics>
 X-Sender: fabian@hahn.graphics
-Status: O
-Content-Length: 436
-Lines: 12
 
 On 2023-01-02 22:34, Motiejus Jakštys wrote:
 > I am OK with using ugly strings with ++ until
@@ -15807,7 +15249,7 @@ branch and Windows host support is working fine :)
 Best,
 Fabian
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=avilabs-is.20210112.gappssmtp.com header.i=@avilabs-is.20210112.gappssmtp.com
 Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 6CC1A11EF61
@@ -15850,9 +15292,6 @@ Subject: Re: bazel-zig-cc v1.0.0-rc4: call for testers
 To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Cc: Fabian Hahn <fabian@hahn.graphics>
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 800
-Lines: 18
 
 I tested this with our repository but it fails to compile Rust code
 due to the following error:
@@ -15873,7 +15312,7 @@ I'm not sure if this is an issue with Zig, Rust, rules_rust or the Zig
 toolchain and don't have the capacity to do
 a deep dive at the moment.
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 2171011EE64
@@ -15921,9 +15360,6 @@ To: =?UTF-8?B?RGFuw61lbCBQdXJraMO6cw==?= <danielp@avilabs.is>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 1266
-Lines: 34
 
 On Mon, Jan 9, 2023 at 12:59 PM Dan=C3=ADel Purkh=C3=BAs <danielp@avilabs.i=
 s> wrote:
@@ -15960,7 +15396,7 @@ support to bazel-zig-cc, but will accept patches that make support
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
 	by mail-b.sr.ht (Postfix) with ESMTPS id B6D2311EF5B
@@ -16004,9 +15440,6 @@ Subject: bazel-zig-cc v1.0.0
 To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 1087
-Lines: 34
 
 Hi all,
 
@@ -16043,7 +15476,7 @@ Motiejus
 
 [1]: https://github.com/ziglang/zig/issues/9485
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=gmail.com header.i=@gmail.com
 Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
 	by mail-b.sr.ht (Postfix) with ESMTPS id BA87E11EF33
@@ -16093,9 +15526,6 @@ Subject: Setting sysroots
 Message-Id: <B83A9681-7EBB-4230-8543-160AC09A0436@gmail.com>
 To: ~motiejus/bazel-zig-cc@lists.sr.ht
 X-Mailer: iPhone Mail (20D47)
-Status: O
-Content-Length: 581
-Lines: 18
 
 Hi,
 
@@ -16116,7 +15546,7 @@ Simon
 
 Sent from my iPhone=
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 80EE111EEF6
@@ -16164,9 +15594,6 @@ To: Simon Mavi Stewart <simon.m.stewart@gmail.com>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 1400
-Lines: 37
 
 On Tue, Jan 31, 2023 at 10:30 AM Simon Mavi Stewart
 <simon.m.stewart@gmail.com> wrote:
@@ -16206,7 +15633,7 @@ it. But I will review/accept patches that do it.
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 352CC11EF87
@@ -16255,9 +15682,6 @@ To: Jeremy Volkman <jeremy@jvolkman.com>
 Cc: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 406
-Lines: 16
 
 On Wed, Mar 1, 2023 at 1:31=E2=80=AFAM Jeremy Volkman <jeremy@jvolkman.com>=
  wrote:
@@ -16276,7 +15700,7 @@ contributing to sourcehut/this mailing list.
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 3424511EF96
@@ -16318,9 +15742,6 @@ Message-ID: <CAFVMu-qj835_+rWH5h01M4GA-YeoXKELPUnebzP0U8wVhRggxA@mail.gmail.com>
 Subject: bazel-zig-cc v1.0.1: relicense to Apache v2
 To: ~motiejus/bazel-zig-cc@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
-Status: O
-Content-Length: 1742
-Lines: 34
 
 Hi folks,
 
@@ -16357,7 +15778,7 @@ Motiejus
 [3]: https://github.com/bazelbuild/bazel/issues/17635
 [4]: https://github.com/ziglang/zig/pull/11906
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=edgelesscompute.onmicrosoft.com header.i=@edgelesscompute.onmicrosoft.com
 Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2097.outbound.protection.outlook.com [40.107.7.97])
 	by mail-b.sr.ht (Postfix) with ESMTPS id F133511F008
@@ -16456,9 +15877,6 @@ X-MS-Exchange-CrossTenant-id: adb650a8-5da3-4b15-b4b0-3daf65ff7626
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
 X-MS-Exchange-CrossTenant-userprincipalname: WcbKeuQVhy3hOFEsKPySBOKtIhGY3yj6clxXG4yZ9bIH3ISmIn73HJmTMfCdrgw2I2JeMmFuVWM26Zyt8dKS9w==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS2PR02MB9692
-Status: O
-Content-Length: 21328
-Lines: 306
 
 --_002_AM6PR02MB44704BD42717C2D472D0CEB6B5B79AM6PR02MB4470eurp_
 Content-Type: text/plain; charset="koi8-r"
@@ -16767,7 +16185,7 @@ Li4uLi4K
 
 --_002_AM6PR02MB44704BD42717C2D472D0CEB6B5B79AM6PR02MB4470eurp_--
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
 Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
 	by mail-b.sr.ht (Postfix) with ESMTPS id D268211EE06
@@ -16816,9 +16234,6 @@ To: Malte Poll <mp@edgeless.systems>
 Cc: "~motiejus/bazel-zig-cc@lists.sr.ht" <~motiejus/bazel-zig-cc@lists.sr.ht>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Status: O
-Content-Length: 3911
-Lines: 103
 
 On Tue, Mar 7, 2023 at 6:15=E2=80=AFPM Malte Poll <mp@edgeless.systems> wro=
 te:
@@ -16924,7 +16339,7 @@ from rodata. Please let us know.
 
 Motiejus
 
-From MAILER-DAEMON Wed Mar  8 11:59:04 2023
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
 Authentication-Results: mail-b.sr.ht; dkim=pass header.d=edgelesscompute.onmicrosoft.com header.i=@edgelesscompute.onmicrosoft.com
 Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2105.outbound.protection.outlook.com [40.107.247.105])
 	by mail-b.sr.ht (Postfix) with ESMTPS id 51BE711EFFA
@@ -17023,9 +16438,6 @@ X-MS-Exchange-CrossTenant-id: adb650a8-5da3-4b15-b4b0-3daf65ff7626
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
 X-MS-Exchange-CrossTenant-userprincipalname: WWcc5krjd8xdDSjmWaccPMK6mgycI8hoJtxPSxhDr8akuwiHmfFlfMbVPmAeQA10RMhR5pdnz8sUUSe3Dc0l2g==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR02MB7363
-Status: O
-Content-Length: 424
-Lines: 10
 
 So, I chased this issue a bit more.=0A=
 Simply setting the bazel flag "--strip=3Dalways" does not seem to be suffic=
@@ -17037,4 +16449,145 @@ this may not be something that can be fixed in the toolchain. For now I can=
 =0A=
 Thanks=0A=
 Malte=
+
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
+Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
+Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
+	by mail-b.sr.ht (Postfix) with ESMTPS id 3713C11EE9A
+	for <~motiejus/bazel-zig-cc@lists.sr.ht>; Wed,  8 Mar 2023 14:48:09 +0000 (UTC)
+Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-176d93cd0daso9539079fac.4
+        for <~motiejus/bazel-zig-cc@lists.sr.ht>; Wed, 08 Mar 2023 06:48:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jakstys-lt.20210112.gappssmtp.com; s=20210112; t=1678286888;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=DhjDsVkeKQk4ZG7T5UslDsT6s5FG5S2M6pwLM363sAc=;
+        b=ZQ5d9hRJGtlDMqK5OD0g+3B13ZNDn5tE8LKcOeipsQ3/k2wxoKUnrYVlCSy7NwdMtI
+         cyoaiNLHDlV3uzgiE/nbJcRH1ugKAZqYumBk6JaGBKOIqIo/sNJcwqdMVXdUEunC5uCj
+         FGr/gQzlailxXF4jJcmPtH5Jl4glMmgsLhhUIbaGX863f73MNfbx1YObNBRk47/B8iS2
+         da+jAYqOQC7HyUBr/V+TZhZ0oywD395cF+y6WbYPdcC45OovbpJpcUKOv1qFIUPuFGB/
+         8j4o2qIg9uSDCZYRM/nX4izMi8ypBGhGgmV/2Gh4ALpOrln9Nr9sv6EGwzwHgugZQltO
+         /CwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678286888;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DhjDsVkeKQk4ZG7T5UslDsT6s5FG5S2M6pwLM363sAc=;
+        b=M4uNnGTK+t8gP/VMhcYUewNc5Uo5pdBdabPf6WEK5Ji/5lMYX6ZB8RPNLqjp/mVwq1
+         HLk8eMAUJbjFHeknhxZMN/e5CvTBwH1NPFcapmO2NhVdHIFvTUhISanjKtzzuQ8c9qUo
+         b+Xw16+LQUQqAfXufn7fClqRKWjMnN2aHYtagjjqvGpkdHUH9XMDY1PTX+lY222mRYPR
+         3QuhNeTl5du2sT+bF6emnrdwih/RXz2+Np2o2mRJ2kW7f9R0tcz/kDky4FTBpRlY3YeL
+         1r90AkAnhZhSEikWz86erSN/58UeWww5R69prNIwjtGsSbkc2+KFvLEsyiMAEz+J1Tpr
+         F2JQ==
+X-Gm-Message-State: AO0yUKVVjakCP7P6RAxA9qPGAMKZyRkzLcIuX5SbI7vQ15NN0gS0xCWm
+	eXsVWTRiKXyl0/8TDHzJdhmWuPGnJonsEqMDQZgEInuc9zo=
+X-Google-Smtp-Source: AK7set9ZWeusYtrapGacWyHHf/cYyi7B/faKa6QLg60lBmSNn0teFqDU2PatA8wehgBWDl3OoyHO7XLTtYOYI4tYjp8=
+X-Received: by 2002:a05:6871:6bb0:b0:16e:3585:dbca with SMTP id
+ zh48-20020a0568716bb000b0016e3585dbcamr4945991oab.6.1678286888455; Wed, 08
+ Mar 2023 06:48:08 -0800 (PST)
+MIME-Version: 1.0
+From: =?UTF-8?Q?Motiejus_Jak=C5=A1tys?= <motiejus@jakstys.lt>
+Date: Wed, 8 Mar 2023 16:47:57 +0200
+Message-ID: <CAFVMu-qcAQPHhPb63GWZMTL6E_9ZLTtw4tGcYMQFogXLaDhnAg@mail.gmail.com>
+Subject: bazel-zig-cc moved to github.com/uber
+To: ~motiejus/bazel-zig-cc@lists.sr.ht
+Content-Type: text/plain; charset="UTF-8"
+
+Hi folks,
+
+The transfer of bazel-zig-cc from my personal SourceHut account to
+github is now complete: https://github.com/uber/bazel-zig-cc
+
+Main changes:
+- This will now be Uber's project, not mine. The child has grown and
+left the house. :)
+- CLA will be required from now on. However, pre-move copyright owners
+retain their copyright of course; we did not ask to transfer it
+(albeit I transferred mine to Uber for personal reasons).
+- Comms are now in bazel's slack (bazel.slack.com) #zig and github issues/PRs.
+
+Short-term a.k.a. migration:
+- I will put up a release in github in the next couple of days and
+communicate here; it will be my last message in the mailing list.
+- This mailing list will be shut down "in a couple of weeks".
+- Your links (i.e. where you download bazel-zig-cc from) will keep
+working at least until 2023-06-01. After this date everyone will need
+to change it to github or your own mirror (the exact details will be
+announced, like said, in a couple of days).
+
+As for why? In case you haven't noticed the comms yet, bazel-zig-cc is
+now powering Uber's Go Monorepo. So it no longer fits the "personal
+project" bill and it made sense to be moved. Also, but my days at Uber
+are numbered[1], so it makes even more sense for Uber to increase the
+bus factor. I still recommend Uber as a great place to work if you
+like such things (I spend quite a bit of time with Zig during my
+working hours, which is great) -- but it just does not fit the bill
+for my personal circumstances.
+
+Congratulations everyone and have fun!
+
+Motiejus
+
+[1]: https://jakstys.lt/2023/7-years-at-uber/
+
+From MAILER-DAEMON Mon Apr 24 14:05:40 2023
+Authentication-Results: mail-b.sr.ht; dkim=pass header.d=jakstys-lt.20210112.gappssmtp.com header.i=@jakstys-lt.20210112.gappssmtp.com
+Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
+	by mail-b.sr.ht (Postfix) with ESMTPS id A706E11EE9A
+	for <~motiejus/bazel-zig-cc@lists.sr.ht>; Wed,  8 Mar 2023 14:52:26 +0000 (UTC)
+Received: by mail-oo1-f53.google.com with SMTP id e12-20020a4ae0cc000000b00525034ca5e9so2585475oot.0
+        for <~motiejus/bazel-zig-cc@lists.sr.ht>; Wed, 08 Mar 2023 06:52:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jakstys-lt.20210112.gappssmtp.com; s=20210112; t=1678287146;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DuLtdDcFYDQ7lbA+7GB0qponUC7abuDunJlp6uuTWXk=;
+        b=Vsl6TWFfXItvtFyka0wSyw8JD5j07DkzfIzcYbCNHfpCe2o5MK8PESo3uDPLVzuRTy
+         4Pv/2QXtsLXUkeTwvsTp1WWdGFHCHlcIDUDPpwh8lrrJCLVr3sAHBl3NFeva8Vy0FLQZ
+         IHRKYrWgplYmB5aqjVNOiiIhTdzeKZ19UBpABu0v2teCjEJIAMP1uZ80jkhBEVjtV6GD
+         eJAXE1muJEJGR7idVx6gd8T9VloPzb7/Xmj/FxSYSdjfw3WxSiyiR03b11FTT2U/CHme
+         N5r6yd+6A1iUD34aIyz2++F1YT3hHb1aBAY2MVOqwPooIWfRikhNbhDkEG8rEn69++VQ
+         bGZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678287146;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DuLtdDcFYDQ7lbA+7GB0qponUC7abuDunJlp6uuTWXk=;
+        b=yzP2BoxEULddD9ze6ydo1XAL0xfrjJx8G9CmuQD+i7ckUPW3kD8Ok9VZEfT6BrwW0w
+         HJCYlflp7hyOzTTJBkSh5/TZ2p/PtzskW2EGpQTW8p2VnqFl0CqyyT+VAyfEUaUNso//
+         f5uubOK9Zb/xHuJQyDX0P3w8cUFBAxTtFsnJLlqP6BNi5G3P0e1P2OQxq0lw8R6b3a4x
+         85ix4eZ7OfXX/Bcn/CDn9WAKNbpckvtqVQtQROh4km8ArMZYJF4vVOOUat1OINK/II0x
+         dmc1E/qmKDMUsgQ1NxkEPqoyiDtGqBdHsHtKiPuyD9FulnIyyBzqTOMKNRIayk5ly7ZV
+         JoXA==
+X-Gm-Message-State: AO0yUKWTXv/Cew+MjQ91Is4SJYHlwc1VtYMZijYQ6PVutFoeYYo2+HRm
+	rh64qRMMSNxt+9Kuc5VADgPAsUPZxVPoKwxV3nPFxqGIW+k=
+X-Google-Smtp-Source: AK7set+twmHQgaJBgRG5Xxi2G1POhWIja5dzZH+MLtIqW21ZKCuRzkieqHynklYdrJOnhR4/gYUjZXELAMUR+j1tYOw=
+X-Received: by 2002:a05:6820:1048:b0:525:39e1:9492 with SMTP id
+ x8-20020a056820104800b0052539e19492mr6384525oot.0.1678287145988; Wed, 08 Mar
+ 2023 06:52:25 -0800 (PST)
+MIME-Version: 1.0
+References: <CAFVMu-qcAQPHhPb63GWZMTL6E_9ZLTtw4tGcYMQFogXLaDhnAg@mail.gmail.com>
+In-Reply-To: <CAFVMu-qcAQPHhPb63GWZMTL6E_9ZLTtw4tGcYMQFogXLaDhnAg@mail.gmail.com>
+From: =?UTF-8?Q?Motiejus_Jak=C5=A1tys?= <motiejus@jakstys.lt>
+Date: Wed, 8 Mar 2023 16:52:15 +0200
+Message-ID: <CAFVMu-q=AE_oTBhzy+rwSK-r6reYsxEyYPJbQys=PK9WHuFk1g@mail.gmail.com>
+Subject: Re: bazel-zig-cc moved to github.com/uber
+To: ~motiejus/bazel-zig-cc@lists.sr.ht
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Mar 8, 2023 at 4:47=E2=80=AFPM Motiejus Jak=C5=A1tys <motiejus@jaks=
+tys.lt> wrote:
+> but it just does not fit the bill for my personal circumstances.
+
+I should have made this clearer! I will be co-maintaining bazel-zig-cc
+at least until 2023-06-30. Now that we have finished the move, we have
+additional 2 awesome maintainers now: @linzhp[1] and @sywhang[2]. They
+are from Uber's Go Monorepo/Platform teams, and have dealt with much
+more Go, Bazel and Starlark than myself.
+
+[1]: https://github.com/linzhp
+[2]: https://github.com/sywhang
 
