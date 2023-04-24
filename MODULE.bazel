@@ -1,5 +1,5 @@
 module(
-    name = "bazel-zig-cc",
+    name = "hermetic_cc_toolchain",
     version = "1.0.1",
 )
 
