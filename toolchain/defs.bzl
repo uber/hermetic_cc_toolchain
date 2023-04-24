@@ -20,14 +20,14 @@ URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform}-{version}.{
 # generous enough to host the artifacts, which we use.
 URL_FORMAT_BAZELMIRROR = "https://mirror.bazel.build/" + URL_FORMAT_NIGHTLY.lstrip("https://")
 
-_VERSION = "0.11.0-dev.2545+311d50f9d"
+_VERSION = "0.11.0-dev.2619+bd3e248c7"
 
 _HOST_PLATFORM_SHA256 = {
-    "linux-aarch64": "9a4582c534802454775d2c3db33c472f55285b5203032d55fb13c5a41cc31833",
-    "linux-x86_64": "b0895fe5d83dd361bd268580c9de5d5a3c42eaf966ea049bfae93eb537a88633",
-    "macos-aarch64": "6f9aabd01d5200fe419e5fa54846e67f8342bf4cbebb71f735a729f4daaf4190",
-    "macos-x86_64": "4bc1f1c28637b49b4ececdc819fc3d1a5d593560b8667183f26fe861b816279b",
-    "windows-x86_64": "7673a442a59492235157d6e6549698fd183bd90d43db74bf93ac3611cb3aad46",
+    "linux-aarch64": "e72aedc7b9ecf20164dc5aae952499f03402383ca9fb84e72bbb8598f45f693f",
+    "linux-x86_64": "019dbe76a9035ae4c775483ccb860a740759e22c8bbebd0234f8eaa2a7458cd7",
+    "macos-aarch64": "3a62f5a535c532978c6a7d248a1f141004de0812fa4b432d50f5dcc9e29e2a55",
+    "macos-x86_64": "eb4e409cc84991dc0ea8e3e550edb2254d0b15be5f59f2cff4bdc406a9b1ec46",
+    "windows-x86_64": "01004e422e7e7d48f1df403e368422ce7150428f827f3d579cd44e28f53dba2c",
 }
 
 _HOST_PLATFORM_EXT = {
