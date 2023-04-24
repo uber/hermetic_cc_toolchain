@@ -1,8 +1,6 @@
 # Copyright 2023 Uber Technologies, Inc.
 # Licensed under the MIT License
 
-load("@bazel_skylib//lib:paths.bzl", "paths")
-
 def _platform_transition_impl(settings, attr):
     _ignore = settings
     return {
@@ -19,7 +17,11 @@ _platform_transition = transition(
 
 def _platform_binary_impl(ctx):
     platform_sanitized = ctx.attr.platform.replace("/", "_").replace(":", "_")
-    dst = ctx.actions.declare_file("{}-{}".format(paths.basename(ctx.file.src.path), platform_sanitized))
+    dstname = "{}-{}".format(
+        _paths_basename(ctx.file.src.path),
+        platform_sanitized,
+    )
+    dst = ctx.actions.declare_file(dstname)
     src = ctx.file.src
     ctx.actions.run(
         outputs = [dst],
@@ -61,3 +63,7 @@ platform_test = rule(
     attrs = _attrs,
     test = True,
 )
+
+## Copied from https://github.com/bazelbuild/bazel-skylib/blob/1.4.1/lib/paths.bzl#L22
+def _paths_basename(p):
+    return p.rpartition("/")[-1]
