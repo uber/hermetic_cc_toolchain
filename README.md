@@ -31,7 +31,7 @@ with Bazel at Uber a reality; now we all can benefit from it.
 Previously communications were done in an email list; the past archive is in
 `mailing-list-archive.mbox`. It can be accessed like this:
 
-    mutt -f -R mailing-list-archive.mbox
+    mutt -R -f mailing-list-archive.mbox
 
 # Usage
 
