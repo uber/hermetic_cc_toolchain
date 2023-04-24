@@ -3,8 +3,6 @@
 
 load("@bazel_gazelle//:def.bzl", "gazelle")
 
-# gazelle:map_kind go_binary go_binary //rules:rules_go.bzl
-
 # gazelle:build_file_name BUILD
 # gazelle:prefix github.com/uber/hermetic_cc_toolchain
 # gazelle:exclude tools.go
