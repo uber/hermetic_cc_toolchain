@@ -1,8 +1,7 @@
 # Copyright 2023 Uber Technologies, Inc.
 # Licensed under the MIT License
 
-load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
-load("//rules:rules_go.bzl", "go_binary")
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
 load("@hermetic_cc_toolchain//rules:platform.bzl", "platform_binary", "platform_test")
 
 go_library(
@@ -22,6 +21,13 @@ go_test(
 go_binary(
     name = "cgo",
     embed = [":cgo_lib"],
+    gc_linkopts = select({
+        "@platforms//os:macos": [
+            "-w",  # https://github.com/ziglang/zig/issues/15439
+            "-buildmode=pie",  # https://github.com/ziglang/zig/issues/15438
+        ],
+        "//conditions:default": [],
+    }),
     visibility = ["//visibility:public"],
 )
 
