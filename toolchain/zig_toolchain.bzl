@@ -69,6 +69,7 @@ def _compilation_mode_features(ctx):
         ],
     )
 
+    # fastbuild also gets the strip_debug_symbols flags by default.
     fastbuild_feature = feature(
         name = "fastbuild",
         flag_sets = [
@@ -76,7 +77,7 @@ def _compilation_mode_features(ctx):
                 actions = actions,
                 flag_groups = [
                     flag_group(
-                        flags = ["-fno-lto", "-Wl,-S"],
+                        flags = ["-fno-lto"],
                     ),
                 ],
             ),
@@ -117,20 +118,20 @@ def _zig_cc_toolchain_config_impl(ctx):
     link_flag_sets = []
 
     if ctx.attr.linkopts:
-        link_flag_sets += [
+        link_flag_sets.append(
             flag_set(
                 actions = all_link_actions,
                 flag_groups = [flag_group(flags = ctx.attr.linkopts)],
-            ),
-        ]
+            )
+        )
 
     if ctx.attr.dynamic_library_linkopts:
-        link_flag_sets += [
+        link_flag_sets.append(
             flag_set(
                 actions = dynamic_library_link_actions,
                 flag_groups = [flag_group(flags = ctx.attr.dynamic_library_linkopts)],
-            ),
-        ]
+            )
+        )
 
     default_linker_flags = feature(
         name = "default_linker_flags",
@@ -143,10 +144,26 @@ def _zig_cc_toolchain_config_impl(ctx):
         enabled = True,
     )
 
+    strip_debug_symbols_feature = feature(
+        name = "strip_debug_symbols",
+        flag_sets = [
+            flag_set(
+                actions = all_link_actions,
+                flag_groups = [
+                    flag_group(
+                        flags = ["-Wl,-S"],
+                        expand_if_available = "strip_debug_symbols",
+                    ),
+                ],
+            ),
+        ],
+    )
+
     features = [
         compile_and_link_flags,
         default_linker_flags,
         supports_dynamic_linker,
+        strip_debug_symbols_feature,
     ] + _compilation_mode_features(ctx)
 
     artifact_name_patterns = [
