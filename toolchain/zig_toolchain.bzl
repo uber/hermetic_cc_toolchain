@@ -122,7 +122,7 @@ def _zig_cc_toolchain_config_impl(ctx):
             flag_set(
                 actions = all_link_actions,
                 flag_groups = [flag_group(flags = ctx.attr.linkopts)],
-            )
+            ),
         )
 
     if ctx.attr.dynamic_library_linkopts:
@@ -130,7 +130,7 @@ def _zig_cc_toolchain_config_impl(ctx):
             flag_set(
                 actions = dynamic_library_link_actions,
                 flag_groups = [flag_group(flags = ctx.attr.dynamic_library_linkopts)],
-            )
+            ),
         )
 
     default_linker_flags = feature(
