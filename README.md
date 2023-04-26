@@ -445,12 +445,4 @@ You may find contact information of the individuals in the commit logs.
 [ubsan2]: https://github.com/ziglang/zig/issues/5163
 [transitions]: https://docs.bazel.build/versions/main/skylark/config.html#user-defined-transitions
 [subset]: https://en.wikipedia.org/wiki/Subset
-[yt-how-zig-is-used-at-uber]: https://www.youtube.com/watch?v=SCj2J3HcEfc
-[how-uber-uses-zig]: https://jakstys.lt/2022/how-uber-uses-zig/
-[zig-cc-envoy]: https://github.com/envoyproxy/envoy/issues/19535
-[google-award]: https://opensource.googleblog.com/2022/03/Announcing-First-Group-of-Google-Open-Source-Peer-Bonus-Winners-in-2022.html
-[go-gc-sections]: https://go-review.googlesource.com/c/go/+/407814
 [universal-headers]: https://github.com/ziglang/universal-headers
-[bazel-zig-cc-v1]: https://lists.sr.ht/~motiejus/bazel-zig-cc/%3CCAFVMu-rYbf_jDTT4p%3DCS2KV1asdS5Ovo5AyuCwgv2AXr8OOP0g%40mail.gmail.com%3E
-[go-monorepo]: https://www.uber.com/blog/go-monorepo-bazel/
-[bazelcon2022]: https://www.youtube.com/watch?v=a1jXzx3884g
