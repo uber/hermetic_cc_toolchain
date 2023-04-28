@@ -424,18 +424,41 @@ Previous communications were done in an email list; the past archive is in
 
 ## Maintainers
 
-This section lists the driving forces behind `hermetic_cc_toolchain`. Committers have push
-access, maintainers have their areas. Should make it easier to understand our
-interests when reading patches or mailing lists.
+This section lists the driving forces behind `hermetic_cc_toolchain`.
+Committers have write access, maintainers own their areas. Should make it
+easier to understand our interests when reading patches or mailing lists.
 
-- Maintainers: Motiejus Jakštys, Laurynas Lubys, Zhongpeng Lin and Sung Yoon
-  Whang.
-- Committer for Windows: Fabian Hahn. If you make a change that breaks
-  Windows, Fabian will find you. Please don't break Windows, so Fabian doesn't
-  have to look for you. Instead, send him your patches first.
+- Maintainers: Motiejus Jakštys, Laurynas Lubys, Zhongpeng Lin, Sung Yoon Whang
+  and Jeremy Volkman.
+- Maintainer for Windows: Fabian Hahn.
 
-You may find contact information of the individuals in the commit logs.
+Guidelines for maintainers:
 
+    $ zig zen
+    * Communicate intent precisely.
+    * Edge cases matter.
+    * Favor reading code over writing code.
+    * Only one obvious way to do things.
+    * Runtime crashes are better than bugs.
+    * Compile errors are better than runtime crashes.
+    * Incremental improvements.
+    * Avoid local maximums.
+    * Reduce the amount one must remember.
+    * Focus on code rather than style.
+    * Resource allocation may fail; resource deallocation must succeed.
+    * Memory is a resource.
+    * Together we serve the users.
+
+On a more practical note:
+
+- Maintainers can merge others' pull requests following their best judgement.
+  They may or may not ask for feedback from other maintainers. Follow the Zen
+  of Zig.
+- Releases are cut by Uber employees, because they can test the
+  version-to-be-released with our [Go Monorepo][go-monorepo]. If you use
+  `hermetic_cc_toolchain` in any serious capacity, we encourage you to make
+  yourself known, so we can work together to validate it before cutting the
+  release.
 
 [^1]: a [mathematical subset][subset]: both can be equal.
 
@@ -446,3 +469,4 @@ You may find contact information of the individuals in the commit logs.
 [transitions]: https://docs.bazel.build/versions/main/skylark/config.html#user-defined-transitions
 [subset]: https://en.wikipedia.org/wiki/Subset
 [universal-headers]: https://github.com/ziglang/universal-headers
+[go-monorepo]: https://www.uber.com/blog/go-monorepo-bazel/
