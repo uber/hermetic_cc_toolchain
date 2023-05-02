@@ -25,6 +25,9 @@ steps:
       apt-get update && apt-get install --no-install-recommends -y \
         wine64 python3 ca-certificates
       ci/launcher-wine64
+  - label: "Test rules_cc example"
+    command: |
+      ci/test_example rules_cc
   - label: "mod-tidy and update-repos"
     command: |
       tools/mod-tidy

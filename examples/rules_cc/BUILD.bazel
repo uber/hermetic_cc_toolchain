@@ -1,0 +1,13 @@
+# Copyright 2023 Uber Technologies, Inc.
+# Licensed under the MIT License
+
+cc_binary(
+    name = "hello_world",
+    srcs = ["hello_world.cc"],
+    visibility = ["//visibility:public"],
+)
+
+cc_test(
+    name = "hello_world_test",
+    srcs = ["hello_world.cc"],
+)
