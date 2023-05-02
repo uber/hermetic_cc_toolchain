@@ -219,11 +219,25 @@ fn parseArgs(
     // args is the path to the zig binary and args to it.
     var args = ArrayListUnmanaged([]const u8){};
     try args.appendSlice(arena, &[_][]const u8{ zig_exe, zig_tool });
+
     if (maybe_target) |target|
         try args.appendSlice(arena, &[_][]const u8{ "-target", target });
 
-    while (argv_it.next()) |arg|
-        try args.append(arena, arg);
+    const is_linux = if (maybe_target) |target|
+        mem.indexOf(u8, target, "linux") != null
+    else
+        false;
+
+    while (argv_it.next()) |arg| {
+        // hack for https://github.com/ziglang/zig/issues/15549
+        if (is_linux and mem.eql(u8, "-Wl,--version", arg)) {
+            args.shrinkRetainingCapacity(1); // only external/zig_sdk/zig
+            try args.appendSlice(arena, &[_][]const u8{ "ld.lld", "--version" });
+            break;
+        } else {
+            try args.append(arena, arg);
+        }
+    }
 
     return ParseResults{ .exec = .{ .args = args, .env = env } };
 }
@@ -355,6 +369,24 @@ test "launcher:parseArgs" {
                         "main.c",
                         "-o",
                         "/dev/null",
+                    },
+                    .env_zig_lib_dir = "tools" ++ sep ++ "x86_64-linux-musl" ++
+                        sep ++ ".." ++ sep ++ ".." ++ sep ++ "lib",
+                },
+            },
+        },
+        .{
+            .args = &[_][:0]const u8{
+                "tools" ++ sep ++ "x86_64-linux-musl" ++ sep ++ "c++" ++ EXE,
+                "-Wl,--version",
+            },
+            .want_result = .{
+                .exec = .{
+                    .args = &[_][:0]const u8{
+                        "tools" ++ sep ++ "x86_64-linux-musl" ++ sep ++
+                            ".." ++ sep ++ ".." ++ sep ++ "zig" ++ EXE,
+                        "ld.lld",
+                        "--version",
                     },
                     .env_zig_lib_dir = "tools" ++ sep ++ "x86_64-linux-musl" ++
                         sep ++ ".." ++ sep ++ ".." ++ sep ++ "lib",
