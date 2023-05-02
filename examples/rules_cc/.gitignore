@@ -1,0 +1,8 @@
+# Copyright 2023 Uber Technologies, Inc.
+# Licensed under the MIT License
+
+/bazel-rules_cc
+/bazel-bin
+/bazel-out
+/bazel-testlogs
+/bazel-x

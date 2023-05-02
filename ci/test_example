@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# Copyright 2023 Uber Technologies, Inc.
+# Licensed under the MIT License
+
+set -xeuo pipefail
+
+example=$1
+
+echo --- setup $example
+root=$(git rev-parse --show-toplevel)
+cd "examples/$example"
+
+echo --- testing examples/$example with hermetic_cc_toolchain pointing to git repository root
+"$root/tools/bazel" test "--override_repository=hermetic_cc_toolchain=$root" --test_output=errors ...
+
+echo --- testing examples/$example as is
+"$root/tools/bazel" test --test_output=errors ...
