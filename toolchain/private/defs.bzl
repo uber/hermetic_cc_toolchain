@@ -64,6 +64,7 @@ def _target_macos(gocpu, zigcpu):
             "libc/include/any-macos-any",
         ] + _INCLUDE_TAIL,
         dynamic_library_linkopts = ["-Wl,-undefined=dynamic_lookup"],
+        supports_dynamic_linker = True,
         copts = copts,
         libc = "darwin",
         bazel_target_cpu = "darwin",
@@ -91,6 +92,14 @@ def _target_windows(gocpu, zigcpu):
             "libc/include/any-windows-any",
         ] + _INCLUDE_TAIL,
         dynamic_library_linkopts = [],
+        # zig cc supports dynamic linking on Windows just fine, but bazel itself doesn't: In order to build and use DLLs
+        # properly, one needs to define __declspec(dllexport) and __declspec(dllimport) attributes in headers of shared
+        # libraries depending on whether they are being compiled or imported. Bazel doesn't natively support a good way
+        # of doing it and the idea of static linking everything is pretty ingrained in how cc_library rules work. On
+        # Windows, even the default MSVC cc toolchain doesn't set the supports_dynamic_linker feature and only builds
+        # static library by default. Note that you can still build Windows DLLs if you really want to through the
+        # cc_binary rule, see the example in the upstream bazel repo in /examples/windows/dll/.
+        supports_dynamic_linker = False,
         copts = [],
         libc = "mingw",
         bazel_target_cpu = "x64_windows",
@@ -107,7 +116,14 @@ def _target_windows(gocpu, zigcpu):
             },
             {
                 "category_name": "dynamic_library",
-                "prefix": "",
+                # This prefix is an ugly hack around the fact that DLL linking on Windows produces *two* library files:
+                # A dll file with the actual shared library, and a lib file withe the necessary import definitions for
+                # other targets to link against. Unlike on Linux where you can link against another so file, in order to
+                # link against a dll you need to link against its corresponding lib file. However, if we don't set this
+                # prefix the generated lib file conflicts with the lib file of a potential static library of the same
+                # name. This will then result in "permission denied" linker errors when both linkers try to write to the
+                # same file.
+                "prefix": "dynamic_",
                 "extension": ".dll",
             },
             {
@@ -134,6 +150,7 @@ def _target_linux_gnu(gocpu, zigcpu, glibc_version):
             "libc/include/any-linux-any",
         ] + _INCLUDE_TAIL,
         dynamic_library_linkopts = [],
+        supports_dynamic_linker = True,
         copts = [],
         libc = "glibc",
         bazel_target_cpu = "k8",
@@ -160,6 +177,7 @@ def _target_linux_musl(gocpu, zigcpu):
             "libc/include/any-linux-any",
         ] + _INCLUDE_TAIL,
         dynamic_library_linkopts = [],
+        supports_dynamic_linker = True,
         copts = ["-D_LIBCPP_HAS_MUSL_LIBC", "-D_LIBCPP_HAS_THREAD_API_PTHREAD"],
         libc = "musl",
         bazel_target_cpu = "k8",
