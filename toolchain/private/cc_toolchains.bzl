@@ -29,6 +29,7 @@ def declare_cc_toolchains(os, zig_sdk_path):
             absolute_tool_paths[name] = tool_path
 
         dynamic_library_linkopts = target_config.dynamic_library_linkopts
+        supports_dynamic_linker = target_config.supports_dynamic_linker
         copts = target_config.copts
         linkopts = target_config.linkopts
 
@@ -44,6 +45,7 @@ def declare_cc_toolchains(os, zig_sdk_path):
             copts = copts,
             linkopts = linkopts,
             dynamic_library_linkopts = dynamic_library_linkopts,
+            supports_dynamic_linker = supports_dynamic_linker,
             target_cpu = target_config.bazel_target_cpu,
             target_system_name = "unknown",
             target_libc = "unknown",

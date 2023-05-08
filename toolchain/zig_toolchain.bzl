@@ -141,7 +141,7 @@ def _zig_cc_toolchain_config_impl(ctx):
 
     supports_dynamic_linker = feature(
         name = "supports_dynamic_linker",
-        enabled = True,
+        enabled = ctx.attr.supports_dynamic_linker,
     )
 
     strip_debug_symbols_feature = feature(
@@ -196,6 +196,7 @@ zig_cc_toolchain_config = rule(
         "cxx_builtin_include_directories": attr.string_list(),
         "linkopts": attr.string_list(),
         "dynamic_library_linkopts": attr.string_list(),
+        "supports_dynamic_linker": attr.bool(),
         "copts": attr.string_list(),
         "tool_paths": attr.string_dict(),
         "target": attr.string(),
