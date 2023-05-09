@@ -424,30 +424,28 @@ Previous communications were done in an email list; the past archive is in
 
 ## Maintainers
 
-This section lists the driving forces behind `hermetic_cc_toolchain`.
-Committers have write access, maintainers own their areas. Should make it
-easier to understand our interests when reading patches or mailing lists.
+- [@FabianHahn](https://github.com/FabianHahn/)
+- [@jvolkman](https://github.com/jvolkman)
+- [@laurynaslubys](https://github.com/laurynaslubys)
+- [@linzhp](https://github.com/linzhp)
+- [@motiejus](https://github.com/motiejus)
+- [@sywhang](https://github.com/sywhang)
 
-- Maintainers: Motiejus Jakštys, Laurynas Lubys, Zhongpeng Lin, Sung Yoon Whang
-  and Jeremy Volkman.
-- Maintainer for Windows: Fabian Hahn.
+Guidelines for maintainers[^2]:
 
-Guidelines for maintainers:
-
-    $ zig zen
-    * Communicate intent precisely.
-    * Edge cases matter.
-    * Favor reading code over writing code.
-    * Only one obvious way to do things.
-    * Runtime crashes are better than bugs.
-    * Compile errors are better than runtime crashes.
-    * Incremental improvements.
-    * Avoid local maximums.
-    * Reduce the amount one must remember.
-    * Focus on code rather than style.
-    * Resource allocation may fail; resource deallocation must succeed.
-    * Memory is a resource.
-    * Together we serve the users.
+* Communicate intent precisely.
+* Edge cases matter.
+* Favor reading code over writing code.
+* Only one obvious way to do things.
+* Runtime crashes are better than bugs.
+* Compile errors are better than runtime crashes.
+* Incremental improvements.
+* Avoid local maximums.
+* Reduce the amount one must remember.
+* Focus on code rather than style.
+* Resource allocation may fail; resource deallocation must succeed.
+* Memory is a resource.
+* Together we serve the users.
 
 On a more practical note:
 
@@ -461,6 +459,7 @@ On a more practical note:
   release.
 
 [^1]: a [mathematical subset][subset]: both can be equal.
+[^2]: Credit: `zig zen`
 
 [ajbouh]: https://github.com/ajbouh/bazel-zig-cc/
 [sysroot]: https://github.com/ziglang/zig/issues/10299#issuecomment-989153750
