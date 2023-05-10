@@ -7,8 +7,7 @@ set -xeuo pipefail
 
 cd "$(git rev-parse --show-toplevel)"
 prev_ref=$(git rev-parse HEAD)
-git commit --allow-empty -m "this is a test commit"
-tools/bazel run //tools/releaser -- -tag v99.0.0
+tools/bazel run //tools/releaser -- -tag v99.0.0 -skipBranchCheck
 cleanup() { git tag -d v99.0.0; git reset --hard "$prev_ref"; }
 trap cleanup EXIT
 

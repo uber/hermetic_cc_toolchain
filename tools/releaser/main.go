@@ -1,33 +1,29 @@
 // Copyright 2023 Uber Technologies, Inc.
 // Licensed under the MIT License
 
-// releaser is a tool for managing part of the process to release a new version of hermetic_cc_toolchain.
+// releaser is a tool for managing part of the process to release a new version
+// of hermetic_cc_toolchain.
 package main
 
 import (
-	"bytes"
+	"archive/tar"
 	"compress/gzip"
 	"crypto/sha256"
 	"errors"
 	"flag"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"os/exec"
 	"path"
+	"path/filepath"
 	"regexp"
 	"strings"
+	"time"
 )
 
 var (
-	// Paths to be included to the release
-	_paths = []string{
-		"LICENSE",
-		"README.md",
-		"MODULE.bazel",
-		"toolchain/*",
-	}
-
 	// regexp for valid tags
 	tagRegexp = regexp.MustCompile(`^v([0-9]+)\.([0-9]+)(\.([0-9]+))(-rc([0-9]+))?$`)
 
@@ -47,12 +43,14 @@ func log(msg string, format ...any) {
 
 func run() (_err error) {
 	var (
-		repoRoot string
-		tag      string
+		repoRoot        string
+		tag             string
+		skipBranchCheck bool
 	)
 
-	flag.StringVar(&repoRoot, "repo_root", os.Getenv("BUILD_WORKSPACE_DIRECTORY"), "root directory of hermetic_cc_toolchain repo")
+	flag.StringVar(&repoRoot, "repoRoot", os.Getenv("BUILD_WORKSPACE_DIRECTORY"), "root directory of hermetic_cc_toolchain repo")
 	flag.StringVar(&tag, "tag", "", "tag for this release")
+	flag.BoolVar(&skipBranchCheck, "skipBranchCheck", false, "skip branch check (for testing the release tool)")
 
 	flag.Usage = func() {
 		fmt.Fprint(flag.CommandLine.Output(), `usage: bazel run //tools/releaser -- -go_version <version> -tag <tag>
@@ -73,27 +71,78 @@ This utility is intended to handle many of the steps to release a new version.
 		return errTag
 	}
 
-	// commands that Must Not Fail
-	cmds := [][]string{
-		{"git", "diff", "--stat", "--exit-code"},
-		{"git", "tag", tag},
+	type checkType struct {
+		args    []string
+		wantOut string
 	}
 
-	log("Cutting a release:")
+	checks := []checkType{{[]string{"diff", "--stat", "--exit-code"}, ""}}
+	if !skipBranchCheck {
+		checks = append(
+			checks,
+			checkType{[]string{"branch", "--show-current"}, "main\n"},
+		)
+	}
 
-	for _, c := range cmds {
-		cmd := exec.Command(c[0], c[1:]...)
-		cmd.Dir = repoRoot
-		if out, err := cmd.CombinedOutput(); err != nil {
-			return fmt.Errorf(
-				"run %s: %w\n%s",
-				strings.Join(c, " "),
-				err,
-				out,
-			)
+	log("checking if git tree is ready for the release")
+	for _, c := range checks {
+		out, err := git(repoRoot, c.args...)
+		if err != nil {
+			return err
+		}
+
+		if string(out) == c.wantOut {
+			continue
+		}
+
+		return fmt.Errorf(
+			"unexpected output for %q. Expected %q, got:\n---\n%s\n---\n",
+			"git "+strings.Join(c.args, " "),
+			c.wantOut,
+			out,
+		)
+	}
+
+	// if the tag already exists, do not cut a new one.
+	tagAlreadyExists := false
+	// cut a new tag if the tag does not already exist.
+	if out, err := git(repoRoot, "tag", "-l", tag); err != nil {
+		return err
+	} else {
+		tagAlreadyExists = strings.TrimSpace(out) == tag
+	}
+
+	releaseRef := "HEAD"
+	if tagAlreadyExists {
+		releaseRef = tag
+	}
+
+	hash1, err := makeTgz(io.Discard, repoRoot, releaseRef)
+	if err != nil {
+		return fmt.Errorf("calculate hash1 of release tarball: %w", err)
+	}
+
+	boilerplate := genBoilerplate(tag, hash1)
+	if err := updateBoilerplate(repoRoot, boilerplate); err != nil {
+		return fmt.Errorf("update boilerplate: %w", err)
+	}
+
+	// If tag does not exist, create a new commit with the updated hashes
+	// and cut the new tag.
+	//
+	// If the tag exists, skip committing the tag; we will just verify
+	// that the hashes in the README and examples/ are up to date.
+	if !tagAlreadyExists {
+		commitMsg := fmt.Sprintf("Releasing hermetic_cc_toolchain %s", tag)
+		if _, err := git(repoRoot, "commit", "-am", commitMsg); err != nil {
+			return err
+		}
+		if _, err := git(repoRoot, "tag", tag); err != nil {
+			return err
 		}
 	}
 
+	// Cut the final release and compare hash1 and hash2 just in case.
 	fpath := path.Join(repoRoot, fmt.Sprintf("hermetic_cc_toolchain-%s.tar.gz", tag))
 	tgz, err := os.Create(fpath)
 	if err != nil {
@@ -104,46 +153,30 @@ This utility is intended to handle many of the steps to release a new version.
 			os.Remove(fpath)
 		}
 	}()
-	hashw := sha256.New()
 
-	gzw, err := gzip.NewWriterLevel(io.MultiWriter(tgz, hashw), gzip.BestCompression)
+	hash2, err := makeTgz(tgz, repoRoot, tag)
 	if err != nil {
-		return fmt.Errorf("create gzip writer: %w", err)
-	}
-
-	log("- creating %s", fpath)
-
-	var stderr bytes.Buffer
-	cmd := exec.Command(
-		"git",
-		append([]string{
-			"archive",
-			"--format=tar",
-			// WORKSPACE in the resulting tarball needs to be much
-			// smaller than of hermetic_cc_toolchain. See #15.
-			"--add-file=tools/releaser/WORKSPACE",
-			tag,
-		}, _paths...)...,
-	)
-	cmd.Dir = repoRoot
-	cmd.Stdout = gzw
-	cmd.Stderr = &stderr
-
-	if err := cmd.Run(); err != nil {
-		var exitError *exec.ExitError
-		errors.As(err, &exitError)
-		return fmt.Errorf("create git archive: %w\n%s", err, stderr.Bytes())
-	}
-
-	if err := gzw.Close(); err != nil {
-		return fmt.Errorf("close gzip stream: %w", err)
+		return fmt.Errorf("make release tarball: %w")
 	}
 
 	if err := tgz.Close(); err != nil {
 		return err
 	}
-	log("- wrote %s", fpath)
-	log("Release:\n-----\n" + genBoilerplate(tag, fmt.Sprintf("%x", hashw.Sum(nil))))
+
+	if hash1 != hash2 {
+		// This may happen if the release tarball depends on the boilerplate
+		// that gets updated with the new tag. Don't do this. We want the
+		// release commit to point to the correct hashes for that release.
+		return fmt.Errorf(
+			"hashes before and after release differ: %s %s",
+			hash1,
+			hash2,
+		)
+	}
+
+	log("wrote %s, sha256: %s", fpath, hash2)
+
+	log("Release:\n-----\n" + boilerplate)
 
 	return nil
 }
@@ -151,18 +184,176 @@ This utility is intended to handle many of the steps to release a new version.
 func genBoilerplate(version, shasum string) string {
 	return fmt.Sprintf(`load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
+HERMETIC_CC_TOOLCHAIN_VERSION = "%[1]s"
+
 http_archive(
     name = "hermetic_cc_toolchain",
     sha256 = "%[2]s",
     urls = [
-        "https://mirror.bazel.build/github.com/uber/hermetic_cc_toolchain/releases/download/%[1]s/hermetic_cc_toolchain-%[1]s.tar.gz",
-        "https://github.com/uber/hermetic_cc_toolchain/releases/download/%[1]s/hermetic_cc_toolchain-%[1]s.tar.gz",
+        "https://mirror.bazel.build/github.com/uber/hermetic_cc_toolchain/releases/download/{0}/hermetic_cc_toolchain-{0}.tar.gz".format(HERMETIC_CC_TOOLCHAIN_VERSION),
+        "https://github.com/uber/hermetic_cc_toolchain/releases/download/{0}/hermetic_cc_toolchain-{0}.tar.gz".format(HERMETIC_CC_TOOLCHAIN_VERSION),
     ],
 )
 
 load("@hermetic_cc_toolchain//toolchain:defs.bzl", zig_toolchains = "toolchains")
 
-# plain zig_toolchains() will pick reasonable defaults. See
-# toolchain/defs.bzl:toolchains on how to change the Zig SDK path and version.
-zig_toolchains()`, version, shasum)
+# Plain zig_toolchains() will pick reasonable defaults. See
+# toolchain/defs.bzl:toolchains on how to change the Zig SDK version and
+# download URL.
+zig_toolchains()
+`, version, shasum)
+}
+
+// updateBoilerplate updates all example files with the given version.
+func updateBoilerplate(repoRoot string, boilerplate string) error {
+	files := []string{
+		path.Join(repoRoot, "README.md"),
+		path.Join(repoRoot, "examples/rules_cc/WORKSPACE"),
+	}
+
+	const (
+		startMarker = `load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")` + "\n"
+		endMarker   = "zig_toolchains()\n"
+	)
+
+	for _, gotpath := range files {
+		data, err := os.ReadFile(gotpath)
+		if err != nil {
+			return err
+		}
+		dataStr := string(data)
+
+		// all boilerplate starts with startMarker and ends with endMarker.
+		// Our goal is to write the right string between the two.
+		startMarkerIdx := strings.Index(dataStr, startMarker)
+		if startMarkerIdx == -1 {
+			return fmt.Errorf("%q does not contain start marker %q...", gotpath, startMarker[0:16])
+		}
+
+		endMarkerIdx := strings.Index(dataStr, endMarker)
+		if endMarkerIdx == -1 {
+			return fmt.Errorf("%q does not contain end marker %q...", gotpath, endMarker[0:16])
+		}
+
+		preamble := dataStr[0:startMarkerIdx]
+		epilogue := dataStr[endMarkerIdx+len(endMarker):]
+		newBoilerplate := preamble + boilerplate + epilogue
+
+		if err := os.WriteFile(gotpath, []byte(newBoilerplate), 0644); err != nil {
+			return fmt.Errorf("write %q: %w", err)
+		}
+	}
+
+	return nil
+}
+
+func git(repoRoot string, args ...string) (string, error) {
+	cmd := exec.Command("git", args...)
+	cmd.Dir = repoRoot
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return "", fmt.Errorf(
+			"git %s: %v\n---\n%s\n---\n",
+			strings.Join(args, " "),
+			err,
+			out,
+		)
+	}
+	return string(out), nil
+}
+
+func makeTgz(w io.Writer, repoRoot string, ref string) (string, error) {
+	hashw := sha256.New()
+
+	gzw, err := gzip.NewWriterLevel(io.MultiWriter(w, hashw), gzip.BestCompression)
+	if err != nil {
+		return "", fmt.Errorf("create gzip writer: %w", err)
+	}
+
+	tw := tar.NewWriter(gzw)
+
+	addToTar := func(info fs.FileInfo, gotpath, name string) error {
+		if err := tw.WriteHeader(&tar.Header{
+			Name:    name,
+			Mode:    int64(info.Mode() & 0777),
+			Size:    info.Size(),
+			ModTime: time.Date(2000, time.January, 1, 0, 0, 0, 0, time.UTC),
+			Format:  tar.FormatGNU,
+		}); err != nil {
+			return err
+		}
+
+		r, err := os.Open(gotpath)
+		if err != nil {
+			return err
+		}
+
+		if _, err := io.Copy(tw, r); err != nil {
+			return err
+		}
+		return r.Close()
+	}
+
+	files := []string{
+		"LICENSE",
+		"MODULE.bazel",
+		"tools/releaser/WORKSPACE",
+		"tools/releaser/README",
+	}
+
+	for _, gotpath := range files {
+		r, err := os.Open(path.Join(repoRoot, gotpath))
+		if err != nil {
+			return "", err
+		}
+
+		info, err := r.Stat()
+		if err != nil {
+			return "", err
+		}
+
+		if err := addToTar(info, path.Join(repoRoot, gotpath), path.Base(gotpath)); err != nil {
+			return "", err
+		}
+	}
+
+	troot := path.Join(repoRoot, "toolchain")
+	// then whatever git tells us is in toolchain/
+	if err := filepath.WalkDir(
+		troot,
+		func(gotpath string, d fs.DirEntry, err error) error {
+			if d.IsDir() {
+				return nil
+			}
+
+			if out, err := git(repoRoot, "ls-tree", ref, gotpath); err != nil {
+				return err
+			} else {
+				if strings.TrimSpace(out) == "" {
+					return nil
+				}
+			}
+
+			// git knows about the file. Adding it to the tarball.
+			info, err := d.Info()
+			if err != nil {
+				return nil
+			}
+
+			newPath := "toolchain" + strings.TrimPrefix(gotpath, troot)
+			return addToTar(info, gotpath, newPath)
+		},
+	); err != nil {
+		return "", fmt.Errorf("walk dir: %w", err)
+	}
+
+	if err := tw.Close(); err != nil {
+		return "", fmt.Errorf("close tar writer: %w", err)
+	}
+
+	if err := gzw.Close(); err != nil {
+		return "", fmt.Errorf("close gzip stream: %w", err)
+	}
+
+	return fmt.Sprintf("%x", hashw.Sum(nil)), nil
 }

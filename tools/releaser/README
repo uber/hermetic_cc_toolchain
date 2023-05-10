@@ -1,0 +1,10 @@
+hermetic_cc_toolchain
+---------------------
+
+See https://github.com/uber/hermetic_cc_toolchain for how to use this.
+
+The release tarball does not contain the full README, because the full README
+includes a hash of the release tarball. Unfortunately, we cannot put the hash
+of the tarball into a text file in the same tarball.
+
+Call me after we crack sha256.
