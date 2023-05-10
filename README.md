@@ -34,29 +34,22 @@ was moved to [the Uber GitHub repository](https://github.com/uber) and renamed t
 Add this to your `WORKSPACE`:
 
 ```
-HERMETIC_CC_TOOLCHAIN_VERSION = "v1.0.1"
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+HERMETIC_CC_TOOLCHAIN_VERSION = "v2.0.0-rc1"
 
 http_archive(
-    name = "bazel-zig-cc",
-    sha256 = "e9f82bfb74b3df5ca0e67f4d4989e7f1f7ce3386c295fd7fda881ab91f83e509",
-    strip_prefix = "bazel-zig-cc-{}".format(HERMETIC_CC_TOOLCHAIN_VERSION),
+    name = "hermetic_cc_toolchain",
+    sha256 = "43a1b398f08109c4f03b9ba2b3914bd43d1fec0425f71b71f802bf3f78cee0c2",
     urls = [
-        "https://mirror.bazel.build/github.com/uber/bazel-zig-cc/releases/download/{0}/{0}.tar.gz".format(HERMETIC_CC_TOOLCHAIN_VERSION),
-        "https://github.com/uber/hermetic_cc_toolchain/releases/download/{0}/{0}.tar.gz".format(HERMETIC_CC_TOOLCHAIN_VERSION),
+        "https://mirror.bazel.build/github.com/uber/hermetic_cc_toolchain/releases/download/{0}/hermetic_cc_toolchain-{0}.tar.gz".format(HERMETIC_CC_TOOLCHAIN_VERSION),
+        "https://github.com/uber/hermetic_cc_toolchain/releases/download/{0}/hermetic_cc_toolchain-{0}.tar.gz".format(HERMETIC_CC_TOOLCHAIN_VERSION),
     ],
 )
 
-load("@bazel-zig-cc//toolchain:defs.bzl", zig_toolchains = "toolchains")
+load("@hermetic_cc_toolchain//toolchain:defs.bzl", zig_toolchains = "toolchains")
 
-# version, url_formats and host_platform_sha256 are optional for those who
-# want to control their Zig SDK version.
-zig_toolchains(
-    version = "<...>",
-    url_formats = [
-        "https://example.org/zig/zig-{host_platform}-{version}.{_ext}",
-    ],
-    host_platform_sha256 = { ... },
-)
+zig_toolchains()
 ```
 
 And this to `.bazelrc`:
