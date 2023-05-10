@@ -4,7 +4,8 @@
 // Package main tests that Zig can compile race-enabled tests.
 //
 // As of writing, this fails:
-//   CGO_ENABLED=1 CC="zig cc" go test -race .
+//
+//	CGO_ENABLED=1 CC="zig cc" go test -race .
 //
 // More context: https://github.com/ziglang/zig/issues/11398
 //

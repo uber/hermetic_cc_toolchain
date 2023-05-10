@@ -7,6 +7,7 @@ set -euo pipefail
 
 cd "$(git rev-parse --show-toplevel)"
 
+>&2 echo "--- shellcheck :flag-lt:"
 if command -v shellcheck &> /dev/null; then
     mapfile -t files < \
         <(git ls-files)
@@ -18,9 +19,17 @@ if command -v shellcheck &> /dev/null; then
     >&2 echo -e "OK\n"
 fi
 
+>&2 echo "--- go fmt :go:"
+read -ra gofiles < <(git ls-files '**/*.go')
+tools/bazel run @go_sdk//:bin/gofmt -- -w "${gofiles[@]}"
+
 >&2 echo "--- buildifier :bazel:"
-tools/buildifier -r -mode check "$PWD"
->&2 echo -e "OK\n"
+tools/buildifier -r -mode fix "$PWD"
 
 >&2 echo "--- Gazelle :goat:"
 tools/bazel run //:gazelle -- -mode diff
+
+>&2 echo "--- git diff :git:"
+git diff --exit-code
+
+>&2 echo "OK :white_check_mark:"
