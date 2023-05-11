@@ -262,7 +262,7 @@ func git(repoRoot string, args ...string) (string, error) {
 	return string(out), nil
 }
 
-func makeTgz(w io.Writer, repoRoot string, ref string) (_ret string, _err error) {
+func makeTgz(w io.Writer, repoRoot string, ref string) (string, error) {
 	hashw := sha256.New()
 
 	gzw, err := gzip.NewWriterLevel(io.MultiWriter(w, hashw), gzip.BestCompression)
@@ -272,20 +272,28 @@ func makeTgz(w io.Writer, repoRoot string, ref string) (_ret string, _err error)
 
 	tw := tar.NewWriter(gzw)
 
+	// WORKSPACE in the resulting tarball needs to be much
+	// smaller than of hermetic_cc_toolchain. See #15.
+	// See that README why we are not adding the top-level README.md.
+	// These files will become top-level during processing.
+	substitutes := map[string]string{
+		"tools/releaser/WORKSPACE": "WORKSPACE",
+		"tools/releaser/README":    "README",
+	}
+
 	// Paths to be included to the release
 	cmd := exec.Command(
 		"git",
 		"archive",
 		"--format=tar",
-		// WORKSPACE in the resulting tarball needs to be much
-		// smaller than of hermetic_cc_toolchain. See #15.
-		"--add-file=tools/releaser/WORKSPACE",
-		// See that README why we are not adding the top-level README.md
-		"--add-file=tools/releaser/README",
 		ref,
 		"LICENSE",
 		"MODULE.bazel",
 		"toolchain/*",
+
+		// files to be renamed
+		"tools/releaser/WORKSPACE",
+		"tools/releaser/README",
 	)
 
 	// the tarball produced by `git archive` has too many artifacts:
@@ -303,11 +311,6 @@ func makeTgz(w io.Writer, repoRoot string, ref string) (_ret string, _err error)
 	if err := cmd.Start(); err != nil {
 		return "", fmt.Errorf("git archive: %w", err)
 	}
-	defer func() {
-		if err := cmd.Wait(); err != nil {
-			_err = errors.Join(_err, err)
-		}
-	}()
 
 	tr := tar.NewReader(stdout)
 	for {
@@ -319,8 +322,19 @@ func makeTgz(w io.Writer, repoRoot string, ref string) (_ret string, _err error)
 			return "", fmt.Errorf("read archive: %w", err)
 		}
 
+		// pax headers contain things we want to clean in
+		// the first place.
+		if hdr.Typeflag == tar.TypeXGlobalHeader {
+			continue
+		}
+
+		name := hdr.Name
+		if n, ok := substitutes[name]; ok {
+			name = n
+		}
+
 		if err := tw.WriteHeader(&tar.Header{
-			Name:    hdr.Name,
+			Name:    name,
 			Mode:    int64(hdr.Mode & 0777),
 			Size:    hdr.Size,
 			ModTime: time.Date(2000, time.January, 1, 0, 0, 0, 0, time.UTC),
@@ -332,6 +346,7 @@ func makeTgz(w io.Writer, repoRoot string, ref string) (_ret string, _err error)
 		if _, err := io.Copy(tw, tr); err != nil {
 			return "", err
 		}
+
 	}
 
 	if err := tw.Close(); err != nil {
@@ -340,6 +355,10 @@ func makeTgz(w io.Writer, repoRoot string, ref string) (_ret string, _err error)
 
 	if err := gzw.Close(); err != nil {
 		return "", fmt.Errorf("close gzip stream: %w", err)
+	}
+
+	if err := cmd.Wait(); err != nil {
+		return "", fmt.Errorf("wait: %w", err)
 	}
 
 	return fmt.Sprintf("%x", hashw.Sum(nil)), nil
