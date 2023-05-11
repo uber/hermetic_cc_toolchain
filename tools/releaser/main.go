@@ -13,17 +13,16 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"io/fs"
 	"os"
 	"os/exec"
 	"path"
-	"path/filepath"
 	"regexp"
 	"strings"
 	"time"
 )
 
 var (
+
 	// regexp for valid tags
 	tagRegexp = regexp.MustCompile(`^v([0-9]+)\.([0-9]+)(\.([0-9]+))(-rc([0-9]+))?$`)
 
@@ -53,7 +52,7 @@ func run() (_err error) {
 	flag.BoolVar(&skipBranchCheck, "skipBranchCheck", false, "skip branch check (for testing the release tool)")
 
 	flag.Usage = func() {
-		fmt.Fprint(flag.CommandLine.Output(), `usage: bazel run //tools/releaser -- -go_version <version> -tag <tag>
+		fmt.Fprint(flag.CommandLine.Output(), `usage: bazel run //tools/releaser -- -repoRoot <repoRoot> -tag <tag>
 
 This utility is intended to handle many of the steps to release a new version.
 
@@ -176,7 +175,8 @@ This utility is intended to handle many of the steps to release a new version.
 
 	log("wrote %s, sha256: %s", fpath, hash2)
 
-	log("Release:\n-----\n" + boilerplate)
+	sep := strings.Repeat("-", 72)
+	log("Release boilerplate:\n%[1]s\n%[2]s%[1]s\n", sep, boilerplate)
 
 	return nil
 }
@@ -262,7 +262,7 @@ func git(repoRoot string, args ...string) (string, error) {
 	return string(out), nil
 }
 
-func makeTgz(w io.Writer, repoRoot string, ref string) (string, error) {
+func makeTgz(w io.Writer, repoRoot string, ref string) (_ret string, _err error) {
 	hashw := sha256.New()
 
 	gzw, err := gzip.NewWriterLevel(io.MultiWriter(w, hashw), gzip.BestCompression)
@@ -272,79 +272,66 @@ func makeTgz(w io.Writer, repoRoot string, ref string) (string, error) {
 
 	tw := tar.NewWriter(gzw)
 
-	addToTar := func(info fs.FileInfo, gotpath, name string) error {
+	// Paths to be included to the release
+	cmd := exec.Command(
+		"git",
+		"archive",
+		"--format=tar",
+		// WORKSPACE in the resulting tarball needs to be much
+		// smaller than of hermetic_cc_toolchain. See #15.
+		"--add-file=tools/releaser/WORKSPACE",
+		// See that README why we are not adding the top-level README.md
+		"--add-file=tools/releaser/README",
+		ref,
+		"LICENSE",
+		"MODULE.bazel",
+		"toolchain/*",
+	)
+
+	// the tarball produced by `git archive` has too many artifacts:
+	// - file metadata is different when different SHAs are used.
+	// - the archive contains the repo SHA as a "comment".
+	// Therefore, parse whatever `git archive` outputs and sanitize it.
+	cmd.Dir = repoRoot
+	cmd.Stderr = os.Stderr
+
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		return "", fmt.Errorf("StdoutPipe: %w", err)
+	}
+
+	if err := cmd.Start(); err != nil {
+		return "", fmt.Errorf("git archive: %w", err)
+	}
+	defer func() {
+		if err := cmd.Wait(); err != nil {
+			_err = errors.Join(_err, err)
+		}
+	}()
+
+	tr := tar.NewReader(stdout)
+	for {
+		hdr, err := tr.Next()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return "", fmt.Errorf("read archive: %w", err)
+		}
+
 		if err := tw.WriteHeader(&tar.Header{
-			Name:    name,
-			Mode:    int64(info.Mode() & 0777),
-			Size:    info.Size(),
+			Name:    hdr.Name,
+			Mode:    int64(hdr.Mode & 0777),
+			Size:    hdr.Size,
 			ModTime: time.Date(2000, time.January, 1, 0, 0, 0, 0, time.UTC),
 			Format:  tar.FormatGNU,
 		}); err != nil {
-			return err
-		}
-
-		r, err := os.Open(gotpath)
-		if err != nil {
-			return err
-		}
-
-		if _, err := io.Copy(tw, r); err != nil {
-			return err
-		}
-		return r.Close()
-	}
-
-	files := []string{
-		"LICENSE",
-		"MODULE.bazel",
-		"tools/releaser/WORKSPACE",
-		"tools/releaser/README",
-	}
-
-	for _, gotpath := range files {
-		r, err := os.Open(path.Join(repoRoot, gotpath))
-		if err != nil {
 			return "", err
 		}
 
-		info, err := r.Stat()
-		if err != nil {
+		if _, err := io.Copy(tw, tr); err != nil {
 			return "", err
 		}
-
-		if err := addToTar(info, path.Join(repoRoot, gotpath), path.Base(gotpath)); err != nil {
-			return "", err
-		}
-	}
-
-	troot := path.Join(repoRoot, "toolchain")
-	// then whatever git tells us is in toolchain/
-	if err := filepath.WalkDir(
-		troot,
-		func(gotpath string, d fs.DirEntry, err error) error {
-			if d.IsDir() {
-				return nil
-			}
-
-			if out, err := git(repoRoot, "ls-tree", ref, gotpath); err != nil {
-				return err
-			} else {
-				if strings.TrimSpace(out) == "" {
-					return nil
-				}
-			}
-
-			// git knows about the file. Adding it to the tarball.
-			info, err := d.Info()
-			if err != nil {
-				return nil
-			}
-
-			newPath := "toolchain" + strings.TrimPrefix(gotpath, troot)
-			return addToTar(info, gotpath, newPath)
-		},
-	); err != nil {
-		return "", fmt.Errorf("walk dir: %w", err)
 	}
 
 	if err := tw.Close(); err != nil {
