@@ -27,6 +27,8 @@ steps:
       ci/launcher-wine64
   - label: "Test rules_cc example"
     command: |
+      git config --global user.email "buildkite@example.com"
+      git config --global user.name "Buildkite Bot"
       ci/test_example rules_cc
   - label: "mod-tidy and update-repos"
     command: |
