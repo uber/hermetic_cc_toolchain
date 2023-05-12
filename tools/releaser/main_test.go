@@ -24,7 +24,7 @@ func TestRegex(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("tag=%s good=%s", tt.tag, tt.good), func(t *testing.T) {
-			matched := tagRegexp.MatchString(tt.tag)
+			matched := _tagRegexp.MatchString(tt.tag)
 
 			if tt.good && !matched {
 				t.Errorf("expected %s to be a valid tag, but it was not", tt.tag)

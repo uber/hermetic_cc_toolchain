@@ -22,11 +22,27 @@ import (
 )
 
 var (
-
 	// regexp for valid tags
-	tagRegexp = regexp.MustCompile(`^v([0-9]+)\.([0-9]+)(\.([0-9]+))(-rc([0-9]+))?$`)
+	_tagRegexp = regexp.MustCompile(`^v([0-9]+)\.([0-9]+)(\.([0-9]+))(-rc([0-9]+))?$`)
 
-	errTag = errors.New("tag accepts the following formats: v1.0.0 v1.0.1-rc1")
+	_errTag = errors.New("tag accepts the following formats: v1.0.0 v1.0.1-rc1")
+
+	// releaser is able to calculate the hash of any existing release. However,
+	// if the releaser was changed since cutting the hash (e.g. files got added
+	// or removed, the tar format changed, etc), then the previously-released
+	// tarball will not match the hash. Since we cannot change the hash since
+	// it was released, we can hardcode it here.
+	//
+	// Normally you don't need to set this value, unless the CI job updates the
+	// hashes of already-released versions. Then just hardcode it here.
+	_tagHashes = map[string]string{
+		"v2.0.0-rc2": "40dff82816735e631e8bd51ede3af1c4ed1ad4646928ffb6a0e53e228e55738c",
+	}
+
+	_boilerplateFiles = []string{
+		"README.md",
+		"examples/rules_cc/WORKSPACE",
+	}
 )
 
 func main() {
@@ -66,8 +82,8 @@ This utility is intended to handle many of the steps to release a new version.
 		return fmt.Errorf("tag is required")
 	}
 
-	if !tagRegexp.MatchString(tag) {
-		return errTag
+	if !_tagRegexp.MatchString(tag) {
+		return _errTag
 	}
 
 	type checkType struct {
@@ -109,6 +125,19 @@ This utility is intended to handle many of the steps to release a new version.
 		return err
 	} else {
 		tagAlreadyExists = strings.TrimSpace(out) == tag
+	}
+
+	if hash, ok := _tagHashes[tag]; ok {
+		log("Asked for a pre-existing release which has a hardcoded hash. " +
+			"Running in 'check-only' mode.")
+		boilerplate := genBoilerplate(tag, hash)
+		if err := updateBoilerplate(repoRoot, boilerplate); err != nil {
+			return fmt.Errorf("update boilerplate: %w", err)
+		}
+		log("updated %s", strings.Join(_boilerplateFiles, " and "))
+		sep := strings.Repeat("-", 72)
+		log("Release boilerplate:\n%[1]s\n%[2]s%[1]s\n", sep, boilerplate)
+		return nil
 	}
 
 	releaseRef := "HEAD"
@@ -206,18 +235,14 @@ zig_toolchains()
 
 // updateBoilerplate updates all example files with the given version.
 func updateBoilerplate(repoRoot string, boilerplate string) error {
-	files := []string{
-		path.Join(repoRoot, "README.md"),
-		path.Join(repoRoot, "examples/rules_cc/WORKSPACE"),
-	}
-
 	const (
 		startMarker = `load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")` + "\n"
 		endMarker   = "zig_toolchains()\n"
 	)
 
-	for _, gotpath := range files {
-		data, err := os.ReadFile(gotpath)
+	for _, gotpath := range _boilerplateFiles {
+		f := path.Join(repoRoot, gotpath)
+		data, err := os.ReadFile(f)
 		if err != nil {
 			return err
 		}
@@ -239,7 +264,7 @@ func updateBoilerplate(repoRoot string, boilerplate string) error {
 		epilogue := dataStr[endMarkerIdx+len(endMarker):]
 		newBoilerplate := preamble + boilerplate + epilogue
 
-		if err := os.WriteFile(gotpath, []byte(newBoilerplate), 0644); err != nil {
+		if err := os.WriteFile(f, []byte(newBoilerplate), 0644); err != nil {
 			return fmt.Errorf("write %q: %w", err)
 		}
 	}
