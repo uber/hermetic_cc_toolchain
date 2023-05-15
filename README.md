@@ -360,6 +360,7 @@ $ docker run -e CC=/usr/bin/false -ti --rm -v "$PWD:/x" -w /x debian:bookworm-sl
 # ./ci/lint
 # ./ci/release
 # ./ci/test
+# ./ci/zig-wrapper
 ```
 
 ## Communication

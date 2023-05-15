@@ -47,7 +47,7 @@ _MCPU = {
 }
 
 _compile_failed = """
-Compilation of launcher.zig failed:
+Compilation of zig-wrapper.zig failed:
 command={compile_cmd}
 return_code={return_code}
 stderr={stderr}
@@ -82,11 +82,6 @@ def toolchains(
         host_platform_sha256 = host_platform_sha256,
         host_platform_ext = host_platform_ext,
     )
-
-_ZIG_TOOLS = [
-    "c++",
-    "ar",
-]
 
 def _quote(s):
     return "'" + s.replace("'", "'\\''") + "'"
@@ -156,8 +151,8 @@ def _zig_repository_impl(repository_ctx):
             cache_prefix = "/tmp/zig-cache"
 
     repository_ctx.template(
-        "tools/launcher.zig",
-        Label("//toolchain:launcher.zig"),
+        "tools/zig-wrapper.zig",
+        Label("//toolchain:zig-wrapper.zig"),
         executable = False,
         substitutions = {
             "{HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX}": cache_prefix,
@@ -173,15 +168,15 @@ def _zig_repository_impl(repository_ctx):
         "build-exe",
         "-mcpu={}".format(_MCPU[host_platform]),
         "-OReleaseSafe",
-        "launcher.zig",
+        "zig-wrapper.zig",
     ] + (["-static"] if os == "linux" else [])
 
     # The elaborate code below is a workaround for ziglang/zig#14978: a race in
     # Windows where zig may error with `error: AccessDenied`.
-    launcher_success = True
-    launcher_err_msg = ""
+    zig_wrapper_success = True
+    zig_wrapper_err_msg = ""
     for _ in range(3):
-        if not launcher_success:
+        if not zig_wrapper_success:
             print("Launcher compilation failed. Retrying build")
 
         ret = repository_ctx.execute(
@@ -191,12 +186,12 @@ def _zig_repository_impl(repository_ctx):
         )
 
         if ret.return_code == 0:
-            launcher_success = True
+            zig_wrapper_success = True
             break
 
-        launcher_success = False
+        zig_wrapper_success = False
         full_cmd = [k + "=" + v for k, v in compile_env.items()] + compile_cmd
-        launcher_err_msg = _compile_failed.format(
+        zig_wrapper_err_msg = _compile_failed.format(
             compile_cmd = " ".join(full_cmd),
             return_code = ret.return_code,
             stdout = ret.stdout,
@@ -204,17 +199,19 @@ def _zig_repository_impl(repository_ctx):
             cache_prefix = cache_prefix,
         )
 
-    if not launcher_success:
-        fail(launcher_err_msg)
+    if not zig_wrapper_success:
+        fail(zig_wrapper_err_msg)
 
     exe = ".exe" if os == "windows" else ""
+    repository_ctx.symlink("tools/zig-wrapper{}".format(exe), "tools/ar{}".format(exe))
+    repository_ctx.symlink("tools/zig-wrapper{}".format(exe), "tools/ld.lld{}".format(exe))
+    repository_ctx.symlink("tools/zig-wrapper{}".format(exe), "tools/lld-link{}".format(exe))
     for target_config in target_structs():
-        for zig_tool in _ZIG_TOOLS + target_config.tool_paths.values():
-            tool_path = zig_tool_path(os).format(
-                zig_tool = zig_tool,
-                zigtarget = target_config.zigtarget,
-            )
-            repository_ctx.symlink("tools/launcher{}".format(exe), tool_path)
+        tool_path = zig_tool_path(os).format(
+            zig_tool = "c++",
+            zigtarget = target_config.zigtarget,
+        )
+        repository_ctx.symlink("tools/zig-wrapper{}".format(exe), tool_path)
 
 zig_repository = repository_rule(
     attrs = {
@@ -232,14 +229,15 @@ def filegroup(name, **kwargs):
     return ":" + name
 
 def declare_files(os):
-    filegroup(name = "all", srcs = native.glob(["**"]))
-    filegroup(name = "empty")
+    exe = ".exe" if os == "windows" else ""
+
+    native.exports_files(["zig{}".format(exe)], visibility = ["//visibility:public"])
     if os == "windows":
-        native.exports_files(["zig.exe"], visibility = ["//visibility:public"])
         native.alias(name = "zig", actual = ":zig.exe")
-    else:
-        native.exports_files(["zig"], visibility = ["//visibility:public"])
+
+    filegroup(name = "all", srcs = native.glob(["**"]))
     filegroup(name = "lib/std", srcs = native.glob(["lib/std/**"]))
+    filegroup(name = "empty")
     lazy_filegroups = {}
 
     for target_config in target_structs():
@@ -284,13 +282,7 @@ def declare_files(os):
 
         filegroup(
             name = "{}_ar_files".format(target_config.zigtarget),
-            srcs = [
-                ":zig",
-                ":" + zig_tool_path(os).format(
-                    zig_tool = "ar",
-                    zigtarget = target_config.zigtarget,
-                ),
-            ],
+            srcs = [":zig", ":tools/ar{}".format(exe)],
         )
 
         filegroup(

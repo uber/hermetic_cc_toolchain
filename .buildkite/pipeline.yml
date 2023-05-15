@@ -8,23 +8,23 @@ steps:
     command: ci/lint
   - label: "List Platforms"
     command: ci/list_toolchains_platforms
-  - label: "Test Release and Launcher scripts"
+  - label: "Test Release and zig-wrapper scripts"
     command: |
       git config --global user.email "buildkite@example.com"
       git config --global user.name "Buildkite Bot"
 
       echo "--- ci/release"
       ci/release
-      echo "--- ci/launcher"
-      ci/launcher
-  - label: "Test Launcher on wine64"
+      echo "--- ci/zig-wrapper"
+      ci/zig-wrapper
+  - label: "Test zig-wrapper on wine64"
     plugins:
       - docker#v5.5.0:
           image: "debian:stable"
     command: |
       apt-get update && apt-get install --no-install-recommends -y \
         wine64 python3 ca-certificates
-      ci/launcher-wine64
+      ci/zig-wrapper-wine64
   - label: "Test rules_cc example"
     command: |
       git config --global user.email "buildkite@example.com"

@@ -73,7 +73,10 @@ def _target_macos(gocpu, zigcpu):
             "@platforms//os:macos",
             "@platforms//cpu:{}".format(zigcpu),
         ],
-        tool_paths = {"ld": "ld64.lld"},
+
+        # No longer in upstream zig
+        # // https://github.com/ziglang/zig/commit/0e15205521b9a8c95db3c1714dffe3be1df5cda1
+        ld_zig_subcmd = None,
         artifact_name_patterns = [
             {
                 "category_name": "dynamic_library",
@@ -109,7 +112,7 @@ def _target_windows(gocpu, zigcpu):
             "@platforms//os:windows",
             "@platforms//cpu:{}".format(zigcpu),
         ],
-        tool_paths = {"ld": "ld64.lld"},
+        ld_zig_subcmd = "lld-link",
         artifact_name_patterns = [
             {
                 "category_name": "static_library",
@@ -162,7 +165,7 @@ def _target_linux_gnu(gocpu, zigcpu, glibc_version):
             "@platforms//cpu:{}".format(zigcpu),
         ],
         libc_constraint = "@zig_sdk//libc:{}".format(glibc_suffix),
-        tool_paths = {"ld": "ld.lld"},
+        ld_zig_subcmd = "ld.lld",
         artifact_name_patterns = [],
     )
 
@@ -190,6 +193,6 @@ def _target_linux_musl(gocpu, zigcpu):
             "@platforms//cpu:{}".format(zigcpu),
         ],
         libc_constraint = "@zig_sdk//libc:musl",
-        tool_paths = {"ld": "ld.lld"},
+        ld_zig_subcmd = "ld.lld",
         artifact_name_patterns = [],
     )
