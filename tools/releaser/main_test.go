@@ -4,7 +4,12 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"path"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestRegex(t *testing.T) {
@@ -31,6 +36,51 @@ func TestRegex(t *testing.T) {
 			} else if !tt.good && matched {
 				t.Errorf("expected %s to be an invalida tag, but it was", tt.tag)
 			}
+		})
+	}
+}
+
+func TestParseZigVersion(t *testing.T) {
+	tests := []struct {
+		name     string
+		contents string
+		want     zigUpstream
+		wantErr  string
+	}{
+		{
+			name:     "ok",
+			contents: `_VERSION = "foo bar"; URL_FORMAT_BAZELMIRROR = "yadda"`,
+			want: zigUpstream{
+				version:     "foo bar",
+				urlTemplate: "yadda",
+			},
+		},
+		{
+			name:     "not an assignment",
+			contents: `def _VERSION(x): return x`,
+			wantErr:  "got a non-string expression",
+		},
+		{
+			name:     "missing assiginment",
+			contents: "x1 = 1",
+			wantErr:  "assign statement _VERSION = <...> not found",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dir := t.TempDir()
+			fname := path.Join(dir, "toolchain.defs")
+			require.NoError(t, os.WriteFile(fname, []byte(tt.contents), 0644))
+
+			got, err := parseZigUpstream(fname)
+			if tt.wantErr != "" {
+				assert.Error(t, err, tt.wantErr)
+				return
+			}
+
+			require.NoError(t, err)
+			assert.Equal(t, tt.want, got)
 		})
 	}
 }

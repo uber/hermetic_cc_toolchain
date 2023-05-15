@@ -18,7 +18,7 @@ URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform}-{version}.{
 
 # Official Bazel's mirror with selected Zig SDK versions. Bazel community is
 # generous enough to host the artifacts, which we use.
-URL_FORMAT_BAZELMIRROR = "https://mirror.bazel.build/" + URL_FORMAT_NIGHTLY.lstrip("https://")
+URL_FORMAT_BAZELMIRROR = "https://mirror.bazel.build/ziglang.org/builds/zig-{host_platform}-{version}.{_ext}"
 
 _VERSION = "0.11.0-dev.2619+bd3e248c7"
 
