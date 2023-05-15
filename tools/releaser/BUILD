@@ -8,6 +8,7 @@ go_library(
     srcs = ["main.go"],
     importpath = "github.com/uber/hermetic_cc_toolchain/tools/releaser",
     visibility = ["//visibility:private"],
+    deps = ["@com_github_bazelbuild_buildtools//build:go_default_library"],  # keep
 )
 
 go_binary(
@@ -20,4 +21,8 @@ go_test(
     name = "releaser_test",
     srcs = ["main_test.go"],
     embed = [":releaser_lib"],
+    deps = [
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
+    ],
 )

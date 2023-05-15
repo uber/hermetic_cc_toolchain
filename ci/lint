@@ -27,7 +27,7 @@ tools/bazel run @go_sdk//:bin/gofmt -- -w "${gofiles[@]}"
 tools/buildifier -r -mode fix "$PWD"
 
 >&2 echo "--- Gazelle :goat:"
-tools/bazel run //:gazelle -- -mode diff
+tools/bazel run //:gazelle -- -mode fix
 
 >&2 echo "--- git diff :git:"
 git diff --exit-code

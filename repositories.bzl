@@ -14,8 +14,8 @@ def go_repositories():
     go_repository(
         name = "com_github_bazelbuild_buildtools",
         importpath = "github.com/bazelbuild/buildtools",
-        sum = "h1:AfqOWCQPEd/qAi41zI5ovrK0d5oQbXdX+l5VonjZq7A=",
-        version = "v0.0.0-20230302165817-a6ca93fd072d",
+        sum = "h1:Fl1FfItZp34QIQmmDTbZXHB5XA6JfbNNfH7tRRGWvQo=",
+        version = "v0.0.0-20230510134650-37bd1811516d",
     )
 
     go_repository(
@@ -55,6 +55,13 @@ def go_repositories():
         version = "v0.3.4",
     )
     go_repository(
+        name = "com_github_davecgh_go_spew",
+        importpath = "github.com/davecgh/go-spew",
+        sum = "h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=",
+        version = "v1.1.1",
+    )
+
+    go_repository(
         name = "com_github_envoyproxy_go_control_plane",
         importpath = "github.com/envoyproxy/go-control-plane",
         sum = "h1:4cmBvAEBNJaGARUEs3/suWRyfyBfhf7I60WBZq+bv2w=",
@@ -90,6 +97,12 @@ def go_repositories():
         sum = "h1:Khx7svrCpmxxtHBq5j2mp/xVjsi8hQMfNLvJFAlrGgU=",
         version = "v0.5.5",
     )
+    go_repository(
+        name = "com_github_pmezard_go_difflib",
+        importpath = "github.com/pmezard/go-difflib",
+        sum = "h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=",
+        version = "v1.0.0",
+    )
 
     go_repository(
         name = "com_github_prometheus_client_model",
@@ -98,11 +111,37 @@ def go_repositories():
         version = "v0.0.0-20190812154241-14fe0d1b01d4",
     )
     go_repository(
+        name = "com_github_stretchr_objx",
+        importpath = "github.com/stretchr/objx",
+        sum = "h1:1zr/of2m5FGMsad5YfcqgdqdWrIhu+EBEJRhR1U7z/c=",
+        version = "v0.5.0",
+    )
+    go_repository(
+        name = "com_github_stretchr_testify",
+        importpath = "github.com/stretchr/testify",
+        sum = "h1:+h33VjcLVPDHtOdpUCuF+7gSuG3yGIftsP1YvFihtJ8=",
+        version = "v1.8.2",
+    )
+
+    go_repository(
         name = "com_google_cloud_go",
         importpath = "cloud.google.com/go",
         sum = "h1:e0WKqKTd5BnrG8aKH3J3h+QvEIQtSUcf2n5UZ5ZgLtQ=",
         version = "v0.26.0",
     )
+    go_repository(
+        name = "in_gopkg_check_v1",
+        importpath = "gopkg.in/check.v1",
+        sum = "h1:yhCVgyC4o1eVCa2tZl7eS0r+SDo693bJlVdllGtEeKM=",
+        version = "v0.0.0-20161208181325-20d25e280405",
+    )
+    go_repository(
+        name = "in_gopkg_yaml_v3",
+        importpath = "gopkg.in/yaml.v3",
+        sum = "h1:fxVm/GzAzEWqLHuvctI91KS9hhNmmWOoWu0XTYJS7CA=",
+        version = "v3.0.1",
+    )
+
     go_repository(
         name = "net_starlark_go",
         importpath = "go.starlark.net",

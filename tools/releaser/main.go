@@ -13,12 +13,15 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"net/http"
 	"os"
 	"os/exec"
 	"path"
 	"regexp"
 	"strings"
 	"time"
+
+	bzl "github.com/bazelbuild/buildtools/build"
 )
 
 var (
@@ -116,6 +119,11 @@ This utility is intended to handle many of the steps to release a new version.
 			c.wantOut,
 			out,
 		)
+	}
+
+
+	if err := checkZigMirrored(repoRoot); err != nil {
+		return fmt.Errorf("zig is correctly mirrored: %w", err)
 	}
 
 	// if the tag already exists, do not cut a new one.
@@ -302,8 +310,8 @@ func makeTgz(w io.Writer, repoRoot string, ref string) (string, error) {
 	// See that README why we are not adding the top-level README.md.
 	// These files will become top-level during processing.
 	substitutes := map[string]string{
-		"tools/releaser/WORKSPACE": "WORKSPACE",
-		"tools/releaser/README":    "README",
+		"tools/releaser/data/WORKSPACE": "WORKSPACE",
+		"tools/releaser/data/README":    "README",
 	}
 
 	// Paths to be included to the release
@@ -317,8 +325,8 @@ func makeTgz(w io.Writer, repoRoot string, ref string) (string, error) {
 		"toolchain/*",
 
 		// files to be renamed
-		"tools/releaser/WORKSPACE",
-		"tools/releaser/README",
+		"tools/releaser/data/WORKSPACE",
+		"tools/releaser/data/README",
 	)
 
 	// the tarball produced by `git archive` has too many artifacts:
@@ -387,4 +395,84 @@ func makeTgz(w io.Writer, repoRoot string, ref string) (string, error) {
 	}
 
 	return fmt.Sprintf("%x", hashw.Sum(nil)), nil
+}
+
+type zigUpstream struct {
+	version     string // e.g. 0.11.0-dev.2619+bd3e248c7
+	urlTemplate string // https://mirror.bazel.build/ziglang.org/builds/zig-{host_platform}-{version}.{_ext}
+}
+
+// check if zig sdk is properly mirrored
+func checkZigMirrored(repoRoot string) error {
+	upstream, err := parseZigUpstream(path.Join(repoRoot, "toolchain", "defs.bzl"))
+	if err != nil {
+		return err
+	}
+
+	// spot-checking only windows-x86_64, because:
+	// - to check all platforms, we should parse much more of defs.bzl.
+	// - so we'd rather pick a single platform and test it.
+	// - because windows coverage is smallest, let's take the windows platform.
+	url := strings.Replace(upstream.urlTemplate, "{host_platform}", "windows-x86_64", 1)
+	url = strings.Replace(url, "{version}", upstream.version, 1)
+	url = strings.Replace(url, "{_ext}", "zip", 1)
+
+	log("checking if zig is mirorred in %q", url)
+
+	resp, err := http.Head(url)
+	if err != nil {
+		return err
+	}
+
+	if resp.StatusCode != 200 {
+		return fmt.Errorf("got non-200: %s", resp.Status)
+	}
+
+	return nil
+}
+
+// parseZigUpstrem parses "_VERSION" from toolchain/defs.bzl
+func parseZigUpstream(defsPath string) (zigUpstream, error) {
+	ret := zigUpstream{}
+
+	data, err := os.ReadFile(defsPath)
+	if err != nil {
+		return zigUpstream{}, err
+	}
+	parsed, err := bzl.Parse(defsPath, data)
+	if err != nil {
+		return zigUpstream{}, err
+	}
+
+	for _, expr := range parsed.Stmt {
+		def, ok := expr.(*bzl.AssignExpr)
+		if !ok {
+			continue
+		}
+
+		key := def.LHS.(*bzl.Ident)
+		var to *string
+
+		switch key.Name {
+		case "_VERSION":
+			to = &ret.version
+		case "URL_FORMAT_BAZELMIRROR":
+			to = &ret.urlTemplate
+		default:
+			continue
+		}
+
+		value, ok := def.RHS.(*bzl.StringExpr)
+		if !ok {
+			return zigUpstream{}, errors.New("got a non-string expression")
+		}
+
+		*to = value.Value
+	}
+
+	if ret.version == "" || ret.urlTemplate == "" {
+		return zigUpstream{}, errors.New("_VERSION and/or URL_FORMAT_BAZELMIRROR not found")
+	}
+
+	return ret, nil
 }
