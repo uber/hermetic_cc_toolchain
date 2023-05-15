@@ -413,9 +413,10 @@ We maintain two channels for comms:
 
 ### Previous Commuications
 
-Previous communications were done in an email list; the past archive is in
-`mailing-list-archive.mbox`. It can be accessed like this:
+Previous communications were done in a mailing list; the past archive can be
+accessed like this:
 
+    git checkout v2.0.0-rc2 mailing-list-archive.mbox
     mutt -R -f mailing-list-archive.mbox
 
 ## Maintainers
