@@ -61,7 +61,7 @@ func TestParseZigVersion(t *testing.T) {
 			wantErr:  "got a non-string expression",
 		},
 		{
-			name:     "missing assiginment",
+			name:     "missing assignment",
 			contents: "x1 = 1",
 			wantErr:  "assign statement _VERSION = <...> not found",
 		},
