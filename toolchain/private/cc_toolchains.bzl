@@ -1,32 +1,31 @@
 load(":defs.bzl", "target_structs", "zig_tool_path")
 load("@hermetic_cc_toolchain//toolchain:zig_toolchain.bzl", "zig_cc_toolchain_config")
 
-DEFAULT_TOOL_PATHS = {
-    "ar": "ar",
-    "gcc": "c++",  # https://github.com/bazelbuild/bazel/issues/4644
-    "cpp": "/usr/bin/false",
-    "gcov": "/usr/bin/false",
-    "nm": "/usr/bin/false",
-    "objdump": "/usr/bin/false",
-    "strip": "/usr/bin/false",
-}.items()
-
 def declare_cc_toolchains(os, zig_sdk_path):
+    exe = ".exe" if os == "windows" else ""
+
     for target_config in target_structs():
         gotarget = target_config.gotarget
         zigtarget = target_config.zigtarget
 
         cxx_builtin_include_directories = []
-        absolute_tool_paths = {}
-        for name, path in target_config.tool_paths.items() + DEFAULT_TOOL_PATHS:
-            if path[0] == "/":
-                absolute_tool_paths[name] = path
-                continue
-            tool_path = zig_tool_path(os).format(
-                zig_tool = path,
-                zigtarget = zigtarget,
-            )
-            absolute_tool_paths[name] = tool_path
+
+        tool_paths = {}
+
+        for tool in ["cpp", "gcov", "nm", "objdump", "strip"]:
+            tool_paths[tool] = "/usr/bin/false"
+
+        # https://github.com/bazelbuild/bazel/issues/4644
+        tool_paths["gcc"] = zig_tool_path(os).format(
+            zig_tool = "c++",
+            zigtarget = zigtarget,
+        )
+        tool_paths["ar"] = "tools/ar{}".format(exe)
+
+        if target_config.ld_zig_subcmd:
+            tool_paths["ld"] = "tools/{}{}".format(target_config.ld_zig_subcmd, exe)
+        else:
+            tool_paths["ld"] = "/usr/bin/false"
 
         dynamic_library_linkopts = target_config.dynamic_library_linkopts
         supports_dynamic_linker = target_config.supports_dynamic_linker
@@ -40,7 +39,7 @@ def declare_cc_toolchains(os, zig_sdk_path):
         zig_cc_toolchain_config(
             name = zigtarget + "_cc_config",
             target = zigtarget,
-            tool_paths = absolute_tool_paths,
+            tool_paths = tool_paths,
             cxx_builtin_include_directories = cxx_builtin_include_directories,
             copts = copts,
             linkopts = linkopts,

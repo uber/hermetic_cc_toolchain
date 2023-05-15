@@ -11,24 +11,23 @@
 //
 // * Sometimes toolchains (looking at you, Go, see an example in
 // https://github.com/golang/go/pull/55966) skip CFLAGS to the underlying
-// compiler. Doing that may carry a huge cost, because zig may need to spend
-// ~30s compiling libc++ for an innocent feature test. Having an executable per
+// compiler. Doing that carries a cost, because zig may need to spend ~30s
+// compiling libc++ for an innocent feature test. Having an executable per
 // target platform (like GCC does things, e.g. aarch64-linux-gnu-<tool>) is
-// what most toolchains are designed to work with. So we need a wrapper per
-// zig sub-command per target. As of writing, the layout is:
+// what most toolchains are designed to work with. So we need a wrapper per zig
+// sub-command per target. As of writing, the layout is:
+//
 //   tools/
+//   ├── ar
+//   ├── ld.lld
+//   ├── lld-link
+//   ├── zig-wrapper
 //   ├── x86_64-linux-gnu.2.34
-//   │   ├── ar
-//   │   ├── c++
-//   │   └── ld.lld
+//   │   └── c++
 //   ├── x86_64-linux-musl
-//   │   ├── ar
-//   │   ├── c++
-//   │   └── ld.lld
+//   │   └── c++
 //   ├── x86_64-macos-none
-//   │   ├── ar
-//   │   ├── c++
-//   │   └── ld64.lld
+//   │   └── c++
 //   ...
 // * ZIG_LIB_DIR controls the output of `zig c++ -MF -MD <...>`. Bazel uses
 // command to understand which input files were used to the compilation. If any
@@ -40,18 +39,16 @@
 // ZIG_GLOBAL_CACHE_DIR and ZIG_LOCAL_CACHE_DIR must be set to its value for
 // all `zig` invocations.
 //
-// Originally this was a Bash script, then a POSIX shell script, then two
-// scripts (one with pre-defined HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX, one
-// without). Then Windows came along with two PowerShell scripts (ports of the
-// POSIX shell scripts), which I kept breaking. Then Bazel 6 came with
-// `--experimental_use_hermetic_linux_sandbox`, which hermetizes the sandbox to
-// the extreme: the sandbox has nothing that is not declared. /bin/sh and its
-// dependencies (/lib/x86_64-linux-gnu/libc.so.6 on my system) are obviously
-// not declared. So one can either declare those dependencies, bundle a shell
-// to execute the wrapper, or port the shell logic to a cross-platform program
-// that compiles to a static binary. By a chance we happen to already ship a
-// toolchain of a language that could compile such program. And behold, the
-// program is below.
+// zig-wrapper, when invoked directly, will invoke "zig" with the same args and
+// ZIG_GLOBAL_CACHE_DIR, ZIG_LOCAL_CACHE_DIR, ZIG_LIB_DIR. `ar` will run `zig
+// ar` and pass the sub-commands.
+//
+// Adding new subcommands
+//------------------------
+// Other zig subcommands should added here only if they are required for the
+// Bazel's understanding of the zig toolchain. Users are expected to call
+// `zig-wrapper` directly if they need another zig subcommand instead of
+// adding them here.
 
 const builtin = @import("builtin");
 const std = @import("std");
@@ -69,24 +66,15 @@ const EXE = switch (builtin.target.os.tag) {
 
 const CACHE_DIR = "{HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX}";
 
-const usage_cpp =
+const usage =
     \\
-    \\Usage: <...>/tools/<target-triple>/{[zig_tool]s}{[exe]s} <args>...
+    \\Usage: <...>/tools/<target-triple>/{[arg0_noexe]s}{[exe]s} <args>...
     \\
     \\Wraps the "zig" multi-call binary. It determines the target platform from
     \\the directory where it was called. Then sets ZIG_LIB_DIR,
     \\ZIG_GLOBAL_CACHE_DIR, ZIG_LOCAL_CACHE_DIR and then calls:
     \\
     \\  zig c++ -target <target-triple> <args>...
-;
-
-const usage_other =
-    \\Usage: <...>/tools/<target-triple>/{[zig_tool]s}{[exe]s} <args>...
-    \\
-    \\Wraps the "zig" multi-call binary. It sets ZIG_LIB_DIR,
-    \\ZIG_GLOBAL_CACHE_DIR, ZIG_LOCAL_CACHE_DIR, and then calls:
-    \\
-    \\  zig {[zig_tool]s} <args>...
 ;
 
 const Action = enum {
@@ -102,6 +90,23 @@ const ExecParams = struct {
 const ParseResults = union(Action) {
     err: []const u8,
     exec: ExecParams,
+};
+
+// sub-commands in the same folder as `zig-wrapper`
+const sub_commands_target = std.ComptimeStringMap(void, .{
+    .{"ar"},
+    .{"ld.lld"},
+    .{"lld-link"},
+});
+
+const RunMode = union(enum) {
+    wrapper, // plain zig-wrapper
+
+    // commands in the same directory as zig-wrapper
+    arg1,
+
+    // the venerable one
+    cc: []const u8, // cc -target <...>
 };
 
 pub fn main() u8 {
@@ -168,21 +173,14 @@ fn parseArgs(
     const arg0 = argv_it.next() orelse
         return parseFatal(arena, "error: argv[0] cannot be null", .{});
 
-    const zig_tool = blk: {
-        const b = fs.path.basename(arg0);
-        if (builtin.target.os.tag == .windows and
-            std.ascii.eqlIgnoreCase(".exe", b[b.len - 4 ..]))
-            break :blk b[0 .. b.len - 4];
+    const arg0_noexe = noExe(fs.path.basename(arg0));
 
-        break :blk b;
-    };
-    const maybe_target = getTarget(arg0) catch |err| switch (err) {
+    const run_mode = getRunMode(arg0, arg0_noexe) catch |err| switch (err) {
         error.BadParent => {
-            const fmt_args = .{ .zig_tool = zig_tool, .exe = EXE };
-            if (mem.eql(u8, zig_tool, "c++"))
-                return parseFatal(arena, usage_cpp, fmt_args)
-            else
-                return parseFatal(arena, usage_other, fmt_args);
+            return parseFatal(arena, usage, .{
+                .arg0_noexe = arg0_noexe,
+                .exe = EXE,
+            });
         },
         else => |e| return e,
     };
@@ -200,7 +198,14 @@ fn parseArgs(
 
         // directory does not exist or there was an error opening it
         const here = fs.path.dirname(arg0) orelse ".";
-        break :blk try fs.path.join(arena, &[_][]const u8{ here, "..", ".." });
+
+        break :blk try fs.path.join(
+            arena,
+            switch (run_mode) {
+                .wrapper, .arg1 => &[_][]const u8{ here, ".." },
+                .cc => &[_][]const u8{ here, "..", ".." },
+            },
+        );
     };
 
     const zig_lib_dir = try fs.path.join(arena, &[_][]const u8{ root, "lib" });
@@ -218,9 +223,17 @@ fn parseArgs(
 
     // args is the path to the zig binary and args to it.
     var args = ArrayListUnmanaged([]const u8){};
-    try args.appendSlice(arena, &[_][]const u8{ zig_exe, zig_tool });
-    if (maybe_target) |target|
-        try args.appendSlice(arena, &[_][]const u8{ "-target", target });
+    try args.appendSlice(arena, &[_][]const u8{zig_exe});
+
+    switch (run_mode) {
+        .wrapper => {},
+        .arg1 => try args.appendSlice(arena, &[_][]const u8{arg0_noexe}),
+        .cc => |target| try args.appendSlice(arena, &[_][]const u8{
+            arg0_noexe,
+            "-target",
+            target,
+        }),
+    }
 
     while (argv_it.next()) |arg|
         try args.append(arena, arg);
@@ -242,7 +255,19 @@ pub fn fatal(comptime fmt: []const u8, args: anytype) u8 {
     return 1;
 }
 
-fn getTarget(self_exe: []const u8) error{BadParent}!?[]const u8 {
+fn getRunMode(self_exe: []const u8, self_base_noexe: []const u8) error{BadParent}!RunMode {
+    if (mem.eql(u8, "zig-wrapper", self_base_noexe))
+        return .wrapper;
+
+    if (sub_commands_target.has(self_base_noexe)) {
+        return .arg1;
+    }
+
+    // only zig-wrapper, c++ and ar and ar are supported
+    if (!mem.eql(u8, "c++", self_base_noexe))
+        return error.BadParent;
+
+    // what follows is the validation that `-target` is a plausible string.
     const here = fs.path.dirname(self_exe) orelse return error.BadParent;
     const triple = fs.path.basename(here);
 
@@ -266,10 +291,7 @@ fn getTarget(self_exe: []const u8) error{BadParent}!?[]const u8 {
     // but the target needs to have 3 dashes.
     if (it.next() != null) return error.BadParent;
 
-    if (mem.eql(u8, "c++" ++ EXE, fs.path.basename(self_exe)))
-        return triple
-    else
-        return null;
+    return RunMode{ .cc = triple };
 }
 
 const testing = std.testing;
@@ -302,7 +324,7 @@ fn compareExec(
     );
 }
 
-test "launcher:parseArgs" {
+test "zig-wrapper:parseArgs" {
     // not using testing.allocator, because parseArgs is designed to be used
     // with an arena.
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
@@ -320,19 +342,10 @@ test "launcher:parseArgs" {
         },
     }{
         .{
-            .args = &[_][:0]const u8{"ar" ++ EXE},
-            .want_result = .{
-                .err = comptime std.fmt.comptimePrint(usage_other ++ "\n", .{
-                    .zig_tool = "ar",
-                    .exe = EXE,
-                }),
-            },
-        },
-        .{
             .args = &[_][:0]const u8{"c++" ++ EXE},
             .want_result = .{
-                .err = comptime std.fmt.comptimePrint(usage_cpp ++ "\n", .{
-                    .zig_tool = "c++",
+                .err = comptime std.fmt.comptimePrint(usage ++ "\n", .{
+                    .arg0_noexe = "c++",
                     .exe = EXE,
                 }),
             },
@@ -363,25 +376,20 @@ test "launcher:parseArgs" {
         },
         .{
             .args = &[_][:0]const u8{
-                "tools" ++ sep ++ "x86_64-linux-musl" ++ sep ++ "ar" ++ EXE,
-                "-rcs",
-                "all.a",
-                "main.o",
-                "foo.o",
+                "external_zig_sdk" ++ sep ++ "tools" ++ sep ++
+                    "ar" ++ EXE,
+                "rcs",
             },
+            .precreate_dir = "external" ++ sep ++ "zig_sdk" ++ sep ++ "lib",
             .want_result = .{
                 .exec = .{
                     .args = &[_][:0]const u8{
-                        "tools" ++ sep ++ "x86_64-linux-musl" ++ sep ++ ".." ++
-                            sep ++ ".." ++ sep ++ "zig" ++ EXE,
+                        "external" ++ sep ++ "zig_sdk" ++ sep ++ "zig" ++ EXE,
                         "ar",
-                        "-rcs",
-                        "all.a",
-                        "main.o",
-                        "foo.o",
+                        "rcs",
                     },
-                    .env_zig_lib_dir = "tools" ++ sep ++ "x86_64-linux-musl" ++
-                        sep ++ ".." ++ sep ++ ".." ++ sep ++ "lib",
+                    .env_zig_lib_dir = "external" ++ sep ++ "zig_sdk" ++
+                        sep ++ "lib",
                 },
             },
         },
@@ -432,4 +440,12 @@ test "launcher:parseArgs" {
             },
         }
     }
+}
+
+fn noExe(b: []const u8) []const u8 {
+    if (builtin.target.os.tag == .windows and
+        std.ascii.eqlIgnoreCase(".exe", b[b.len - 4 ..]))
+        return b[0 .. b.len - 4];
+
+    return b;
 }
