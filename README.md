@@ -21,13 +21,16 @@ scratching.
 
 ## Project Origin
 
-This repository is cloned from and is based on Adam Bouhenguel's [bazel-zig-cc][ajbouh], 
-and was later developed at `sr.ht/~motiejus/bazel-zig-cc`. After a while this repository
-was moved to [the Uber GitHub repository](https://github.com/uber) and renamed to `hermetic_cc_toolchain`. 
+This repository is cloned from and is based on Adam Bouhenguel's
+[bazel-zig-cc][ajbouh], and was later developed at
+`sr.ht/~motiejus/bazel-zig-cc`. After a while this repository was moved to [the
+Uber GitHub repository](https://github.com/uber) and renamed to
+`hermetic_cc_toolchain`.
 
-> **Our special thanks to Adam for coming up with the idea - and creating the original version – of `bazel-zig-cc` 
-> and publishing it.  His idea and work helped make the concept of using Zig with 
-> Bazel a reality; now we all can benefit from it.**
+> **Our special thanks to Adam for coming up with the idea - and creating the
+> original version – of `bazel-zig-cc` and publishing it. His idea and work
+> helped make the concept of using Zig with Bazel a reality; now we all can
+> benefit from it.**
 
 ## Usage
 
@@ -65,14 +68,15 @@ The snippets above will download the zig toolchain and make the bazel
 toolchains available for registration and usage. If you do nothing else, this
 may work. The `.bazelrc` snippet instructs Bazel to use the registered "new
 kinds of toolchains". All above are required regardless of how wants to use it.
-The next steps depend on how one wants to use `hermetic_cc_toolchain`. The descriptions
-below is a gentle introduction to C++ toolchains from "user's perspective" too.
+The next steps depend on how one wants to use `hermetic_cc_toolchain`. The
+descriptions below is a gentle introduction to C++ toolchains from "user's
+perspective" too.
 
 ### Use case: manually build a single target with a specific zig cc toolchain
 
 This option is least disruptive to the workflow compared to no hermetic C++
-toolchain, and works best when trying out or getting started with `hermetic_cc_toolchain`
-for a subset of targets.
+toolchain, and works best when trying out or getting started with
+`hermetic_cc_toolchain` for a subset of targets.
 
 To request Bazel to use a specific toolchain (compatible with the specified
 platform) for build/tests/whatever on linux-amd64-musl, do:
@@ -175,8 +179,8 @@ build --action_env BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
 From Bazel's perspective, this is almost equivalent to always specifying
 `--extra_toolchains` on every `bazel <...>` command-line invocation. It also
 means there is no way to disable the toolchain with the command line. This is
-useful if you find `hermetic_cc_toolchain` useful enough to compile for all of your
-targets and tools.
+useful if you find `hermetic_cc_toolchain` useful enough to compile for all of
+your targets and tools.
 
 With `BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1` Bazel stops detecting the default
 host toolchain. Configuring toolchains is complicated enough, and the
@@ -260,7 +264,7 @@ $ bazel query "attr(constraint_setting, @zig_sdk//libc:variant, @zig_sdk//...)"
 `@zig_sdk//libc:unconstrained` is a special value that indicates that no value
 for the constraint is specified. The non libc aware linux toolchains are only
 compatible with this value to prevent accidental silent fallthrough to them.
-This is a guardrail. 
+This is a guardrail.
 
 ## Note: Naming
 
@@ -301,58 +305,29 @@ This flag encourages program authors to fix the undefined behavior. There are
 
 ## Known Issues In `hermetic_cc_toolchain`
 
-These are the things you may stumble into when using `hermetic_cc_toolchain`. We are
-unlikely to implement them any time soon, but patches implementing those will
-be accepted. See [Questions & Contributions](#questions-amp-contributions) on
-how to contribute.
+These are the things you may stumble into when using `hermetic_cc_toolchain`.
+We are unlikely to implement them any time soon, but patches implementing those
+will be accepted.
 
 ### Zig cache location
 
-Currently zig cache is in `$HOME`, so `bazel clean --expunge` does not clear
-the zig cache. Zig's cache should be stored somewhere in the project's path.
-
-### zig cc concurrency
-
-- Bazel spawns up to `nproc` workers.
-- For each of those, Go may spawn up to `nproc` processes while compiling.
-- Zig may do the same.
-
-... causing explosion of heavy compiler processes. This causes CPU to spike.
-Tracked in [ziglang/zig #12101  RFC: -j/--jobs for zig
-subcommands](https://github.com/ziglang/zig/issues/12101).
+Currently zig cache is stored in `/tmp/hermetic_cc_toolchain`, so `bazel clean
+--expunge` will not clear the zig cache. Zig's cache should be stored somewhere
+in the project's path. It is not clear how to do it.
 
 ### OSX: sysroot
 
 For non-trivial programs (and for all darwin/arm64 cgo programs) MacOS SDK may
 be necessary. Read [Jakub's comment][sysroot] about it. Support for OSX sysroot
-is currently not implemented.
+is currently not implemented, but patches implementing it will be accepted, as
+long as the OSX sysroot must come through an `http_archive`.
 
-### OSX: different OS targets (Catalina -- Monterey)
-
-[Zig 0.9.0](https://ziglang.org/download/0.9.0/release-notes.html#macOS) may
-target macos.10 (Catalina), macos.11 (Big Sur) or macos.12 (Monterey). It
-currently targets the lowest version, without ability to change it.
+In essence, OSX target support is not well tested with `hermetic_cc_toolchain`.
 
 ## Known Issues In Upstream
 
-This section lists issues that we have stumbled into when using `zig cc`, and is
-outside of `hermetic_cc_toolchain`'s control.
-
-### using glibc 2.27 or older
-
-**Severity: Medium**
-
-Task: [ziglang/zig #9485 glibc 2.27 or older: fcntl64 not found, but zig's glibc headers refer it](https://github.com/ziglang/zig/issues/9485)
-
-Background: when glibc 2.27 or older is selected, it may miss `fcntl64`. A
-workaround is applied for `x86_64`, but not for aarch64. The same workaround
-may apply to aarch64, our team did not find a need to test it (yet).
-
-In September 2022 the severity has been bumped to Medium, because glibc header
-updates cause a lot of churn when upgrading the SDK, when it shouldn't cause
-any at all.
-
-Feel free to track [Universal headers][universal-headers] project for a fix.
+This section lists issues that we have stumbled into when using `zig cc`, and
+is outside of `hermetic_cc_toolchain`'s control.
 
 ### Number of libc stubs with Go 1.20+
 
@@ -361,25 +336,6 @@ controlled. Go 1.20 no longer ships with pre-compiled archive files for the
 standard library, and it generates them on the fly, causing many extraneous
 libc stubs. Therefore, the initial compilation will take longer until those
 stubs are pre-cached.
-
-## Closed Upstream Issues
-
-- [ziglang/zig #12317 Possibility to disable caching for user](https://github.com/ziglang/zig/issues/12317) (CLOSED, thanks andrewrk and motiejus)
-- [golang/go #52690 Go linker does not put libc onto the linker line](https://github.com/golang/go/issues/52690) (CLOSED, thanks andrewrk and motiejus)
-- [ziglang/zig #10386 zig cc regression in 0.9.0](https://github.com/ziglang/zig/issues/10386) (CLOSED, thanks Xavier)
-- [ziglang/zig #10312 macho: fail if requested -framework is not found](https://github.com/ziglang/zig/pull/10312) (CLOSED, thanks kubkon)
-- [ziglang/zig #10299 [darwin aarch64 cgo] regression](https://github.com/ziglang/zig/issues/10299) (CLOSED, thanks kubkon)
-- [ziglang/zig #10297 [darwin x86_64 cgo] regression](https://github.com/ziglang/zig/issues/10297) (CLOSED, thanks kubkon)
-- [ziglang/zig #9431 FileNotFound when compiling macos](https://github.com/ziglang/zig/issues/9431) (CLOSED, thanks andrewrk)
-- [ziglang/zig #9139 zig c++ hanging when compiling in parallel](https://github.com/ziglang/zig/issues/9139) (CLOSED, thanks andrewrk)
-- [ziglang/zig #9050 golang linker segfault](https://github.com/ziglang/zig/issues/9050) (CLOSED, thanks kubkon)
-- [ziglang/zig #7917 [meta] better c/c++ toolchain compatibility](https://github.com/ziglang/zig/issues/7917) (CLOSED, thanks andrewrk)
-- [ziglang/zig #7915 ar-compatible command for zig cc](https://github.com/ziglang/zig/issues/7915) (CLOSED, thanks andrewrk)
-- [ziglang/zig #7667 misplaced relocated glibc stubs (pthread_sigmask)](https://github.com/ziglang/zig/issues/7667) (CLOSED, thanks mjonaitis and andrewrk)
-- [rules/go #2894 Per-arch_target linker flags](https://github.com/bazelbuild/rules_go/issues/2894) (CLOSED, thanks mjonaitis)
-- [golang/go #46644 cmd/link: with CC=zig: SIGSERV when cross-compiling to darwin/amd64](https://github.com/golang/go/issues/46644) (CLOSED, thanks kubkon)
-
-... and more.
 
 ## Host Environments
 
@@ -398,10 +354,11 @@ The tests are running (CId) on linux-amd64.
 A standalone Docker environment to play with `hermetic_cc_toolchain`:
 
 ```
-$ docker run -e CC=/usr/bin/false -ti --rm -v "$PWD:/x" -w /x debian:bullseye-slim
-# apt update && apt install --no-install-recommends -y shellcheck ca-certificates python3
+$ docker run -e CC=/usr/bin/false -ti --rm -v "$PWD:/x" -w /x debian:bookworm-slim
+# apt update && apt install --no-install-recommends -y shellcheck ca-certificates python3 git
+# git config --global --add safe.directory /x
 # ./ci/lint
-# ./ci/launcher
+# ./ci/release
 # ./ci/test
 ```
 
