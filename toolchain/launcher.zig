@@ -419,9 +419,8 @@ test "launcher:parseArgs" {
         if (tt.precreate_dir) |dir|
             try tmp.dir.makePath(dir);
 
-        var res = try parseArgs(allocator, tmp.dir, &TestArgIterator{
-            .argv = tt.args,
-        });
+        var argv_it = TestArgIterator{ .argv = tt.args };
+        var res = try parseArgs(allocator, tmp.dir, &argv_it);
 
         switch (tt.want_result) {
             .err => |want_msg| try testing.expectEqualStrings(
