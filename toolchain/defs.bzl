@@ -2,6 +2,8 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "read_user_netrc", "use_netrc")
 load("@hermetic_cc_toolchain//toolchain/private:defs.bzl", "target_structs", "zig_tool_path")
 
+_BUILTIN_TOOLS = ["ar", "ld.lld", "lld-link"]
+
 # Directories that `zig c++` includes behind the scenes.
 _DEFAULT_INCLUDE_DIRECTORIES = [
     "libcxx/include",
@@ -203,9 +205,9 @@ def _zig_repository_impl(repository_ctx):
         fail(zig_wrapper_err_msg)
 
     exe = ".exe" if os == "windows" else ""
-    repository_ctx.symlink("tools/zig-wrapper{}".format(exe), "tools/ar{}".format(exe))
-    repository_ctx.symlink("tools/zig-wrapper{}".format(exe), "tools/ld.lld{}".format(exe))
-    repository_ctx.symlink("tools/zig-wrapper{}".format(exe), "tools/lld-link{}".format(exe))
+    for t in _BUILTIN_TOOLS:
+        repository_ctx.symlink("tools/zig-wrapper{}".format(exe), "tools/{}{}".format(t, exe))
+
     for target_config in target_structs():
         tool_path = zig_tool_path(os).format(
             zig_tool = "c++",
@@ -234,6 +236,8 @@ def declare_files(os):
     native.exports_files(["zig{}".format(exe)], visibility = ["//visibility:public"])
     if os == "windows":
         native.alias(name = "zig", actual = ":zig.exe")
+        for t in _BUILTIN_TOOLS + ["zig-wrapper"]:
+            native.alias(name = "tools/{}".format(t), actual = ":tools/{}.exe".format(t))
 
     filegroup(name = "all", srcs = native.glob(["**"]))
     filegroup(name = "lib/std", srcs = native.glob(["lib/std/**"]))
