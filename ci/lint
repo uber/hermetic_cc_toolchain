@@ -7,6 +7,9 @@ set -euo pipefail
 
 cd "$(git rev-parse --show-toplevel)"
 
+echo "--- which zig"
+ZIG=${ZIG:-$(tools/bazel run "$@" --run_under=echo @zig_sdk//:zig)}
+
 >&2 echo "--- shellcheck :flag-lt:"
 if command -v shellcheck &> /dev/null; then
     mapfile -t files < \
@@ -18,6 +21,10 @@ if command -v shellcheck &> /dev/null; then
     shellcheck "${scripts[@]}"
     >&2 echo -e "OK\n"
 fi
+
+read -ra zigfiles < <(git ls-files '*.zig')
+>&2 echo "--- zig fmt ${zigfiles[*]}"
+$ZIG fmt "${zigfiles[@]}"
 
 >&2 echo "--- go fmt :go:"
 read -ra gofiles < <(git ls-files '**/*.go')

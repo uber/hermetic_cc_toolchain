@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+# Copyright 2023 Uber Technologies, Inc.
+# Licensed under the MIT License
+
+set -xeuo pipefail
+
+echo "--- which zig"
+ZIG=${ZIG:-$(tools/bazel run "$@" --run_under=echo @zig_sdk//:zig)}
+
+for zigfile in $(git ls-files '*.zig'); do
+    echo "--- compile $zigfile for various architectures"
+    for target in \
+        aarch64-linux-gnu.2.19 \
+        aarch64-macos-none \
+        x86_64-linux-gnu.2.19 \
+        x86_64-macos-none \
+        x86_64-windows-gnu
+    do
+        if [[ $target == aarch64-macos-none ]]; then
+            mcpu=apple_a14
+        else
+            mcpu=baseline
+        fi
+        $ZIG build-exe -fno-emit-bin -target $target -mcpu=$mcpu "$zigfile"
+    done
+
+
+    echo "--- zig test $zigfile"
+    # until hermetic_cc_toolchain gets a zig toolchain, run zig programs' unit tests here.
+    $ZIG test "$zigfile"
+
+    echo "--- test $zigfile via wine64"
+    # ReleaseSafe because of https://github.com/ziglang/zig/issues/14036
+    $ZIG test \
+        -OReleaseSafe \
+        -target x86_64-windows-gnu \
+        --test-cmd wine64-stable \
+        --test-cmd-bin \
+        "$zigfile"
+done
