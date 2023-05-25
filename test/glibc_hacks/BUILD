@@ -6,6 +6,7 @@ load("@hermetic_cc_toolchain//rules:platform.bzl", "platform_binary")
 cc_binary(
     name = "main",
     srcs = ["main.c"],
+    tags = ["manual"],
 )
 
 [

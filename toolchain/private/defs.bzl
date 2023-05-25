@@ -105,7 +105,9 @@ def _target_windows(gocpu, zigcpu):
         # static library by default. Note that you can still build Windows DLLs if you really want to through the
         # cc_binary rule, see the example in the upstream bazel repo in /examples/windows/dll/.
         supports_dynamic_linker = False,
-        copts = [],
+        # Required to compile Go SDK. Otherwise:
+        #   zig: error: argument unused during compilation: '-mthreads' [-Werror,-Wunused-command-line-argument]
+        copts = ["-Wno-unused-command-line-argument"],
         libc = "mingw",
         bazel_target_cpu = "x64_windows",
         constraint_values = [
