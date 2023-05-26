@@ -25,9 +25,9 @@ def _platform_binary_impl(ctx):
     src = ctx.file.src
     ctx.actions.run(
         outputs = [dst],
-        inputs = [src, ctx.file._cp] + ctx.files._zig_sdk,
-        executable = ctx.file._zig.path,
-        arguments = ["run", ctx.file._cp.short_path, "--", src.path, dst.path],
+        inputs = [src],
+        executable = "cp",
+        arguments = [src.path, dst.path],
     )
     return [DefaultInfo(
         files = depset([dst]),
@@ -45,18 +45,6 @@ _attrs = {
     ),
     "_allowlist_function_transition": attr.label(
         default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
-    ),
-    "_cp": attr.label(
-        default = "@hermetic_cc_toolchain//rules:cp.zig",
-        allow_single_file = True,
-    ),
-    "_zig": attr.label(
-        default = "@zig_sdk//:tools/zig-wrapper",
-        allow_single_file = True,
-    ),
-    "_zig_sdk": attr.label(
-        default = "@zig_sdk//:all",
-        allow_files = True,
     ),
 }
 
