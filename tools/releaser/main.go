@@ -40,6 +40,7 @@ var (
 	// hashes of already-released versions. Then just hardcode it here.
 	_tagHashes = map[string]string{
 		"v2.0.0-rc2": "40dff82816735e631e8bd51ede3af1c4ed1ad4646928ffb6a0e53e228e55738c",
+		"v2.0.0": "57f03a6c29793e8add7bd64186fc8066d23b5ffd06fe9cc6b0b8c499914d3a65",
 	}
 
 	_boilerplateFiles = []string{
@@ -314,6 +315,12 @@ func makeTgz(w io.Writer, repoRoot string, ref string) (string, error) {
 		"tools/releaser/data/README":    "README",
 	}
 
+	removals := map[string]struct{}{
+		"tools/": struct{}{},
+		"tools/releaser/": struct{}{},
+		"tools/releaser/data/": struct{}{},
+	}
+
 	// Paths to be included to the release
 	cmd := exec.Command(
 		"git",
@@ -362,6 +369,11 @@ func makeTgz(w io.Writer, repoRoot string, ref string) (string, error) {
 		}
 
 		name := hdr.Name
+
+		if _, ok := removals[name]; ok {
+			continue
+		}
+
 		if n, ok := substitutes[name]; ok {
 			name = n
 		}
