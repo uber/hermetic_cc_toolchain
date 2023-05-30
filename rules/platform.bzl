@@ -25,8 +25,8 @@ def _platform_binary_impl(ctx):
     src = ctx.file.src
     ctx.actions.run(
         outputs = [dst],
-        inputs = [src],
-        executable = "cp",
+        inputs = [src, ctx.file._cp],
+        executable = ctx.file._cp.path,
         arguments = [src.path, dst.path],
     )
     return [DefaultInfo(
@@ -45,6 +45,10 @@ _attrs = {
     ),
     "_allowlist_function_transition": attr.label(
         default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
+    ),
+    "_cp": attr.label(
+        default = "//rules:cp",
+        allow_single_file = True,
     ),
 }
 
