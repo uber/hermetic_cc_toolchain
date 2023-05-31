@@ -1,5 +1,13 @@
 def _impl(ctx):
     dst = ctx.actions.declare_file(ctx.label.name)
+
+    macos = ctx.attr._macos_constraint[platform_common.ConstraintValueInfo]
+    aarch64 = ctx.attr._aarch64_constraint[platform_common.ConstraintValueInfo]
+    if ctx.target_platform_has_constraint(macos) and ctx.target_platform_has_constraint(aarch64):
+        mcpu = "apple_a14"
+    else:
+        mcpu = "baseline"
+
     ctx.actions.run(
         inputs = [ctx.file.src] + ctx.files._zig_sdk,
         outputs = [dst],
@@ -7,6 +15,7 @@ def _impl(ctx):
         arguments = [
             "build-exe",
             ctx.file.src.short_path,
+            "-mcpu={}".format(mcpu),
             "-femit-bin={}".format(dst.path),
         ],
         mnemonic = "ZigBuildExe",
@@ -29,6 +38,12 @@ zig_binary = rule(
         "_zig_sdk": attr.label(
             default = "@zig_sdk//:all",
             allow_files = True,
+        ),
+        "_macos_constraint": attr.label(
+            default = "@platforms//os:macos",
+        ),
+        "_aarch64_constraint": attr.label(
+            default = "@platforms//cpu:aarch64",
         ),
     },
     executable = True,
