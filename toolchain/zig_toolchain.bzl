@@ -48,7 +48,7 @@ def _compilation_mode_features(ctx):
                 actions = actions,
                 flag_groups = [
                     flag_group(
-                        flags = ["-g"],
+                        flags = ["-g", "-fsanitize-undefined-strip-path-components=-1"],
                     ),
                 ],
             ),
@@ -77,7 +77,7 @@ def _compilation_mode_features(ctx):
                 actions = actions,
                 flag_groups = [
                     flag_group(
-                        flags = ["-fno-lto"],
+                        flags = ["-fno-lto", "-fsanitize-undefined-strip-path-components=-1"],
                     ),
                 ],
             ),
