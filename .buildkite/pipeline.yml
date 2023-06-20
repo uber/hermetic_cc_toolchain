@@ -1,6 +1,11 @@
 # Copyright 2023 Uber Technologies, Inc.
 # Licensed under the MIT License
 
+# The commands are in a single line due to this warning in buildkite:
+# ⚠️  The command received has multiple lines.
+# ⚠️  The Docker Plugin may not correctly run multiple commands in the step-level configuration.
+# ⚠️  You will need to use a single command, a script or the plugin's command option.
+
 steps:
   - label: "Test"
     command: ci/test
@@ -9,29 +14,16 @@ steps:
   - label: "List Platforms"
     command: ci/list_toolchains_platforms
   - label: "Test Release"
-    command: |
-      git config --global user.email "buildkite@example.com"
-      git config --global user.name "Buildkite Bot"
-
-      echo "--- ci/release"
-      exec ci/release
+    command: ci/prepare_git && echo "--- ci/release" && ci/release
   - label: "Test zig utilities"
     plugins:
-      - docker#v5.5.0:
+      - docker#v5.7.0:
           image: "debian:stable"
-    command: |
-      apt-get update && apt-get install --no-install-recommends -y \
-        wine64 python3 ca-certificates
-      exec ci/zig-utils
+    command: apt-get update && apt-get install --no-install-recommends -y wine64 python3 ca-certificates && ci/zig-utils
   - label: "Test rules_cc example"
-    command: |
-      git config --global user.email "buildkite@example.com"
-      git config --global user.name "Buildkite Bot"
-      exec ci/test_example rules_cc
+    command: ci/prepare_git && ci/test_example rules_cc
   - label: "mod-tidy and update-repos"
-    command: |
-      tools/mod-tidy
-      git diff --exit-code
+    command: tools/mod-tidy && git diff --exit-code
 agents:
     - "queue=init"
     - "docker=*"
