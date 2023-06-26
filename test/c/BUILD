@@ -27,8 +27,7 @@ cc_binary(
     )
     for name, platform, want in [
         ("linux_amd64_musl", "//libc_aware/platform:linux_amd64_musl", "non-glibc"),
-        ("linux_amd64_gnu.2.19", "//libc_aware/platform:linux_amd64_gnu.2.19", "glibc_2.19"),
         ("linux_amd64_gnu.2.28", "//libc_aware/platform:linux_amd64_gnu.2.28", "glibc_2.28"),
-        ("linux_amd64", "//platform:linux_amd64", "glibc_2.19"),
+        ("linux_amd64", "//platform:linux_amd64", "glibc_2.28"),
     ]
 ]
