@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# Copyright 2023 Uber Technologies, Inc.
+# Licensed under the MIT License
+
+set -xeuo pipefail
+
+cd "$(git rev-parse --show-toplevel)"
+prev_ref=$(git rev-parse HEAD)
+tools/bazel run //tools/releaser -- -tag v99.0.0 -skipBranchCheck
+cleanup() { git tag -d v99.0.0; git reset --hard "$prev_ref"; }
+trap cleanup EXIT
+
+file hermetic_cc_toolchain-v99.0.0.tar.gz | grep -q 'gzip compressed data'
