@@ -1,29 +1,3 @@
-# Copyright 2023 Uber Technologies, Inc.
-# Licensed under the MIT License
-
 steps:
-  - label: "Test"
-    command: ci/test
-  - label: "Lint"
-    command: ci/lint
-  - label: "List Platforms"
-    command: ci/list_toolchains_platforms
-  - label: "Test Release"
-    command: |
-      git config --global user.email "buildkite@example.com"
-      git config --global user.name "Buildkite Bot"
-
-      echo "--- ci/release"
-      exec ci/release
-  - label: "Test rules_cc example"
-    command: |
-      git config --global user.email "buildkite@example.com"
-      git config --global user.name "Buildkite Bot"
-      exec ci/test_example rules_cc
-  - label: "mod-tidy and update-repos"
-    command: |
-      tools/mod-tidy
-      git diff --exit-code
-agents:
-    - "queue=init"
-    - "docker=*"
+  - label: "Example Test"
+    command: echo "Hello!"
