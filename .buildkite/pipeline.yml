@@ -15,15 +15,6 @@ steps:
 
       echo "--- ci/release"
       exec ci/release
-  # TODO(#99) re-enable
-  #- label: "Test zig utilities"
-  #  plugins:
-  #    - docker#v5.5.0:
-  #        image: "debian:stable"
-  #  command: |
-  #    apt-get update && apt-get install --no-install-recommends -y \
-  #      wine64 python3 ca-certificates
-  #    exec ci/zig-utils
   - label: "Test rules_cc example"
     command: |
       git config --global user.email "buildkite@example.com"
