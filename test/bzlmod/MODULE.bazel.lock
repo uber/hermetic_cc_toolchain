@@ -709,16 +709,6 @@
     }
   },
   "moduleExtensions": {
-    "@bazel_tools//tools/sh:sh_configure.bzl%sh_configure_extension": {
-      "bzlTransitiveDigest": "hp4NgmNjEg5+xgvzfh6L83bt9/aiiWETuNpwNuF1MSU=",
-      "generatedRepoSpecs": {
-        "local_config_sh": {
-          "bzlFile": "@@bazel_tools//tools/sh:sh_configure.bzl",
-          "ruleClassName": "sh_config",
-          "attributes": {"name":"--bazel_tools~sh_configure_extension~local_config_sh"}
-        }
-      }
-    },
     "@bazel_tools//tools/cpp:cc_configure.bzl%cc_configure_extension": {
       "bzlTransitiveDigest": "fX+NTqVY9jebrhWZSjm+R2r4sMbV1U3pvP90DKmouSg=",
       "generatedRepoSpecs": {
@@ -744,23 +734,13 @@
         }
       }
     },
-    "@rules_go~0.41.0//go:extensions.bzl%go_sdk": {
-      "bzlTransitiveDigest": "uRRiyTb4o55cIajpRoOrHqU9TIFenkML7Da2dL3oXQ8=",
+    "@bazel_tools//tools/sh:sh_configure.bzl%sh_configure_extension": {
+      "bzlTransitiveDigest": "hp4NgmNjEg5+xgvzfh6L83bt9/aiiWETuNpwNuF1MSU=",
       "generatedRepoSpecs": {
-        "go_default_sdk": {
-          "bzlFile": "@@rules_go~0.41.0//go/private:sdk.bzl",
-          "ruleClassName": "go_download_sdk_rule",
-          "attributes": {"name":"--rules_go~0.41.0~go_sdk~go_default_sdk","goos":"--","goarch":"--","sdks":{},"urls":["--https://dl.google.com/go/{}"],"version":"--1.20.2"}
-        },
-        "go_host_compatible_sdk_label": {
-          "bzlFile": "@@rules_go~0.41.0//go/private:extensions.bzl",
-          "ruleClassName": "host_compatible_toolchain",
-          "attributes": {"name":"--rules_go~0.41.0~go_sdk~go_host_compatible_sdk_label","toolchain":"--@go_default_sdk//:ROOT"}
-        },
-        "go_toolchains": {
-          "bzlFile": "@@rules_go~0.41.0//go/private:sdk.bzl",
-          "ruleClassName": "go_multiple_toolchains",
-          "attributes": {"name":"--rules_go~0.41.0~go_sdk~go_toolchains","prefixes":["--_0000_go_default_sdk_"],"geese":["--"],"goarchs":["--"],"sdk_repos":["--go_default_sdk"],"sdk_types":["--remote"],"sdk_versions":["--1.20.2"]}
+        "local_config_sh": {
+          "bzlFile": "@@bazel_tools//tools/sh:sh_configure.bzl",
+          "ruleClassName": "sh_config",
+          "attributes": {"name":"--bazel_tools~sh_configure_extension~local_config_sh"}
         }
       }
     },
@@ -781,6 +761,26 @@
           "bzlFile": "@@bazel_tools//tools/osx:xcode_configure.bzl",
           "ruleClassName": "xcode_autoconf",
           "attributes": {"name":"--rules_cc~0.0.2~cc_configure~local_config_xcode","xcode_locator":"--@bazel_tools//tools/osx:xcode_locator.m","remote_xcode":"--"}
+        }
+      }
+    },
+    "@rules_go~0.41.0//go:extensions.bzl%go_sdk": {
+      "bzlTransitiveDigest": "uRRiyTb4o55cIajpRoOrHqU9TIFenkML7Da2dL3oXQ8=",
+      "generatedRepoSpecs": {
+        "go_default_sdk": {
+          "bzlFile": "@@rules_go~0.41.0//go/private:sdk.bzl",
+          "ruleClassName": "go_download_sdk_rule",
+          "attributes": {"name":"--rules_go~0.41.0~go_sdk~go_default_sdk","goos":"--","goarch":"--","sdks":{},"urls":["--https://dl.google.com/go/{}"],"version":"--1.20.2"}
+        },
+        "go_host_compatible_sdk_label": {
+          "bzlFile": "@@rules_go~0.41.0//go/private:extensions.bzl",
+          "ruleClassName": "host_compatible_toolchain",
+          "attributes": {"name":"--rules_go~0.41.0~go_sdk~go_host_compatible_sdk_label","toolchain":"--@go_default_sdk//:ROOT"}
+        },
+        "go_toolchains": {
+          "bzlFile": "@@rules_go~0.41.0//go/private:sdk.bzl",
+          "ruleClassName": "go_multiple_toolchains",
+          "attributes": {"name":"--rules_go~0.41.0~go_sdk~go_toolchains","prefixes":["--_0000_go_default_sdk_"],"geese":["--"],"goarchs":["--"],"sdk_repos":["--go_default_sdk"],"sdk_types":["--remote"],"sdk_versions":["--1.20.2"]}
         }
       }
     },
