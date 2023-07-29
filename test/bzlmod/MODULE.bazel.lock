@@ -1,0 +1,1073 @@
+{
+  "lockFileVersion": 1,
+  "moduleFileHash": "141597e7b87f79c0573e6937e3a584b71a1425997af90c6e04e184caa5f89869",
+  "flags": {
+    "cmdRegistries": [
+      "https://bcr.bazel.build/"
+    ],
+    "cmdModuleOverrides": {},
+    "allowedYankedVersions": [],
+    "envVarAllowedYankedVersions": "",
+    "ignoreDevDependency": false,
+    "directDependenciesMode": "WARNING",
+    "compatibilityMode": "ERROR"
+  },
+  "localOverrideHashes": {
+    "bazel_tools": "11c49407fdc54b48d69dcd4478440118124b9cd51b2dca5947a6414a585964a1",
+    "hermetic_cc_toolchain": "8714fc910666c1f0fb32a1c51eaa9b404f99a749313518cd7d575bce207bda62"
+  },
+  "moduleDepGraph": {
+    "<root>": {
+      "name": "hermetic_cc_toolchain_bcr_tests",
+      "version": "0.1.0",
+      "key": "<root>",
+      "repoName": "hermetic_cc_toolchain_bcr_tests",
+      "executionPlatformsToRegister": [],
+      "toolchainsToRegister": [
+        "@zig_sdk//toolchain:linux_amd64_gnu.2.31",
+        "@zig_sdk//toolchain:linux_arm64_gnu.2.31",
+        "@zig_sdk//toolchain:darwin_amd64",
+        "@zig_sdk//toolchain:darwin_arm64",
+        "@zig_sdk//toolchain:windows_amd64",
+        "@zig_sdk//toolchain:windows_arm64"
+      ],
+      "extensionUsages": [
+        {
+          "extensionBzlFile": "@hermetic_cc_toolchain//toolchain:ext.bzl",
+          "extensionName": "toolchains",
+          "usingModule": "<root>",
+          "location": {
+            "file": "@@//:MODULE.bazel",
+            "line": 15,
+            "column": 27
+          },
+          "imports": {
+            "zig_sdk": "zig_sdk"
+          },
+          "devImports": [],
+          "tags": [],
+          "hasDevUseExtension": false,
+          "hasNonDevUseExtension": true
+        }
+      ],
+      "deps": {
+        "bazel_tools": "bazel_tools@_",
+        "local_config_platform": "local_config_platform@_",
+        "hermetic_cc_toolchain": "hermetic_cc_toolchain@_",
+        "io_bazel_rules_go": "rules_go@0.41.0"
+      }
+    },
+    "bazel_tools@_": {
+      "name": "bazel_tools",
+      "version": "",
+      "key": "bazel_tools@_",
+      "repoName": "bazel_tools",
+      "executionPlatformsToRegister": [],
+      "toolchainsToRegister": [
+        "@local_config_cc_toolchains//:all",
+        "@local_config_sh//:local_sh_toolchain"
+      ],
+      "extensionUsages": [
+        {
+          "extensionBzlFile": "@bazel_tools//tools/cpp:cc_configure.bzl",
+          "extensionName": "cc_configure_extension",
+          "usingModule": "bazel_tools@_",
+          "location": {
+            "file": "@@bazel_tools//:MODULE.bazel",
+            "line": 13,
+            "column": 29
+          },
+          "imports": {
+            "local_config_cc": "local_config_cc",
+            "local_config_cc_toolchains": "local_config_cc_toolchains"
+          },
+          "devImports": [],
+          "tags": [],
+          "hasDevUseExtension": false,
+          "hasNonDevUseExtension": true
+        },
+        {
+          "extensionBzlFile": "@bazel_tools//tools/osx:xcode_configure.bzl",
+          "extensionName": "xcode_configure_extension",
+          "usingModule": "bazel_tools@_",
+          "location": {
+            "file": "@@bazel_tools//:MODULE.bazel",
+            "line": 17,
+            "column": 32
+          },
+          "imports": {
+            "local_config_xcode": "local_config_xcode"
+          },
+          "devImports": [],
+          "tags": [],
+          "hasDevUseExtension": false,
+          "hasNonDevUseExtension": true
+        },
+        {
+          "extensionBzlFile": "@rules_java//java:extensions.bzl",
+          "extensionName": "toolchains",
+          "usingModule": "bazel_tools@_",
+          "location": {
+            "file": "@@bazel_tools//:MODULE.bazel",
+            "line": 20,
+            "column": 32
+          },
+          "imports": {
+            "local_jdk": "local_jdk",
+            "remote_java_tools": "remote_java_tools",
+            "remote_java_tools_linux": "remote_java_tools_linux",
+            "remote_java_tools_windows": "remote_java_tools_windows",
+            "remote_java_tools_darwin_x86_64": "remote_java_tools_darwin_x86_64",
+            "remote_java_tools_darwin_arm64": "remote_java_tools_darwin_arm64"
+          },
+          "devImports": [],
+          "tags": [],
+          "hasDevUseExtension": false,
+          "hasNonDevUseExtension": true
+        },
+        {
+          "extensionBzlFile": "@bazel_tools//tools/sh:sh_configure.bzl",
+          "extensionName": "sh_configure_extension",
+          "usingModule": "bazel_tools@_",
+          "location": {
+            "file": "@@bazel_tools//:MODULE.bazel",
+            "line": 31,
+            "column": 39
+          },
+          "imports": {
+            "local_config_sh": "local_config_sh"
+          },
+          "devImports": [],
+          "tags": [],
+          "hasDevUseExtension": false,
+          "hasNonDevUseExtension": true
+        },
+        {
+          "extensionBzlFile": "@bazel_tools//tools/test:extensions.bzl",
+          "extensionName": "remote_coverage_tools_extension",
+          "usingModule": "bazel_tools@_",
+          "location": {
+            "file": "@@bazel_tools//:MODULE.bazel",
+            "line": 35,
+            "column": 48
+          },
+          "imports": {
+            "remote_coverage_tools": "remote_coverage_tools"
+          },
+          "devImports": [],
+          "tags": [],
+          "hasDevUseExtension": false,
+          "hasNonDevUseExtension": true
+        },
+        {
+          "extensionBzlFile": "@bazel_tools//tools/android:android_extensions.bzl",
+          "extensionName": "remote_android_tools_extensions",
+          "usingModule": "bazel_tools@_",
+          "location": {
+            "file": "@@bazel_tools//:MODULE.bazel",
+            "line": 38,
+            "column": 42
+          },
+          "imports": {
+            "android_gmaven_r8": "android_gmaven_r8",
+            "android_tools": "android_tools"
+          },
+          "devImports": [],
+          "tags": [],
+          "hasDevUseExtension": false,
+          "hasNonDevUseExtension": true
+        }
+      ],
+      "deps": {
+        "local_config_platform": "local_config_platform@_",
+        "rules_cc": "rules_cc@0.0.2",
+        "rules_java": "rules_java@5.5.0",
+        "rules_license": "rules_license@0.0.3",
+        "rules_proto": "rules_proto@4.0.0",
+        "rules_python": "rules_python@0.4.0",
+        "platforms": "platforms@0.0.6",
+        "com_google_protobuf": "protobuf@3.19.6",
+        "zlib": "zlib@1.2.13"
+      }
+    },
+    "local_config_platform@_": {
+      "name": "local_config_platform",
+      "version": "",
+      "key": "local_config_platform@_",
+      "repoName": "local_config_platform",
+      "executionPlatformsToRegister": [],
+      "toolchainsToRegister": [],
+      "extensionUsages": [],
+      "deps": {
+        "bazel_tools": "bazel_tools@_",
+        "platforms": "platforms@0.0.6"
+      }
+    },
+    "hermetic_cc_toolchain@_": {
+      "name": "hermetic_cc_toolchain",
+      "version": "2.0.0.dev",
+      "key": "hermetic_cc_toolchain@_",
+      "repoName": "hermetic_cc_toolchain",
+      "executionPlatformsToRegister": [],
+      "toolchainsToRegister": [],
+      "extensionUsages": [],
+      "deps": {
+        "bazel_tools": "bazel_tools@_",
+        "local_config_platform": "local_config_platform@_",
+        "platforms": "platforms@0.0.6"
+      }
+    },
+    "rules_go@0.41.0": {
+      "name": "rules_go",
+      "version": "0.41.0",
+      "key": "rules_go@0.41.0",
+      "repoName": "io_bazel_rules_go",
+      "executionPlatformsToRegister": [],
+      "toolchainsToRegister": [
+        "@go_toolchains//:all"
+      ],
+      "extensionUsages": [
+        {
+          "extensionBzlFile": "@io_bazel_rules_go//go/private:extensions.bzl",
+          "extensionName": "non_module_dependencies",
+          "usingModule": "rules_go@0.41.0",
+          "location": {
+            "file": "https://bcr.bazel.build/modules/rules_go/0.41.0/MODULE.bazel",
+            "line": 13,
+            "column": 40
+          },
+          "imports": {
+            "io_bazel_rules_nogo": "io_bazel_rules_nogo"
+          },
+          "devImports": [],
+          "tags": [],
+          "hasDevUseExtension": false,
+          "hasNonDevUseExtension": true
+        },
+        {
+          "extensionBzlFile": "@io_bazel_rules_go//go:extensions.bzl",
+          "extensionName": "go_sdk",
+          "usingModule": "rules_go@0.41.0",
+          "location": {
+            "file": "https://bcr.bazel.build/modules/rules_go/0.41.0/MODULE.bazel",
+            "line": 19,
+            "column": 23
+          },
+          "imports": {
+            "go_toolchains": "go_toolchains"
+          },
+          "devImports": [],
+          "tags": [
+            {
+              "tagName": "download",
+              "attributeValues": {"name":"--go_default_sdk","version":"--1.20.2"},
+              "devDependency": false,
+              "location": {
+                "file": "https://bcr.bazel.build/modules/rules_go/0.41.0/MODULE.bazel",
+                "line": 20,
+                "column": 16
+              }
+            }
+          ],
+          "hasDevUseExtension": false,
+          "hasNonDevUseExtension": true
+        },
+        {
+          "extensionBzlFile": "@gazelle//:extensions.bzl",
+          "extensionName": "go_deps",
+          "usingModule": "rules_go@0.41.0",
+          "location": {
+            "file": "https://bcr.bazel.build/modules/rules_go/0.41.0/MODULE.bazel",
+            "line": 30,
+            "column": 24
+          },
+          "imports": {
+            "com_github_gogo_protobuf": "com_github_gogo_protobuf",
+            "com_github_golang_mock": "com_github_golang_mock",
+            "com_github_golang_protobuf": "com_github_golang_protobuf",
+            "org_golang_google_genproto": "org_golang_google_genproto",
+            "org_golang_google_grpc": "org_golang_google_grpc",
+            "org_golang_google_protobuf": "org_golang_google_protobuf",
+            "org_golang_x_net": "org_golang_x_net"
+          },
+          "devImports": [],
+          "tags": [
+            {
+              "tagName": "from_file",
+              "attributeValues": {"go_mod":"--//:go.mod"},
+              "devDependency": false,
+              "location": {
+                "file": "https://bcr.bazel.build/modules/rules_go/0.41.0/MODULE.bazel",
+                "line": 31,
+                "column": 18
+              }
+            },
+            {
+              "tagName": "module",
+              "attributeValues": {"path":"--github.com/gogo/protobuf","sum":"--h1:Ov1cvc58UF3b5XjBnZv7+opcTcQFZebYjWzi34vdm4Q=","version":"--v1.3.2"},
+              "devDependency": false,
+              "location": {
+                "file": "https://bcr.bazel.build/modules/rules_go/0.41.0/MODULE.bazel",
+                "line": 32,
+                "column": 15
+              }
+            }
+          ],
+          "hasDevUseExtension": false,
+          "hasNonDevUseExtension": true
+        }
+      ],
+      "deps": {
+        "bazel_tools": "bazel_tools@_",
+        "local_config_platform": "local_config_platform@_",
+        "bazel_skylib": "bazel_skylib@1.3.0",
+        "platforms": "platforms@0.0.6",
+        "rules_proto": "rules_proto@4.0.0",
+        "com_google_protobuf": "protobuf@3.19.6",
+        "gazelle": "gazelle@0.32.0"
+      },
+      "repoSpec": {
+        "bzlFile": "@bazel_tools//tools/build_defs/repo:http.bzl",
+        "ruleClassName": "http_archive",
+        "attributes": {"name":"--rules_go~0.41.0","urls":["--https://github.com/bazelbuild/rules_go/releases/download/v0.41.0/rules_go-v0.41.0.zip"],"integrity":"--sha256-J4t/9agm89wQ8E/q8LcNSLaHSMzVEtf5i/RCB38EP+M=","strip_prefix":"--","remote_patches":{"--https://bcr.bazel.build/modules/rules_go/0.41.0/patches/bump_gazelle_version.patch":"--sha256-50a277c9CqDhHN0A+EnA++cjEzbCBbhjRao/xOoGgHk="},"remote_patch_strip":1}
+      }
+    },
+    "rules_cc@0.0.2": {
+      "name": "rules_cc",
+      "version": "0.0.2",
+      "key": "rules_cc@0.0.2",
+      "repoName": "rules_cc",
+      "executionPlatformsToRegister": [],
+      "toolchainsToRegister": [
+        "@local_config_cc_toolchains//:all"
+      ],
+      "extensionUsages": [
+        {
+          "extensionBzlFile": "@rules_cc//cc:extensions.bzl",
+          "extensionName": "cc_configure",
+          "usingModule": "rules_cc@0.0.2",
+          "location": {
+            "file": "https://bcr.bazel.build/modules/rules_cc/0.0.2/MODULE.bazel",
+            "line": 10,
+            "column": 29
+          },
+          "imports": {
+            "local_config_cc_toolchains": "local_config_cc_toolchains"
+          },
+          "devImports": [],
+          "tags": [],
+          "hasDevUseExtension": false,
+          "hasNonDevUseExtension": true
+        }
+      ],
+      "deps": {
+        "bazel_tools": "bazel_tools@_",
+        "local_config_platform": "local_config_platform@_",
+        "bazel_skylib": "bazel_skylib@1.3.0",
+        "platforms": "platforms@0.0.6"
+      },
+      "repoSpec": {
+        "bzlFile": "@bazel_tools//tools/build_defs/repo:http.bzl",
+        "ruleClassName": "http_archive",
+        "attributes": {"name":"--rules_cc~0.0.2","urls":["--https://github.com/bazelbuild/rules_cc/releases/download/0.0.2/rules_cc-0.0.2.tar.gz"],"integrity":"--sha256-WL/0CVes6Fwt4h6/xy5T7ToNM6+Mwgq9DO7FXGO+feI=","strip_prefix":"--","remote_patches":{"--https://bcr.bazel.build/modules/rules_cc/0.0.2/patches/module_dot_bazel.patch":"--sha256-wwbvBwzp2Z8UJMeLmIfWB7CkQAaVL4L+Hdr2k5oEv/Q="},"remote_patch_strip":0}
+      }
+    },
+    "rules_java@5.5.0": {
+      "name": "rules_java",
+      "version": "5.5.0",
+      "key": "rules_java@5.5.0",
+      "repoName": "rules_java",
+      "executionPlatformsToRegister": [],
+      "toolchainsToRegister": [
+        "//toolchains:all",
+        "@local_jdk//:runtime_toolchain_definition",
+        "@remotejdk11_linux_toolchain_config_repo//:toolchain",
+        "@remotejdk11_macos_toolchain_config_repo//:toolchain",
+        "@remotejdk11_macos_aarch64_toolchain_config_repo//:toolchain",
+        "@remotejdk11_win_toolchain_config_repo//:toolchain",
+        "@remotejdk17_linux_toolchain_config_repo//:toolchain",
+        "@remotejdk17_macos_toolchain_config_repo//:toolchain",
+        "@remotejdk17_macos_aarch64_toolchain_config_repo//:toolchain",
+        "@remotejdk17_win_toolchain_config_repo//:toolchain",
+        "@remotejdk19_linux_toolchain_config_repo//:toolchain",
+        "@remotejdk19_macos_toolchain_config_repo//:toolchain",
+        "@remotejdk19_macos_aarch64_toolchain_config_repo//:toolchain",
+        "@remotejdk19_win_toolchain_config_repo//:toolchain",
+        "@remotejdk11_linux_aarch64_toolchain_config_repo//:toolchain",
+        "@remotejdk11_linux_ppc64le_toolchain_config_repo//:toolchain",
+        "@remotejdk11_linux_s390x_toolchain_config_repo//:toolchain"
+      ],
+      "extensionUsages": [
+        {
+          "extensionBzlFile": "@rules_java//java:extensions.bzl",
+          "extensionName": "toolchains",
+          "usingModule": "rules_java@5.5.0",
+          "location": {
+            "file": "https://bcr.bazel.build/modules/rules_java/5.5.0/MODULE.bazel",
+            "line": 16,
+            "column": 27
+          },
+          "imports": {
+            "remote_java_tools": "remote_java_tools",
+            "remote_java_tools_linux": "remote_java_tools_linux",
+            "remote_java_tools_windows": "remote_java_tools_windows",
+            "remote_java_tools_darwin_x86_64": "remote_java_tools_darwin_x86_64",
+            "remote_java_tools_darwin_arm64": "remote_java_tools_darwin_arm64",
+            "local_jdk": "local_jdk",
+            "remotejdk11_linux_toolchain_config_repo": "remotejdk11_linux_toolchain_config_repo",
+            "remotejdk11_macos_toolchain_config_repo": "remotejdk11_macos_toolchain_config_repo",
+            "remotejdk11_macos_aarch64_toolchain_config_repo": "remotejdk11_macos_aarch64_toolchain_config_repo",
+            "remotejdk11_win_toolchain_config_repo": "remotejdk11_win_toolchain_config_repo",
+            "remotejdk17_linux_toolchain_config_repo": "remotejdk17_linux_toolchain_config_repo",
+            "remotejdk17_macos_toolchain_config_repo": "remotejdk17_macos_toolchain_config_repo",
+            "remotejdk17_macos_aarch64_toolchain_config_repo": "remotejdk17_macos_aarch64_toolchain_config_repo",
+            "remotejdk17_win_toolchain_config_repo": "remotejdk17_win_toolchain_config_repo",
+            "remotejdk19_linux_toolchain_config_repo": "remotejdk19_linux_toolchain_config_repo",
+            "remotejdk19_macos_toolchain_config_repo": "remotejdk19_macos_toolchain_config_repo",
+            "remotejdk19_macos_aarch64_toolchain_config_repo": "remotejdk19_macos_aarch64_toolchain_config_repo",
+            "remotejdk19_win_toolchain_config_repo": "remotejdk19_win_toolchain_config_repo",
+            "remotejdk11_linux_aarch64_toolchain_config_repo": "remotejdk11_linux_aarch64_toolchain_config_repo",
+            "remotejdk11_linux_ppc64le_toolchain_config_repo": "remotejdk11_linux_ppc64le_toolchain_config_repo",
+            "remotejdk11_linux_s390x_toolchain_config_repo": "remotejdk11_linux_s390x_toolchain_config_repo"
+          },
+          "devImports": [],
+          "tags": [],
+          "hasDevUseExtension": false,
+          "hasNonDevUseExtension": true
+        }
+      ],
+      "deps": {
+        "bazel_tools": "bazel_tools@_",
+        "local_config_platform": "local_config_platform@_",
+        "platforms": "platforms@0.0.6",
+        "rules_cc": "rules_cc@0.0.2",
+        "bazel_skylib": "bazel_skylib@1.3.0",
+        "rules_proto": "rules_proto@4.0.0"
+      },
+      "repoSpec": {
+        "bzlFile": "@bazel_tools//tools/build_defs/repo:http.bzl",
+        "ruleClassName": "http_archive",
+        "attributes": {"name":"--rules_java~5.5.0","urls":["--https://github.com/bazelbuild/rules_java/releases/download/5.5.0/rules_java-5.5.0.tar.gz"],"integrity":"--sha256-vPq/tAfLDIggFBMQ+qEC9/uSzIBrDw4mpiUZYQGwtX4=","strip_prefix":"--","remote_patches":{},"remote_patch_strip":0}
+      }
+    },
+    "rules_license@0.0.3": {
+      "name": "rules_license",
+      "version": "0.0.3",
+      "key": "rules_license@0.0.3",
+      "repoName": "rules_license",
+      "executionPlatformsToRegister": [],
+      "toolchainsToRegister": [],
+      "extensionUsages": [],
+      "deps": {
+        "bazel_tools": "bazel_tools@_",
+        "local_config_platform": "local_config_platform@_"
+      },
+      "repoSpec": {
+        "bzlFile": "@bazel_tools//tools/build_defs/repo:http.bzl",
+        "ruleClassName": "http_archive",
+        "attributes": {"name":"--rules_license~0.0.3","urls":["--https://github.com/bazelbuild/rules_license/releases/download/0.0.3/rules_license-0.0.3.tar.gz"],"integrity":"--sha256-AMzA3yExLBJ6xLEogKsPmibBz/mUQtxsWjMXUDYN48M=","strip_prefix":"--","remote_patches":{"--https://bcr.bazel.build/modules/rules_license/0.0.3/patches/module_dot_bazel.patch":"--sha256-yim5cwFqlS1F1UomygmIEM/UQhrkQZyYrwo48WFt4gE="},"remote_patch_strip":0}
+      }
+    },
+    "rules_proto@4.0.0": {
+      "name": "rules_proto",
+      "version": "4.0.0",
+      "key": "rules_proto@4.0.0",
+      "repoName": "rules_proto",
+      "executionPlatformsToRegister": [],
+      "toolchainsToRegister": [],
+      "extensionUsages": [],
+      "deps": {
+        "bazel_tools": "bazel_tools@_",
+        "local_config_platform": "local_config_platform@_",
+        "bazel_skylib": "bazel_skylib@1.3.0",
+        "rules_cc": "rules_cc@0.0.2"
+      },
+      "repoSpec": {
+        "bzlFile": "@bazel_tools//tools/build_defs/repo:http.bzl",
+        "ruleClassName": "http_archive",
+        "attributes": {"name":"--rules_proto~4.0.0","urls":["--https://github.com/bazelbuild/rules_proto/archive/refs/tags/4.0.0.zip"],"integrity":"--sha256-Lr5z6xyuRA19pNtRYMGjKaynwQpck4H/lwYyVjyhoq4=","strip_prefix":"--rules_proto-4.0.0","remote_patches":{"--https://bcr.bazel.build/modules/rules_proto/4.0.0/patches/module_dot_bazel.patch":"--sha256-MclJO7tIAM2ElDAmscNId9pKTpOuDGHgVlW/9VBOIp0="},"remote_patch_strip":0}
+      }
+    },
+    "rules_python@0.4.0": {
+      "name": "rules_python",
+      "version": "0.4.0",
+      "key": "rules_python@0.4.0",
+      "repoName": "rules_python",
+      "executionPlatformsToRegister": [],
+      "toolchainsToRegister": [
+        "@bazel_tools//tools/python:autodetecting_toolchain"
+      ],
+      "extensionUsages": [
+        {
+          "extensionBzlFile": "@rules_python//bzlmod:extensions.bzl",
+          "extensionName": "pip_install",
+          "usingModule": "rules_python@0.4.0",
+          "location": {
+            "file": "https://bcr.bazel.build/modules/rules_python/0.4.0/MODULE.bazel",
+            "line": 7,
+            "column": 28
+          },
+          "imports": {
+            "pypi__click": "pypi__click",
+            "pypi__pip": "pypi__pip",
+            "pypi__pip_tools": "pypi__pip_tools",
+            "pypi__pkginfo": "pypi__pkginfo",
+            "pypi__setuptools": "pypi__setuptools",
+            "pypi__wheel": "pypi__wheel"
+          },
+          "devImports": [],
+          "tags": [],
+          "hasDevUseExtension": false,
+          "hasNonDevUseExtension": true
+        }
+      ],
+      "deps": {
+        "bazel_tools": "bazel_tools@_",
+        "local_config_platform": "local_config_platform@_"
+      },
+      "repoSpec": {
+        "bzlFile": "@bazel_tools//tools/build_defs/repo:http.bzl",
+        "ruleClassName": "http_archive",
+        "attributes": {"name":"--rules_python~0.4.0","urls":["--https://github.com/bazelbuild/rules_python/releases/download/0.4.0/rules_python-0.4.0.tar.gz"],"integrity":"--sha256-lUqom0kb5KCDMEosuDgBnIuMNyCnq7nEy4GseiQjDOo=","strip_prefix":"--","remote_patches":{"--https://bcr.bazel.build/modules/rules_python/0.4.0/patches/propagate_pip_install_dependencies.patch":"--sha256-v7S/dem/mixg63MF4KoRGDA4KEol9ab/tIVp+6Xq0D0=","--https://bcr.bazel.build/modules/rules_python/0.4.0/patches/module_dot_bazel.patch":"--sha256-kG4VIfWxQazzTuh50mvsx6pmyoRVA4lfH5rkto/Oq+Y="},"remote_patch_strip":1}
+      }
+    },
+    "platforms@0.0.6": {
+      "name": "platforms",
+      "version": "0.0.6",
+      "key": "platforms@0.0.6",
+      "repoName": "platforms",
+      "executionPlatformsToRegister": [],
+      "toolchainsToRegister": [],
+      "extensionUsages": [],
+      "deps": {
+        "bazel_tools": "bazel_tools@_",
+        "local_config_platform": "local_config_platform@_"
+      },
+      "repoSpec": {
+        "bzlFile": "@bazel_tools//tools/build_defs/repo:http.bzl",
+        "ruleClassName": "http_archive",
+        "attributes": {"name":"--platforms","urls":["--https://github.com/bazelbuild/platforms/releases/download/0.0.6/platforms-0.0.6.tar.gz"],"integrity":"--sha256-Uwj8HYhlQGpJQnuiSpq1MIfxf1Jmp6q7/CiCPzkW4co=","strip_prefix":"--","remote_patches":{"--https://bcr.bazel.build/modules/platforms/0.0.6/patches/module_dot_bazel.patch":"--sha256-/ITFV+xsibQyr8dnuvUILvdoOigF6XuiyZHN+Gf7UM8="},"remote_patch_strip":0}
+      }
+    },
+    "protobuf@3.19.6": {
+      "name": "protobuf",
+      "version": "3.19.6",
+      "key": "protobuf@3.19.6",
+      "repoName": "protobuf",
+      "executionPlatformsToRegister": [],
+      "toolchainsToRegister": [],
+      "extensionUsages": [],
+      "deps": {
+        "bazel_tools": "bazel_tools@_",
+        "local_config_platform": "local_config_platform@_",
+        "bazel_skylib": "bazel_skylib@1.3.0",
+        "zlib": "zlib@1.2.13",
+        "rules_python": "rules_python@0.4.0",
+        "rules_cc": "rules_cc@0.0.2",
+        "rules_proto": "rules_proto@4.0.0",
+        "rules_java": "rules_java@5.5.0"
+      },
+      "repoSpec": {
+        "bzlFile": "@bazel_tools//tools/build_defs/repo:http.bzl",
+        "ruleClassName": "http_archive",
+        "attributes": {"name":"--protobuf~3.19.6","urls":["--https://github.com/protocolbuffers/protobuf/archive/refs/tags/v3.19.6.zip"],"integrity":"--sha256-OH4sVZuyx8G8N5jE5s/wFTgaebJ1hpavy/johzC0c4k=","strip_prefix":"--protobuf-3.19.6","remote_patches":{"--https://bcr.bazel.build/modules/protobuf/3.19.6/patches/relative_repo_names.patch":"--sha256-w/5gw/zGv8NFId+669hcdw1Uus2lxgYpulATHIwIByI=","--https://bcr.bazel.build/modules/protobuf/3.19.6/patches/remove_dependency_on_rules_jvm_external.patch":"--sha256-THUTnVgEBmjA0W7fKzIyZOVG58DnW9HQTkr4D2zKUUc=","--https://bcr.bazel.build/modules/protobuf/3.19.6/patches/add_module_dot_bazel_for_examples.patch":"--sha256-s/b1gi3baK3LsXefI2rQilhmkb2R5jVJdnT6zEcdfHY=","--https://bcr.bazel.build/modules/protobuf/3.19.6/patches/module_dot_bazel.patch":"--sha256-S0DEni8zgx7rHscW3z/rCEubQnYec0XhNet640cw0h4="},"remote_patch_strip":1}
+      }
+    },
+    "zlib@1.2.13": {
+      "name": "zlib",
+      "version": "1.2.13",
+      "key": "zlib@1.2.13",
+      "repoName": "zlib",
+      "executionPlatformsToRegister": [],
+      "toolchainsToRegister": [],
+      "extensionUsages": [],
+      "deps": {
+        "bazel_tools": "bazel_tools@_",
+        "local_config_platform": "local_config_platform@_"
+      },
+      "repoSpec": {
+        "bzlFile": "@bazel_tools//tools/build_defs/repo:http.bzl",
+        "ruleClassName": "http_archive",
+        "attributes": {"name":"--zlib~1.2.13","urls":["--https://github.com/madler/zlib/archive/refs/tags/v1.2.13.zip"],"integrity":"--sha256-woVpUbvzDjCGGs43ZVldhroT8s8BJ52QH2xiJYxX9P8=","strip_prefix":"--zlib-1.2.13","remote_patches":{"--https://bcr.bazel.build/modules/zlib/1.2.13/patches/add_build_file.patch":"--sha256-Z2ig1F01/dfdG63H+GwYRMcGbW/zAGIUWnKKrwKSEaQ=","--https://bcr.bazel.build/modules/zlib/1.2.13/patches/module_dot_bazel.patch":"--sha256-Nc7xP02Dl6yHQvkiZWSQnlnw1T277yS4cJxxONWJ/Ic="},"remote_patch_strip":0}
+      }
+    },
+    "bazel_skylib@1.3.0": {
+      "name": "bazel_skylib",
+      "version": "1.3.0",
+      "key": "bazel_skylib@1.3.0",
+      "repoName": "bazel_skylib",
+      "executionPlatformsToRegister": [],
+      "toolchainsToRegister": [
+        "//toolchains/unittest:cmd_toolchain",
+        "//toolchains/unittest:bash_toolchain"
+      ],
+      "extensionUsages": [],
+      "deps": {
+        "bazel_tools": "bazel_tools@_",
+        "local_config_platform": "local_config_platform@_",
+        "platforms": "platforms@0.0.6"
+      },
+      "repoSpec": {
+        "bzlFile": "@bazel_tools//tools/build_defs/repo:http.bzl",
+        "ruleClassName": "http_archive",
+        "attributes": {"name":"--bazel_skylib~1.3.0","urls":["--https://github.com/bazelbuild/bazel-skylib/releases/download/1.3.0/bazel-skylib-1.3.0.tar.gz"],"integrity":"--sha256-dNVE2W9KW7Yw1GXKi7z+Ix41lOWq5X4e2/F6brPKJQY=","strip_prefix":"--","remote_patches":{},"remote_patch_strip":0}
+      }
+    },
+    "gazelle@0.32.0": {
+      "name": "gazelle",
+      "version": "0.32.0",
+      "key": "gazelle@0.32.0",
+      "repoName": "bazel_gazelle",
+      "executionPlatformsToRegister": [],
+      "toolchainsToRegister": [],
+      "extensionUsages": [
+        {
+          "extensionBzlFile": "@io_bazel_rules_go//go:extensions.bzl",
+          "extensionName": "go_sdk",
+          "usingModule": "gazelle@0.32.0",
+          "location": {
+            "file": "https://bcr.bazel.build/modules/gazelle/0.32.0/MODULE.bazel",
+            "line": 12,
+            "column": 23
+          },
+          "imports": {
+            "go_sdk": "go_default_sdk"
+          },
+          "devImports": [],
+          "tags": [],
+          "hasDevUseExtension": false,
+          "hasNonDevUseExtension": true
+        },
+        {
+          "extensionBzlFile": "@bazel_gazelle//internal/bzlmod:non_module_deps.bzl",
+          "extensionName": "non_module_deps",
+          "usingModule": "gazelle@0.32.0",
+          "location": {
+            "file": "https://bcr.bazel.build/modules/gazelle/0.32.0/MODULE.bazel",
+            "line": 20,
+            "column": 32
+          },
+          "imports": {
+            "bazel_gazelle_go_repository_cache": "bazel_gazelle_go_repository_cache",
+            "bazel_gazelle_go_repository_tools": "bazel_gazelle_go_repository_tools"
+          },
+          "devImports": [],
+          "tags": [],
+          "hasDevUseExtension": false,
+          "hasNonDevUseExtension": true
+        },
+        {
+          "extensionBzlFile": "@bazel_gazelle//:extensions.bzl",
+          "extensionName": "go_deps",
+          "usingModule": "gazelle@0.32.0",
+          "location": {
+            "file": "https://bcr.bazel.build/modules/gazelle/0.32.0/MODULE.bazel",
+            "line": 27,
+            "column": 24
+          },
+          "imports": {
+            "com_github_bazelbuild_buildtools": "com_github_bazelbuild_buildtools",
+            "com_github_bmatcuk_doublestar_v4": "com_github_bmatcuk_doublestar_v4",
+            "com_github_fsnotify_fsnotify": "com_github_fsnotify_fsnotify",
+            "com_github_google_go_cmp": "com_github_google_go_cmp",
+            "com_github_pmezard_go_difflib": "com_github_pmezard_go_difflib",
+            "org_golang_x_mod": "org_golang_x_mod",
+            "org_golang_x_sync": "org_golang_x_sync",
+            "org_golang_x_tools": "org_golang_x_tools",
+            "bazel_gazelle_go_repository_config": "bazel_gazelle_go_repository_config"
+          },
+          "devImports": [],
+          "tags": [
+            {
+              "tagName": "from_file",
+              "attributeValues": {"go_mod":"--//:go.mod"},
+              "devDependency": false,
+              "location": {
+                "file": "https://bcr.bazel.build/modules/gazelle/0.32.0/MODULE.bazel",
+                "line": 28,
+                "column": 18
+              }
+            }
+          ],
+          "hasDevUseExtension": false,
+          "hasNonDevUseExtension": true
+        }
+      ],
+      "deps": {
+        "bazel_tools": "bazel_tools@_",
+        "local_config_platform": "local_config_platform@_",
+        "bazel_skylib": "bazel_skylib@1.3.0",
+        "com_google_protobuf": "protobuf@3.19.6",
+        "io_bazel_rules_go": "rules_go@0.41.0",
+        "rules_proto": "rules_proto@4.0.0"
+      },
+      "repoSpec": {
+        "bzlFile": "@bazel_tools//tools/build_defs/repo:http.bzl",
+        "ruleClassName": "http_archive",
+        "attributes": {"name":"--gazelle~0.32.0","urls":["--https://github.com/bazelbuild/bazel-gazelle/releases/download/v0.32.0/bazel-gazelle-v0.32.0.tar.gz"],"integrity":"--sha256-KSGPjgzr5YNkPL+Tyub5cb6KJITNz6HkUFdljfjVQAI=","strip_prefix":"--","remote_patches":{},"remote_patch_strip":0}
+      }
+    }
+  },
+  "moduleExtensions": {
+    "@bazel_tools//tools/sh:sh_configure.bzl%sh_configure_extension": {
+      "bzlTransitiveDigest": "hp4NgmNjEg5+xgvzfh6L83bt9/aiiWETuNpwNuF1MSU=",
+      "generatedRepoSpecs": {
+        "local_config_sh": {
+          "bzlFile": "@@bazel_tools//tools/sh:sh_configure.bzl",
+          "ruleClassName": "sh_config",
+          "attributes": {"name":"--bazel_tools~sh_configure_extension~local_config_sh"}
+        }
+      }
+    },
+    "@bazel_tools//tools/cpp:cc_configure.bzl%cc_configure_extension": {
+      "bzlTransitiveDigest": "fX+NTqVY9jebrhWZSjm+R2r4sMbV1U3pvP90DKmouSg=",
+      "generatedRepoSpecs": {
+        "local_config_cc": {
+          "bzlFile": "@@bazel_tools//tools/cpp:cc_configure.bzl",
+          "ruleClassName": "cc_autoconf",
+          "attributes": {"name":"--bazel_tools~cc_configure_extension~local_config_cc"}
+        },
+        "local_config_cc_toolchains": {
+          "bzlFile": "@@bazel_tools//tools/cpp:cc_configure.bzl",
+          "ruleClassName": "cc_autoconf_toolchains",
+          "attributes": {"name":"--bazel_tools~cc_configure_extension~local_config_cc_toolchains"}
+        }
+      }
+    },
+    "@hermetic_cc_toolchain~override//toolchain:ext.bzl%toolchains": {
+      "bzlTransitiveDigest": "DLEEo4NzceilQ+DyTDJoLbgIAPURzashdjAtXpqhufs=",
+      "generatedRepoSpecs": {
+        "zig_sdk": {
+          "bzlFile": "@@hermetic_cc_toolchain~override//toolchain:defs.bzl",
+          "ruleClassName": "zig_repository",
+          "attributes": {"name":"--hermetic_cc_toolchain~override~toolchains~zig_sdk","version":"--0.11.0-dev.3886+0c1bfe271","url_formats":["--https://mirror.bazel.build/ziglang.org/builds/zig-{host_platform}-{version}.{_ext}","--https://ziglang.org/builds/zig-{host_platform}-{version}.{_ext}"],"host_platform_sha256":{"--linux-aarch64":"--12be476ed53c219507e77737dbb7f2a77b280760b8acbc6ba2eaaeb42b7d145e","--linux-x86_64":"--1b1c115c4ccbdc215cc3b07833c7957336d9f5fff816f97e5cafee556a9d8be8","--macos-aarch64":"--3943612c560dd066fba5698968317a146a0f585f6cdaa1e7c1df86685c7c4eaf","--macos-x86_64":"--0c89e5d934ecbf9f4d2dea6e3b8dfcc548a3d4184a856178b3db74e361031a2b","--windows-x86_64":"--c17df4db67ca328e77d2ff9a790a5e013d885de0667dbf25d9a1206103662d30"},"host_platform_ext":{"--linux-aarch64":"--tar.xz","--linux-x86_64":"--tar.xz","--macos-aarch64":"--tar.xz","--macos-x86_64":"--tar.xz","--windows-x86_64":"--zip"}}
+        }
+      }
+    },
+    "@rules_go~0.41.0//go:extensions.bzl%go_sdk": {
+      "bzlTransitiveDigest": "uRRiyTb4o55cIajpRoOrHqU9TIFenkML7Da2dL3oXQ8=",
+      "generatedRepoSpecs": {
+        "go_default_sdk": {
+          "bzlFile": "@@rules_go~0.41.0//go/private:sdk.bzl",
+          "ruleClassName": "go_download_sdk_rule",
+          "attributes": {"name":"--rules_go~0.41.0~go_sdk~go_default_sdk","goos":"--","goarch":"--","sdks":{},"urls":["--https://dl.google.com/go/{}"],"version":"--1.20.2"}
+        },
+        "go_host_compatible_sdk_label": {
+          "bzlFile": "@@rules_go~0.41.0//go/private:extensions.bzl",
+          "ruleClassName": "host_compatible_toolchain",
+          "attributes": {"name":"--rules_go~0.41.0~go_sdk~go_host_compatible_sdk_label","toolchain":"--@go_default_sdk//:ROOT"}
+        },
+        "go_toolchains": {
+          "bzlFile": "@@rules_go~0.41.0//go/private:sdk.bzl",
+          "ruleClassName": "go_multiple_toolchains",
+          "attributes": {"name":"--rules_go~0.41.0~go_sdk~go_toolchains","prefixes":["--_0000_go_default_sdk_"],"geese":["--"],"goarchs":["--"],"sdk_repos":["--go_default_sdk"],"sdk_types":["--remote"],"sdk_versions":["--1.20.2"]}
+        }
+      }
+    },
+    "@rules_cc~0.0.2//cc:extensions.bzl%cc_configure": {
+      "bzlTransitiveDigest": "MxlRT9mERSSlHP4U9xvwnAp8XZNE0WlEE1QudRdeQog=",
+      "generatedRepoSpecs": {
+        "local_config_cc": {
+          "bzlFile": "@@rules_cc~0.0.2//cc/private/toolchain:cc_configure.bzl",
+          "ruleClassName": "cc_autoconf",
+          "attributes": {"name":"--rules_cc~0.0.2~cc_configure~local_config_cc"}
+        },
+        "local_config_cc_toolchains": {
+          "bzlFile": "@@rules_cc~0.0.2//cc/private/toolchain:cc_configure.bzl",
+          "ruleClassName": "cc_autoconf_toolchains",
+          "attributes": {"name":"--rules_cc~0.0.2~cc_configure~local_config_cc_toolchains"}
+        },
+        "local_config_xcode": {
+          "bzlFile": "@@bazel_tools//tools/osx:xcode_configure.bzl",
+          "ruleClassName": "xcode_autoconf",
+          "attributes": {"name":"--rules_cc~0.0.2~cc_configure~local_config_xcode","xcode_locator":"--@bazel_tools//tools/osx:xcode_locator.m","remote_xcode":"--"}
+        }
+      }
+    },
+    "@rules_java~5.5.0//java:extensions.bzl%toolchains": {
+      "bzlTransitiveDigest": "IVTttRaqn26iAvJN4qehdM+OxbrjZDF3SRPyI2lokXk=",
+      "generatedRepoSpecs": {
+        "remotejdk19_macos_aarch64_toolchain_config_repo": {
+          "bzlFile": "@@rules_java~5.5.0//toolchains:remote_java_repository.bzl",
+          "ruleClassName": "_toolchain_config",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk19_macos_aarch64_toolchain_config_repo","build_file":"--\nconfig_setting(\n    name = \"prefix_version_setting\",\n    values = {\"java_runtime_version\": \"remotejdk_19\"},\n    visibility = [\"//visibility:private\"],\n)\nconfig_setting(\n    name = \"version_setting\",\n    values = {\"java_runtime_version\": \"19\"},\n    visibility = [\"//visibility:private\"],\n)\nalias(\n    name = \"version_or_prefix_version_setting\",\n    actual = select({\n        \":version_setting\": \":version_setting\",\n        \"//conditions:default\": \":prefix_version_setting\",\n    }),\n    visibility = [\"//visibility:private\"],\n)\ntoolchain(\n    name = \"toolchain\",\n    target_compatible_with = [\"@platforms//os:macos\", \"@platforms//cpu:aarch64\"],\n    target_settings = [\":version_or_prefix_version_setting\"],\n    toolchain_type = \"@bazel_tools//tools/jdk:runtime_toolchain_type\",\n    toolchain = \"@remotejdk19_macos_aarch64//:jdk\",\n)\n"}
+        },
+        "remotejdk17_macos_toolchain_config_repo": {
+          "bzlFile": "@@rules_java~5.5.0//toolchains:remote_java_repository.bzl",
+          "ruleClassName": "_toolchain_config",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk17_macos_toolchain_config_repo","build_file":"--\nconfig_setting(\n    name = \"prefix_version_setting\",\n    values = {\"java_runtime_version\": \"remotejdk_17\"},\n    visibility = [\"//visibility:private\"],\n)\nconfig_setting(\n    name = \"version_setting\",\n    values = {\"java_runtime_version\": \"17\"},\n    visibility = [\"//visibility:private\"],\n)\nalias(\n    name = \"version_or_prefix_version_setting\",\n    actual = select({\n        \":version_setting\": \":version_setting\",\n        \"//conditions:default\": \":prefix_version_setting\",\n    }),\n    visibility = [\"//visibility:private\"],\n)\ntoolchain(\n    name = \"toolchain\",\n    target_compatible_with = [\"@platforms//os:macos\", \"@platforms//cpu:x86_64\"],\n    target_settings = [\":version_or_prefix_version_setting\"],\n    toolchain_type = \"@bazel_tools//tools/jdk:runtime_toolchain_type\",\n    toolchain = \"@remotejdk17_macos//:jdk\",\n)\n"}
+        },
+        "remotejdk17_linux_toolchain_config_repo": {
+          "bzlFile": "@@rules_java~5.5.0//toolchains:remote_java_repository.bzl",
+          "ruleClassName": "_toolchain_config",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk17_linux_toolchain_config_repo","build_file":"--\nconfig_setting(\n    name = \"prefix_version_setting\",\n    values = {\"java_runtime_version\": \"remotejdk_17\"},\n    visibility = [\"//visibility:private\"],\n)\nconfig_setting(\n    name = \"version_setting\",\n    values = {\"java_runtime_version\": \"17\"},\n    visibility = [\"//visibility:private\"],\n)\nalias(\n    name = \"version_or_prefix_version_setting\",\n    actual = select({\n        \":version_setting\": \":version_setting\",\n        \"//conditions:default\": \":prefix_version_setting\",\n    }),\n    visibility = [\"//visibility:private\"],\n)\ntoolchain(\n    name = \"toolchain\",\n    target_compatible_with = [\"@platforms//os:linux\", \"@platforms//cpu:x86_64\"],\n    target_settings = [\":version_or_prefix_version_setting\"],\n    toolchain_type = \"@bazel_tools//tools/jdk:runtime_toolchain_type\",\n    toolchain = \"@remotejdk17_linux//:jdk\",\n)\n"}
+        },
+        "remote_java_tools_darwin": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remote_java_tools_darwin","sha256":"--abc434be713ee9e1fd6525d7a7bd9d7cdff6e27ae3ca9d96420490e7ff6e28a3","urls":["--https://mirror.bazel.build/bazel_java_tools/releases/java/v12.0/java_tools_darwin_x86_64-v12.0.zip","--https://github.com/bazelbuild/java_tools/releases/download/java_v12.0/java_tools_darwin_x86_64-v12.0.zip"]}
+        },
+        "remotejdk17_macos_aarch64": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk17_macos_aarch64","build_file":"@@rules_java~5.5.0//toolchains:jdk.BUILD","sha256":"--54247dde248ffbcd3c048675504b1c503b81daf2dc0d64a79e353c48d383c977","strip_prefix":"--zulu17.32.13-ca-jdk17.0.2-macosx_aarch64","urls":["--https://mirror.bazel.build/cdn.azul.com/zulu/bin/zulu17.32.13-ca-jdk17.0.2-macosx_aarch64.tar.gz","--https://cdn.azul.com/zulu/bin/zulu17.32.13-ca-jdk17.0.2-macosx_aarch64.tar.gz"]}
+        },
+        "remote_java_tools_windows": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remote_java_tools_windows","sha256":"--7b938f0c67d9d390f10489b1b9a4dabb51e39ecc94532c3acdf8c4c16900457f","urls":["--https://mirror.bazel.build/bazel_java_tools/releases/java/v12.0/java_tools_windows-v12.0.zip","--https://github.com/bazelbuild/java_tools/releases/download/java_v12.0/java_tools_windows-v12.0.zip"]}
+        },
+        "remotejdk11_win": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk11_win","build_file":"@@rules_java~5.5.0//toolchains:jdk.BUILD","sha256":"--a106c77389a63b6bd963a087d5f01171bd32aa3ee7377ecef87531390dcb9050","strip_prefix":"--zulu11.56.19-ca-jdk11.0.15-win_x64","urls":["--https://mirror.bazel.build/cdn.azul.com/zulu/bin/zulu11.56.19-ca-jdk11.0.15-win_x64.zip","--https://cdn.azul.com/zulu/bin/zulu11.56.19-ca-jdk11.0.15-win_x64.zip"]}
+        },
+        "remotejdk11_win_toolchain_config_repo": {
+          "bzlFile": "@@rules_java~5.5.0//toolchains:remote_java_repository.bzl",
+          "ruleClassName": "_toolchain_config",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk11_win_toolchain_config_repo","build_file":"--\nconfig_setting(\n    name = \"prefix_version_setting\",\n    values = {\"java_runtime_version\": \"remotejdk_11\"},\n    visibility = [\"//visibility:private\"],\n)\nconfig_setting(\n    name = \"version_setting\",\n    values = {\"java_runtime_version\": \"11\"},\n    visibility = [\"//visibility:private\"],\n)\nalias(\n    name = \"version_or_prefix_version_setting\",\n    actual = select({\n        \":version_setting\": \":version_setting\",\n        \"//conditions:default\": \":prefix_version_setting\",\n    }),\n    visibility = [\"//visibility:private\"],\n)\ntoolchain(\n    name = \"toolchain\",\n    target_compatible_with = [\"@platforms//os:windows\", \"@platforms//cpu:x86_64\"],\n    target_settings = [\":version_or_prefix_version_setting\"],\n    toolchain_type = \"@bazel_tools//tools/jdk:runtime_toolchain_type\",\n    toolchain = \"@remotejdk11_win//:jdk\",\n)\n"}
+        },
+        "remotejdk11_linux_aarch64": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk11_linux_aarch64","build_file":"@@rules_java~5.5.0//toolchains:jdk.BUILD","sha256":"--fc7c41a0005180d4ca471c90d01e049469e0614cf774566d4cf383caa29d1a97","strip_prefix":"--zulu11.56.19-ca-jdk11.0.15-linux_aarch64","urls":["--https://mirror.bazel.build/cdn.azul.com/zulu-embedded/bin/zulu11.56.19-ca-jdk11.0.15-linux_aarch64.tar.gz","--https://cdn.azul.com/zulu-embedded/bin/zulu11.56.19-ca-jdk11.0.15-linux_aarch64.tar.gz"]}
+        },
+        "remotejdk17_linux": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk17_linux","build_file":"@@rules_java~5.5.0//toolchains:jdk.BUILD","sha256":"--73d5c4bae20325ca41b606f7eae64669db3aac638c5b3ead4a975055846ad6de","strip_prefix":"--zulu17.32.13-ca-jdk17.0.2-linux_x64","urls":["--https://mirror.bazel.build/cdn.azul.com/zulu/bin/zulu17.32.13-ca-jdk17.0.2-linux_x64.tar.gz","--https://cdn.azul.com/zulu/bin/zulu17.32.13-ca-jdk17.0.2-linux_x64.tar.gz"]}
+        },
+        "remotejdk11_linux_s390x_toolchain_config_repo": {
+          "bzlFile": "@@rules_java~5.5.0//toolchains:remote_java_repository.bzl",
+          "ruleClassName": "_toolchain_config",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk11_linux_s390x_toolchain_config_repo","build_file":"--\nconfig_setting(\n    name = \"prefix_version_setting\",\n    values = {\"java_runtime_version\": \"remotejdk_11\"},\n    visibility = [\"//visibility:private\"],\n)\nconfig_setting(\n    name = \"version_setting\",\n    values = {\"java_runtime_version\": \"11\"},\n    visibility = [\"//visibility:private\"],\n)\nalias(\n    name = \"version_or_prefix_version_setting\",\n    actual = select({\n        \":version_setting\": \":version_setting\",\n        \"//conditions:default\": \":prefix_version_setting\",\n    }),\n    visibility = [\"//visibility:private\"],\n)\ntoolchain(\n    name = \"toolchain\",\n    target_compatible_with = [\"@platforms//os:linux\", \"@platforms//cpu:s390x\"],\n    target_settings = [\":version_or_prefix_version_setting\"],\n    toolchain_type = \"@bazel_tools//tools/jdk:runtime_toolchain_type\",\n    toolchain = \"@remotejdk11_linux_s390x//:jdk\",\n)\n"}
+        },
+        "remotejdk11_linux_toolchain_config_repo": {
+          "bzlFile": "@@rules_java~5.5.0//toolchains:remote_java_repository.bzl",
+          "ruleClassName": "_toolchain_config",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk11_linux_toolchain_config_repo","build_file":"--\nconfig_setting(\n    name = \"prefix_version_setting\",\n    values = {\"java_runtime_version\": \"remotejdk_11\"},\n    visibility = [\"//visibility:private\"],\n)\nconfig_setting(\n    name = \"version_setting\",\n    values = {\"java_runtime_version\": \"11\"},\n    visibility = [\"//visibility:private\"],\n)\nalias(\n    name = \"version_or_prefix_version_setting\",\n    actual = select({\n        \":version_setting\": \":version_setting\",\n        \"//conditions:default\": \":prefix_version_setting\",\n    }),\n    visibility = [\"//visibility:private\"],\n)\ntoolchain(\n    name = \"toolchain\",\n    target_compatible_with = [\"@platforms//os:linux\", \"@platforms//cpu:x86_64\"],\n    target_settings = [\":version_or_prefix_version_setting\"],\n    toolchain_type = \"@bazel_tools//tools/jdk:runtime_toolchain_type\",\n    toolchain = \"@remotejdk11_linux//:jdk\",\n)\n"}
+        },
+        "remotejdk11_macos": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk11_macos","build_file":"@@rules_java~5.5.0//toolchains:jdk.BUILD","sha256":"--2614e5c5de8e989d4d81759de4c333aa5b867b17ab9ee78754309ba65c7f6f55","strip_prefix":"--zulu11.56.19-ca-jdk11.0.15-macosx_x64","urls":["--https://mirror.bazel.build/cdn.azul.com/zulu/bin/zulu11.56.19-ca-jdk11.0.15-macosx_x64.tar.gz","--https://cdn.azul.com/zulu/bin/zulu11.56.19-ca-jdk11.0.15-macosx_x64.tar.gz"]}
+        },
+        "remotejdk11_win_arm64": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk11_win_arm64","build_file":"@@rules_java~5.5.0//toolchains:jdk.BUILD","sha256":"--b8a28e6e767d90acf793ea6f5bed0bb595ba0ba5ebdf8b99f395266161e53ec2","strip_prefix":"--jdk-11.0.13+8","urls":["--https://mirror.bazel.build/aka.ms/download-jdk/microsoft-jdk-11.0.13.8.1-windows-aarch64.zip"]}
+        },
+        "remotejdk17_macos": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk17_macos","build_file":"@@rules_java~5.5.0//toolchains:jdk.BUILD","sha256":"--89d04b2d99b05dcb25114178e65f6a1c5ca742e125cab0a63d87e7e42f3fcb80","strip_prefix":"--zulu17.32.13-ca-jdk17.0.2-macosx_x64","urls":["--https://mirror.bazel.build/cdn.azul.com/zulu/bin/zulu17.32.13-ca-jdk17.0.2-macosx_x64.tar.gz","--https://cdn.azul.com/zulu/bin/zulu17.32.13-ca-jdk17.0.2-macosx_x64.tar.gz"]}
+        },
+        "remotejdk17_macos_aarch64_toolchain_config_repo": {
+          "bzlFile": "@@rules_java~5.5.0//toolchains:remote_java_repository.bzl",
+          "ruleClassName": "_toolchain_config",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk17_macos_aarch64_toolchain_config_repo","build_file":"--\nconfig_setting(\n    name = \"prefix_version_setting\",\n    values = {\"java_runtime_version\": \"remotejdk_17\"},\n    visibility = [\"//visibility:private\"],\n)\nconfig_setting(\n    name = \"version_setting\",\n    values = {\"java_runtime_version\": \"17\"},\n    visibility = [\"//visibility:private\"],\n)\nalias(\n    name = \"version_or_prefix_version_setting\",\n    actual = select({\n        \":version_setting\": \":version_setting\",\n        \"//conditions:default\": \":prefix_version_setting\",\n    }),\n    visibility = [\"//visibility:private\"],\n)\ntoolchain(\n    name = \"toolchain\",\n    target_compatible_with = [\"@platforms//os:macos\", \"@platforms//cpu:aarch64\"],\n    target_settings = [\":version_or_prefix_version_setting\"],\n    toolchain_type = \"@bazel_tools//tools/jdk:runtime_toolchain_type\",\n    toolchain = \"@remotejdk17_macos_aarch64//:jdk\",\n)\n"}
+        },
+        "remotejdk17_win": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk17_win","build_file":"@@rules_java~5.5.0//toolchains:jdk.BUILD","sha256":"--e965aa0ea7a0661a3446cf8f10ee00684b851f883b803315289f26b4aa907fdb","strip_prefix":"--zulu17.32.13-ca-jdk17.0.2-win_x64","urls":["--https://mirror.bazel.build/cdn.azul.com/zulu/bin/zulu17.32.13-ca-jdk17.0.2-win_x64.zip","--https://cdn.azul.com/zulu/bin/zulu17.32.13-ca-jdk17.0.2-win_x64.zip"]}
+        },
+        "remotejdk11_macos_aarch64_toolchain_config_repo": {
+          "bzlFile": "@@rules_java~5.5.0//toolchains:remote_java_repository.bzl",
+          "ruleClassName": "_toolchain_config",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk11_macos_aarch64_toolchain_config_repo","build_file":"--\nconfig_setting(\n    name = \"prefix_version_setting\",\n    values = {\"java_runtime_version\": \"remotejdk_11\"},\n    visibility = [\"//visibility:private\"],\n)\nconfig_setting(\n    name = \"version_setting\",\n    values = {\"java_runtime_version\": \"11\"},\n    visibility = [\"//visibility:private\"],\n)\nalias(\n    name = \"version_or_prefix_version_setting\",\n    actual = select({\n        \":version_setting\": \":version_setting\",\n        \"//conditions:default\": \":prefix_version_setting\",\n    }),\n    visibility = [\"//visibility:private\"],\n)\ntoolchain(\n    name = \"toolchain\",\n    target_compatible_with = [\"@platforms//os:macos\", \"@platforms//cpu:aarch64\"],\n    target_settings = [\":version_or_prefix_version_setting\"],\n    toolchain_type = \"@bazel_tools//tools/jdk:runtime_toolchain_type\",\n    toolchain = \"@remotejdk11_macos_aarch64//:jdk\",\n)\n"}
+        },
+        "remotejdk11_linux_ppc64le_toolchain_config_repo": {
+          "bzlFile": "@@rules_java~5.5.0//toolchains:remote_java_repository.bzl",
+          "ruleClassName": "_toolchain_config",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk11_linux_ppc64le_toolchain_config_repo","build_file":"--\nconfig_setting(\n    name = \"prefix_version_setting\",\n    values = {\"java_runtime_version\": \"remotejdk_11\"},\n    visibility = [\"//visibility:private\"],\n)\nconfig_setting(\n    name = \"version_setting\",\n    values = {\"java_runtime_version\": \"11\"},\n    visibility = [\"//visibility:private\"],\n)\nalias(\n    name = \"version_or_prefix_version_setting\",\n    actual = select({\n        \":version_setting\": \":version_setting\",\n        \"//conditions:default\": \":prefix_version_setting\",\n    }),\n    visibility = [\"//visibility:private\"],\n)\ntoolchain(\n    name = \"toolchain\",\n    target_compatible_with = [\"@platforms//os:linux\", \"@platforms//cpu:ppc\"],\n    target_settings = [\":version_or_prefix_version_setting\"],\n    toolchain_type = \"@bazel_tools//tools/jdk:runtime_toolchain_type\",\n    toolchain = \"@remotejdk11_linux_ppc64le//:jdk\",\n)\n"}
+        },
+        "remote_java_tools_linux": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remote_java_tools_linux","sha256":"--4b8366b780387fc5ce69527ed287f2b444ee429d3325305ad062c92ac43c7fb6","urls":["--https://mirror.bazel.build/bazel_java_tools/releases/java/v12.0/java_tools_linux-v12.0.zip","--https://github.com/bazelbuild/java_tools/releases/download/java_v12.0/java_tools_linux-v12.0.zip"]}
+        },
+        "remotejdk19_macos_aarch64": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk19_macos_aarch64","build_file":"@@rules_java~5.5.0//toolchains:jdk.BUILD","sha256":"--177d058d968b2fbe7a5ff5eceb18cdc16f6376ce291004f1a3139e78b2fb6391","strip_prefix":"--zulu19.32.13-ca-jdk19.0.2-macosx_aarch64","urls":["--https://mirror.bazel.build/cdn.azul.com/zulu/bin/zulu19.32.13-ca-jdk19.0.2-macosx_aarch64.tar.gz","--https://cdn.azul.com/zulu/bin/zulu19.32.13-ca-jdk19.0.2-macosx_aarch64.tar.gz"]}
+        },
+        "remotejdk19_win_toolchain_config_repo": {
+          "bzlFile": "@@rules_java~5.5.0//toolchains:remote_java_repository.bzl",
+          "ruleClassName": "_toolchain_config",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk19_win_toolchain_config_repo","build_file":"--\nconfig_setting(\n    name = \"prefix_version_setting\",\n    values = {\"java_runtime_version\": \"remotejdk_19\"},\n    visibility = [\"//visibility:private\"],\n)\nconfig_setting(\n    name = \"version_setting\",\n    values = {\"java_runtime_version\": \"19\"},\n    visibility = [\"//visibility:private\"],\n)\nalias(\n    name = \"version_or_prefix_version_setting\",\n    actual = select({\n        \":version_setting\": \":version_setting\",\n        \"//conditions:default\": \":prefix_version_setting\",\n    }),\n    visibility = [\"//visibility:private\"],\n)\ntoolchain(\n    name = \"toolchain\",\n    target_compatible_with = [\"@platforms//os:windows\", \"@platforms//cpu:x86_64\"],\n    target_settings = [\":version_or_prefix_version_setting\"],\n    toolchain_type = \"@bazel_tools//tools/jdk:runtime_toolchain_type\",\n    toolchain = \"@remotejdk19_win//:jdk\",\n)\n"}
+        },
+        "remotejdk19_macos_toolchain_config_repo": {
+          "bzlFile": "@@rules_java~5.5.0//toolchains:remote_java_repository.bzl",
+          "ruleClassName": "_toolchain_config",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk19_macos_toolchain_config_repo","build_file":"--\nconfig_setting(\n    name = \"prefix_version_setting\",\n    values = {\"java_runtime_version\": \"remotejdk_19\"},\n    visibility = [\"//visibility:private\"],\n)\nconfig_setting(\n    name = \"version_setting\",\n    values = {\"java_runtime_version\": \"19\"},\n    visibility = [\"//visibility:private\"],\n)\nalias(\n    name = \"version_or_prefix_version_setting\",\n    actual = select({\n        \":version_setting\": \":version_setting\",\n        \"//conditions:default\": \":prefix_version_setting\",\n    }),\n    visibility = [\"//visibility:private\"],\n)\ntoolchain(\n    name = \"toolchain\",\n    target_compatible_with = [\"@platforms//os:macos\", \"@platforms//cpu:x86_64\"],\n    target_settings = [\":version_or_prefix_version_setting\"],\n    toolchain_type = \"@bazel_tools//tools/jdk:runtime_toolchain_type\",\n    toolchain = \"@remotejdk19_macos//:jdk\",\n)\n"}
+        },
+        "remotejdk19_linux": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk19_linux","build_file":"@@rules_java~5.5.0//toolchains:jdk.BUILD","sha256":"--4a994aded1d9b35258d543a59d4963d2687a1094a818b79a21f00273fbbc5bca","strip_prefix":"--zulu19.32.13-ca-jdk19.0.2-linux_x64","urls":["--https://mirror.bazel.build/cdn.azul.com/zulu/bin/zulu19.32.13-ca-jdk19.0.2-linux_x64.tar.gz","--https://cdn.azul.com/zulu/bin/zulu19.32.13-ca-jdk19.0.2-linux_x64.tar.gz"]}
+        },
+        "remotejdk11_linux_aarch64_toolchain_config_repo": {
+          "bzlFile": "@@rules_java~5.5.0//toolchains:remote_java_repository.bzl",
+          "ruleClassName": "_toolchain_config",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk11_linux_aarch64_toolchain_config_repo","build_file":"--\nconfig_setting(\n    name = \"prefix_version_setting\",\n    values = {\"java_runtime_version\": \"remotejdk_11\"},\n    visibility = [\"//visibility:private\"],\n)\nconfig_setting(\n    name = \"version_setting\",\n    values = {\"java_runtime_version\": \"11\"},\n    visibility = [\"//visibility:private\"],\n)\nalias(\n    name = \"version_or_prefix_version_setting\",\n    actual = select({\n        \":version_setting\": \":version_setting\",\n        \"//conditions:default\": \":prefix_version_setting\",\n    }),\n    visibility = [\"//visibility:private\"],\n)\ntoolchain(\n    name = \"toolchain\",\n    target_compatible_with = [\"@platforms//os:linux\", \"@platforms//cpu:aarch64\"],\n    target_settings = [\":version_or_prefix_version_setting\"],\n    toolchain_type = \"@bazel_tools//tools/jdk:runtime_toolchain_type\",\n    toolchain = \"@remotejdk11_linux_aarch64//:jdk\",\n)\n"}
+        },
+        "remotejdk11_linux_s390x": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk11_linux_s390x","build_file":"@@rules_java~5.5.0//toolchains:jdk.BUILD","sha256":"--a58fc0361966af0a5d5a31a2d8a208e3c9bb0f54f345596fd80b99ea9a39788b","strip_prefix":"--jdk-11.0.15+10","urls":["--https://mirror.bazel.build/github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.15+10/OpenJDK11U-jdk_s390x_linux_hotspot_11.0.15_10.tar.gz","--https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.15+10/OpenJDK11U-jdk_s390x_linux_hotspot_11.0.15_10.tar.gz"]}
+        },
+        "remotejdk17_win_arm64_toolchain_config_repo": {
+          "bzlFile": "@@rules_java~5.5.0//toolchains:remote_java_repository.bzl",
+          "ruleClassName": "_toolchain_config",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk17_win_arm64_toolchain_config_repo","build_file":"--\nconfig_setting(\n    name = \"prefix_version_setting\",\n    values = {\"java_runtime_version\": \"remotejdk_17\"},\n    visibility = [\"//visibility:private\"],\n)\nconfig_setting(\n    name = \"version_setting\",\n    values = {\"java_runtime_version\": \"17\"},\n    visibility = [\"//visibility:private\"],\n)\nalias(\n    name = \"version_or_prefix_version_setting\",\n    actual = select({\n        \":version_setting\": \":version_setting\",\n        \"//conditions:default\": \":prefix_version_setting\",\n    }),\n    visibility = [\"//visibility:private\"],\n)\ntoolchain(\n    name = \"toolchain\",\n    target_compatible_with = [\"@platforms//os:windows\", \"@platforms//cpu:arm64\"],\n    target_settings = [\":version_or_prefix_version_setting\"],\n    toolchain_type = \"@bazel_tools//tools/jdk:runtime_toolchain_type\",\n    toolchain = \"@remotejdk17_win_arm64//:jdk\",\n)\n"}
+        },
+        "remotejdk11_linux": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk11_linux","build_file":"@@rules_java~5.5.0//toolchains:jdk.BUILD","sha256":"--e064b61d93304012351242bf0823c6a2e41d9e28add7ea7f05378b7243d34247","strip_prefix":"--zulu11.56.19-ca-jdk11.0.15-linux_x64","urls":["--https://mirror.bazel.build/cdn.azul.com/zulu/bin/zulu11.56.19-ca-jdk11.0.15-linux_x64.tar.gz","--https://cdn.azul.com/zulu/bin/zulu11.56.19-ca-jdk11.0.15-linux_x64.tar.gz"]}
+        },
+        "remotejdk11_macos_toolchain_config_repo": {
+          "bzlFile": "@@rules_java~5.5.0//toolchains:remote_java_repository.bzl",
+          "ruleClassName": "_toolchain_config",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk11_macos_toolchain_config_repo","build_file":"--\nconfig_setting(\n    name = \"prefix_version_setting\",\n    values = {\"java_runtime_version\": \"remotejdk_11\"},\n    visibility = [\"//visibility:private\"],\n)\nconfig_setting(\n    name = \"version_setting\",\n    values = {\"java_runtime_version\": \"11\"},\n    visibility = [\"//visibility:private\"],\n)\nalias(\n    name = \"version_or_prefix_version_setting\",\n    actual = select({\n        \":version_setting\": \":version_setting\",\n        \"//conditions:default\": \":prefix_version_setting\",\n    }),\n    visibility = [\"//visibility:private\"],\n)\ntoolchain(\n    name = \"toolchain\",\n    target_compatible_with = [\"@platforms//os:macos\", \"@platforms//cpu:x86_64\"],\n    target_settings = [\":version_or_prefix_version_setting\"],\n    toolchain_type = \"@bazel_tools//tools/jdk:runtime_toolchain_type\",\n    toolchain = \"@remotejdk11_macos//:jdk\",\n)\n"}
+        },
+        "remotejdk19_win": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk19_win","build_file":"@@rules_java~5.5.0//toolchains:jdk.BUILD","sha256":"--d6c768c5ec3252f936bd0562c25458f7c753c62835ca3e91166f975f7a5fe9f1","strip_prefix":"--zulu19.32.13-ca-jdk19.0.2-win_x64","urls":["--https://mirror.bazel.build/cdn.azul.com/zulu/bin/zulu19.32.13-ca-jdk19.0.2-win_x64.zip","--https://cdn.azul.com/zulu/bin/zulu19.32.13-ca-jdk19.0.2-win_x64.zip"]}
+        },
+        "remotejdk17_win_arm64": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk17_win_arm64","build_file":"@@rules_java~5.5.0//toolchains:jdk.BUILD","sha256":"--811d7e7591bac4f081dfb00ba6bd15b6fc5969e1f89f0f327ef75147027c3877","strip_prefix":"--zulu17.30.15-ca-jdk17.0.1-win_aarch64","urls":["--https://mirror.bazel.build/cdn.azul.com/zulu/bin/zulu17.30.15-ca-jdk17.0.1-win_aarch64.zip","--https://cdn.azul.com/zulu/bin/zulu17.30.15-ca-jdk17.0.1-win_aarch64.zip"]}
+        },
+        "remotejdk19_macos": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk19_macos","build_file":"@@rules_java~5.5.0//toolchains:jdk.BUILD","sha256":"--2804575ae9ac63e39caa910e57610bf52b0f9e2d671928a98d18e2fcc9f62ac1","strip_prefix":"--zulu19.32.13-ca-jdk19.0.2-macosx_x64","urls":["--https://mirror.bazel.build/cdn.azul.com/zulu/bin/zulu19.32.13-ca-jdk19.0.2-macosx_x64.tar.gz","--https://cdn.azul.com/zulu/bin/zulu19.32.13-ca-jdk19.0.2-macosx_x64.tar.gz"]}
+        },
+        "remotejdk19_linux_toolchain_config_repo": {
+          "bzlFile": "@@rules_java~5.5.0//toolchains:remote_java_repository.bzl",
+          "ruleClassName": "_toolchain_config",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk19_linux_toolchain_config_repo","build_file":"--\nconfig_setting(\n    name = \"prefix_version_setting\",\n    values = {\"java_runtime_version\": \"remotejdk_19\"},\n    visibility = [\"//visibility:private\"],\n)\nconfig_setting(\n    name = \"version_setting\",\n    values = {\"java_runtime_version\": \"19\"},\n    visibility = [\"//visibility:private\"],\n)\nalias(\n    name = \"version_or_prefix_version_setting\",\n    actual = select({\n        \":version_setting\": \":version_setting\",\n        \"//conditions:default\": \":prefix_version_setting\",\n    }),\n    visibility = [\"//visibility:private\"],\n)\ntoolchain(\n    name = \"toolchain\",\n    target_compatible_with = [\"@platforms//os:linux\", \"@platforms//cpu:x86_64\"],\n    target_settings = [\":version_or_prefix_version_setting\"],\n    toolchain_type = \"@bazel_tools//tools/jdk:runtime_toolchain_type\",\n    toolchain = \"@remotejdk19_linux//:jdk\",\n)\n"}
+        },
+        "remote_java_tools_darwin_arm64": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remote_java_tools_darwin_arm64","sha256":"--24a47a5557ee2ccdacd10a54fe4c15d627c6aeaf7596a5dccf2e11a866a5a32a","urls":["--https://mirror.bazel.build/bazel_java_tools/releases/java/v12.0/java_tools_darwin_arm64-v12.0.zip","--https://github.com/bazelbuild/java_tools/releases/download/java_v12.0/java_tools_darwin_arm64-v12.0.zip"]}
+        },
+        "remotejdk11_win_arm64_toolchain_config_repo": {
+          "bzlFile": "@@rules_java~5.5.0//toolchains:remote_java_repository.bzl",
+          "ruleClassName": "_toolchain_config",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk11_win_arm64_toolchain_config_repo","build_file":"--\nconfig_setting(\n    name = \"prefix_version_setting\",\n    values = {\"java_runtime_version\": \"remotejdk_11\"},\n    visibility = [\"//visibility:private\"],\n)\nconfig_setting(\n    name = \"version_setting\",\n    values = {\"java_runtime_version\": \"11\"},\n    visibility = [\"//visibility:private\"],\n)\nalias(\n    name = \"version_or_prefix_version_setting\",\n    actual = select({\n        \":version_setting\": \":version_setting\",\n        \"//conditions:default\": \":prefix_version_setting\",\n    }),\n    visibility = [\"//visibility:private\"],\n)\ntoolchain(\n    name = \"toolchain\",\n    target_compatible_with = [\"@platforms//os:windows\", \"@platforms//cpu:arm64\"],\n    target_settings = [\":version_or_prefix_version_setting\"],\n    toolchain_type = \"@bazel_tools//tools/jdk:runtime_toolchain_type\",\n    toolchain = \"@remotejdk11_win_arm64//:jdk\",\n)\n"}
+        },
+        "local_jdk": {
+          "bzlFile": "@@rules_java~5.5.0//toolchains:local_java_repository.bzl",
+          "ruleClassName": "_local_java_repository_rule",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~local_jdk","target_name":"--local_jdk","java_home":"--","version":"--","build_file":"@@rules_java~5.5.0//toolchains:jdk.BUILD"}
+        },
+        "remote_java_tools_darwin_x86_64": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remote_java_tools_darwin_x86_64","sha256":"--abc434be713ee9e1fd6525d7a7bd9d7cdff6e27ae3ca9d96420490e7ff6e28a3","urls":["--https://mirror.bazel.build/bazel_java_tools/releases/java/v12.0/java_tools_darwin_x86_64-v12.0.zip","--https://github.com/bazelbuild/java_tools/releases/download/java_v12.0/java_tools_darwin_x86_64-v12.0.zip"]}
+        },
+        "remote_java_tools": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remote_java_tools","sha256":"--6efab6ca6e16e02c90e62bbd08ca65f61527984ab78564ea7ad7a2692b2ffdbb","urls":["--https://mirror.bazel.build/bazel_java_tools/releases/java/v12.0/java_tools-v12.0.zip","--https://github.com/bazelbuild/java_tools/releases/download/java_v12.0/java_tools-v12.0.zip"]}
+        },
+        "remotejdk17_win_toolchain_config_repo": {
+          "bzlFile": "@@rules_java~5.5.0//toolchains:remote_java_repository.bzl",
+          "ruleClassName": "_toolchain_config",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk17_win_toolchain_config_repo","build_file":"--\nconfig_setting(\n    name = \"prefix_version_setting\",\n    values = {\"java_runtime_version\": \"remotejdk_17\"},\n    visibility = [\"//visibility:private\"],\n)\nconfig_setting(\n    name = \"version_setting\",\n    values = {\"java_runtime_version\": \"17\"},\n    visibility = [\"//visibility:private\"],\n)\nalias(\n    name = \"version_or_prefix_version_setting\",\n    actual = select({\n        \":version_setting\": \":version_setting\",\n        \"//conditions:default\": \":prefix_version_setting\",\n    }),\n    visibility = [\"//visibility:private\"],\n)\ntoolchain(\n    name = \"toolchain\",\n    target_compatible_with = [\"@platforms//os:windows\", \"@platforms//cpu:x86_64\"],\n    target_settings = [\":version_or_prefix_version_setting\"],\n    toolchain_type = \"@bazel_tools//tools/jdk:runtime_toolchain_type\",\n    toolchain = \"@remotejdk17_win//:jdk\",\n)\n"}
+        },
+        "remotejdk11_linux_ppc64le": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk11_linux_ppc64le","build_file":"@@rules_java~5.5.0//toolchains:jdk.BUILD","sha256":"--a8fba686f6eb8ae1d1a9566821dbd5a85a1108b96ad857fdbac5c1e4649fc56f","strip_prefix":"--jdk-11.0.15+10","urls":["--https://mirror.bazel.build/github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.15+10/OpenJDK11U-jdk_ppc64le_linux_hotspot_11.0.15_10.tar.gz","--https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.15+10/OpenJDK11U-jdk_ppc64le_linux_hotspot_11.0.15_10.tar.gz"]}
+        },
+        "remotejdk11_macos_aarch64": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_java~5.5.0~toolchains~remotejdk11_macos_aarch64","build_file":"@@rules_java~5.5.0//toolchains:jdk.BUILD","sha256":"--6bb0d2c6e8a29dcd9c577bbb2986352ba12481a9549ac2c0bcfd00ed60e538d2","strip_prefix":"--zulu11.56.19-ca-jdk11.0.15-macosx_aarch64","urls":["--https://mirror.bazel.build/cdn.azul.com/zulu/bin/zulu11.56.19-ca-jdk11.0.15-macosx_aarch64.tar.gz","--https://cdn.azul.com/zulu/bin/zulu11.56.19-ca-jdk11.0.15-macosx_aarch64.tar.gz"]}
+        }
+      }
+    },
+    "@rules_go~0.41.0//go/private:extensions.bzl%non_module_dependencies": {
+      "bzlTransitiveDigest": "IZ5HmeiFbInfa4Rj12Iu3tnGLI1LUGeBsXh4145hpkc=",
+      "generatedRepoSpecs": {
+        "bazel_skylib": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_go~0.41.0~non_module_dependencies~bazel_skylib","urls":["--https://mirror.bazel.build/github.com/bazelbuild/bazel-skylib/releases/download/1.4.2/bazel-skylib-1.4.2.tar.gz","--https://github.com/bazelbuild/bazel-skylib/releases/download/1.4.2/bazel-skylib-1.4.2.tar.gz"],"sha256":"--66ffd9315665bfaafc96b52278f57c7e2dd09f5ede279ea6d39b2be471e7e3aa","strip_prefix":"--"}
+        },
+        "com_github_gogo_protobuf": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_go~0.41.0~non_module_dependencies~com_github_gogo_protobuf","urls":["--https://mirror.bazel.build/github.com/gogo/protobuf/archive/refs/tags/v1.3.2.zip","--https://github.com/gogo/protobuf/archive/refs/tags/v1.3.2.zip"],"sha256":"--f89f8241af909ce3226562d135c25b28e656ae173337b3e58ede917aa26e1e3c","strip_prefix":"--protobuf-1.3.2","patches":["@@rules_go~0.41.0//third_party:com_github_gogo_protobuf-gazelle.patch"],"patch_args":["---p1"]}
+        },
+        "org_golang_x_xerrors": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_go~0.41.0~non_module_dependencies~org_golang_x_xerrors","urls":["--https://mirror.bazel.build/github.com/golang/xerrors/archive/04be3eba64a22a838cdb17b8dca15a52871c08b4.zip","--https://github.com/golang/xerrors/archive/04be3eba64a22a838cdb17b8dca15a52871c08b4.zip"],"sha256":"--ffad2b06ef2e09d040da2ff08077865e99ab95d4d0451737fc8e33706bb01634","strip_prefix":"--xerrors-04be3eba64a22a838cdb17b8dca15a52871c08b4","patches":["@@rules_go~0.41.0//third_party:org_golang_x_xerrors-gazelle.patch"],"patch_args":["---p1"]}
+        },
+        "com_github_golang_protobuf": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_go~0.41.0~non_module_dependencies~com_github_golang_protobuf","urls":["--https://mirror.bazel.build/github.com/golang/protobuf/archive/refs/tags/v1.5.3.zip","--https://github.com/golang/protobuf/archive/refs/tags/v1.5.3.zip"],"sha256":"--2dced4544ae5372281e20f1e48ca76368355a01b31353724718c4d6e3dcbb430","strip_prefix":"--protobuf-1.5.3","patches":["@@rules_go~0.41.0//third_party:com_github_golang_protobuf-gazelle.patch"],"patch_args":["---p1"]}
+        },
+        "io_bazel_rules_nogo": {
+          "bzlFile": "@@rules_go~0.41.0//go/private:nogo.bzl",
+          "ruleClassName": "go_register_nogo",
+          "attributes": {"name":"--rules_go~0.41.0~non_module_dependencies~io_bazel_rules_nogo","nogo":"--@io_bazel_rules_go//:default_nogo"}
+        },
+        "gogo_special_proto": {
+          "bzlFile": "@@rules_go~0.41.0//proto:gogo.bzl",
+          "ruleClassName": "gogo_special_proto",
+          "attributes": {"name":"--rules_go~0.41.0~non_module_dependencies~gogo_special_proto"}
+        },
+        "com_github_golang_mock": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_go~0.41.0~non_module_dependencies~com_github_golang_mock","urls":["--https://mirror.bazel.build/github.com/golang/mock/archive/refs/tags/v1.7.0-rc.1.zip","--https://github.com/golang/mock/archive/refs/tags/v1.7.0-rc.1.zip"],"patches":["@@rules_go~0.41.0//third_party:com_github_golang_mock-gazelle.patch"],"patch_args":["---p1"],"sha256":"--5359c78b0c1649cf7beb3b48ff8b1d1aaf0243b22ea4789aba94805280075d8e","strip_prefix":"--mock-1.7.0-rc.1"}
+        },
+        "org_golang_google_protobuf": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_go~0.41.0~non_module_dependencies~org_golang_google_protobuf","sha256":"--cb1a05581c33b3705ede6c08edf9b9c1dbc579559ba30f532704c324e42bf801","urls":["--https://mirror.bazel.build/github.com/protocolbuffers/protobuf-go/archive/refs/tags/v1.30.0.zip","--https://github.com/protocolbuffers/protobuf-go/archive/refs/tags/v1.30.0.zip"],"strip_prefix":"--protobuf-go-1.30.0","patches":["@@rules_go~0.41.0//third_party:org_golang_google_protobuf-gazelle.patch"],"patch_args":["---p1"]}
+        },
+        "com_github_mwitkow_go_proto_validators": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_go~0.41.0~non_module_dependencies~com_github_mwitkow_go_proto_validators","urls":["--https://mirror.bazel.build/github.com/mwitkow/go-proto-validators/archive/refs/tags/v0.3.2.zip","--https://github.com/mwitkow/go-proto-validators/archive/refs/tags/v0.3.2.zip"],"sha256":"--d8697f05a2f0eaeb65261b480e1e6035301892d9fc07ed945622f41b12a68142","strip_prefix":"--go-proto-validators-0.3.2"}
+        },
+        "org_golang_x_tools": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_go~0.41.0~non_module_dependencies~org_golang_x_tools","urls":["--https://mirror.bazel.build/github.com/golang/tools/archive/refs/tags/v0.7.0.zip","--https://github.com/golang/tools/archive/refs/tags/v0.7.0.zip"],"sha256":"--9f20a20f29f4008d797a8be882ef82b69cf8f7f2b96dbdfe3814c57d8280fa4b","strip_prefix":"--tools-0.7.0","patches":["@@rules_go~0.41.0//third_party:org_golang_x_tools-deletegopls.patch","@@rules_go~0.41.0//third_party:org_golang_x_tools-gazelle.patch"],"patch_args":["---p1"]}
+        },
+        "org_golang_x_sys": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_go~0.41.0~non_module_dependencies~org_golang_x_sys","urls":["--https://mirror.bazel.build/github.com/golang/sys/archive/refs/tags/v0.8.0.zip","--https://github.com/golang/sys/archive/refs/tags/v0.8.0.zip"],"sha256":"--58ef1f478ba923715bc493f2e0a431d4b2d428f1e3409f6acaac452945f6fd2f","strip_prefix":"--sys-0.8.0","patches":["@@rules_go~0.41.0//third_party:org_golang_x_sys-gazelle.patch"],"patch_args":["---p1"]}
+        },
+        "org_golang_google_genproto": {
+          "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+          "ruleClassName": "http_archive",
+          "attributes": {"name":"--rules_go~0.41.0~non_module_dependencies~org_golang_google_genproto","urls":["--https://mirror.bazel.build/github.com/googleapis/go-genproto/archive/e85fd2cbaebc35e54b279b5e9b1057db87dacd57.zip","--https://github.com/googleapis/go-genproto/archive/e85fd2cbaebc35e54b279b5e9b1057db87dacd57.zip"],"sha256":"--da966a75fdc2f9d8006bc51e683490ff969ff637bbc030812cd9c5697e3a7cab","strip_prefix":"--go-genproto-e85fd2cbaebc35e54b279b5e9b1057db87dacd57","patches":["@@rules_go~0.41.0//third_party:org_golang_google_genproto-gazelle.patch"],"patch_args":["---p1"]}
+        }
+      }
+    },
+    "@bazel_tools//tools/osx:xcode_configure.bzl%xcode_configure_extension": {
+      "bzlTransitiveDigest": "OmamqKJsiE8WH/LST0ioVROxC7R/MdakCNW9DSPS5/U=",
+      "generatedRepoSpecs": {
+        "local_config_xcode": {
+          "bzlFile": "@@bazel_tools//tools/osx:xcode_configure.bzl",
+          "ruleClassName": "xcode_autoconf",
+          "attributes": {"name":"--bazel_tools~xcode_configure_extension~local_config_xcode","xcode_locator":"--@bazel_tools//tools/osx:xcode_locator.m","remote_xcode":"--"}
+        }
+      }
+    }
+  }
+}
