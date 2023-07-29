@@ -1,0 +1,5 @@
+#!/bin/sh
+set -x
+
+git config --global user.email "buildkite@example.com"
+git config --global user.name "Buildkite Bot"
