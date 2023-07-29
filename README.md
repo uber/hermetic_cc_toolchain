@@ -367,7 +367,7 @@ $ docker run -e CC=/usr/bin/false -ti --rm -v "$PWD:/x" -w /x debian:bookworm-sl
 
 We maintain two channels for comms:
 - Github issues and pull requests.
-- Slack: `#zig` in bazel.slack.com.
+- Slack: `#zig` in bazelbuild.slack.com.
 
 ### Previous Commuications
 
