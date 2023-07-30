@@ -282,33 +282,22 @@ func updateBoilerplate(repoRoot string, boilerplate string, tag string) error {
 }
 
 func updateBzlmod(repoRoot string, tag string) error {
-	boilerplate := fmt.Sprintf(`
-module(
-    name = "hermetic_cc_toolchain",
-    version = "%s",
-)
-`, tag)
-
-	const marker = "\nbazel_dep(name = \"rules_go\""
-
 	bzlmodPath := path.Join(repoRoot, "MODULE.bazel")
 	data, err := os.ReadFile(bzlmodPath)
 	if err != nil {
 		return err
 	}
-	dataStr := string(data)
-
-	markerIdx := strings.Index(dataStr, marker)
-	if markerIdx == -1 {
-		return fmt.Errorf("%q does not contain marker %q", bzlmodPath, marker)
+	modFile, err := bzl.ParseModule(bzlmodPath, data)
+	if err != nil {
+		return err
 	}
-
-	epilogue := dataStr[markerIdx:]
-
-	if err := os.WriteFile(bzlmodPath, []byte(boilerplate + epilogue), 0644); err != nil {
-		return fmt.Errorf("write %q: %w", err)
+	moduleName := "hermetic_cc_toolchain"
+	moduleRule := modFile.RuleNamed(moduleName)
+	if moduleRule == nil {
+		return fmt.Errorf("%q does not declare module %q", bzlmodPath, moduleName)
 	}
-	return nil
+	moduleRule.SetAttr("version", &bzl.StringExpr{Value: tag})
+	return os.WriteFile(bzlmodPath, bzl.Format(modFile), 0644)
 }
 
 func git(repoRoot string, args ...string) (string, error) {
