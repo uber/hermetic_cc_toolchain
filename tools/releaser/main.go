@@ -139,7 +139,7 @@ This utility is intended to handle many of the steps to release a new version.
 		log("Asked for a pre-existing release which has a hardcoded hash. " +
 			"Running in 'check-only' mode.")
 		boilerplate := genBoilerplate(tag, hash)
-		if err := updateBoilerplate(repoRoot, boilerplate, tag); err != nil {
+		if err := updateBoilerplate(repoRoot, boilerplate); err != nil {
 			return fmt.Errorf("update boilerplate: %w", err)
 		}
 		log("updated %s", strings.Join(_boilerplateFiles, " and "))
@@ -163,7 +163,7 @@ This utility is intended to handle many of the steps to release a new version.
 	}
 
 	boilerplate := genBoilerplate(tag, hash1)
-	if err := updateBoilerplate(repoRoot, boilerplate, tag); err != nil {
+	if err := updateBoilerplate(repoRoot, boilerplate); err != nil {
 		return fmt.Errorf("update boilerplate: %w", err)
 	}
 
@@ -188,15 +188,10 @@ This utility is intended to handle many of the steps to release a new version.
 	if err != nil {
 		return err
 	}
-	defer func() {
-		if _err != nil {
-			os.Remove(fpath)
-		}
-	}()
 
 	hash2, err := makeTgz(tgz, repoRoot, tag)
 	if err != nil {
-		return fmt.Errorf("make release tarball: %w")
+		return fmt.Errorf("make release tarball: %w", err)
 	}
 
 	if err := tgz.Close(); err != nil {
@@ -246,7 +241,7 @@ zig_toolchains()
 }
 
 // updateBoilerplate updates all example files with the given version.
-func updateBoilerplate(repoRoot string, boilerplate string, tag string) error {
+func updateBoilerplate(repoRoot string, boilerplate string) error {
 	const (
 		startMarker = `load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")` + "\n"
 		endMarker   = "zig_toolchains()\n"
@@ -277,7 +272,7 @@ func updateBoilerplate(repoRoot string, boilerplate string, tag string) error {
 		newBoilerplate := preamble + boilerplate + epilogue
 
 		if err := os.WriteFile(f, []byte(newBoilerplate), 0644); err != nil {
-			return fmt.Errorf("write %q: %w", err)
+			return fmt.Errorf("write %q: %w", f, err)
 		}
 	}
 
@@ -343,6 +338,10 @@ func makeTgz(w io.Writer, repoRoot string, ref string) (string, error) {
 		"tools/releaser/data/": struct{}{},
 	}
 
+	updates := map[string]struct{}{
+		"MODULE.bazel": {},
+	}
+
 	// Paths to be included to the release
 	cmd := exec.Command(
 		"git",
@@ -350,12 +349,14 @@ func makeTgz(w io.Writer, repoRoot string, ref string) (string, error) {
 		"--format=tar",
 		ref,
 		"LICENSE",
-		"MODULE.bazel",
 		"toolchain/*",
 
 		// files to be renamed
 		"tools/releaser/data/WORKSPACE",
 		"tools/releaser/data/README",
+
+		// files to be updated
+		"MODULE.bazel",
 	)
 
 	// the tarball produced by `git archive` has too many artifacts:
@@ -400,20 +401,36 @@ func makeTgz(w io.Writer, repoRoot string, ref string) (string, error) {
 			name = n
 		}
 
+		source := io.NopCloser(tr)
+		size := hdr.Size
+		if _, ok := updates[name]; ok {
+			newFile, err := os.Open(path.Join(repoRoot, name))
+			if err != nil {
+				return "", err
+			}
+			source = newFile
+			fileInfo, err := newFile.Stat()
+			if err != nil {
+				return "", err
+			}
+			size = fileInfo.Size()
+		}
+
 		if err := tw.WriteHeader(&tar.Header{
 			Name:    name,
 			Mode:    int64(hdr.Mode & 0777),
-			Size:    hdr.Size,
+			Size:    size,
 			ModTime: time.Date(2000, time.January, 1, 0, 0, 0, 0, time.UTC),
 			Format:  tar.FormatGNU,
 		}); err != nil {
 			return "", err
 		}
 
-		if _, err := io.Copy(tw, tr); err != nil {
-			return "", err
+		_, err = io.Copy(tw, source)
+		_ = source.Close()
+		if err != nil {
+			return "", fmt.Errorf("writing %q to archive: %w", name, err)
 		}
-
 	}
 
 	if err := tw.Close(); err != nil {
