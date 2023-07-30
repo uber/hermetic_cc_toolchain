@@ -40,7 +40,7 @@ var (
 	// hashes of already-released versions. Then just hardcode it here.
 	_tagHashes = map[string]string{
 		"v2.0.0-rc2": "40dff82816735e631e8bd51ede3af1c4ed1ad4646928ffb6a0e53e228e55738c",
-		"v2.0.0": "57f03a6c29793e8add7bd64186fc8066d23b5ffd06fe9cc6b0b8c499914d3a65",
+		"v2.0.0":     "57f03a6c29793e8add7bd64186fc8066d23b5ffd06fe9cc6b0b8c499914d3a65",
 	}
 
 	_boilerplateFiles = []string{
@@ -122,7 +122,6 @@ This utility is intended to handle many of the steps to release a new version.
 		)
 	}
 
-
 	if err := checkZigMirrored(repoRoot); err != nil {
 		return fmt.Errorf("zig is correctly mirrored: %w", err)
 	}
@@ -147,6 +146,10 @@ This utility is intended to handle many of the steps to release a new version.
 		sep := strings.Repeat("-", 72)
 		log("Release boilerplate:\n%[1]s\n%[2]s%[1]s\n", sep, boilerplate)
 		return nil
+	}
+
+	if err := updateModuleVersion(repoRoot, tag); err != nil {
+		return err
 	}
 
 	releaseRef := "HEAD"
@@ -278,26 +281,26 @@ func updateBoilerplate(repoRoot string, boilerplate string, tag string) error {
 		}
 	}
 
-	return updateBzlmod(repoRoot, tag)
+	return nil
 }
 
-func updateBzlmod(repoRoot string, tag string) error {
-	bzlmodPath := path.Join(repoRoot, "MODULE.bazel")
-	data, err := os.ReadFile(bzlmodPath)
+func updateModuleVersion(repoRoot string, tag string) error {
+	modulePath := path.Join(repoRoot, "MODULE.bazel")
+	data, err := os.ReadFile(modulePath)
 	if err != nil {
 		return err
 	}
-	modFile, err := bzl.ParseModule(bzlmodPath, data)
+	modFile, err := bzl.ParseModule(modulePath, data)
 	if err != nil {
 		return err
 	}
 	moduleName := "hermetic_cc_toolchain"
 	moduleRule := modFile.RuleNamed(moduleName)
 	if moduleRule == nil {
-		return fmt.Errorf("%q does not declare module %q", bzlmodPath, moduleName)
+		return fmt.Errorf("%q does not declare module %q", modulePath, moduleName)
 	}
 	moduleRule.SetAttr("version", &bzl.StringExpr{Value: tag})
-	return os.WriteFile(bzlmodPath, bzl.Format(modFile), 0644)
+	return os.WriteFile(modulePath, bzl.Format(modFile), 0644)
 }
 
 func git(repoRoot string, args ...string) (string, error) {
@@ -335,8 +338,8 @@ func makeTgz(w io.Writer, repoRoot string, ref string) (string, error) {
 	}
 
 	removals := map[string]struct{}{
-		"tools/": struct{}{},
-		"tools/releaser/": struct{}{},
+		"tools/":               struct{}{},
+		"tools/releaser/":      struct{}{},
 		"tools/releaser/data/": struct{}{},
 	}
 
