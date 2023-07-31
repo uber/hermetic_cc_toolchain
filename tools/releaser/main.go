@@ -122,7 +122,6 @@ This utility is intended to handle many of the steps to release a new version.
 		)
 	}
 
-
 	if err := checkZigMirrored(repoRoot); err != nil {
 		return fmt.Errorf("zig is correctly mirrored: %w", err)
 	}
@@ -147,6 +146,10 @@ This utility is intended to handle many of the steps to release a new version.
 		sep := strings.Repeat("-", 72)
 		log("Release boilerplate:\n%[1]s\n%[2]s%[1]s\n", sep, boilerplate)
 		return nil
+	}
+
+	if err := updateModuleVersion(repoRoot, tag); err != nil {
+		return err
 	}
 
 	releaseRef := "HEAD"
@@ -185,15 +188,10 @@ This utility is intended to handle many of the steps to release a new version.
 	if err != nil {
 		return err
 	}
-	defer func() {
-		if _err != nil {
-			os.Remove(fpath)
-		}
-	}()
 
 	hash2, err := makeTgz(tgz, repoRoot, tag)
 	if err != nil {
-		return fmt.Errorf("make release tarball: %w")
+		return fmt.Errorf("make release tarball: %w", err)
 	}
 
 	if err := tgz.Close(); err != nil {
@@ -274,11 +272,30 @@ func updateBoilerplate(repoRoot string, boilerplate string) error {
 		newBoilerplate := preamble + boilerplate + epilogue
 
 		if err := os.WriteFile(f, []byte(newBoilerplate), 0644); err != nil {
-			return fmt.Errorf("write %q: %w", err)
+			return fmt.Errorf("write %q: %w", f, err)
 		}
 	}
 
 	return nil
+}
+
+func updateModuleVersion(repoRoot string, tag string) error {
+	modulePath := path.Join(repoRoot, "MODULE.bazel")
+	data, err := os.ReadFile(modulePath)
+	if err != nil {
+		return err
+	}
+	modFile, err := bzl.ParseModule(modulePath, data)
+	if err != nil {
+		return err
+	}
+	moduleName := "hermetic_cc_toolchain"
+	moduleRule := modFile.RuleNamed(moduleName)
+	if moduleRule == nil {
+		return fmt.Errorf("%q does not declare module %q", modulePath, moduleName)
+	}
+	moduleRule.SetAttr("version", &bzl.StringExpr{Value: tag})
+	return os.WriteFile(modulePath, bzl.Format(modFile), 0644)
 }
 
 func git(repoRoot string, args ...string) (string, error) {
@@ -316,9 +333,13 @@ func makeTgz(w io.Writer, repoRoot string, ref string) (string, error) {
 	}
 
 	removals := map[string]struct{}{
-		"tools/": struct{}{},
-		"tools/releaser/": struct{}{},
+		"tools/":               struct{}{},
+		"tools/releaser/":      struct{}{},
 		"tools/releaser/data/": struct{}{},
+	}
+
+	updates := map[string]struct{}{
+		"MODULE.bazel": {},
 	}
 
 	// Paths to be included to the release
@@ -328,12 +349,14 @@ func makeTgz(w io.Writer, repoRoot string, ref string) (string, error) {
 		"--format=tar",
 		ref,
 		"LICENSE",
-		"MODULE.bazel",
 		"toolchain/*",
 
 		// files to be renamed
 		"tools/releaser/data/WORKSPACE",
 		"tools/releaser/data/README",
+
+		// files to be updated
+		"MODULE.bazel",
 	)
 
 	// the tarball produced by `git archive` has too many artifacts:
@@ -378,20 +401,36 @@ func makeTgz(w io.Writer, repoRoot string, ref string) (string, error) {
 			name = n
 		}
 
+		source := io.NopCloser(tr)
+		size := hdr.Size
+		if _, ok := updates[name]; ok {
+			newFile, err := os.Open(path.Join(repoRoot, name))
+			if err != nil {
+				return "", err
+			}
+			source = newFile
+			fileInfo, err := newFile.Stat()
+			if err != nil {
+				return "", err
+			}
+			size = fileInfo.Size()
+		}
+
 		if err := tw.WriteHeader(&tar.Header{
 			Name:    name,
 			Mode:    int64(hdr.Mode & 0777),
-			Size:    hdr.Size,
+			Size:    size,
 			ModTime: time.Date(2000, time.January, 1, 0, 0, 0, 0, time.UTC),
 			Format:  tar.FormatGNU,
 		}); err != nil {
 			return "", err
 		}
 
-		if _, err := io.Copy(tw, tr); err != nil {
-			return "", err
+		_, err = io.Copy(tw, source)
+		_ = source.Close()
+		if err != nil {
+			return "", fmt.Errorf("writing %q to archive: %w", name, err)
 		}
-
 	}
 
 	if err := tw.Close(); err != nil {

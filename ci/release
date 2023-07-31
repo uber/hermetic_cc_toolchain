@@ -6,9 +6,12 @@
 set -xeuo pipefail
 
 cd "$(git rev-parse --show-toplevel)"
-prev_ref=$(git rev-parse HEAD)
-tools/bazel run //tools/releaser -- -tag v99.0.0 -skipBranchCheck
-cleanup() { git tag -d v99.0.0; git reset --hard "$prev_ref"; }
-trap cleanup EXIT
 
-file hermetic_cc_toolchain-v99.0.0.tar.gz | grep -q 'gzip compressed data'
+>&2 echo "--- releaser :flag-lt:"
+TAG=$(git -c 'versionsort.suffix=-rc' tag --sort=v:refname | tail -1)
+tools/bazel run //tools/releaser -- -tag "$TAG" -skipBranchCheck
+
+>&2 echo "--- git diff :git:"
+git diff --exit-code
+
+>&2 echo "OK :white_check_mark:"
