@@ -235,8 +235,15 @@ fn parseArgs(
         }),
     }
 
-    while (argv_it.next()) |arg|
+    while (argv_it.next()) |arg| {
+        // This is an opt-out flag that Zig doesn't support yet, so just ignore it.
+        // See https://github.com/ziglang/zig/issues/16855
+        if (mem.eql(u8, arg, "-Wl,--no-undefined-version")) {
+            continue;
+        }
+
         try args.append(arena, arg);
+    }
 
     return ParseResults{ .exec = .{ .args = args, .env = env } };
 }
