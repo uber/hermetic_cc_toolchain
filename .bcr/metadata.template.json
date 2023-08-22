@@ -1,0 +1,20 @@
+{
+    "homepage": "https://github.com/uber/hermetic_cc_toolchain",
+    "maintainers": [
+        {
+            "email": "sungyoon@uber.com",
+            "github": "sywhang",
+            "name": "Sung Yoon Whang"
+        },
+        {
+            "email": "zplin@uber.com",
+            "github": "linzhp",
+            "name": "Zhongpeng Lin"
+        }
+    ],
+    "repository": [
+      "github:uber/hermetic_cc_toolchain"
+    ],
+    "versions": [],
+    "yanked_versions": {}
+  }

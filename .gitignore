@@ -6,3 +6,4 @@
 /bazel-out
 /bazel-testlogs
 /bazel-x
+/examples/bzlmod/bazel-*
