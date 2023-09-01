@@ -18,10 +18,6 @@ URL_FORMAT_RELEASE = "https://ziglang.org/download/{version}/zig-{host_platform}
 # Bazel mirror or your own.
 URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform}-{version}.{_ext}"
 
-# Official Bazel's mirror with selected Zig SDK versions. Bazel community is
-# generous enough to host the artifacts, which we use.
-URL_FORMAT_BAZELMIRROR = "https://mirror.bazel.build/ziglang.org/builds/zig-{host_platform}-{version}.{_ext}"
-
 _VERSION = "0.11.0"
 
 _HOST_PLATFORM_SHA256 = {
@@ -79,11 +75,13 @@ def toolchains(
     """
 
     if not url_formats:
-        url_formats = [URL_FORMAT_BAZELMIRROR]
         if "dev" in version:
-            url_formats.append(URL_FORMAT_NIGHTLY)
+            original_format = URL_FORMAT_NIGHTLY
         else:
-            url_formats.append(URL_FORMAT_RELEASE)
+            original_format = URL_FORMAT_RELEASE
+
+        mirror_format = original_format.replace("https://ziglang.org/", "https://mirror.bazel.build/ziglang.org/")
+        url_formats = [mirror_format, original_format]
 
     zig_repository(
         name = "zig_sdk",
