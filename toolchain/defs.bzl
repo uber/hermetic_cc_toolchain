@@ -68,7 +68,7 @@ lightning" three times in a row.
 
 def toolchains(
         version = _VERSION,
-        url_formats = [URL_FORMAT_BAZELMIRROR, URL_FORMAT_NIGHTLY],
+        url_formats = [],
         host_platform_sha256 = _HOST_PLATFORM_SHA256,
         host_platform_ext = _HOST_PLATFORM_EXT):
     """
@@ -77,6 +77,14 @@ def toolchains(
         the user with register_toolchains() in the WORKSPACE file. See README
         for possible choices.
     """
+
+    if not url_formats:
+        url_formats = [URL_FORMAT_BAZELMIRROR]
+        if "dev" in version:
+            url_formats.append(URL_FORMAT_NIGHTLY)
+        else:
+            url_formats.append(URL_FORMAT_RELEASE)
+
     zig_repository(
         name = "zig_sdk",
         version = version,
