@@ -40,7 +40,7 @@ var (
 	// hashes of already-released versions. Then just hardcode it here.
 	_tagHashes = map[string]string{
 		"v2.0.0-rc2": "40dff82816735e631e8bd51ede3af1c4ed1ad4646928ffb6a0e53e228e55738c",
-		"v2.0.0": "57f03a6c29793e8add7bd64186fc8066d23b5ffd06fe9cc6b0b8c499914d3a65",
+		"v2.0.0":     "57f03a6c29793e8add7bd64186fc8066d23b5ffd06fe9cc6b0b8c499914d3a65",
 	}
 
 	_boilerplateFiles = []string{
@@ -465,7 +465,7 @@ func checkZigMirrored(repoRoot string) error {
 	// - so we'd rather pick a single platform and test it.
 	// - because windows coverage is smallest, let's take the windows platform.
 	url := strings.Replace(upstream.urlTemplate, "{host_platform}", "windows-x86_64", 1)
-	url = strings.Replace(url, "{version}", upstream.version, 1)
+	url = strings.ReplaceAll(url, "{version}", upstream.version)
 	url = strings.Replace(url, "{_ext}", "zip", 1)
 
 	log("checking if zig is mirorred in %q", url)
@@ -495,6 +495,7 @@ func parseZigUpstream(defsPath string) (zigUpstream, error) {
 		return zigUpstream{}, err
 	}
 
+	var nightlyFormat, releaseFormat string
 	for _, expr := range parsed.Stmt {
 		def, ok := expr.(*bzl.AssignExpr)
 		if !ok {
@@ -507,8 +508,10 @@ func parseZigUpstream(defsPath string) (zigUpstream, error) {
 		switch key.Name {
 		case "_VERSION":
 			to = &ret.version
-		case "URL_FORMAT_BAZELMIRROR":
-			to = &ret.urlTemplate
+		case "URL_FORMAT_RELEASE":
+			to = &releaseFormat
+		case "URL_FORMAT_NIGHTLY":
+			to = &nightlyFormat
 		default:
 			continue
 		}
@@ -521,9 +524,22 @@ func parseZigUpstream(defsPath string) (zigUpstream, error) {
 		*to = value.Value
 	}
 
-	if ret.version == "" || ret.urlTemplate == "" {
-		return zigUpstream{}, errors.New("_VERSION and/or URL_FORMAT_BAZELMIRROR not found")
+	if ret.version == "" {
+		return zigUpstream{}, errors.New("_VERSION not found")
 	}
+	if strings.Contains(ret.version, "dev") {
+		ret.urlTemplate = nightlyFormat
+	} else {
+		ret.urlTemplate = releaseFormat
+	}
+	if ret.urlTemplate == "" {
+		return zigUpstream{}, fmt.Errorf("url format for %q not found", ret.version)
+	}
+	ret.urlTemplate = strings.Replace(ret.urlTemplate,
+		"https://ziglang.org/",
+		"https://mirror.bazel.build/ziglang.org/",
+		1,
+	)
 
 	return ret, nil
 }

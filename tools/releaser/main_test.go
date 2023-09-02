@@ -48,11 +48,19 @@ func TestParseZigVersion(t *testing.T) {
 		wantErr  string
 	}{
 		{
-			name:     "ok",
-			contents: `_VERSION = "foo bar"; URL_FORMAT_BAZELMIRROR = "yadda"`,
+			name:     "released url",
+			contents: `_VERSION = "0.11.0"; URL_FORMAT_RELEASE = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.{_ext}"`,
 			want: zigUpstream{
-				version:     "foo bar",
-				urlTemplate: "yadda",
+				version:     "0.11.0",
+				urlTemplate: "https://mirror.bazel.build/ziglang.org/download/{version}/zig-{host_platform}-{version}.{_ext}",
+			},
+		},
+		{
+			name:     "nightly url",
+			contents: `_VERSION = "0.11.0-dev.2619+bd3e248c7"; URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform}-{version}.{_ext}"`,
+			want: zigUpstream{
+				version:     "0.11.0-dev.2619+bd3e248c7",
+				urlTemplate: "https://mirror.bazel.build/ziglang.org/builds/zig-{host_platform}-{version}.{_ext}",
 			},
 		},
 		{
@@ -61,9 +69,14 @@ func TestParseZigVersion(t *testing.T) {
 			wantErr:  "got a non-string expression",
 		},
 		{
-			name:     "missing assignment",
+			name:     "missing version assignment",
 			contents: "x1 = 1",
 			wantErr:  "assign statement _VERSION = <...> not found",
+		},
+		{
+			name:     "missing url assignment",
+			contents: `_VERSION = "0.11.0"; URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform}-{version}.{_ext}"`,
+			wantErr:  "url format for '0.11.0' not found",
 		},
 	}
 
