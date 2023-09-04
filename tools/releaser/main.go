@@ -41,6 +41,7 @@ var (
 	_tagHashes = map[string]string{
 		"v2.0.0-rc2": "40dff82816735e631e8bd51ede3af1c4ed1ad4646928ffb6a0e53e228e55738c",
 		"v2.0.0":     "57f03a6c29793e8add7bd64186fc8066d23b5ffd06fe9cc6b0b8c499914d3a65",
+		"v2.1.0":     "892b0dd7aa88c3504a8821e65c44fd22f32c16afab12d89e9942fff492720b37",
 	}
 
 	_boilerplateFiles = []string{
@@ -294,7 +295,7 @@ func updateModuleVersion(repoRoot string, tag string) error {
 	if moduleRule == nil {
 		return fmt.Errorf("%q does not declare module %q", modulePath, moduleName)
 	}
-	moduleRule.SetAttr("version", &bzl.StringExpr{Value: tag})
+	moduleRule.SetAttr("version", &bzl.StringExpr{Value: strings.TrimPrefix(tag, "v")})
 	return os.WriteFile(modulePath, bzl.Format(modFile), 0644)
 }
 
@@ -350,6 +351,7 @@ func makeTgz(w io.Writer, repoRoot string, ref string) (string, error) {
 		ref,
 		"LICENSE",
 		"toolchain/*",
+		"examples/bzlmod/*",
 
 		// files to be renamed
 		"tools/releaser/data/WORKSPACE",
