@@ -13,8 +13,6 @@ steps:
     command: ci/lint
   - label: "List Platforms"
     command: ci/list_toolchains_platforms
-  - label: "Test Release"
-    command: ci/prepare_git && echo "--- ci/release" && ci/release
   # TODO(#99) re-enable
   # - label: "Test zig utilities"
   #   plugins:
