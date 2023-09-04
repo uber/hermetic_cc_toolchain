@@ -294,7 +294,7 @@ func updateModuleVersion(repoRoot string, tag string) error {
 	if moduleRule == nil {
 		return fmt.Errorf("%q does not declare module %q", modulePath, moduleName)
 	}
-	moduleRule.SetAttr("version", &bzl.StringExpr{Value: tag})
+	moduleRule.SetAttr("version", &bzl.StringExpr{Value: strings.TrimPrefix(tag, "v")})
 	return os.WriteFile(modulePath, bzl.Format(modFile), 0644)
 }
 
@@ -350,6 +350,7 @@ func makeTgz(w io.Writer, repoRoot string, ref string) (string, error) {
 		ref,
 		"LICENSE",
 		"toolchain/*",
+		"examples/bzlmod/*",
 
 		// files to be renamed
 		"tools/releaser/data/WORKSPACE",
