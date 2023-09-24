@@ -22,9 +22,9 @@ steps:
   #         image: "debian:stable"
   #   command: apt-get update && apt-get install --no-install-recommends -y wine64 python3 ca-certificates && ci/zig-utils
   - label: "Test rules_cc example"
-    command: ci/prepare_git && ci/test_example rules_cc
+    command: ci/prepare_git && ci/test_example rules_cc override_repository
   - label: "Test bzlmod example"
-    command: ci/prepare_git && ci/test_example bzlmod
+    command: ci/prepare_git && ci/test_example bzlmod override_module
   - label: "mod-tidy and update-repos"
     command: tools/mod-tidy && git diff --exit-code
 agents:

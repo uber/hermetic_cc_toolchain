@@ -5,6 +5,7 @@ module(
 
 bazel_dep(
     name = "hermetic_cc_toolchain",
+    # TODO(zplin): use thel latest released version after we publish it to BCR
     version = "",
 )
 local_path_override(

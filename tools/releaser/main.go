@@ -351,7 +351,6 @@ func makeTgz(w io.Writer, repoRoot string, ref string) (string, error) {
 		ref,
 		"LICENSE",
 		"toolchain/*",
-		"examples/bzlmod/*",
 
 		// files to be renamed
 		"tools/releaser/data/WORKSPACE",
