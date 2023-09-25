@@ -39,11 +39,11 @@ Add this to your `WORKSPACE`:
 ```
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-HERMETIC_CC_TOOLCHAIN_VERSION = "v2.1.1"
+HERMETIC_CC_TOOLCHAIN_VERSION = "v2.1.2"
 
 http_archive(
     name = "hermetic_cc_toolchain",
-    sha256 = "86ace5cd211d0ae49a729a11afb344843698b64464f2095a776c57ebbdf06698",
+    sha256 = "28fc71b9b3191c312ee83faa1dc65b38eb70c3a57740368f7e7c7a49bedf3106",
     urls = [
         "https://mirror.bazel.build/github.com/uber/hermetic_cc_toolchain/releases/download/{0}/hermetic_cc_toolchain-{0}.tar.gz".format(HERMETIC_CC_TOOLCHAIN_VERSION),
         "https://github.com/uber/hermetic_cc_toolchain/releases/download/{0}/hermetic_cc_toolchain-{0}.tar.gz".format(HERMETIC_CC_TOOLCHAIN_VERSION),
