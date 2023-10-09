@@ -1,0 +1,11 @@
+matrix:
+  platform:
+  - debian11
+  - ubuntu2004_arm64
+  - macos_arm64
+tasks:
+  verify_targets:
+    name: Verify this module can be built as a depenedency of another module
+    platform: ${{ platform }}
+    build_targets:
+    - '@hermetic_cc_toolchain//toolchain/...'

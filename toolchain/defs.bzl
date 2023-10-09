@@ -18,18 +18,14 @@ URL_FORMAT_RELEASE = "https://ziglang.org/download/{version}/zig-{host_platform}
 # Bazel mirror or your own.
 URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform}-{version}.{_ext}"
 
-# Official Bazel's mirror with selected Zig SDK versions. Bazel community is
-# generous enough to host the artifacts, which we use.
-URL_FORMAT_BAZELMIRROR = "https://mirror.bazel.build/ziglang.org/builds/zig-{host_platform}-{version}.{_ext}"
-
-_VERSION = "0.11.0-dev.3886+0c1bfe271"
+_VERSION = "0.11.0"
 
 _HOST_PLATFORM_SHA256 = {
-    "linux-aarch64": "12be476ed53c219507e77737dbb7f2a77b280760b8acbc6ba2eaaeb42b7d145e",
-    "linux-x86_64": "1b1c115c4ccbdc215cc3b07833c7957336d9f5fff816f97e5cafee556a9d8be8",
-    "macos-aarch64": "3943612c560dd066fba5698968317a146a0f585f6cdaa1e7c1df86685c7c4eaf",
-    "macos-x86_64": "0c89e5d934ecbf9f4d2dea6e3b8dfcc548a3d4184a856178b3db74e361031a2b",
-    "windows-x86_64": "c17df4db67ca328e77d2ff9a790a5e013d885de0667dbf25d9a1206103662d30",
+    "linux-aarch64": "956eb095d8ba44ac6ebd27f7c9956e47d92937c103bf754745d0a39cdaa5d4c6",
+    "linux-x86_64": "2d00e789fec4f71790a6e7bf83ff91d564943c5ee843c5fd966efc474b423047",
+    "macos-aarch64": "c6ebf927bb13a707d74267474a9f553274e64906fd21bf1c75a20bde8cadf7b2",
+    "macos-x86_64": "1c1c6b9a906b42baae73656e24e108fd8444bb50b6e8fd03e9e7a3f8b5f05686",
+    "windows-x86_64": "142caa3b804d86b4752556c9b6b039b7517a08afa3af842645c7e2dcd125f652",
 }
 
 _HOST_PLATFORM_EXT = {
@@ -68,7 +64,7 @@ lightning" three times in a row.
 
 def toolchains(
         version = _VERSION,
-        url_formats = [URL_FORMAT_BAZELMIRROR, URL_FORMAT_NIGHTLY],
+        url_formats = [],
         host_platform_sha256 = _HOST_PLATFORM_SHA256,
         host_platform_ext = _HOST_PLATFORM_EXT):
     """
@@ -77,6 +73,16 @@ def toolchains(
         the user with register_toolchains() in the WORKSPACE file. See README
         for possible choices.
     """
+
+    if not url_formats:
+        if "dev" in version:
+            original_format = URL_FORMAT_NIGHTLY
+        else:
+            original_format = URL_FORMAT_RELEASE
+
+        mirror_format = original_format.replace("https://ziglang.org/", "https://mirror.bazel.build/ziglang.org/")
+        url_formats = [mirror_format, original_format]
+
     zig_repository(
         name = "zig_sdk",
         version = version,
