@@ -174,6 +174,7 @@ def _zig_repository_impl(repository_ctx):
     compile_cmd = [
         _paths_join("..", "zig"),
         "build-exe",
+        "-fstrip",
         "-mcpu={}".format(_MCPU[host_platform]),
         "-OReleaseSafe",
         "zig-wrapper.zig",
