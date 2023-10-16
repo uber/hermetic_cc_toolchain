@@ -31,9 +31,7 @@ for zigfile in $(git ls-files '*.zig'); do
     $ZIG test "$zigfile"
 
     echo "--- test $zigfile via wine64"
-    # ReleaseSafe because of https://github.com/ziglang/zig/issues/14036
     $ZIG test \
-        -OReleaseSafe \
         -target x86_64-windows-gnu \
         --test-cmd wine64-stable \
         --test-cmd-bin \
