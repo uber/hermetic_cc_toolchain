@@ -22,12 +22,12 @@ if command -v shellcheck &> /dev/null; then
     >&2 echo -e "OK\n"
 fi
 
-read -ra zigfiles < <(git ls-files '*.zig')
+mapfile -t zigfiles < <(git ls-files '*.zig')
 >&2 echo "--- zig fmt ${zigfiles[*]}"
 $ZIG fmt "${zigfiles[@]}"
 
 >&2 echo "--- go fmt :go:"
-read -ra gofiles < <(git ls-files '**/*.go')
+mapfile -t gofiles < <(git ls-files '**/*.go')
 tools/bazel run @go_sdk//:bin/gofmt -- -w "${gofiles[@]}"
 
 >&2 echo "--- buildifier :bazel:"
