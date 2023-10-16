@@ -36,12 +36,13 @@ _HOST_PLATFORM_EXT = {
     "windows-x86_64": "zip",
 }
 
-_MCPU = {
-    "linux-aarch64": "baseline",
-    "linux-x86_64": "baseline",
-    "macos-aarch64": "apple_a14",
-    "macos-x86_64": "baseline",
-    "windows-x86_64": "baseline",
+# map bazel's host_platform to zig's -target= and -mcpu=
+_TARGET_MCPU = {
+    "linux-aarch64": ("aarch64-linux-musl", "baseline"),
+    "linux-x86_64": ("x86_64-linux-musl", "baseline"),
+    "macos-aarch64": ("aarch64-macos-none", "apple_a14"),
+    "macos-x86_64": ("x86_64-macos-none", "baseline"),
+    "windows-x86_64": ("x86_64-windows-gnu", "baseline"),
 }
 
 _compile_failed = """
@@ -174,11 +175,13 @@ def _zig_repository_impl(repository_ctx):
     compile_cmd = [
         _paths_join("..", "zig"),
         "build-exe",
+        "-target",
+        _TARGET_MCPU[host_platform][0],
+        "-mcpu={}".format(_TARGET_MCPU[host_platform][1]),
         "-fstrip",
-        "-mcpu={}".format(_MCPU[host_platform]),
         "-OReleaseSafe",
         "zig-wrapper.zig",
-    ] + (["-static"] if os == "linux" else [])
+    ]
 
     # The elaborate code below is a workaround for ziglang/zig#14978: a race in
     # Windows where zig may error with `error: AccessDenied`.
