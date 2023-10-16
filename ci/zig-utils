@@ -26,14 +26,18 @@ for zigfile in $(git ls-files '*.zig'); do
     done
 
 
-    echo "--- zig test $zigfile"
     # until hermetic_cc_toolchain gets a zig toolchain, run zig programs' unit tests here.
+    echo "--- zig test $zigfile"
     $ZIG test "$zigfile"
 
-    echo "--- test $zigfile via wine64"
-    $ZIG test \
-        -target x86_64-windows-gnu \
-        --test-cmd wine64-stable \
-        --test-cmd-bin \
-        "$zigfile"
+    # as of 2023-10 yours truly (@motiejus) was not able to install wine64
+    # on CI. See the commit message for details.
+    if [[ -z "${HERMETIC_CC_TOOLCHAIN_SKIP_WINE:-}" ]]; then
+        echo "--- test $zigfile via wine64"
+        $ZIG test \
+            -target x86_64-windows-gnu \
+            --test-cmd wine64-stable \
+            --test-cmd-bin \
+            "$zigfile"
+    fi
 done
