@@ -238,6 +238,25 @@ fn parseArgs(
     while (argv_it.next()) |arg|
         try args.append(arena, arg);
 
+    // Go toolchain requires the command `$CC -fuse-ld=gold -Wl,--version`
+    // return the string "GNU gold" when linking a Go plugin or
+    // a shared library for Linux ARM64.
+    // See https://go.googlesource.com/go/+/8c92897e15d15fbc664cd5a05132ce800cf4017f/src/cmd/link/internal/ld/lib.go#1628
+    if (run_mode == .cc) {
+        var use_ld_gold: bool = false;
+        var link_version: bool = false;
+        for (args.items) |arg| {
+            if (mem.eql(u8, "-fuse-ld=gold", arg))
+                use_ld_gold = true;
+            if (mem.eql(u8, "-Wl,--version", arg))
+                link_version = true;
+        }
+
+        if (use_ld_gold and link_version) {
+            std.debug.print("GNU gold\n", .{});
+        }
+    }
+
     return ParseResults{ .exec = .{ .args = args, .env = env } };
 }
 
