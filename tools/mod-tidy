@@ -8,5 +8,8 @@ cd "$(git rev-parse --show-toplevel)"
 echo "--- go mod tidy"
 tools/bazel run @go_sdk//:bin/go -- mod tidy "$@"
 
+# Ignore import of @io_bazel_rules_go//go/runfiles
+sed -ri '/github.com\/bazelbuild\/rules_go/d' go.mod go.sum
+
 echo "--- gazelle-update-repos"
 exec tools/bazel run //:gazelle-update-repos
