@@ -9,11 +9,11 @@ Read
 about zig-cc; the rest of the README will present how to use this toolchain
 from Bazel.
 
-Configuring toolchains in Bazel is complex, under-documented, and fraught with
-peril.  We, the team behind `hermetic_cc_toolchain`,are still confused on how
-this all works, and often wonder why it works at all. That aside, we made
-our best effort to make `hermetic_cc_toolchain` usable for your C/C++/CGo
-projects, with as many guardrails as we could install.
+Configuring toolchains in Bazel is complex and fraught with peril. We, the team
+behind `hermetic_cc_toolchain`, are still confused on how this all works, and
+often wonder why it works at all. That aside, we made our best effort to make
+`hermetic_cc_toolchain` usable for your C/C++/CGo projects, with as many
+guardrails can be installed.
 
 While copy-pasting the code in your project, attempt to read and understand the
 text surrounding the code snippets. This will save you hours of head
@@ -58,19 +58,37 @@ load("@hermetic_cc_toolchain//toolchain:defs.bzl", zig_toolchains = "toolchains"
 zig_toolchains()
 ```
 
-And this to `.bazelrc`:
+And this to `.bazelrc` on a Unix-y systems:
 
 ```
-build --incompatible_enable_cc_toolchain_resolution
+build --sandbox_add_mount_pair=/tmp
+```
+
+Windows:
+
+```
+build --sandbox_add_mount_pair=C:\Temp
+```
+
+The directories can be narrowed down to `/tmp/zig-cache` and
+`C:\Temp\hermetic_cc_toolchain` respectively if it can be ensured they will be
+created before the invocation of `bazel build`. See [#83][pr-83] for more
+context. If a different place is prefferred for zig cache, set:
+
+```
+build --repo_env=HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX=/path/to/cache
+build --sandbox_add_mount_pair=/path/to/cache
 ```
 
 The snippets above will download the zig toolchain and make the bazel
-toolchains available for registration and usage. If you do nothing else, this
-may work. The `.bazelrc` snippet instructs Bazel to use the registered "new
-kinds of toolchains". All above are required regardless of how wants to use it.
-The next steps depend on how one wants to use `hermetic_cc_toolchain`. The
-descriptions below is a gentle introduction to C++ toolchains from "user's
-perspective" too.
+toolchains available for registration and usage. If nothing else is done, this
+will work for some minimal use cases. The `.bazelrc` snippet instructs Bazel to
+use the registered "new kinds of toolchains". The next steps depend on how one
+wants to use `hermetic_cc_toolchain`. The descriptions below is a gentle
+introduction to C++ toolchains from "user's perspective" too.
+
+See [examples][examples] for some other recommended `.bazelrc` flags, as well
+as how to use `hermetic_cc_toolchain` with bzlmod.
 
 ### Use case: manually build a single target with a specific zig cc toolchain
 
@@ -315,6 +333,8 @@ Currently zig cache is stored in `/tmp/hermetic_cc_toolchain`, so `bazel clean
 --expunge` will not clear the zig cache. Zig's cache should be stored somewhere
 in the project's path. It is not clear how to do it.
 
+See [#83][pr-83] for more context.
+
 ### OSX: sysroot
 
 For non-trivial programs (and for all darwin/arm64 cgo programs) MacOS SDK may
@@ -323,19 +343,15 @@ is currently not implemented, but patches implementing it will be accepted, as
 long as the OSX sysroot must come through an `http_archive`.
 
 In essence, OSX target support is not well tested with `hermetic_cc_toolchain`.
+Also see [#10][pr-10].
 
-## Known Issues In Upstream
+### Bazel 6 or earlier
 
-This section lists issues that we have stumbled into when using `zig cc`, and
-is outside of `hermetic_cc_toolchain`'s control.
+Add to `.bazelrc`:
 
-### Number of libc stubs with Go 1.20+
-
-Until Go 1.19 the number of glibc stubs that needed to be compiled was strictly
-controlled. Go 1.20 no longer ships with pre-compiled archive files for the
-standard library, and it generates them on the fly, causing many extraneous
-libc stubs. Therefore, the initial compilation will take longer until those
-stubs are pre-cached.
+```
+build --incompatible_enable_cc_toolchain_resolution
+```
 
 ## Host Environments
 
@@ -362,7 +378,6 @@ $ docker run -e CC=/usr/bin/false -ti --rm -v "$PWD:/x" -w /x debian:bookworm-sl
 # ./ci/test
 # ./ci/zig-wrapper
 ```
-
 ## Communication
 
 We maintain two channels for comms:
@@ -424,3 +439,6 @@ On a more practical note:
 [subset]: https://en.wikipedia.org/wiki/Subset
 [universal-headers]: https://github.com/ziglang/universal-headers
 [go-monorepo]: https://www.uber.com/blog/go-monorepo-bazel/
+[pr-83]: https://github.com/uber/hermetic_cc_toolchain/issues/83
+[pr-10]: https://github.com/uber/hermetic_cc_toolchain/issues/10
+[examples]: https://github.com/uber/hermetic_cc_toolchain/tree/main/examples
