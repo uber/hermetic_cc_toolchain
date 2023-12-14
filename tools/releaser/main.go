@@ -7,6 +7,7 @@ package main
 
 import (
 	"archive/tar"
+	"bytes"
 	"compress/gzip"
 	"crypto/sha256"
 	"errors"
@@ -43,6 +44,7 @@ var (
 		"v2.0.0":     "57f03a6c29793e8add7bd64186fc8066d23b5ffd06fe9cc6b0b8c499914d3a65",
 		"v2.1.0":     "892b0dd7aa88c3504a8821e65c44fd22f32c16afab12d89e9942fff492720b37",
 		"v2.1.1":     "86ace5cd211d0ae49a729a11afb344843698b64464f2095a776c57ebbdf06698",
+		"v2.1.3":     "a5caccbf6d86d4f60afd45b541a05ca4cc3f5f523aec7d3f7711e584600fb075",
 	}
 
 	_boilerplateFiles = []string{
@@ -67,11 +69,13 @@ func run() (_err error) {
 		repoRoot        string
 		tag             string
 		skipBranchCheck bool
+		skipCleanCheck  bool
 	)
 
 	flag.StringVar(&repoRoot, "repoRoot", os.Getenv("BUILD_WORKSPACE_DIRECTORY"), "root directory of hermetic_cc_toolchain repo")
 	flag.StringVar(&tag, "tag", "", "tag for this release")
 	flag.BoolVar(&skipBranchCheck, "skipBranchCheck", false, "skip branch check (for testing the release tool)")
+	flag.BoolVar(&skipCleanCheck, "skipCleanCheck", false, "skip check if tree is dirty (for testing the release tool)")
 
 	flag.Usage = func() {
 		fmt.Fprint(flag.CommandLine.Output(), `usage: bazel run //tools/releaser -- -repoRoot <repoRoot> -tag <tag>
@@ -97,7 +101,13 @@ This utility is intended to handle many of the steps to release a new version.
 		wantOut string
 	}
 
-	checks := []checkType{{[]string{"diff", "--stat", "--exit-code"}, ""}}
+	checks := []checkType{}
+	if !skipCleanCheck {
+		checks = append(
+			checks,
+			checkType{[]string{"diff", "--stat", "--exit-code"}, ""},
+		)
+	}
 	if !skipBranchCheck {
 		checks = append(
 			checks,
@@ -150,16 +160,24 @@ This utility is intended to handle many of the steps to release a new version.
 		return nil
 	}
 
-	if err := updateModuleVersion(repoRoot, tag); err != nil {
-		return err
-	}
-
 	releaseRef := "HEAD"
 	if tagAlreadyExists {
 		releaseRef = tag
 	}
 
-	hash1, err := makeTgz(io.Discard, repoRoot, releaseRef)
+	fpath1 := path.Join(repoRoot, fmt.Sprintf("hermetic_cc_toolchain-%s-pre.tar.gz", tag))
+	tgz1, err := os.Create(fpath1)
+	if err != nil {
+		return err
+	}
+
+	removePreTarball := true
+	defer func() {
+		if removePreTarball {
+			_err = errors.Join(_err, os.Remove(fpath1))
+		}
+	}()
+	hash1, err := makeTgz(tgz1, repoRoot, releaseRef, tag)
 	if err != nil {
 		return fmt.Errorf("calculate hash1 of release tarball: %w", err)
 	}
@@ -191,7 +209,7 @@ This utility is intended to handle many of the steps to release a new version.
 		return err
 	}
 
-	hash2, err := makeTgz(tgz, repoRoot, tag)
+	hash2, err := makeTgz(tgz, repoRoot, releaseRef, tag)
 	if err != nil {
 		return fmt.Errorf("make release tarball: %w", err)
 	}
@@ -204,10 +222,11 @@ This utility is intended to handle many of the steps to release a new version.
 		// This may happen if the release tarball depends on the boilerplate
 		// that gets updated with the new tag. Don't do this. We want the
 		// release commit to point to the correct hashes for that release.
+		removePreTarball = false
 		return fmt.Errorf(
-			"hashes before and after release differ: %s %s",
-			hash1,
-			hash2,
+			"hashes before and after release differ:\n%s=%s\n%s=%s",
+			fpath1, hash1,
+			fpath, hash2,
 		)
 	}
 
@@ -281,23 +300,12 @@ func updateBoilerplate(repoRoot string, boilerplate string) error {
 	return nil
 }
 
-func updateModuleVersion(repoRoot string, tag string) error {
-	modulePath := path.Join(repoRoot, "MODULE.bazel")
-	data, err := os.ReadFile(modulePath)
+func updateModuleVersion(ref string, in io.Reader) ([]byte, error) {
+	data, err := io.ReadAll(in)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	modFile, err := bzl.ParseModule(modulePath, data)
-	if err != nil {
-		return err
-	}
-	moduleName := "hermetic_cc_toolchain"
-	moduleRule := modFile.RuleNamed(moduleName)
-	if moduleRule == nil {
-		return fmt.Errorf("%q does not declare module %q", modulePath, moduleName)
-	}
-	moduleRule.SetAttr("version", &bzl.StringExpr{Value: strings.TrimPrefix(tag, "v")})
-	return os.WriteFile(modulePath, bzl.Format(modFile), 0644)
+	return bytes.ReplaceAll(data, []byte("{{ version }}"), []byte(ref)), nil
 }
 
 func git(repoRoot string, args ...string) (string, error) {
@@ -315,7 +323,7 @@ func git(repoRoot string, args ...string) (string, error) {
 	return string(out), nil
 }
 
-func makeTgz(w io.Writer, repoRoot string, ref string) (string, error) {
+func makeTgz(w io.Writer, repoRoot string, releaseRef string, tag string) (string, error) {
 	hashw := sha256.New()
 
 	gzw, err := gzip.NewWriterLevel(io.MultiWriter(w, hashw), gzip.BestCompression)
@@ -330,8 +338,9 @@ func makeTgz(w io.Writer, repoRoot string, ref string) (string, error) {
 	// See that README why we are not adding the top-level README.md.
 	// These files will become top-level during processing.
 	substitutes := map[string]string{
-		"tools/releaser/data/WORKSPACE": "WORKSPACE",
-		"tools/releaser/data/README":    "README",
+		"tools/releaser/data/MODULE.bazel": "MODULE.bazel",
+		"tools/releaser/data/WORKSPACE":    "WORKSPACE",
+		"tools/releaser/data/README":       "README",
 	}
 
 	removals := map[string]struct{}{
@@ -340,8 +349,9 @@ func makeTgz(w io.Writer, repoRoot string, ref string) (string, error) {
 		"tools/releaser/data/": struct{}{},
 	}
 
-	updates := map[string]struct{}{
-		"MODULE.bazel": {},
+	// updates file contents after the filename transformations above
+	updates := map[string]func(string, io.Reader) ([]byte, error){
+		"MODULE.bazel": updateModuleVersion,
 	}
 
 	// Paths to be included to the release
@@ -349,7 +359,7 @@ func makeTgz(w io.Writer, repoRoot string, ref string) (string, error) {
 		"git",
 		"archive",
 		"--format=tar",
-		ref,
+		releaseRef,
 		"LICENSE",
 		"toolchain/*",
 
@@ -357,8 +367,8 @@ func makeTgz(w io.Writer, repoRoot string, ref string) (string, error) {
 		"tools/releaser/data/WORKSPACE",
 		"tools/releaser/data/README",
 
-		// files to be updated
-		"MODULE.bazel",
+		// files to be renamed+updated
+		"tools/releaser/data/MODULE.bazel",
 	)
 
 	// the tarball produced by `git archive` has too many artifacts:
@@ -405,17 +415,13 @@ func makeTgz(w io.Writer, repoRoot string, ref string) (string, error) {
 
 		source := io.NopCloser(tr)
 		size := hdr.Size
-		if _, ok := updates[name]; ok {
-			newFile, err := os.Open(path.Join(repoRoot, name))
+		if fn, ok := updates[name]; ok {
+			mangled, err := fn(tag, source)
 			if err != nil {
 				return "", err
 			}
-			source = newFile
-			fileInfo, err := newFile.Stat()
-			if err != nil {
-				return "", err
-			}
-			size = fileInfo.Size()
+			source = io.NopCloser(bytes.NewBuffer(mangled))
+			size = int64(len(mangled))
 		}
 
 		if err := tw.WriteHeader(&tar.Header{

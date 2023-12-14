@@ -1,0 +1,6 @@
+module(
+    name = "hermetic_cc_toolchain",
+    version = "{{ version }}",
+)
+
+bazel_dep(name = "platforms", version = "0.0.6")

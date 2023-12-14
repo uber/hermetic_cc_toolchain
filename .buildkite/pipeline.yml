@@ -23,8 +23,6 @@ steps:
     command: ci/prepare_git && ci/test_example rules_cc override_repository
   - label: "Test bzlmod example"
     command: ci/prepare_git && ci/test_example bzlmod override_module
-  - label: "mod-tidy and update-repos"
-    command: tools/mod-tidy && git diff --exit-code
 agents:
     - "queue=init"
     - "docker=*"
