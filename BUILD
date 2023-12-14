@@ -9,8 +9,3 @@ alias(
     name = "gazelle",
     actual = "//tools/gazelle:gazelle",
 )
-
-alias(
-    name = "gazelle-update-repos",
-    actual = "//tools/gazelle:gazelle-update-repos",
-)
