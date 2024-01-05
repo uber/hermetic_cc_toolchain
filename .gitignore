@@ -7,3 +7,4 @@
 /bazel-testlogs
 /bazel-x
 /examples/bzlmod/bazel-*
+MODULE.bazel.lock
