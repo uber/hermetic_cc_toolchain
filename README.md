@@ -3,7 +3,7 @@
 # Hermetic CC toolchain
 
 This is a C/C++ toolchain that can (cross-)compile C/C++ programs on top of
-`zig cc`. It contains clang-16, musl, glibc 2-2.34, all in a ~40MB package.
+`zig cc`. It contains clang-17, musl, glibc 2.17-2.38, all in a ~40MB package.
 Read
 [here](https://andrewkelley.me/post/zig-cc-powerful-drop-in-replacement-gcc-clang.html)
 about zig-cc; the rest of the README will present how to use this toolchain

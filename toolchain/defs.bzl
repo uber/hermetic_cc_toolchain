@@ -18,14 +18,14 @@ URL_FORMAT_RELEASE = "https://ziglang.org/download/{version}/zig-{host_platform}
 # Bazel mirror or your own.
 URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform}-{version}.{_ext}"
 
-_VERSION = "0.11.0"
+_VERSION = "0.12.0-dev.2043+6ebeb85ab"
 
 _HOST_PLATFORM_SHA256 = {
-    "linux-aarch64": "956eb095d8ba44ac6ebd27f7c9956e47d92937c103bf754745d0a39cdaa5d4c6",
-    "linux-x86_64": "2d00e789fec4f71790a6e7bf83ff91d564943c5ee843c5fd966efc474b423047",
-    "macos-aarch64": "c6ebf927bb13a707d74267474a9f553274e64906fd21bf1c75a20bde8cadf7b2",
-    "macos-x86_64": "1c1c6b9a906b42baae73656e24e108fd8444bb50b6e8fd03e9e7a3f8b5f05686",
-    "windows-x86_64": "142caa3b804d86b4752556c9b6b039b7517a08afa3af842645c7e2dcd125f652",
+    "linux-aarch64": "8c1b54b5c970ded2f8118319ace67aea0631cbdcc2f0d62cbf1a24c6ca8cf68f",
+    "linux-x86_64": "4d8bffa359da6cb983a23686197318ecacbdf6b4a846fd4619fa2209101fb0d2",
+    "macos-aarch64": "e68ad82c67984835bd91268a978a3e36e72d4a22d5027c18daeb0ab598f02f4e",
+    "macos-x86_64": "0848db89f4aa4f405746daaf7d3ec850b24d7a4665d5f821f742661ab4894539",
+    "windows-x86_64": "be93ad0a0a11ecb5c52a6cab0574d2d2bb8cb97a245d8051eb48e8876d3abbf4",
 }
 
 _HOST_PLATFORM_EXT = {
@@ -52,15 +52,14 @@ return_code={return_code}
 stderr={stderr}
 stdout={stdout}
 
-You stumbled into a problem with Zig SDK that bazel-zig-cc was not able to fix.
-Please file a new issue to github.com/uber/hermetic_cc_toolchain with:
+You stumbled into a problem with Zig SDK that hermetic_cc_toolchain was not
+able to fix. Please file a new issue to github.com/uber/hermetic_cc_toolchain
+with:
+- {cache_prefix} directory: tar -czf zig-cache.tar.gz {cache_prefix}
 - Full output of this Bazel run, including the Bazel command.
-- Version of the Zig SDK if you have a non-default.
-- Version of hermetic_cc_toolchain
+- Version of the Zig SDK.
 
-Note: this *may* have been https://github.com/ziglang/zig/issues/14978, for
-which hermetic_cc_toolchain has a workaround and you may have been "struck by
-lightning" three times in a row.
+Then remove {cache_prefix} and re-run the command. Should work.
 """
 
 def toolchains(
