@@ -18,14 +18,14 @@ URL_FORMAT_RELEASE = "https://ziglang.org/download/{version}/zig-{host_platform}
 # Bazel mirror or your own.
 URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform}-{version}.{_ext}"
 
-_VERSION = "0.12.0-dev.2043+6ebeb85ab"
+_VERSION = "0.12.0-dev.2127+fcc0c5ddc"
 
 _HOST_PLATFORM_SHA256 = {
-    "linux-aarch64": "8c1b54b5c970ded2f8118319ace67aea0631cbdcc2f0d62cbf1a24c6ca8cf68f",
-    "linux-x86_64": "4d8bffa359da6cb983a23686197318ecacbdf6b4a846fd4619fa2209101fb0d2",
-    "macos-aarch64": "e68ad82c67984835bd91268a978a3e36e72d4a22d5027c18daeb0ab598f02f4e",
-    "macos-x86_64": "0848db89f4aa4f405746daaf7d3ec850b24d7a4665d5f821f742661ab4894539",
-    "windows-x86_64": "be93ad0a0a11ecb5c52a6cab0574d2d2bb8cb97a245d8051eb48e8876d3abbf4",
+    "linux-aarch64": "467787f301ddb1bbd33973ace8117f12fc853bb1d1af0b69a4b087b42b79ba1a",
+    "linux-x86_64": "42d0ebd64a127b790c75c10bdfa0454c9cf0774b972e261adad6cc61cd8665f2",
+    "macos-aarch64": "3b9a7d4696445cfe3e92c51174d1a3e3c51afc65c41ded1e8b7f65df763966f0",
+    "macos-x86_64": "529aa36e3c902b865de0184945a90995dfaab9dfe1361ebe08cd18b56b731328",
+    "windows-x86_64": "1d71ef1ee7c13e44b32c7c77e4e8928c272ea4fb2efdd8cff2414f211f1f11b4",
 }
 
 _HOST_PLATFORM_EXT = {
