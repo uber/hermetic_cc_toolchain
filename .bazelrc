@@ -1,6 +1,7 @@
 test --sandbox_default_allow_network=false
 test --test_output=errors
 
+build --incompatible_disallow_empty_glob
 build --verbose_failures
 build --worker_sandboxing
 
