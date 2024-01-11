@@ -51,7 +51,6 @@ def target_structs():
     return ret
 
 def _target_macos(gocpu, zigcpu):
-    min_os = "11"
     copts = []
 
     if zigcpu == "aarch64":
@@ -62,9 +61,6 @@ def _target_macos(gocpu, zigcpu):
         zigtarget = "{}-macos-none".format(zigcpu),
         includes = [
             "libunwind/include",
-            # TODO: Define a toolchain for each minimum OS version
-            "libc/include/{}-macos.{}-none".format(zigcpu, min_os),
-            "libc/include/any-macos.{}-any".format(min_os),
             "libc/include/any-macos-any",
         ] + _INCLUDE_TAIL,
         linkopts = ["-Wl,-headerpad_max_install_names"],
