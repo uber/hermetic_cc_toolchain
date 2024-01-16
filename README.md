@@ -422,11 +422,12 @@ On a more practical note:
 - Maintainers can merge others' pull requests following their best judgement.
   They may or may not ask for feedback from other maintainers. Follow the Zen
   of Zig.
-- Releases are cut by Uber employees, because they can test the
-  version-to-be-released with our [Go Monorepo][go-monorepo]. If you use
-  `hermetic_cc_toolchain` in any serious capacity, we encourage you to make
-  yourself known, so we can work together to validate it before cutting the
-  release.
+- Currently releases are coordinated with Uber employees, because they can test
+  the version-to-be-released their [big repository][go-monorepo]. If you use
+  `hermetic_cc_toolchain` in production and, more importantly, have a
+  heterogeneous environment (different languages, RBE, different platforms), we
+  encourage you to make yourself known. That way we can work together to
+  validate it before cutting the release.
 
 [^1]: a [mathematical subset][subset]: both can be equal.
 [^2]: Credit: `zig zen`
