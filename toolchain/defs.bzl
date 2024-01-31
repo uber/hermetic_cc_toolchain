@@ -57,9 +57,7 @@ able to fix. Please file a new issue to github.com/uber/hermetic_cc_toolchain
 with:
 - {cache_prefix} directory: tar -czf zig-cache.tar.gz {cache_prefix}
 - Full output of this Bazel run, including the Bazel command.
-- Version of the Zig SDK.
-
-Then remove {cache_prefix} and re-run the command. Should work.
+- Version of `hermetic_cc_toolchain` plus customizations, if any.
 """
 
 def toolchains(
@@ -182,13 +180,27 @@ def _zig_repository_impl(repository_ctx):
         "zig-wrapper.zig",
     ]
 
-    # The elaborate code below is a workaround for ziglang/zig#14978: a race in
-    # Windows where zig may error with `error: AccessDenied`.
+    # The elaborate code below is a workaround for ziglang/zig#18763:
+    # Sometimes, when Zig's cache is empty, compiling the launcher may fail
+    # with `error: FileNotFound`. The remedy is to clear the cache and try
+    # again. Until this change, we have been asking users to clear the Zig
+    # cache themselves and re-run the Bazel command.
+    #
+    # If we detect the launcher failed, we can purge the zig cache and retry
+    # the compilation. It will be retried for up to two times.
+
     zig_wrapper_success = True
     zig_wrapper_err_msg = ""
     for _ in range(3):
+        # Do not remove the cache_prefix itself, because it is not controlled
+        # by this script. Instead, clear the cache subdirs that we know Zig
+        # populates.
+        zig_cache_dirs = ["h", "o", "tmp", "z"]
         if not zig_wrapper_success:
-            print("Launcher compilation failed. Retrying build")
+            print("Launcher compilation failed. Clearing %s/{%s} and retrying" %
+                  (cache_prefix, ",".join(zig_cache_dirs)))
+            for d in zig_cache_dirs:
+                repository_ctx.delete(_paths_join(cache_prefix, d))
 
         ret = repository_ctx.execute(
             compile_cmd,
