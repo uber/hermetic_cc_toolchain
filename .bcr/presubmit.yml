@@ -3,9 +3,13 @@ matrix:
   - debian11
   - ubuntu2004_arm64
   - macos_arm64
+  bazel:
+    - 6.x
+    - 7.x
 tasks:
   verify_targets:
     name: Verify this module can be built as a depenedency of another module
     platform: ${{ platform }}
+    bazel: ${{ bazel }}
     build_targets:
     - '@hermetic_cc_toolchain//toolchain/...'
