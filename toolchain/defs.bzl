@@ -18,14 +18,14 @@ URL_FORMAT_RELEASE = "https://ziglang.org/download/{version}/zig-{host_platform}
 # Bazel mirror or your own.
 URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform}-{version}.{_ext}"
 
-_VERSION = "0.12.0-dev.2127+fcc0c5ddc"
+_VERSION = "0.12.0-dev.2631+3069669bc"
 
 _HOST_PLATFORM_SHA256 = {
-    "linux-aarch64": "467787f301ddb1bbd33973ace8117f12fc853bb1d1af0b69a4b087b42b79ba1a",
-    "linux-x86_64": "42d0ebd64a127b790c75c10bdfa0454c9cf0774b972e261adad6cc61cd8665f2",
-    "macos-aarch64": "3b9a7d4696445cfe3e92c51174d1a3e3c51afc65c41ded1e8b7f65df763966f0",
-    "macos-x86_64": "529aa36e3c902b865de0184945a90995dfaab9dfe1361ebe08cd18b56b731328",
-    "windows-x86_64": "1d71ef1ee7c13e44b32c7c77e4e8928c272ea4fb2efdd8cff2414f211f1f11b4",
+    "linux-aarch64": "ea6bd76d5de66a39a2c36286fe96a02c37ae7956924bd9e45879facd3a76ebab",
+    "linux-x86_64": "fcc7d3e6b69c129d755653b3a7b4efc49fe2f7cee535dadc99999be7416977e7",
+    "macos-aarch64": "23ddbde196c4a62de96bf671306bade8454ee776f0d675cb5fc8bfd38f63a22e",
+    "macos-x86_64": "64268cb562d2a89c86c51f3c23d82a27690741e77fd980962a1b282b98adc5a4",
+    "windows-x86_64": "5216ceda34a7133117bf54fb857d5d1cb47f0f3b834172ee9e707621e2b9d2b3",
 }
 
 _HOST_PLATFORM_EXT = {
@@ -53,11 +53,17 @@ stderr={stderr}
 stdout={stdout}
 
 You stumbled into a problem with Zig SDK that hermetic_cc_toolchain was not
-able to fix. Please file a new issue to github.com/uber/hermetic_cc_toolchain
-with:
-- {cache_prefix} directory: tar -czf zig-cache.tar.gz {cache_prefix}
+able to fix. This is most likely a long-standing problem mostly (only?)
+observed in OSX. Please please add a comment to
+https://github.com/ziglang/zig/issues/18763 with:
+- Output of `bazel run @zig_sdk//:zig version`
 - Full output of this Bazel run, including the Bazel command.
-- Version of `hermetic_cc_toolchain` plus customizations, if any.
+- Full OS version and hardware revision (e.g. aarch64 or x86_64?).
+
+Zig and hermetic_cc_toolchain maintainers aren't able to reproduce it, but you
+are. Thus we need a bit of your collaboration to get to the bottom of it.
+
+After commenting on the issue, `rm -fr {cache_prefix}` and re-run your command.
 """
 
 def toolchains(
@@ -182,25 +188,13 @@ def _zig_repository_impl(repository_ctx):
 
     # The elaborate code below is a workaround for ziglang/zig#18763:
     # Sometimes, when Zig's cache is empty, compiling the launcher may fail
-    # with `error: FileNotFound`. The remedy is to clear the cache and try
-    # again. Until this change, we have been asking users to clear the Zig
-    # cache themselves and re-run the Bazel command.
-    #
-    # If we detect the launcher failed, we can purge the zig cache and retry
-    # the compilation. It will be retried for up to two times.
-
+    # with `error: FileNotFound`. We need users to report the full error
+    # message.
     zig_wrapper_success = True
     zig_wrapper_err_msg = ""
     for _ in range(3):
-        # Do not remove the cache_prefix itself, because it is not controlled
-        # by this script. Instead, clear the cache subdirs that we know Zig
-        # populates.
-        zig_cache_dirs = ["h", "o", "tmp", "z"]
         if not zig_wrapper_success:
-            print("Launcher compilation failed. Clearing %s/{%s} and retrying" %
-                  (cache_prefix, ",".join(zig_cache_dirs)))
-            for d in zig_cache_dirs:
-                repository_ctx.delete(_paths_join(cache_prefix, d))
+            print("Launcher compilation failed. Retrying build")
 
         ret = repository_ctx.execute(
             compile_cmd,
