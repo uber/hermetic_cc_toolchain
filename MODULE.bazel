@@ -1,6 +1,6 @@
 module(
     name = "hermetic_cc_toolchain",
-    version = "2.2.1",
+    version = "2.2.3",
 )
 
 bazel_dep(name = "platforms", version = "0.0.8")
