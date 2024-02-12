@@ -3,7 +3,7 @@
 # Copyright 2023 Uber Technologies, Inc.
 # Licensed under the MIT License
 
-set -euo pipefail
+set -xeuo pipefail
 
 cd "$(git rev-parse --show-toplevel)"
 
