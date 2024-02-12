@@ -49,6 +49,7 @@ _attrs = {
     "_cp": attr.label(
         default = "//rules:cp",
         allow_single_file = True,
+        cfg = "exec",
     ),
 }
 
