@@ -44,6 +44,7 @@ var (
 		"v2.1.0":     "892b0dd7aa88c3504a8821e65c44fd22f32c16afab12d89e9942fff492720b37",
 		"v2.1.1":     "86ace5cd211d0ae49a729a11afb344843698b64464f2095a776c57ebbdf06698",
 		"v2.1.3":     "a5caccbf6d86d4f60afd45b541a05ca4cc3f5f523aec7d3f7711e584600fb075",
+		"v2.2.1":     "3b8107de0d017fe32e6434086a9568f97c60a111b49dc34fc7001e139c30fdea",
 	}
 
 	_boilerplateFiles = []string{
@@ -459,13 +460,13 @@ type zigUpstream struct {
 
 // check if zig sdk is properly mirrored
 func checkZigMirrored(repoRoot string) error {
-	upstream, err := parseZigUpstream(path.Join(repoRoot, "toolchain", "defs.bzl"))
+	upstream, err := parseZigUpstream(path.Join(repoRoot, "toolchain", "private", "zig_sdk.bzl"))
 	if err != nil {
 		return err
 	}
 
 	// spot-checking only windows-x86_64, because:
-	// - to check all platforms, we should parse much more of defs.bzl.
+	// - to check all platforms, we should parse much more of zig_sdk.bzl.
 	// - so we'd rather pick a single platform and test it.
 	// - because windows coverage is smallest, let's take the windows platform.
 	url := strings.Replace(upstream.urlTemplate, "{host_platform}", "windows-x86_64", 1)
@@ -488,7 +489,7 @@ func checkZigMirrored(repoRoot string) error {
 	return nil
 }
 
-// parseZigUpstrem parses "_VERSION" from toolchain/defs.bzl
+// parseZigUpstrem parses "VERSION" from toolchain/private/zig_sdk.bzl
 func parseZigUpstream(defsPath string) (zigUpstream, error) {
 	ret := zigUpstream{}
 
@@ -512,7 +513,7 @@ func parseZigUpstream(defsPath string) (zigUpstream, error) {
 		var to *string
 
 		switch key.Name {
-		case "_VERSION":
+		case "VERSION":
 			to = &ret.version
 		case "URL_FORMAT_RELEASE":
 			to = &releaseFormat
@@ -531,7 +532,7 @@ func parseZigUpstream(defsPath string) (zigUpstream, error) {
 	}
 
 	if ret.version == "" {
-		return zigUpstream{}, errors.New("_VERSION not found")
+		return zigUpstream{}, errors.New("VERSION not found")
 	}
 	if strings.Contains(ret.version, "dev") {
 		ret.urlTemplate = nightlyFormat
