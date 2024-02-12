@@ -3,21 +3,33 @@
 
 #include <stdio.h>
 #if defined(_WIN64)
+#include <windows.h>
 #define OS "windows"
 #elif __APPLE__
 #define OS "macos"
 #elif __linux__
-#define OS "linux"
 #include <features.h>
+#define OS "linux"
 #else
 #   error "Unknown compiler!"
 #endif
 
 int main() {
-    #ifdef __GLIBC__
+#if defined(_WIN64)
+    DWORD version = GetVersion();
+    DWORD majorVersion = (DWORD)(LOBYTE(LOWORD(version)));
+    DWORD minorVersion = (DWORD)(HIBYTE(LOWORD(version)));
+
+    DWORD build = 0;
+    if (version < 0x80000000) {
+        build = (DWORD)(HIWORD(version));
+    }
+
+    printf("%s %lu.%lu (%lu).\n", OS, majorVersion, minorVersion, build);
+#elif defined __GLIBC__
     printf("%s glibc_%d.%d\n", OS, __GLIBC__, __GLIBC_MINOR__);
-    #else
+#else
     printf("%s non-glibc\n", OS);
-    #endif
+#endif
     return 0;
 }
