@@ -5,6 +5,9 @@ build --incompatible_disallow_empty_glob
 build --verbose_failures
 build --worker_sandboxing
 
-build --action_env BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
+# TODO: turn this back on when Zig can build CGo (https://github.com/uber/hermetic_cc_toolchain/issues/10)
+#build --action_env BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
 build --experimental_output_directory_naming_scheme=diff_against_dynamic_baseline
 build --sandbox_add_mount_pair=/tmp
+
+build:darwin_toolchains --extra_toolchains @zig_sdk//toolchain:darwin_amd64,@zig_sdk//toolchain:darwin_arm64
