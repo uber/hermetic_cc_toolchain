@@ -124,6 +124,7 @@ This utility is intended to handle many of the steps to release a new version.
 			out,
 		)
 	}
+	log("yes")
 
 	if err := checkZigMirrored(repoRoot); err != nil {
 		return fmt.Errorf("zig is correctly mirrored: %w", err)
@@ -481,6 +482,8 @@ func checkZigMirrored(repoRoot string) error {
 	if resp.StatusCode != 200 {
 		return fmt.Errorf("got non-200: %s", resp.Status)
 	}
+
+	log("yes")
 
 	return nil
 }
