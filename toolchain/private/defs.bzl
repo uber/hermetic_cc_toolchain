@@ -61,6 +61,7 @@ def _target_macos(gocpu, zigcpu):
         zigtarget = "{}-macos-none".format(zigcpu),
         includes = [
             "libunwind/include",
+            "libc/darwin",
             "libc/include/any-macos-any",
         ] + _INCLUDE_TAIL,
         linkopts = ["-Wl,-headerpad_max_install_names"],

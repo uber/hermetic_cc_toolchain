@@ -1,5 +1,5 @@
 #!/bin/sh
-set -x
+set -ex
 
-git config --global user.email "buildkite@example.com"
-git config --global user.name "Buildkite Bot"
+git config --global user.email "ci@example.com"
+git config --global user.name "CI Bot"

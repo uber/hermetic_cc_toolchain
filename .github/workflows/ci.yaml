@@ -1,0 +1,62 @@
+---
+name: ci
+on:
+  push:
+  pull_request:
+defaults:
+  run:
+    shell: bash
+concurrency:
+  # Cancels pending runs when a PR gets updated.
+  group: ${{ github.head_ref || github.run_id }}-${{ github.actor }}
+  cancel-in-progress: true
+jobs:
+
+  build-and-test:
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-13, macos-14]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      - uses: actions/cache@v4
+        name: cache bazelisk and zig-cache directories
+        with:
+          key: cache-${{ runner.os }}-${{ hashFiles('.bazelversion', 'toolchain/private/zig_sdk.bzl', '.github/workflows/ci.yaml') }}
+          path: |
+            ${{ runner.os == 'Windows' && 'C:\Temp\hermetic_cc_toolchain' || '/tmp/zig-cache' }}
+            ${{ runner.os == 'Windows' && '~\AppData\Local\bazelisk' || '~/.cache/bazelisk' }}
+
+      - run: brew install bash
+        if: runner.os == 'macOS'
+
+      # Linux, macOS and Windows
+      - run: ci/list_toolchains_platforms
+      - run: ci/zig-utils
+
+      # Linux and macOS
+      - run: ci/release
+        if: runner.os == 'Linux' || runner.os == 'macOS'
+      - run: ci/lint
+        if: runner.os == 'Linux' || runner.os == 'macOS'
+      # TODO: releaser is broken on windows
+      - run: ci/prepare_git && ci/test_example rules_cc override_repository
+        if: runner.os == 'Linux' || runner.os == 'macOS'
+
+      # Linux and Windows
+      - run: tools/bazel build --config=darwin_toolchains //...
+        if: runner.os == 'Linux' || runner.os == 'Windows'
+
+      # Linux
+      - run: ci/test --config=darwin_toolchains
+        if: runner.os == 'Linux'
+      # TODO windows: broken releaser. MacOS: cgo.
+      - run: ci/prepare_git && ci/test_example bzlmod override_module
+        if: runner.os == 'Linux'
+
+      # macOS
+      - run: tools/bazel build --config=darwin_toolchains --build_tag_filters=darwin_c //...
+        if: runner.os == 'macOS'

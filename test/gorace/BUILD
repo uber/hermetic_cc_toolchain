@@ -9,6 +9,11 @@ go_library(
     # keep
     cgo = True,
     importpath = "github.com/uber/hermetic_cc_toolchain/test/gorace",
+    # TODO lld-link: error: undefined symbol: WaitOnAddress on Windows
+    target_compatible_with = [
+        "@platforms//os:linux",
+        "@platforms//os:macos",
+    ],
     visibility = ["//visibility:private"],
 )
 

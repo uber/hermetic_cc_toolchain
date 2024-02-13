@@ -19,14 +19,12 @@ use_repo(toolchains, "zig_sdk")
 register_toolchains(
     "@zig_sdk//toolchain:linux_amd64_gnu.2.31",
     "@zig_sdk//toolchain:linux_arm64_gnu.2.31",
-    "@zig_sdk//toolchain:darwin_amd64",
-    "@zig_sdk//toolchain:darwin_arm64",
     "@zig_sdk//toolchain:windows_amd64",
     "@zig_sdk//toolchain:windows_arm64",
 )
 
 bazel_dep(
     name = "rules_go",
-    version = "0.41.0",
+    version = "0.45.1",
     repo_name = "io_bazel_rules_go",
 )
