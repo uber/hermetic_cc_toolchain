@@ -18,17 +18,34 @@ jobs:
         os: [windows-latest, ubuntu-latest, macos-13, macos-14]
     runs-on: ${{ matrix.os }}
     steps:
+      - uses: actions/cache@v4
+        name: Windows: cache bazelisk and zig-cache
+        if: runner.os == 'Windows'
+        with:
+          key: cache-${{ runner.os }}-${{ hashFiles('.bazelversion', 'toolchain/private/zig_sdk.bzl', '.github/workflows/ci.yaml') }}
+          path: |
+            'C:\Temp\hermetic_cc_toolchain'
+            '~\AppData\Local\bazelisk'
+      - uses: actions/cache@v4
+        name: MacOS: cache bazelisk and zig-cache
+        if: runner.os == 'macOS'
+        with:
+          key: cache-${{ runner.os }}-${{ hashFiles('.bazelversion', 'toolchain/private/zig_sdk.bzl', '.github/workflows/ci.yaml') }}
+          path: |
+            '/tmp/zig-cache'
+            '~/Library/Caches/bazelisk'
+      - uses: actions/cache@v4
+        name: Linux: cache bazelisk and zig-cache
+        if: runner.os == 'macOS'
+        with:
+          key: cache-${{ runner.os }}-${{ hashFiles('.bazelversion', 'toolchain/private/zig_sdk.bzl', '.github/workflows/ci.yaml') }}
+          path: |
+            '/tmp/zig-cache'
+            '~/.cache/bazelisk'
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           fetch-tags: true
-      - uses: actions/cache@v4
-        name: cache bazelisk and zig-cache directories
-        with:
-          key: cache-${{ runner.os }}-${{ hashFiles('.bazelversion', 'toolchain/private/zig_sdk.bzl', '.github/workflows/ci.yaml') }}
-          path: |
-            ${{ runner.os == 'Windows' && 'C:\Temp\hermetic_cc_toolchain' || '/tmp/zig-cache' }}
-            ${{ runner.os == 'Windows' && '~\AppData\Local\bazelisk' || '~/.cache/bazelisk' }}
 
       - run: brew install bash
         if: runner.os == 'macOS'
