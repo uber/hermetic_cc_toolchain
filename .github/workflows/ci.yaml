@@ -19,7 +19,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/cache@v4
-        name: Windows: cache bazelisk and zig-cache
+        name: "Windows: cache bazelisk and zig-cache"
         if: runner.os == 'Windows'
         with:
           key: cache-${{ runner.os }}-${{ hashFiles('.bazelversion', 'toolchain/private/zig_sdk.bzl', '.github/workflows/ci.yaml') }}
@@ -27,7 +27,7 @@ jobs:
             'C:\Temp\hermetic_cc_toolchain'
             '~\AppData\Local\bazelisk'
       - uses: actions/cache@v4
-        name: MacOS: cache bazelisk and zig-cache
+        name: "MacOS: cache bazelisk and zig-cache"
         if: runner.os == 'macOS'
         with:
           key: cache-${{ runner.os }}-${{ hashFiles('.bazelversion', 'toolchain/private/zig_sdk.bzl', '.github/workflows/ci.yaml') }}
@@ -35,7 +35,7 @@ jobs:
             '/tmp/zig-cache'
             '~/Library/Caches/bazelisk'
       - uses: actions/cache@v4
-        name: Linux: cache bazelisk and zig-cache
+        name: "Linux: cache bazelisk and zig-cache"
         if: runner.os == 'macOS'
         with:
           key: cache-${{ runner.os }}-${{ hashFiles('.bazelversion', 'toolchain/private/zig_sdk.bzl', '.github/workflows/ci.yaml') }}
