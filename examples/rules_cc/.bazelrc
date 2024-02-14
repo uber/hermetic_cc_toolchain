@@ -3,9 +3,12 @@
 test --sandbox_default_allow_network=false
 test --test_output=errors
 
+build --incompatible_disallow_empty_glob
 build --verbose_failures
 build --worker_sandboxing
 
 build --action_env BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
+
+build --sandbox_add_mount_pair=/tmp
 build --sandbox_add_mount_pair=/var/tmp
 build --experimental_output_directory_naming_scheme=diff_against_dynamic_baseline

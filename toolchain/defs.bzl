@@ -148,9 +148,13 @@ def _zig_repository_impl(repository_ctx):
     cache_prefix = repository_ctx.os.environ.get("HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX", "")
     if cache_prefix == "":
         if os == "windows":
-            cache_prefix = "C:\\\\Temp\\\\hermetic_cc_toolchain"
-        else:
+            cache_prefix = "C:\\\\Temp\\\\zig-cache"
+        elif os == "macos":
             cache_prefix = "/var/tmp/zig-cache"
+        elif os == "linux":
+            cache_prefix = "/tmp/zig-cache"
+        else:
+            fail("unknown os: {}".format(os))
 
     repository_ctx.template(
         "tools/zig-wrapper.zig",

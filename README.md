@@ -61,6 +61,7 @@ zig_toolchains()
 And this to `.bazelrc` on a Unix-y systems:
 
 ```
+build --sandbox_add_mount_pair=/tmp
 build --sandbox_add_mount_pair=/var/tmp
 ```
 
@@ -70,10 +71,11 @@ Windows:
 build --sandbox_add_mount_pair=C:\Temp
 ```
 
-The directories can be narrowed down to `/var/tmp/zig-cache` and
-`C:\Temp\hermetic_cc_toolchain` respectively if it can be ensured they will be
-created before the invocation of `bazel build`. See [#83][pr-83] for more
-context. If a different place is prefferred for zig cache, set:
+The directories can be narrowed down to `/tmp/zig-cache` (Linux),
+`/var/tmp/zig-cache` (MacOS) and `C:\Temp\zig-cache` respectively
+if it can be ensured they will be created before the invocation of `bazel
+build`. See [#83][pr-83] for more context. If a different place is prefferred
+for zig cache, set:
 
 ```
 build --repo_env=HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX=/path/to/cache
