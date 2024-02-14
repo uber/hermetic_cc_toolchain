@@ -22,33 +22,40 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
+
       - uses: actions/cache@v4
         name: "Windows: cache bazelisk and zig-cache"
         if: runner.os == 'Windows'
         with:
-          key: cache-${{ runner.os }}-${{ hashFiles('.bazelversion', 'toolchain/private/zig_sdk.bzl', '.github/workflows/ci.yaml') }}
+          key: cache-${{ matrix.os }}-${{ hashFiles('.bazelversion', 'toolchain/private/zig_sdk.bzl', '.github/workflows/ci.yaml') }}
           path: |
-            'C:\Temp\hermetic_cc_toolchain'
-            '~\AppData\Local\bazelisk'
+            C:\Temp\hermetic_cc_toolchain
+            ~\AppData\Local\bazelisk'
+
       - uses: actions/cache@v4
         name: "MacOS: cache bazelisk and zig-cache"
         if: runner.os == 'macOS'
         with:
-          key: cache-${{ runner.os }}-${{ hashFiles('.bazelversion', 'toolchain/private/zig_sdk.bzl', '.github/workflows/ci.yaml') }}
+          key: cache-${{ matrix.os }}-${{ hashFiles('.bazelversion', 'toolchain/private/zig_sdk.bzl', '.github/workflows/ci.yaml') }}
           path: |
-            '/tmp/zig-cache'
-            '~/Library/Caches/bazelisk'
+            /tmp/zig-cache
+            ~/Library/Caches/bazelisk
+
       - uses: actions/cache@v4
         name: "Linux: cache bazelisk and zig-cache"
-        if: runner.os == 'macOS'
+        if: runner.os == 'Linux'
         with:
-          key: cache-${{ runner.os }}-${{ hashFiles('.bazelversion', 'toolchain/private/zig_sdk.bzl', '.github/workflows/ci.yaml') }}
+          key: cache-${{ matrix.os }}-${{ hashFiles('.bazelversion', 'toolchain/private/zig_sdk.bzl', '.github/workflows/ci.yaml') }}
           path: |
-            '/tmp/zig-cache'
-            '~/.cache/bazelisk'
+            /tmp/zig-cache
+            ~/.cache/bazelisk
 
       - run: brew install bash
         if: runner.os == 'macOS'
+
+      - run: echo "common --announce_rc" >> .bazelrc.ci
+      - run: echo "build --sandbox_add_mount_pair=C:\\Temp" >> .bazelrc.ci
+        if: runner.os == 'Windows'
 
       # Linux, macOS and Windows
       - run: ci/list_toolchains_platforms

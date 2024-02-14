@@ -1,3 +1,5 @@
+try-import %workspace%/.bazelrc.ci
+
 test --sandbox_default_allow_network=false
 test --test_output=errors
 
