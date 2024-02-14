@@ -150,7 +150,7 @@ def _zig_repository_impl(repository_ctx):
         if os == "windows":
             cache_prefix = "C:\\\\Temp\\\\hermetic_cc_toolchain"
         else:
-            cache_prefix = "/tmp/zig-cache"
+            cache_prefix = "/var/tmp/zig-cache"
 
     repository_ctx.template(
         "tools/zig-wrapper.zig",

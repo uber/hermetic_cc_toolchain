@@ -5,7 +5,7 @@
 
 set -xeuo pipefail
 
-cache_prefix="${HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX:-/tmp/zig-cache}"
+cache_prefix="${HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX:-/var/tmp/zig-cache}"
 
 # check a very hermetic setup with a single target. Re-building all of
 # them takes a long time, so using only one. If we ever decide to build all

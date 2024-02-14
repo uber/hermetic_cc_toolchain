@@ -38,7 +38,7 @@ jobs:
         with:
           key: cache-${{ matrix.os }}-${{ hashFiles('.bazelversion', 'toolchain/private/zig_sdk.bzl', '.github/workflows/ci.yaml') }}
           path: |
-            /tmp/zig-cache
+            /var/tmp/zig-cache
             ~/Library/Caches/bazelisk
 
       - uses: actions/cache@v4
@@ -47,7 +47,7 @@ jobs:
         with:
           key: cache-${{ matrix.os }}-${{ hashFiles('.bazelversion', 'toolchain/private/zig_sdk.bzl', '.github/workflows/ci.yaml') }}
           path: |
-            /tmp/zig-cache
+            /var/tmp/zig-cache
             ~/.cache/bazelisk
 
       - run: brew install bash
