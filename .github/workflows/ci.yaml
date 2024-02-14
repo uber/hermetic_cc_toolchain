@@ -18,6 +18,10 @@ jobs:
         os: [windows-latest, ubuntu-latest, macos-13, macos-14]
     runs-on: ${{ matrix.os }}
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
       - uses: actions/cache@v4
         name: "Windows: cache bazelisk and zig-cache"
         if: runner.os == 'Windows'
@@ -42,10 +46,6 @@ jobs:
           path: |
             '/tmp/zig-cache'
             '~/.cache/bazelisk'
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          fetch-tags: true
 
       - run: brew install bash
         if: runner.os == 'macOS'
