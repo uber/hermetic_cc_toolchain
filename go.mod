@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/bazelbuild/buildtools v0.0.0-20230510134650-37bd1811516d
 	github.com/stretchr/testify v1.8.2
+        github.com/tetratelabs/wazero v1.6.0
 )
 
 require (

@@ -1,5 +1,6 @@
 load("@hermetic_cc_toolchain//rules:platform.bzl", "platform_binary")
 load("@rules_go//go:def.bzl", "go_library", "go_test")
+load("@local_config_platform//:constraints.bzl", "HOST_CONSTRAINTS")
 
 cc_binary(
     name = "which_libc",
@@ -41,17 +42,19 @@ _WINDOWS_AMD64 = [
             env = {
                 "WANT": want,
                 "BINARY": "$(rlocationpath which_libc_{})".format(name),
+                "EXECUTOR": executor,
             },
             target_compatible_with = compatible_with,
         ),
     )
-    for name, platform, compatible_with, want, tags in [
+    for name, platform, compatible_with, want, tags, executor in [
         (
             "linux_amd64_musl",
             "//libc_aware/platform:linux_amd64_musl",
             _LINUX_AMD64,
             "^linux non-glibc",
             [],
+            "NATIVE",
         ),
         (
             "linux_amd64_gnu.2.28",
@@ -59,6 +62,7 @@ _WINDOWS_AMD64 = [
             _LINUX_AMD64,
             "^linux glibc_2.28",
             [],
+            "NATIVE",
         ),
         (
             "linux_amd64",
@@ -66,6 +70,7 @@ _WINDOWS_AMD64 = [
             _LINUX_AMD64,
             "^linux glibc_2.28",
             [],
+            "NATIVE",
         ),
         (
             "windows_amd64",
@@ -73,6 +78,7 @@ _WINDOWS_AMD64 = [
             _WINDOWS_AMD64,
             "^windows ",
             [],
+            "NATIVE",
         ),
         (
             "darwin_amd64",
@@ -80,6 +86,7 @@ _WINDOWS_AMD64 = [
             _DARWIN_AMD64,
             "^macos non-glibc",
             ["darwin_c"],
+            "NATIVE",
         ),
         (
             "darwin_arm64",
@@ -87,6 +94,15 @@ _WINDOWS_AMD64 = [
             _DARWIN_ARM64,
             "^macos non-glibc",
             ["darwin_c"],
+            "NATIVE",
+        ),
+        (
+            "wasip1_wasm32",
+            "//platform:wasip1_wasm",
+            HOST_CONSTRAINTS,
+            "^wasi non-glibc",
+            [],
+            "WASI",
         ),
     ]
 ]
@@ -96,6 +112,8 @@ go_library(
     srcs = ["c_test.go"],
     deps = [
         "@com_github_stretchr_testify//assert",
+        "@com_github_tetratelabs_wazero//:wazero",
+        "@com_github_tetratelabs_wazero//imports/wasi_snapshot_preview1",
         "@rules_go//go/runfiles",
     ],
 )
