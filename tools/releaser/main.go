@@ -45,6 +45,7 @@ var (
 		"v2.1.1":     "86ace5cd211d0ae49a729a11afb344843698b64464f2095a776c57ebbdf06698",
 		"v2.1.3":     "a5caccbf6d86d4f60afd45b541a05ca4cc3f5f523aec7d3f7711e584600fb075",
 		"v2.2.1":     "3b8107de0d017fe32e6434086a9568f97c60a111b49dc34fc7001e139c30fdea",
+		"v3.0.0":     "fe00bd126e57a4c3fec4efa620bf074e3d1f1fbd70b75113ca56a010d7a70d93",
 	}
 
 	_boilerplateFiles = []string{
