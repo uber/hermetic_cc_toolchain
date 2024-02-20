@@ -50,37 +50,28 @@ jobs:
             /tmp/zig-cache
             ~/.cache/bazelisk
 
+      - run: echo "common --announce_rc" >> .bazelrc.ci
+
       - run: brew install bash
         if: runner.os == 'macOS'
 
-      - run: echo "common --announce_rc" >> .bazelrc.ci
-      - run: echo "build --sandbox_add_mount_pair=C:\\Temp" >> .bazelrc.ci
-        if: runner.os == 'Windows'
-
       # Linux, macOS and Windows
+      - run: tools/bazel test //...
       - run: ci/list_toolchains_platforms
       - run: ci/zig-utils
 
-      # Linux and macOS
-      - run: ci/release
-        if: runner.os == 'Linux' || runner.os == 'macOS'
-      - run: ci/lint
-        if: runner.os == 'Linux' || runner.os == 'macOS'
-      # TODO: releaser is broken on windows
-      - run: ci/prepare_git && ci/test_example rules_cc override_repository
-        if: runner.os == 'Linux' || runner.os == 'macOS'
-
-      # Linux and Windows
-      - run: tools/bazel build --config=darwin_toolchains //...
-        if: runner.os == 'Linux' || runner.os == 'Windows'
-
-      # Linux
-      - run: ci/test --config=darwin_toolchains
-        if: runner.os == 'Linux'
-      # TODO windows: broken releaser. MacOS: cgo.
-      - run: ci/prepare_git && ci/test_example bzlmod override_module
-        if: runner.os == 'Linux'
-
-      # macOS
-      - run: tools/bazel build --config=darwin_toolchains --build_tag_filters=darwin_c //...
+      # Test the Zig toolchain for Darwin on Darwin.
+      - run: tools/bazel test --config=macos_toolchains --@rules_go//go/config:static --@rules_go//go/config:pure //test/c/...
         if: runner.os == 'macOS'
+
+      # Windows problems:
+      # protoc does not compile due to `-lpthread`.
+      - run: ci/lint
+        if: runner.os != 'Windows'
+      # releaser fails to write `README.md` for some reason.
+      - run: ci/release
+        if: runner.os != 'Windows'
+      - run: ci/prepare_git && ci/test_example rules_cc override_repository
+        if: runner.os != 'Windows'
+      - run: ci/prepare_git && ci/test_example bzlmod override_module
+        if: runner.os != 'Windows'

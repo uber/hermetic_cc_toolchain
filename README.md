@@ -61,14 +61,10 @@ zig_toolchains()
 And this to `.bazelrc` on a Unix-y systems:
 
 ```
-build --sandbox_add_mount_pair=/tmp
-build --sandbox_add_mount_pair=/var/tmp
-```
-
-Windows:
-
-```
-build --sandbox_add_mount_pair=C:\Temp
+common --enable_platform_specific_config
+build:linux --sandbox_add_mount_pair=/tmp
+build:macos --sandbox_add_mount_pair=/var/tmp
+build:windows --sandbox_add_mount_pair=C:\Temp
 ```
 
 The directories can be narrowed down to `/tmp/zig-cache` (Linux),
@@ -375,9 +371,9 @@ A standalone Docker environment to play with `hermetic_cc_toolchain`:
 $ docker run -e CC=/usr/bin/false -ti --rm -v "$PWD:/x" -w /x debian:bookworm-slim
 # apt update && apt install --no-install-recommends -y shellcheck ca-certificates python3 git
 # git config --global --add safe.directory /x
+# tools/bazel test //...
 # ./ci/lint
 # ./ci/release
-# ./ci/test
 # ./ci/zig-wrapper
 ```
 ## Communication

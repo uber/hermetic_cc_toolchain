@@ -21,42 +21,43 @@ go_test(
 go_binary(
     name = "cgo",
     embed = [":cgo_lib"],
-    # darwin targets are disabled, see below
-    #gc_linkopts = select({
-    #    "@platforms//os:macos": [
-    #        "-w",  # https://github.com/ziglang/zig/issues/15439
-    #        "-buildmode=pie",  # https://github.com/ziglang/zig/issues/15438
-    #    ],
-    #    "//conditions:default": [],
-    #}),
     visibility = ["//visibility:public"],
 )
 
-[
-    platform_binary(
-        name = "cgo_{}".format(name),
-        src = "cgo",
-        platform = platform,
-    )
-    for name, platform in [
-        ("linux_amd64_musl", "//libc_aware/platform:linux_amd64_musl"),
-        ("linux_amd64_gnu.2.28", "//libc_aware/platform:linux_amd64_gnu.2.28"),
-        ("linux_arm64_musl", "//libc_aware/platform:linux_arm64_musl"),
-        ("linux_arm64_gnu.2.28", "//libc_aware/platform:linux_arm64_gnu.2.28"),
-        # https://github.com/uber/hermetic_cc_toolchain/issues/10
-        # ("darwin_amd64", "//platform:darwin_amd64"),
-        # ("darwin_arm64", "//platform:darwin_arm64"),
-    ]
+_LINUX_AMD64 = [
+    "@platforms//os:linux",
+    "@platforms//cpu:x86_64",
+]
+
+_WINDOWS_AMD64 = [
+    "@platforms//os:windows",
+    "@platforms//cpu:x86_64",
 ]
 
 [
-    platform_test(
-        name = "cgo_test_{}".format(name),
-        src = "cgo_test",
-        platform = platform,
+    (
+        platform_binary(
+            name = "cgo_{}".format(name),
+            src = "cgo",
+            platform = platform,
+        ),
     )
-    for name, platform, is_arm64 in [
-        ("linux_amd64_musl", "//libc_aware/platform:linux_amd64_musl", False),
-        ("linux_amd64_gnu.2.28", "//libc_aware/platform:linux_amd64_gnu.2.28", False),
+    for name, platform in [
+        (
+            "linux_amd64_musl",
+            "//libc_aware/platform:linux_amd64_musl",
+        ),
+        (
+            "linux_amd64_gnu.2.28",
+            "//libc_aware/platform:linux_amd64_gnu.2.28",
+        ),
+        (
+            "windows_amd64",
+            "//platform:windows_amd64",
+        ),
+        (
+            "windows_arm64",
+            "//platform:windows_arm64",
+        ),
     ]
 ]
