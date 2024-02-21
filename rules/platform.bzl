@@ -61,14 +61,6 @@ platform_binary = rule(
     executable = True,
 )
 
-# wrap a single test target and build it for the specified platform.
-platform_test = rule(
-    implementation = _platform_binary_impl,
-    cfg = _platform_transition,
-    attrs = _attrs,
-    test = True,
-)
-
 ## Copied from https://github.com/bazelbuild/bazel-skylib/blob/1.4.1/lib/paths.bzl#L22
 def _paths_basename(p):
     return p.rpartition("/")[-1]

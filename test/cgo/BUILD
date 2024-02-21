@@ -2,7 +2,7 @@
 # Licensed under the MIT License
 
 load("@rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
-load("@hermetic_cc_toolchain//rules:platform.bzl", "platform_binary", "platform_test")
+load("@hermetic_cc_toolchain//rules:platform.bzl", "platform_binary")
 
 go_library(
     name = "cgo_lib",
@@ -23,16 +23,6 @@ go_binary(
     embed = [":cgo_lib"],
     visibility = ["//visibility:public"],
 )
-
-_LINUX_AMD64 = [
-    "@platforms//os:linux",
-    "@platforms//cpu:x86_64",
-]
-
-_WINDOWS_AMD64 = [
-    "@platforms//os:windows",
-    "@platforms//cpu:x86_64",
-]
 
 [
     (
