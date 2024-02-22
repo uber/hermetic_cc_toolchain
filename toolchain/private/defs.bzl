@@ -48,6 +48,7 @@ def target_structs():
         ret.append(_target_linux_musl(gocpu, zigcpu))
         for glibc in _GLIBCS:
             ret.append(_target_linux_gnu(gocpu, zigcpu, glibc))
+    ret.append(_target_wasm())
     return ret
 
 def _target_macos(gocpu, zigcpu):
@@ -197,5 +198,27 @@ def _target_linux_musl(gocpu, zigcpu):
         ],
         libc_constraint = "@zig_sdk//libc:musl",
         ld_zig_subcmd = "ld.lld",
+        artifact_name_patterns = [],
+    )
+
+def _target_wasm():
+    return struct(
+        gotarget = "wasip1_wasm",
+        zigtarget = "wasm32-wasi-musl",
+        includes = [
+            "libc/include/wasm-wasi-musl",
+            "libc/wasi",
+        ] + _INCLUDE_TAIL,
+        linkopts = [],
+        dynamic_library_linkopts = [],
+        supports_dynamic_linker = False,
+        copts = [],
+        libc = "musl",
+        bazel_target_cpu = "wasm32",
+        constraint_values = [
+            "@platforms//os:wasi",
+            "@platforms//cpu:wasm32",
+        ],
+        ld_zig_subcmd = "wasm-ld",
         artifact_name_patterns = [],
     )

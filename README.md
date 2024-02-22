@@ -183,6 +183,7 @@ register_toolchains(
     "@zig_sdk//toolchain:darwin_arm64",
     "@zig_sdk//toolchain:windows_amd64",
     "@zig_sdk//toolchain:windows_arm64",
+    "@zig_sdk//toolchain:wasip1_wasm",
 )
 ```
 
@@ -291,7 +292,9 @@ Go, the following Go-style toolchain aliases are created:
 |---------------- | -------- |
 |`x86_64`         | `amd64`  |
 |`aarch64`        | `arm64`  |
+|`wasm32`         | `wasm`   |
 |`macos`          | `darwin` |
+|`wasi`           | `wasip1` |
 
 For example, the toolchain `linux_amd64_gnu.2.28` is aliased to
 `x86_64-linux-gnu.2.28`. To find out which toolchains can be registered or

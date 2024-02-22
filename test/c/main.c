@@ -10,6 +10,9 @@
 #elif __linux__
 #include <features.h>
 #define OS "linux"
+#elif __wasi__
+#include <features.h>
+#define OS "wasi"
 #else
 #   error "Unknown compiler!"
 #endif
