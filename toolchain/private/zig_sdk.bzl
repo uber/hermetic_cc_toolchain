@@ -1,11 +1,12 @@
-VERSION = "0.12.0-dev.2631+3069669bc"
+VERSION = "0.12.0-dev.2824+0b7af2563"
 
 HOST_PLATFORM_SHA256 = {
-    "linux-aarch64": "ea6bd76d5de66a39a2c36286fe96a02c37ae7956924bd9e45879facd3a76ebab",
-    "linux-x86_64": "fcc7d3e6b69c129d755653b3a7b4efc49fe2f7cee535dadc99999be7416977e7",
-    "macos-aarch64": "23ddbde196c4a62de96bf671306bade8454ee776f0d675cb5fc8bfd38f63a22e",
-    "macos-x86_64": "64268cb562d2a89c86c51f3c23d82a27690741e77fd980962a1b282b98adc5a4",
-    "windows-x86_64": "5216ceda34a7133117bf54fb857d5d1cb47f0f3b834172ee9e707621e2b9d2b3",
+    "linux-aarch64": "b142b8a62297c88d38fad10b95c7247606b0c9fe16cf463d75dfe10fb3269c82",
+    "linux-x86_64": "5f9415bd4a6419245be36888b825683f001cdb2d6ad08c60dac85b0a1f39d5aa",
+    "macos-aarch64": "85fef6c6bd4f169a0883b4b39896236d37d1957e7ee65eb8a6849387dcb9febd",
+    "macos-x86_64": "efe930a9b0765655f5dfc9592fea73bc512888734607686bc9bb1ed3a407714d",
+    "windows-aarch64": "2814c31b73fccaf4cfa2d33b56677189bba1e7d450d2bcfa63e9ffbe0d557967",
+    "windows-x86_64": "401b627233d8170ff7e2751c69ac6c45bc74986e7e7f3fabd97a07176b312169",
 }
 
 # Official recommended version. Should use this when we have a usable release.
