@@ -50,7 +50,7 @@ var (
 
 	_boilerplateFiles = []string{
 		"README.md",
-		"examples/rules_cc/WORKSPACE",
+		path.Join("examples", "rules_cc", "WORKSPACE"),
 	}
 )
 
@@ -126,7 +126,6 @@ This utility is intended to handle many of the steps to release a new version.
 			out,
 		)
 	}
-	log("yes")
 
 	if err := checkZigMirrored(repoRoot); err != nil {
 		return fmt.Errorf("zig is correctly mirrored: %w", err)
@@ -447,9 +446,11 @@ func makeTgz(w io.Writer, repoRoot string, ref string) (string, error) {
 		return "", fmt.Errorf("close gzip stream: %w", err)
 	}
 
-	if err := cmd.Wait(); err != nil {
-		return "", fmt.Errorf("wait: %w", err)
-	}
+	// If at this point cmd.Wait() is called, it gets stuck
+	// on Windows. Since there isn't any value from the subprocess
+	// at this point, do the best-effort Kill followed by Wait.
+	_ = cmd.Process.Kill()
+	_ = cmd.Wait()
 
 	return fmt.Sprintf("%x", hashw.Sum(nil)), nil
 }
@@ -484,8 +485,6 @@ func checkZigMirrored(repoRoot string) error {
 	if resp.StatusCode != 200 {
 		return fmt.Errorf("got non-200: %s", resp.Status)
 	}
-
-	log("yes")
 
 	return nil
 }

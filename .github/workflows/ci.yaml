@@ -56,8 +56,10 @@ jobs:
         if: runner.os == 'macOS'
 
       # Linux, macOS and Windows
-      - run: tools/bazel test //...
       - run: ci/list_toolchains_platforms
+      - run: tools/bazel test //...
+      - run: ci/prepare_git && ci/test_example rules_cc override_repository
+      - run: ci/prepare_git && ci/test_example bzlmod override_module
       - run: ci/zig-utils
 
       # Test the Zig toolchain for Darwin on Darwin.
@@ -68,10 +70,6 @@ jobs:
       # protoc does not compile due to `-lpthread`.
       - run: ci/lint
         if: runner.os != 'Windows'
-      # releaser fails to write `README.md` for some reason.
+      # Releaser emits different hashes
       - run: ci/release
-        if: runner.os != 'Windows'
-      - run: ci/prepare_git && ci/test_example rules_cc override_repository
-        if: runner.os != 'Windows'
-      - run: ci/prepare_git && ci/test_example bzlmod override_module
         if: runner.os != 'Windows'
