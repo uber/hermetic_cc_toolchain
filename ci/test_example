@@ -19,7 +19,7 @@ echo --- "testing examples/$example with hermetic_cc_toolchain pointing to git r
 echo --- "testing examples/$example with hermetic_cc_toolchain pointing to a directory produced by release tarball"
 # generate release tarball and put to temp
 REL=$(mktemp -d); trap 'rm -fr $REL' EXIT; "$root/ci/release_v99"
-tar -vx -C "$REL" -f "$root/hermetic_cc_toolchain-v99.0.0.tar.gz"
+tar -vxf "../../hermetic_cc_toolchain-v99.0.0.tar.gz" -C "$REL"
 
 # lockfile_mode=off, so examples/$example/MODULE.bazel.lock does not get the override below
 "$root/tools/bazel" test --lockfile_mode=off "--$override_option_name=hermetic_cc_toolchain=$REL" --test_output=errors ...
