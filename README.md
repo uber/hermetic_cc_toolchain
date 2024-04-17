@@ -70,7 +70,7 @@ build:windows --sandbox_add_mount_pair=C:\Temp
 The directories can be narrowed down to `/tmp/zig-cache` (Linux),
 `/var/tmp/zig-cache` (MacOS) and `C:\Temp\zig-cache` respectively
 if it can be ensured they will be created before the invocation of `bazel
-build`. See [#83][pr-83] for more context. If a different place is prefferred
+build`. See [#83][pr-83] for more context. If a different place is preferred
 for zig cache, set:
 
 ```
