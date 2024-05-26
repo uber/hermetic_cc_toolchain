@@ -5,12 +5,7 @@ module(
 
 bazel_dep(
     name = "hermetic_cc_toolchain",
-    # TODO(zplin): use thel latest released version after we publish it to BCR
-    version = "",
-)
-local_path_override(
-    module_name = "hermetic_cc_toolchain",
-    path = "../..",
+    version = "3.1.0",
 )
 
 toolchains = use_extension("@hermetic_cc_toolchain//toolchain:ext.bzl", "toolchains")
@@ -25,6 +20,6 @@ register_toolchains(
 
 bazel_dep(
     name = "rules_go",
-    version = "0.45.1",
+    version = "0.48.0",
     repo_name = "io_bazel_rules_go",
 )
