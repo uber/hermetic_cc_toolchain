@@ -22,3 +22,20 @@ build:macos --build_tag_filters=-darwin_c
 
 test --sandbox_default_allow_network=false
 test --test_output=errors
+
+# if no `--platform` is specified, these toolchains will be used for
+# (linux,darwin,windows)x(amd64,arm64)
+build --extra_toolchains @zig_sdk//toolchain:linux_amd64_gnu.2.28
+build --extra_toolchains @zig_sdk//toolchain:linux_arm64_gnu.2.28
+build --extra_toolchains @zig_sdk//toolchain:windows_amd64
+build --extra_toolchains @zig_sdk//toolchain:windows_arm64
+
+# amd64 toolchains for libc-aware platforms:
+build --extra_toolchains @zig_sdk//libc_aware/toolchain:linux_amd64_gnu.2.28
+build --extra_toolchains @zig_sdk//libc_aware/toolchain:linux_amd64_gnu.2.31
+build --extra_toolchains @zig_sdk//libc_aware/toolchain:linux_amd64_musl
+# arm64 toolchains for libc-aware platforms:
+build --extra_toolchains @zig_sdk//libc_aware/toolchain:linux_arm64_gnu.2.28
+build --extra_toolchains @zig_sdk//libc_aware/toolchain:linux_arm64_musl
+# wasm/wasi toolchains
+build --extra_toolchains @zig_sdk//toolchain:wasip1_wasm
