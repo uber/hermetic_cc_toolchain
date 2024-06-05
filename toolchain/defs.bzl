@@ -239,7 +239,7 @@ def _zig_repository_cache_impl(ctx):
 
 zig_repository_cache = repository_rule(
     implementation = _zig_repository_cache_impl,
-    attrs={},
+    attrs = {},
 )
 
 def filegroup(name, **kwargs):
