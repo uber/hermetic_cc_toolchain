@@ -62,7 +62,7 @@ Unexpected MacOS SDK definition. Expected format:
 zig_toolchain(
     macos_sdks = [
       struct(
-        version = "13.1",
+        version = "14.2",
         urls = [ "https://<...>", ... ],
         sha256 = "<...>",
       ),
@@ -294,6 +294,7 @@ def _macos_sdk_repository_impl(repository_ctx):
         auth = use_netrc(read_user_netrc(repository_ctx), urls, {}),
         url = urls,
         sha256 = sha256,
+        stripPrefix = 'xcode-frameworks-122b43323db27b2082a2d44ed2121de21c9ccf75',
     )
 
 macos_sdk_repository = repository_rule(
@@ -309,8 +310,8 @@ def filegroup(name, **kwargs):
     return ":" + name
 
 def declare_macos_sdk_files():
-    filegroup(name = "usr_include", srcs = native.glob(["usr/include/**"]))
-    filegroup(name = "usr_lib", srcs = native.glob(["usr/lib/**"]))
+    filegroup(name = "usr_include", srcs = native.glob(["include/**"]))
+    filegroup(name = "usr_lib", srcs = native.glob(["lib/**"]))
 
 def declare_files(os, macos_sdk_versions):
     exe = ".exe" if os == "windows" else ""
@@ -356,7 +357,7 @@ def declare_files(os, macos_sdk_versions):
                 ":{}_includes".format(target_config.zigtarget),
                 cxx_tool_label,
             ] + native.glob([
-                "lib/libc/{}/**".format(target_config.libc),
+                # "lib/libc/{}/**".format(target_config.libc),
                 "lib/libcxx/**",
                 "lib/libcxxabi/**",
                 "lib/libunwind/**",
@@ -365,7 +366,7 @@ def declare_files(os, macos_sdk_versions):
                 "lib/tsan/**",
                 "lib/*.zig",
                 "lib/*.h",
-            ]) + getattr(target_config, "sdk_lib_files", []),
+            ], allow_empty = True) + getattr(target_config, "sdk_lib_files", []),
         )
 
         filegroup(

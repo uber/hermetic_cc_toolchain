@@ -4,9 +4,10 @@ def _toolchains_impl(ctx):
     zig_toolchains(
         macos_sdks = [
             macos_sdk(
-              version = "13.1",
-              urls = [ "https://dl.jakstys.lt/ntpad/x/MacOSX13.1.sdk.tar.zst" ],
-              sha256 = "9b65f80a142dfb0b7d295636ad8b8f9b9b3450957f6d101f1076836463e729a9",
+              version = "14.2",
+              urls = [ "https://github.com/hexops/xcode-frameworks/archive/122b43323db27b2082a2d44ed2121de21c9ccf75.zip" ],
+              sha256 = "e774c140fe476e7a030aefb6f782e58ed79a18d0223bb88fee6a89d6d6cf8d30",
+              # strip_prefix = "xcode-frameworks-122b43323db27b2082a2d44ed2121de21c9ccf75",
             )
         ],
     )
