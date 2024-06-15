@@ -68,7 +68,9 @@ def _target_macos(gocpu, zigcpu, macos_sdk_version):
     return struct(
         gotarget = "darwin_{}_sdk.{}".format(gocpu, macos_sdk_version),
         zigtarget = "{}-macos-sdk.{}".format(zigcpu, macos_sdk_version),
-        includes = [],
+        includes = [
+          "libc/include/any-macos-any",
+        ] + _INCLUDE_TAIL,
         linkopts = macos_sdk_opts,
         dynamic_library_linkopts = ["-Wl,-undefined=dynamic_lookup"],
         supports_dynamic_linker = True,
