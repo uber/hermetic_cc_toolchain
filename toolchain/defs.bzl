@@ -357,7 +357,7 @@ def declare_files(os, macos_sdk_versions):
                 ":{}_includes".format(target_config.zigtarget),
                 cxx_tool_label,
             ] + native.glob([
-                # "lib/libc/{}/**".format(target_config.libc),
+                "lib/libc/{}/**".format('darwin'), # figure out how to pass in the right value: (target_config.libc),
                 "lib/libcxx/**",
                 "lib/libcxxabi/**",
                 "lib/libunwind/**",
@@ -366,7 +366,7 @@ def declare_files(os, macos_sdk_versions):
                 "lib/tsan/**",
                 "lib/*.zig",
                 "lib/*.h",
-            ], allow_empty = True) + getattr(target_config, "sdk_lib_files", []),
+            ]) + getattr(target_config, "sdk_lib_files", []),
         )
 
         filegroup(
