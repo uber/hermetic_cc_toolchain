@@ -173,7 +173,7 @@ def _zig_repository_impl(repository_ctx):
     )
 
     for dest, src in {
-        "toolchain/BUILD": "//toolchain/toolchain:BUILD",
+        "toolchain/BUILD": "//toolchain/toolchain:BUILD.sdk.bazel",
         "libc/BUILD": "//toolchain/libc:BUILD.sdk.bazel",
         "libc_aware/platform/BUILD": "//toolchain/libc_aware/platform:BUILD.sdk.bazel",
         "libc_aware/toolchain/BUILD": "//toolchain/libc_aware/toolchain:BUILD.sdk.bazel",
