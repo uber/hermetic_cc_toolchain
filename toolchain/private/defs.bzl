@@ -55,9 +55,11 @@ def target_structs(macos_sdk_versions):
 def _target_macos(gocpu, zigcpu, macos_sdk_version):
     macos_sdk_opts = [
         "--sysroot",
-        "external/macos_sdk_{}".format(macos_sdk_version),
+        "external/hermetic_cc_toolchain~~toolchains~macos_sdk_{}".format(macos_sdk_version),
         "-F",
-        "/System/Library/Frameworks",
+        "external/hermetic_cc_toolchain~~toolchains~macos_sdk_{}/Frameworks".format(macos_sdk_version),
+        "-L",
+        "external/hermetic_cc_toolchain~~toolchains~macos_sdk_{}/lib".format(macos_sdk_version),
     ]
 
     copts = macos_sdk_opts
@@ -74,8 +76,13 @@ def _target_macos(gocpu, zigcpu, macos_sdk_version):
         linkopts = macos_sdk_opts,
         dynamic_library_linkopts = ["-Wl,-undefined=dynamic_lookup"],
         supports_dynamic_linker = True,
-        cxx_builtin_include_directories = ["external/macos_sdk_{}/usr/include".format(macos_sdk_version)],
-        sdk_include_files = ["@macos_sdk_{}//:usr_include".format(macos_sdk_version)],
+        cxx_builtin_include_directories = [
+          # "external/hermetic_cc_toolchain~~toolchains~macos_sdk_{}/include".format(macos_sdk_version)
+          ],
+        sdk_include_files = [
+          "@macos_sdk_{}//:Frameworks".format(macos_sdk_version),
+          "@macos_sdk_{}//:usr_include".format(macos_sdk_version),
+        ],
         sdk_lib_files = ["@macos_sdk_{}//:usr_lib".format(macos_sdk_version)],
         copts = copts,
         libc = "macos",

@@ -310,6 +310,7 @@ def filegroup(name, **kwargs):
     return ":" + name
 
 def declare_macos_sdk_files():
+    filegroup(name = "Frameworks", srcs = native.glob(["Frameworks/**"]))
     filegroup(name = "usr_include", srcs = native.glob(["include/**"]))
     filegroup(name = "usr_lib", srcs = native.glob(["lib/**"]))
 
