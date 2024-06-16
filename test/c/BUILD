@@ -81,7 +81,7 @@ _WINDOWS_AMD64 = [
             "NATIVE",
         ),
         (
-            "darwin_amd64",
+            "darwin_amd64_sdk.14.2",
             "//platform:darwin_amd64",
             _DARWIN_AMD64,
             "^macos non-glibc",
@@ -89,7 +89,7 @@ _WINDOWS_AMD64 = [
             "NATIVE",
         ),
         (
-            "darwin_arm64",
+            "darwin_arm64_sdk.14.2",
             "//platform:darwin_arm64",
             _DARWIN_ARM64,
             "^macos non-glibc",
