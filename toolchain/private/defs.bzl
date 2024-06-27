@@ -103,7 +103,10 @@ def _target_macos(gocpu, zigcpu, macos_sdk_version):
             },
         ],
         libc_constraint = "@zig_sdk//libc:macos.{}".format(macos_sdk_version),
-        deps = ["@macos_sdk_{}//:usr_lib".format(macos_sdk_version)],
+        deps = [
+            "@macos_sdk_{}//:usr_lib".format(macos_sdk_version),
+            "@macos_sdk_{}//:root".format(macos_sdk_version),
+        ],
     )
 
 def _target_windows(gocpu, zigcpu):

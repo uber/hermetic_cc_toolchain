@@ -9,6 +9,7 @@ load(
     "tool",
     "tool_path",
 )
+load("@bazel_skylib//rules/directory:providers.bzl", "DirectoryInfo")
 
 all_link_actions = [
     ACTION_NAMES.cpp_link_executable,
@@ -118,13 +119,19 @@ def _zig_cc_toolchain_config_impl(ctx):
     link_flag_sets = []
 
     if ctx.attr.linkopts:
+        print("linkopts", ctx.attr.linkopts)
+        # print("label deps", ctx.attr.deps[0])
+        # print("label deps", Label("@macos_sdk_14.2//:usr_include"))
+        # print("label path", ctx.path(Label("@macos_sdk_14.2//:usr_include")))
+        # print("expandlabel", ctx.expand_location("$(location @macos_sdk_14.2//:root)"))
+
         # if target_config.deps:
         # native.filegroup(name = "target_deps", srcs = ["@macos_sdk_14.2"])
-        expanded_linkopts = [ctx.expand_location(linkopt) for linkopt in ctx.attr.linkopts]
+        # expanded_linkopts = [ctx.expand_location(linkopt) for linkopt in ctx.attr.linkopts]
         link_flag_sets.append(
             flag_set(
                 actions = all_link_actions,
-                flag_groups = [flag_group(flags = expanded_linkopts)],
+                flag_groups = [flag_group(flags = ctx.attr.linkopts)],
             ),
         )
 
@@ -174,6 +181,10 @@ def _zig_cc_toolchain_config_impl(ctx):
         for p in ctx.attr.artifact_name_patterns
     ]
 
+    sysroot = None
+    if ctx.attr.sysroot:
+        sysroot = ctx.attr.sysroot[DirectoryInfo].path
+
     return cc_common.create_cc_toolchain_config_info(
         ctx = ctx,
         features = features,
@@ -191,11 +202,13 @@ def _zig_cc_toolchain_config_impl(ctx):
         ],
         cxx_builtin_include_directories = ctx.attr.cxx_builtin_include_directories,
         artifact_name_patterns = artifact_name_patterns,
+        builtin_sysroot = sysroot,
     )
 
 zig_cc_toolchain_config = rule(
     implementation = _zig_cc_toolchain_config_impl,
     attrs = {
+        "sysroot": attr.label(providers = [DirectoryInfo]),
         "cxx_builtin_include_directories": attr.string_list(),
         "linkopts": attr.string_list(),
         "dynamic_library_linkopts": attr.string_list(),

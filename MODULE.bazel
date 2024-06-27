@@ -16,6 +16,8 @@ use_repo(go_sdk, "go_default_sdk")
 
 bazel_dep(name = "gazelle", version = "0.35.0", dev_dependency = True)
 
+bazel_dep(name = "bazel_skylib", version = "1.7.1")
+
 go_deps = use_extension(
     "@gazelle//:extensions.bzl",
     "go_deps",

@@ -60,7 +60,11 @@ def declare_cc_toolchains(os, zig_sdk_path, macos_sdk_versions):
             abi_libc_version = "unknown",
             artifact_name_patterns = artifact_name_pattern_strings,
             visibility = ["//visibility:private"],
-            deps = ["@macos_sdk_14.2//:usr_include"],
+            sysroot = "@macos_sdk_14.2//:sysroot",
+            deps = [
+                "@macos_sdk_14.2//:usr_include",
+                "@macos_sdk_14.2//:root",
+            ],
         )
 
         native.cc_toolchain(
