@@ -118,10 +118,13 @@ def _zig_cc_toolchain_config_impl(ctx):
     link_flag_sets = []
 
     if ctx.attr.linkopts:
+        # if target_config.deps:
+        # native.filegroup(name = "target_deps", srcs = ["@macos_sdk_14.2"])
+        expanded_linkopts = [ctx.expand_location(linkopt) for linkopt in ctx.attr.linkopts]
         link_flag_sets.append(
             flag_set(
                 actions = all_link_actions,
-                flag_groups = [flag_group(flags = ctx.attr.linkopts)],
+                flag_groups = [flag_group(flags = expanded_linkopts)],
             ),
         )
 
@@ -208,6 +211,7 @@ zig_cc_toolchain_config = rule(
         "abi_version": attr.string(),
         "abi_libc_version": attr.string(),
         "artifact_name_patterns": attr.string_list(),
+        "deps": attr.label_list(),
     },
     provides = [CcToolchainConfigInfo],
 )

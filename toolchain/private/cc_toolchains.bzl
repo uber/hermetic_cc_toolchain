@@ -36,6 +36,9 @@ def declare_cc_toolchains(os, zig_sdk_path, macos_sdk_versions):
         artifact_name_patterns = getattr(target_config, "artifact_name_patterns", [])
         artifact_name_pattern_strings = [json.encode(p) for p in artifact_name_patterns]
 
+        # if target_config.deps:
+        #     native.filegroup(name = "target_deps", src = target_config.deps)
+        # copts_processed = [process_path(copt) for copt in copts]
         zig_cc_toolchain_config(
             name = zigtarget + "_cc_config",
             target = zigtarget,
@@ -57,6 +60,7 @@ def declare_cc_toolchains(os, zig_sdk_path, macos_sdk_versions):
             abi_libc_version = "unknown",
             artifact_name_patterns = artifact_name_pattern_strings,
             visibility = ["//visibility:private"],
+            deps = ["@macos_sdk_14.2//:usr_include"],
         )
 
         native.cc_toolchain(
