@@ -120,18 +120,11 @@ def _zig_cc_toolchain_config_impl(ctx):
 
     if ctx.attr.linkopts:
         print("linkopts", ctx.attr.linkopts)
-        # print("label deps", ctx.attr.deps[0])
-        # print("label deps", Label("@macos_sdk_14.2//:usr_include"))
-        # print("label path", ctx.path(Label("@macos_sdk_14.2//:usr_include")))
-        # print("expandlabel", ctx.expand_location("$(location @macos_sdk_14.2//:root)"))
-
-        # if target_config.deps:
-        # native.filegroup(name = "target_deps", srcs = ["@macos_sdk_14.2"])
-        # expanded_linkopts = [ctx.expand_location(linkopt) for linkopt in ctx.attr.linkopts]
+        expanded_linkopts = [ctx.expand_location(linkopt) for linkopt in ctx.attr.linkopts]
         link_flag_sets.append(
             flag_set(
                 actions = all_link_actions,
-                flag_groups = [flag_group(flags = ctx.attr.linkopts)],
+                flag_groups = [flag_group(flags = expanded_linkopts)],
             ),
         )
 
@@ -209,6 +202,8 @@ zig_cc_toolchain_config = rule(
     implementation = _zig_cc_toolchain_config_impl,
     attrs = {
         "sysroot": attr.label(providers = [DirectoryInfo]),
+        "linkoptsF": attr.label(providers = [DirectoryInfo]),
+        "linkoptsL": attr.label(providers = [DirectoryInfo]),
         "cxx_builtin_include_directories": attr.string_list(),
         "linkopts": attr.string_list(),
         "dynamic_library_linkopts": attr.string_list(),

@@ -315,11 +315,17 @@ def declare_macos_sdk_files():
         name = "sysroot",
         srcs = native.glob(["**"]),
     )
-
-    filegroup(name = "Frameworks", srcs = native.glob(["Frameworks/**"]))
+    directory(
+        name = "Frameworks",
+        srcs = native.glob(["Frameworks/**"]),
+    )
+    directory(
+        name = "usr_lib",
+        srcs = native.glob(["lib/**"]),
+    )
+    # filegroup(name = "Frameworks", srcs = native.glob(["Frameworks/**"]))
     filegroup(name = "usr_include", srcs = native.glob(["include/**"]))
-    filegroup(name = "usr_lib", srcs = native.glob(["lib/**"]))
-    filegroup(name = "root", srcs = [":usr_include", ":usr_lib", ":Frameworks"])
+    # filegroup(name = "usr_lib", srcs = native.glob(["lib/**"]))
 
 def declare_files(os, macos_sdk_versions):
     exe = ".exe" if os == "windows" else ""

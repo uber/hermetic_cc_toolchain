@@ -53,16 +53,14 @@ def target_structs(macos_sdk_versions):
     return ret
 
 def _target_macos(gocpu, zigcpu, macos_sdk_version):
-    macos_sdk_opts = [
-        "--sysroot",
-        "$(location @macos_sdk_{}//:usr_include)".format(macos_sdk_version),
-        "-F",
-        "@macos_sdk_{}//:Frameworks".format(macos_sdk_version),
-        "-L",
-        "@macos_sdk_{}//:usr_lib".format(macos_sdk_version),
-    ]
+    # macos_sdk_opts = [
+    #     "-F",
+    #     "@macos_sdk_{}//:Frameworks".format(macos_sdk_version),
+    #     "-L",
+    #     "@macos_sdk_{}//:usr_lib".format(macos_sdk_version),
+    # ]
 
-    copts = macos_sdk_opts
+    copts = []
 
     if zigcpu == "aarch64":
         copts.append("-mcpu=apple_m1")
@@ -73,7 +71,7 @@ def _target_macos(gocpu, zigcpu, macos_sdk_version):
         includes = [
           "libc/include/any-macos-any",
         ] + _INCLUDE_TAIL,
-        linkopts = macos_sdk_opts,
+        linkopts = [],
         dynamic_library_linkopts = ["-Wl,-undefined=dynamic_lookup"],
         supports_dynamic_linker = True,
         cxx_builtin_include_directories = [
