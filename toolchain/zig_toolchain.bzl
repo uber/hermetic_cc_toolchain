@@ -103,6 +103,12 @@ def _zig_cc_toolchain_config_impl(ctx):
         "-D__TIME__=\"redacted\"",
     ]
 
+    extra_copts = []
+    if ctx.attr.linkoptsF:
+        extra_copts += ['-F', ctx.attr.linkoptsF[DirectoryInfo].path + "/Frameworks"]
+    if ctx.attr.linkoptsL:
+        extra_copts += ['-L', ctx.attr.linkoptsL[DirectoryInfo].path + "/lib"]
+
     compile_and_link_flags = feature(
         name = "compile_and_link_flags",
         enabled = True,
@@ -110,7 +116,7 @@ def _zig_cc_toolchain_config_impl(ctx):
             flag_set(
                 actions = compile_and_link_actions,
                 flag_groups = [
-                    flag_group(flags = compiler_flags + ctx.attr.copts),
+                    flag_group(flags = compiler_flags + ctx.attr.copts + extra_copts),
                 ],
             ),
         ],
@@ -118,9 +124,13 @@ def _zig_cc_toolchain_config_impl(ctx):
 
     link_flag_sets = []
 
-    if ctx.attr.linkopts:
-        print("linkopts", ctx.attr.linkopts)
+    if ctx.attr.linkopts or ctx.attr.linkoptsF or ctx.attr.linkoptsL:
         expanded_linkopts = [ctx.expand_location(linkopt) for linkopt in ctx.attr.linkopts]
+        if ctx.attr.linkoptsF:
+            expanded_linkopts += ['-F', ctx.attr.linkoptsF[DirectoryInfo].path + "/Frameworks"]
+        if ctx.attr.linkoptsL:
+            expanded_linkopts += ['-L', ctx.attr.linkoptsL[DirectoryInfo].path + "/lib"]
+        print("expandedlinkopts", expanded_linkopts)
         link_flag_sets.append(
             flag_set(
                 actions = all_link_actions,
@@ -178,6 +188,10 @@ def _zig_cc_toolchain_config_impl(ctx):
     if ctx.attr.sysroot:
         sysroot = ctx.attr.sysroot[DirectoryInfo].path
 
+    cxx_builtin_include_directories = [] + ctx.attr.cxx_builtin_include_directories
+    if ctx.attr.linkoptsL:
+        cxx_builtin_include_directories += [ctx.attr.linkoptsL[DirectoryInfo].path + "/include"]
+
     return cc_common.create_cc_toolchain_config_info(
         ctx = ctx,
         features = features,
@@ -193,7 +207,7 @@ def _zig_cc_toolchain_config_impl(ctx):
             tool_path(name = name, path = path)
             for name, path in ctx.attr.tool_paths.items()
         ],
-        cxx_builtin_include_directories = ctx.attr.cxx_builtin_include_directories,
+        cxx_builtin_include_directories = cxx_builtin_include_directories,
         artifact_name_patterns = artifact_name_patterns,
         builtin_sysroot = sysroot,
     )

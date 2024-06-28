@@ -75,7 +75,7 @@ def _target_macos(gocpu, zigcpu, macos_sdk_version):
         dynamic_library_linkopts = ["-Wl,-undefined=dynamic_lookup"],
         supports_dynamic_linker = True,
         cxx_builtin_include_directories = [
-          "@macos_sdk_{}//:usr_include".format(macos_sdk_version),
+          # "@macos_sdk_{}//:usr_include".format(macos_sdk_version),
         ],
         sdk_include_files = [
           "@macos_sdk_{}//:Frameworks".format(macos_sdk_version),
