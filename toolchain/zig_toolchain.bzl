@@ -125,7 +125,7 @@ def _zig_cc_toolchain_config_impl(ctx):
     link_flag_sets = []
 
     if ctx.attr.linkopts or ctx.attr.linkoptsF or ctx.attr.linkoptsL:
-        expanded_linkopts = [ctx.expand_location(linkopt) for linkopt in ctx.attr.linkopts]
+        expanded_linkopts = [] + ctx.attr.linkopts
         if ctx.attr.linkoptsF:
             expanded_linkopts += ['-F', ctx.attr.linkoptsF[DirectoryInfo].path + "/Frameworks"]
         if ctx.attr.linkoptsL:
