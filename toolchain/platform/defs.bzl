@@ -17,7 +17,7 @@ def declare_platforms():
     # We can support GOARCH=wasm32 after https://github.com/golang/go/issues/63131
     declare_platform("wasm", "wasm32", "wasi", "wasip1")
 
-def declare_libc_aware_platforms():
+def declare_libc_aware_platforms(macos_sdk_versions):
     # create @zig_sdk//{os}_{arch}_platform entries with zig and go conventions
     # with libc specified
     for zigcpu, gocpu in _CPUS:
@@ -29,6 +29,15 @@ def declare_libc_aware_platforms():
                 "linux",
                 suffix = "_{}".format(libc),
                 extra_constraints = ["@zig_sdk//libc:{}".format(libc)],
+            )
+        for macos_sdk_version in macos_sdk_versions:
+            declare_platform(
+                gocpu,
+                zigcpu,
+                "macos",
+                "macos",
+                suffix = "_sdk.{}".format(macos_sdk_version),
+                extra_constraints = ["@zig_sdk//libc:macos.{}".format(macos_sdk_version)],
             )
 
 def declare_platform(gocpu, zigcpu, bzlos, os, suffix = "", extra_constraints = []):

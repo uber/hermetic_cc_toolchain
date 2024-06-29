@@ -1,7 +1,7 @@
 load("@hermetic_cc_toolchain//toolchain/private:defs.bzl", "target_structs")
 
-def declare_toolchains():
-    for target_config in target_structs():
+def declare_toolchains(macos_sdk_versions):
+    for target_config in target_structs(macos_sdk_versions):
         gotarget = target_config.gotarget
         zigtarget = target_config.zigtarget
 
@@ -14,8 +14,8 @@ def declare_toolchains():
 
         _declare_toolchain(gotarget, zigtarget, target_config.constraint_values + extra_constraints)
 
-def declare_libc_aware_toolchains():
-    for target_config in target_structs():
+def declare_libc_aware_toolchains(macos_sdk_versions):
+    for target_config in target_structs(macos_sdk_versions):
         gotarget = target_config.gotarget
         zigtarget = target_config.zigtarget
 

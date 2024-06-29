@@ -1,0 +1,12 @@
+# Copyright 2023 Uber Technologies, Inc.
+# Licensed under the Apache License, Version 2.0
+
+load("@hermetic_cc_toolchain//toolchain/toolchain:defs.bzl", "declare_libc_aware_toolchains")
+
+package(
+    default_visibility = ["//visibility:public"],
+)
+
+declare_libc_aware_toolchains(
+    macos_sdk_versions = {macos_sdk_versions}
+)
