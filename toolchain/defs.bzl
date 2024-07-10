@@ -1,5 +1,6 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "read_user_netrc", "use_netrc")
+load("@hermetic_cc_toolchain//toolchain/private:http_pkg_archive.bzl", "http_pkg_archive_impl")
 load("@hermetic_cc_toolchain//toolchain/private:defs.bzl", "target_structs", "zig_tool_path")
 load(
     "@hermetic_cc_toolchain//toolchain/private:zig_sdk.bzl",
@@ -63,7 +64,7 @@ Unexpected MacOS SDK definition. Expected format:
 zig_toolchain(
     macos_sdks = [
       struct(
-        version = "14.2",
+        version = "14.4",
         urls = [ "https://<...>", ... ],
         sha256 = "<...>",
       ),
@@ -103,6 +104,7 @@ def toolchains(
             name = "macos_sdk_{}".format(sdk.version),
             urls = sdk.urls,
             sha256 = sdk.sha256,
+            strip_prefix = sdk.strip_prefix,
         )
 
     if not url_formats:
@@ -123,11 +125,12 @@ def toolchains(
         macos_sdk_versions = macos_sdk_versions,
     )
 
-def macos_sdk(version, urls, sha256):
+def macos_sdk(version, urls, sha256, strip_prefix = None):
     return struct(
         version = version,
         urls = urls,
         sha256 = sha256,
+        strip_prefix = strip_prefix,
     )
 
 def _quote(s):
@@ -291,17 +294,15 @@ def _macos_sdk_repository_impl(repository_ctx):
     sha256 = repository_ctx.attr.sha256
 
     repository_ctx.symlink(Label("//toolchain:BUILD.macos.bazel"), "BUILD.bazel")
-    repository_ctx.download_and_extract(
-        auth = use_netrc(read_user_netrc(repository_ctx), urls, {}),
-        url = urls,
-        sha256 = sha256,
-        stripPrefix = 'xcode-frameworks-122b43323db27b2082a2d44ed2121de21c9ccf75',
+    http_pkg_archive_impl(
+        repository_ctx
     )
 
 macos_sdk_repository = repository_rule(
     attrs = {
         "urls": attr.string_list(allow_empty = False, mandatory = True),
         "sha256": attr.string(mandatory = True),
+        "strip_prefix": attr.string(),
     },
     implementation = _macos_sdk_repository_impl,
 )
