@@ -107,7 +107,7 @@ def _zig_cc_toolchain_config_impl(ctx):
     if ctx.attr.linkoptsF:
         extra_copts += ['-F', ctx.attr.linkoptsF[DirectoryInfo].path + "/System/Library/Frameworks"]
     if ctx.attr.linkoptsL:
-        extra_copts += ['-L', ctx.attr.linkoptsL[DirectoryInfo].path + "/lib"]
+        extra_copts += ['-L', ctx.attr.linkoptsL[DirectoryInfo].path + "/usr/lib"]
 
     compile_and_link_flags = feature(
         name = "compile_and_link_flags",
@@ -129,7 +129,7 @@ def _zig_cc_toolchain_config_impl(ctx):
         if ctx.attr.linkoptsF:
             expanded_linkopts += ['-F', ctx.attr.linkoptsF[DirectoryInfo].path + "/System/Library/Frameworks"]
         if ctx.attr.linkoptsL:
-            expanded_linkopts += ['-L', ctx.attr.linkoptsL[DirectoryInfo].path + "/lib"]
+            expanded_linkopts += ['-L', ctx.attr.linkoptsL[DirectoryInfo].path + "/usr/lib"]
         print("expandedlinkopts", expanded_linkopts)
         link_flag_sets.append(
             flag_set(
