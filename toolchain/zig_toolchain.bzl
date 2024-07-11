@@ -105,7 +105,7 @@ def _zig_cc_toolchain_config_impl(ctx):
 
     extra_copts = []
     if ctx.attr.linkoptsF:
-        extra_copts += ['-F', ctx.attr.linkoptsF[DirectoryInfo].path + "/Frameworks"]
+        extra_copts += ['-F', ctx.attr.linkoptsF[DirectoryInfo].path + "/System/Library/Frameworks"]
     if ctx.attr.linkoptsL:
         extra_copts += ['-L', ctx.attr.linkoptsL[DirectoryInfo].path + "/lib"]
 
@@ -127,7 +127,7 @@ def _zig_cc_toolchain_config_impl(ctx):
     if ctx.attr.linkopts or ctx.attr.linkoptsF or ctx.attr.linkoptsL:
         expanded_linkopts = [] + ctx.attr.linkopts
         if ctx.attr.linkoptsF:
-            expanded_linkopts += ['-F', ctx.attr.linkoptsF[DirectoryInfo].path + "/Frameworks"]
+            expanded_linkopts += ['-F', ctx.attr.linkoptsF[DirectoryInfo].path + "/System/Library/Frameworks"]
         if ctx.attr.linkoptsL:
             expanded_linkopts += ['-L', ctx.attr.linkoptsL[DirectoryInfo].path + "/lib"]
         print("expandedlinkopts", expanded_linkopts)
