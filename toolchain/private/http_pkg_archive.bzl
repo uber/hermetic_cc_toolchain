@@ -1,18 +1,18 @@
 load(
     "@bazel_tools//tools/build_defs/repo:utils.bzl",
-    "get_auth",
     "patch",
     "workspace_and_buildfile",
 )
+load("@bazel_tools//tools/build_defs/repo:utils.bzl", "read_user_netrc", "use_netrc")
 
 # From https://github.com/uber/hermetic_cc_toolchain/issues/10#issuecomment-2045684532
 def http_pkg_archive_impl(rctx):
     rctx.download(
+        auth = use_netrc(read_user_netrc(rctx), rctx.attr.urls, {}),
         url = rctx.attr.urls,
         output = ".downloaded.pkg",
         sha256 = rctx.attr.sha256,
         canonical_id = " ".join(rctx.attr.urls),
-        auth = get_auth(rctx, rctx.attr.urls),
     )
 
     res = rctx.execute(["/usr/sbin/pkgutil", "--expand-full", ".downloaded.pkg", "tmp"])
