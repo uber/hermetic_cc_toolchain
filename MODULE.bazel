@@ -49,4 +49,7 @@ register_toolchains(
     "@zig_sdk//libc_aware/toolchain:linux_arm64_musl",
     # wasm/wasi toolchains
     "@zig_sdk//toolchain:wasip1_wasm",
+
+    # These toolchains are only registered locally.
+    dev_dependency = True,
 )
