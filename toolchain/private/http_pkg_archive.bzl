@@ -29,6 +29,10 @@ def http_pkg_archive_impl(rctx):
     entries = extracted.readdir(watch = "no")
     for entry in entries:
         rctx.execute(["mv", str(entry), entry.basename])
+    if rctx.attr.delete_paths:
+        for path in rctx.attr.delete_paths:
+            if not rctx.delete(path):
+                print('Warning unable to delete path: {}'.format(path))
     rctx.delete(extracted)
     patch(rctx)
 

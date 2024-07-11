@@ -105,6 +105,7 @@ def toolchains(
             urls = sdk.urls,
             sha256 = sdk.sha256,
             strip_prefix = sdk.strip_prefix,
+            delete_paths = sdk.delete_paths,
         )
 
     if not url_formats:
@@ -125,12 +126,13 @@ def toolchains(
         macos_sdk_versions = macos_sdk_versions,
     )
 
-def macos_sdk(version, urls, sha256, strip_prefix = None):
+def macos_sdk(version, urls, sha256, strip_prefix = None, delete_paths = None):
     return struct(
         version = version,
         urls = urls,
         sha256 = sha256,
         strip_prefix = strip_prefix,
+        delete_paths = delete_paths,
     )
 
 def _quote(s):
@@ -303,6 +305,7 @@ macos_sdk_repository = repository_rule(
         "urls": attr.string_list(allow_empty = False, mandatory = True),
         "sha256": attr.string(mandatory = True),
         "strip_prefix": attr.string(),
+        "delete_paths": attr.string_list(),
     },
     implementation = _macos_sdk_repository_impl,
 )
@@ -314,18 +317,24 @@ def filegroup(name, **kwargs):
 def declare_macos_sdk_files():
     directory(
         name = "sysroot",
-        srcs = native.glob(["**"]),
+        srcs = native.glob(
+            ["usr/**"],
+            # some man file contains `:` which is not allowed in bazel
+            exclude = ['usr/share/man/**'],
+        ),
     )
     directory(
         name = "Frameworks",
-        srcs = native.glob(["Frameworks/**"]),
+        srcs = native.glob(
+            ["System/Library/Frameworks/**"],
+        ),
     )
     directory(
         name = "usr_lib",
-        srcs = native.glob(["lib/**"]),
+        srcs = native.glob(["usr/lib/**"]),
     )
     # filegroup(name = "Frameworks", srcs = native.glob(["Frameworks/**"]))
-    filegroup(name = "usr_include", srcs = native.glob(["include/**"]))
+    filegroup(name = "usr_include", srcs = native.glob(["usr/include/**"]))
     # filegroup(name = "usr_lib", srcs = native.glob(["lib/**"]))
 
 def declare_files(os, macos_sdk_versions):
