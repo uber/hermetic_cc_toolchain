@@ -340,8 +340,12 @@ def declare_macos_sdk_files():
         name = "usr_lib",
         srcs = native.glob(["usr/lib/**"]),
     )
+    directory(
+        name = "usr_include",
+        srcs = native.glob(["usr/include/**"]),
+    )
     # filegroup(name = "Frameworks", srcs = native.glob(["Frameworks/**"]))
-    filegroup(name = "usr_include", srcs = native.glob(["usr/include/**"]))
+    # filegroup(name = "usr_include", srcs = native.glob(["usr/include/**"]))
     # filegroup(name = "usr_lib", srcs = native.glob(["lib/**"]))
 
 def declare_files(os, macos_sdk_versions):

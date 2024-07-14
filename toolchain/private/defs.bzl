@@ -79,7 +79,7 @@ def _target_macos(gocpu, zigcpu, macos_sdk_version):
         ],
         sdk_include_files = [
           "@macos_sdk_{}//:Frameworks".format(macos_sdk_version),
-          # "@macos_sdk_{}//:usr_include".format(macos_sdk_version),
+          "@macos_sdk_{}//:usr_include".format(macos_sdk_version),
         ],
         sdk_lib_files = ["@macos_sdk_{}//:usr_lib".format(macos_sdk_version)],
         copts = copts,
@@ -103,7 +103,7 @@ def _target_macos(gocpu, zigcpu, macos_sdk_version):
         libc_constraint = "@zig_sdk//libc:macos.{}".format(macos_sdk_version),
         deps = [
             "@macos_sdk_{}//:usr_lib".format(macos_sdk_version),
-            "@macos_sdk_{}//:root".format(macos_sdk_version),
+            "@macos_sdk_{}//:sysroot".format(macos_sdk_version),
         ],
     )
 
