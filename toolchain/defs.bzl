@@ -296,9 +296,16 @@ def _macos_sdk_repository_impl(repository_ctx):
     sha256 = repository_ctx.attr.sha256
 
     repository_ctx.symlink(Label("//toolchain:BUILD.macos.bazel"), "BUILD.bazel")
-    http_pkg_archive_impl(
-        repository_ctx
+    repository_ctx.download_and_extract(
+        auth = use_netrc(read_user_netrc(repository_ctx), urls, {}),
+        url = urls,
+        sha256 = sha256,
+        stripPrefix = repository_ctx.attr.strip_prefix,
     )
+    if repository_ctx.attr.delete_paths:
+        for path in repository_ctx.attr.delete_paths:
+            if not repository_ctx.delete(path):
+                print('Warning unable to delete path: {}'.format(path))
 
 macos_sdk_repository = repository_rule(
     attrs = {
