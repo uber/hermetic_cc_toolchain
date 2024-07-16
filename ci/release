@@ -12,12 +12,6 @@ TAG=$(git -c 'versionsort.suffix=-rc' tag --sort=v:refname | tail -1)
 tools/bazel run //tools/releaser -- -tag "$TAG" -skipBranchCheck
 
 >&2 echo "--- git diff :git:"
-if [ "$GITHUB_EVENT_NAME" = "pull_request" ]
-then
-    # Don't fail on diff in a pull request
-    git diff
-else
-    git diff --exit-code
-fi
+git diff
 
 >&2 echo "OK :white_check_mark:"
