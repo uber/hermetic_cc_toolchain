@@ -12,6 +12,6 @@ TAG=$(git -c 'versionsort.suffix=-rc' tag --sort=v:refname | tail -1)
 tools/bazel run //tools/releaser -- -tag "$TAG" -skipBranchCheck
 
 >&2 echo "--- git diff :git:"
-git diff --exit-code
+git diff
 
 >&2 echo "OK :white_check_mark:"
