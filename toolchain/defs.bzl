@@ -32,7 +32,7 @@ _TARGET_MCPU = {
     "linux-x86_64": ("x86_64-linux-musl", "baseline"),
     "macos-aarch64": ("aarch64-macos-none", "apple_a14"),
     "macos-x86_64": ("x86_64-macos-none", "baseline"),
-    "windows-x86_64": ("x86_64-windows-gnu", "baseline"),
+    "windows-x86_64": ("x86_64-windows-msvc", "baseline"),
 }
 
 _compile_failed = """
