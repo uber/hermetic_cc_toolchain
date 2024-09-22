@@ -278,20 +278,31 @@ fn getRunMode(self_exe: []const u8, self_base_noexe: []const u8) error{BadParent
     // having fun.
     var it = mem.split(u8, triple, "-");
 
-    const arch = it.next() orelse return error.BadParent;
-    if (mem.indexOf(u8, "aarch64,x86_64,wasm32", arch) == null)
+    const got_arch = it.next() orelse return error.BadParent;
+    if (mem.indexOf(u8, "aarch64,x86_64,wasm32", got_arch) == null)
         return error.BadParent;
 
     const got_os = it.next() orelse return error.BadParent;
     if (mem.indexOf(u8, "linux,macos,windows,wasi", got_os) == null)
         return error.BadParent;
 
+    const got_abi = it.next();
     // ABI triple is too much of a moving target
-    if (it.next() == null) return error.BadParent;
+    if (got_abi == null) return error.BadParent;
     // but the target needs to have 3 dashes.
     if (it.next() != null) return error.BadParent;
 
-    return RunMode{ .cc = triple };
+    // HACK: if OS is macos, then force the ABI triple to "none".
+    if (!mem.eql(u8, got_os, "macos"))
+        return RunMode{ .cc = triple };
+
+    if (mem.eql(u8, got_arch, "aarch64"))
+        return RunMode{ .cc = "aarch64-macos-none" };
+
+    if (mem.eql(u8, got_arch, "x86_64"))
+        return RunMode{ .cc = "x86_64-macos-none"};
+
+    unreachable;
 }
 
 const testing = std.testing;

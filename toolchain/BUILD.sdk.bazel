@@ -10,9 +10,11 @@ package(
 
 declare_files(
     os = {os},
+    macos_sdk_versions = {macos_sdk_versions},
 )
 
 declare_cc_toolchains(
     os = {os},
     zig_sdk_path = {zig_sdk_path},
+    macos_sdk_versions = {macos_sdk_versions},
 )
