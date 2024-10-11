@@ -16,3 +16,13 @@ declare_cc_toolchains(
     os = {os},
     zig_sdk_path = {zig_sdk_path},
 )
+
+alias(
+    name = "exec_os",
+    actual = "@platforms//os:{exec_os}",
+)
+
+alias(
+    name = "exec_cpu",
+    actual = "@platforms//cpu:{exec_cpu}",
+)
