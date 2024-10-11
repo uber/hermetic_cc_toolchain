@@ -30,26 +30,34 @@ use_repo(
 )
 
 toolchains = use_extension("//toolchain:ext.bzl", "toolchains")
-use_repo(toolchains, "zig_sdk")
+use_repo(toolchains, "zig_sdk-linux-amd64", "zig_sdk-linux-arm64", "zig_sdk-windows-amd64")
 
-register_toolchains(
+_COMMON_EXEC_PLATFORMS = [
+    ("linux", "amd64"),
+    ("linux", "arm64"),
+    ("windows", "amd64"),
+]
+
+[register_toolchains(
     # if no `--platform` is specified, these toolchains will be used for
     # (linux,darwin,windows)x(amd64,arm64)
-    "@zig_sdk//toolchain:linux_amd64_gnu.2.28",
-    "@zig_sdk//toolchain:linux_arm64_gnu.2.28",
-    "@zig_sdk//toolchain:windows_amd64",
-    "@zig_sdk//toolchain:windows_arm64",
+    "@zig_sdk-{}-{}//toolchain:linux_amd64_gnu.2.28".format(os, arch),
+    "@zig_sdk-{}-{}//toolchain:linux_arm64_gnu.2.28".format(os, arch),
+    "@zig_sdk-{}-{}//toolchain:windows_amd64".format(os, arch),
+    "@zig_sdk-{}-{}//toolchain:windows_arm64".format(os, arch),
+    "@zig_sdk-{}-{}//toolchain:darwin_amd64".format(os, arch),
+    "@zig_sdk-{}-{}//toolchain:darwin_arm64".format(os, arch),
 
-    # amd64 toolchains for libc-aware platforms:
-    "@zig_sdk//libc_aware/toolchain:linux_amd64_gnu.2.28",
-    "@zig_sdk//libc_aware/toolchain:linux_amd64_gnu.2.31",
-    "@zig_sdk//libc_aware/toolchain:linux_amd64_musl",
+     # amd64 toolchains for libc-aware platforms:
+    "@zig_sdk-{}-{}//libc_aware/toolchain:linux_amd64_gnu.2.28".format(os, arch),
+    "@zig_sdk-{}-{}//libc_aware/toolchain:linux_amd64_gnu.2.31".format(os, arch),
+    "@zig_sdk-{}-{}//libc_aware/toolchain:linux_amd64_musl".format(os, arch),
     # arm64 toolchains for libc-aware platforms:
-    "@zig_sdk//libc_aware/toolchain:linux_arm64_gnu.2.28",
-    "@zig_sdk//libc_aware/toolchain:linux_arm64_musl",
+    "@zig_sdk-{}-{}//libc_aware/toolchain:linux_arm64_gnu.2.28".format(os, arch),
+    "@zig_sdk-{}-{}//libc_aware/toolchain:linux_arm64_musl".format(os, arch),
     # wasm/wasi toolchains
-    "@zig_sdk//toolchain:wasip1_wasm",
+    "@zig_sdk-{}-{}//toolchain:wasip1_wasm".format(os, arch),
 
     # These toolchains are only registered locally.
     dev_dependency = True,
-)
+)for os, arch in _COMMON_EXEC_PLATFORMS]

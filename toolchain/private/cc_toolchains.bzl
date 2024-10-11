@@ -3,7 +3,6 @@ load("@hermetic_cc_toolchain//toolchain:zig_toolchain.bzl", "zig_cc_toolchain_co
 
 def declare_cc_toolchains(os, zig_sdk_path):
     exe = ".exe" if os == "windows" else ""
-
     for target_config in target_structs():
         gotarget = target_config.gotarget
         zigtarget = target_config.zigtarget
@@ -59,13 +58,13 @@ def declare_cc_toolchains(os, zig_sdk_path):
             name = zigtarget + "_cc",
             toolchain_identifier = zigtarget + "-toolchain",
             toolchain_config = ":%s_cc_config" % zigtarget,
-            all_files = "@zig_sdk//:%s_all_files" % zigtarget,
-            ar_files = "@zig_sdk//:%s_ar_files" % zigtarget,
-            compiler_files = "@zig_sdk//:%s_compiler_files" % zigtarget,
-            linker_files = "@zig_sdk//:%s_linker_files" % zigtarget,
-            dwp_files = "@zig_sdk//:empty",
-            objcopy_files = "@zig_sdk//:empty",
-            strip_files = "@zig_sdk//:empty",
+            all_files = "//:{}_all_files".format(zigtarget),
+            ar_files = "//:{}_ar_files".format(zigtarget),
+            compiler_files = "//:{}_compiler_files".format(zigtarget),
+            linker_files = "//:{}_linker_files".format(zigtarget),
+            dwp_files = "//:empty",
+            objcopy_files = "//:empty",
+            strip_files = "//:empty",
             supports_param_files = 0,
             visibility = ["//visibility:private"],
         )

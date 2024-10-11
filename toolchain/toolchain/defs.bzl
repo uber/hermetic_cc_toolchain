@@ -10,7 +10,7 @@ def declare_toolchains():
         # only selected if the specific libc variant is selected.
         extra_constraints = []
         if hasattr(target_config, "libc_constraint"):
-            extra_constraints = ["@zig_sdk//libc:unconstrained"]
+            extra_constraints = ["//libc:unconstrained"]
 
         _declare_toolchain(gotarget, zigtarget, target_config.constraint_values + extra_constraints)
 
@@ -30,17 +30,17 @@ def _declare_toolchain(gotarget, zigtarget, target_compatible_with):
     # Go convention: amd64/arm64, linux/darwin
     native.toolchain(
         name = gotarget,
-        exec_compatible_with = None,
+        exec_compatible_with = ["//:exec_os", "//:exec_cpu"],
         target_compatible_with = target_compatible_with,
-        toolchain = "@zig_sdk//:%s_cc" % zigtarget,
+        toolchain = "//:{}_cc".format(zigtarget),
         toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
     )
 
     # Zig convention: x86_64/aarch64, linux/macos
     native.toolchain(
         name = zigtarget,
-        exec_compatible_with = None,
+        exec_compatible_with = ["//:exec_os", "//:exec_cpu"],
         target_compatible_with = target_compatible_with,
-        toolchain = "@zig_sdk//:%s_cc" % zigtarget,
+        toolchain = "//:{}_cc".format(zigtarget),
         toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
     )
