@@ -168,7 +168,7 @@ def _target_linux_gnu(gocpu, zigcpu, glibc_version):
             "@platforms//os:linux",
             "@platforms//cpu:{}".format(zigcpu),
         ],
-        libc_constraint = "@zig_sdk//libc:{}".format(glibc_suffix),
+        libc_constraint = "//libc:{}".format(glibc_suffix),
         ld_zig_subcmd = "ld.lld",
         artifact_name_patterns = [],
     )
@@ -196,7 +196,7 @@ def _target_linux_musl(gocpu, zigcpu):
             "@platforms//os:linux",
             "@platforms//cpu:{}".format(zigcpu),
         ],
-        libc_constraint = "@zig_sdk//libc:musl",
+        libc_constraint = "//libc:musl",
         ld_zig_subcmd = "ld.lld",
         artifact_name_patterns = [],
     )

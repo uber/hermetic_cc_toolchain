@@ -32,11 +32,11 @@ zig_binary = rule(
             allow_single_file = [".zig"],
         ),
         "_zig": attr.label(
-            default = "@zig_sdk//:tools/zig-wrapper",
+            default = "@amd64-linux-zig_sdk//:tools/zig-wrapper",
             allow_single_file = True,
         ),
         "_zig_sdk": attr.label(
-            default = "@zig_sdk//:all",
+            default = "@amd64-linux-zig_sdk//:all",
             allow_files = True,
         ),
         "_macos_constraint": attr.label(
