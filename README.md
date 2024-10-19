@@ -36,7 +36,7 @@ Uber GitHub repository](https://github.com/uber) and renamed to
 
 Add this to your `WORKSPACE`:
 
-```
+```starlark
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 HERMETIC_CC_TOOLCHAIN_VERSION = "v3.1.1"
@@ -175,7 +175,7 @@ bazel build --config=linux_arm64_musl //test/go:go
 Instead of adding the toolchains to `.bazelrc`, they can be added
 unconditionally. Append this to `WORKSPACE` after `zig_toolchains(...)`:
 
-```
+```starlark
 register_toolchains(
     "@zig_sdk//toolchain:linux_amd64_gnu.2.28",
     "@zig_sdk//toolchain:linux_arm64_gnu.2.28",
@@ -212,7 +212,7 @@ versions of glibc or musl), use a linux toolchain from
 `@zig_sdk//libc_aware/toolchains:<...>`. The toolchain will only be selected
 when building for a specific libc. For example, in `WORKSPACE`:
 
-```
+```starlark
 register_toolchains(
     "@zig_sdk//libc_aware/toolchain:linux_amd64_gnu.2.19",
     "@zig_sdk//libc_aware/toolchain:linux_arm64_gnu.2.28",
