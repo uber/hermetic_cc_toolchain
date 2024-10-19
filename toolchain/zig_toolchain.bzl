@@ -9,6 +9,7 @@ load(
     "tool",
     "tool_path",
 )
+load("@bazel_skylib//rules/directory:providers.bzl", "DirectoryInfo")
 
 all_link_actions = [
     ACTION_NAMES.cpp_link_executable,
@@ -102,6 +103,12 @@ def _zig_cc_toolchain_config_impl(ctx):
         "-D__TIME__=\"redacted\"",
     ]
 
+    extra_copts = []
+    if ctx.attr.linkoptsF:
+        extra_copts += ['-F', ctx.attr.linkoptsF[DirectoryInfo].path + "/System/Library/Frameworks"]
+    if ctx.attr.linkoptsL:
+        extra_copts += ['-L', ctx.attr.linkoptsL[DirectoryInfo].path + "/usr/lib"]
+
     compile_and_link_flags = feature(
         name = "compile_and_link_flags",
         enabled = True,
@@ -109,7 +116,7 @@ def _zig_cc_toolchain_config_impl(ctx):
             flag_set(
                 actions = compile_and_link_actions,
                 flag_groups = [
-                    flag_group(flags = compiler_flags + ctx.attr.copts),
+                    flag_group(flags = compiler_flags + ctx.attr.copts + extra_copts),
                 ],
             ),
         ],
@@ -117,11 +124,17 @@ def _zig_cc_toolchain_config_impl(ctx):
 
     link_flag_sets = []
 
-    if ctx.attr.linkopts:
+    if ctx.attr.linkopts or ctx.attr.linkoptsF or ctx.attr.linkoptsL:
+        expanded_linkopts = [] + ctx.attr.linkopts
+        if ctx.attr.linkoptsF:
+            expanded_linkopts += ['-F', ctx.attr.linkoptsF[DirectoryInfo].path + "/System/Library/Frameworks"]
+        if ctx.attr.linkoptsL:
+            expanded_linkopts += ['-L', ctx.attr.linkoptsL[DirectoryInfo].path + "/usr/lib"]
+        print("expandedlinkopts", expanded_linkopts)
         link_flag_sets.append(
             flag_set(
                 actions = all_link_actions,
-                flag_groups = [flag_group(flags = ctx.attr.linkopts)],
+                flag_groups = [flag_group(flags = expanded_linkopts)],
             ),
         )
 
@@ -171,6 +184,14 @@ def _zig_cc_toolchain_config_impl(ctx):
         for p in ctx.attr.artifact_name_patterns
     ]
 
+    sysroot = None
+    if ctx.attr.sysroot:
+        sysroot = ctx.attr.sysroot[DirectoryInfo].path
+
+    cxx_builtin_include_directories = [] + ctx.attr.cxx_builtin_include_directories
+    if ctx.attr.linkoptsL:
+        cxx_builtin_include_directories += [ctx.attr.linkoptsL[DirectoryInfo].path + "/include"]
+
     return cc_common.create_cc_toolchain_config_info(
         ctx = ctx,
         features = features,
@@ -186,13 +207,17 @@ def _zig_cc_toolchain_config_impl(ctx):
             tool_path(name = name, path = path)
             for name, path in ctx.attr.tool_paths.items()
         ],
-        cxx_builtin_include_directories = ctx.attr.cxx_builtin_include_directories,
+        cxx_builtin_include_directories = cxx_builtin_include_directories,
         artifact_name_patterns = artifact_name_patterns,
+        builtin_sysroot = sysroot,
     )
 
 zig_cc_toolchain_config = rule(
     implementation = _zig_cc_toolchain_config_impl,
     attrs = {
+        "sysroot": attr.label(providers = [DirectoryInfo]),
+        "linkoptsF": attr.label(providers = [DirectoryInfo]),
+        "linkoptsL": attr.label(providers = [DirectoryInfo]),
         "cxx_builtin_include_directories": attr.string_list(),
         "linkopts": attr.string_list(),
         "dynamic_library_linkopts": attr.string_list(),
@@ -208,6 +233,7 @@ zig_cc_toolchain_config = rule(
         "abi_version": attr.string(),
         "abi_libc_version": attr.string(),
         "artifact_name_patterns": attr.string_list(),
+        "deps": attr.label_list(),
     },
     provides = [CcToolchainConfigInfo],
 )
