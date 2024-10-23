@@ -77,6 +77,10 @@ def toolchains(
         mirror_format = original_format.replace("https://ziglang.org/", "https://mirror.bazel.build/ziglang.org/")
         url_formats = [mirror_format, original_format]
 
+    zig_repository_cache(
+        name = "zig_sdk_cache",
+    )
+
     zig_repository(
         name = "zig_sdk",
         version = version,
@@ -147,14 +151,8 @@ def _zig_repository_impl(repository_ctx):
 
     cache_prefix = repository_ctx.os.environ.get("HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX", "")
     if cache_prefix == "":
-        if os == "windows":
-            cache_prefix = "C:\\\\Temp\\\\zig-cache"
-        elif os == "macos":
-            cache_prefix = "/var/tmp/zig-cache"
-        elif os == "linux":
-            cache_prefix = "/tmp/zig-cache"
-        else:
-            fail("unknown os: {}".format(os))
+        label = Label("@zig_sdk_cache//:zig.env")
+        cache_prefix = str(repository_ctx.path(label).dirname)
 
     repository_ctx.template(
         "tools/zig-wrapper.zig",
@@ -233,6 +231,15 @@ zig_repository = repository_rule(
     },
     environ = ["HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX"],
     implementation = _zig_repository_impl,
+)
+
+def _zig_repository_cache_impl(ctx):
+    ctx.file("zig.env", "")
+    ctx.file("BUILD.bazel", 'exports_files(["zig.env"])')
+
+zig_repository_cache = repository_rule(
+    implementation = _zig_repository_cache_impl,
+    attrs = {},
 )
 
 def filegroup(name, **kwargs):
