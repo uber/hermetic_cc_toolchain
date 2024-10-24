@@ -30,12 +30,14 @@ use_repo(
 )
 
 toolchains = use_extension("//toolchain:ext.bzl", "toolchains")
-use_repo(toolchains, "zig_sdk-linux-amd64", "zig_sdk-linux-arm64", "zig_sdk-windows-amd64")
+use_repo(toolchains, "zig_sdk", "zig_sdk-linux-amd64", "zig_sdk-linux-arm64", "zig_sdk-macos-amd64", "zig_sdk-macos-arm64", "zig_sdk-windows-amd64")
 
 _COMMON_EXEC_PLATFORMS = [
     ("linux", "amd64"),
     ("linux", "arm64"),
     ("windows", "amd64"),
+    ("macos", "arm64"),
+    ("macos", "amd64"),
 ]
 
 [register_toolchains(
@@ -45,10 +47,10 @@ _COMMON_EXEC_PLATFORMS = [
     "@zig_sdk-{}-{}//toolchain:linux_arm64_gnu.2.28".format(os, arch),
     "@zig_sdk-{}-{}//toolchain:windows_amd64".format(os, arch),
     "@zig_sdk-{}-{}//toolchain:windows_arm64".format(os, arch),
-    "@zig_sdk-{}-{}//toolchain:darwin_amd64".format(os, arch),
-    "@zig_sdk-{}-{}//toolchain:darwin_arm64".format(os, arch),
+    # "@zig_sdk-{}-{}//toolchain:darwin_amd64".format(os, arch),
+    # "@zig_sdk-{}-{}//toolchain:darwin_arm64".format(os, arch),
 
-     # amd64 toolchains for libc-aware platforms:
+    # amd64 toolchains for libc-aware platforms:
     "@zig_sdk-{}-{}//libc_aware/toolchain:linux_amd64_gnu.2.28".format(os, arch),
     "@zig_sdk-{}-{}//libc_aware/toolchain:linux_amd64_gnu.2.31".format(os, arch),
     "@zig_sdk-{}-{}//libc_aware/toolchain:linux_amd64_musl".format(os, arch),
@@ -60,4 +62,4 @@ _COMMON_EXEC_PLATFORMS = [
 
     # These toolchains are only registered locally.
     dev_dependency = True,
-)for os, arch in _COMMON_EXEC_PLATFORMS]
+) for os, arch in _COMMON_EXEC_PLATFORMS]

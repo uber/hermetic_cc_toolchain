@@ -57,12 +57,12 @@ After commenting on the issue, `rm -fr {cache_prefix}` and re-run your command.
 """
 
 def toolchains(
-        exec,
+        exec_os,
+        exec_arch,
         version = VERSION,
         url_formats = [],
         host_platform_sha256 = HOST_PLATFORM_SHA256,
-        host_platform_ext = _HOST_PLATFORM_EXT,
-        ):
+        host_platform_ext = _HOST_PLATFORM_EXT):
     """
         Download zig toolchain and declare bazel toolchains.
         The platforms are not registered automatically, that should be done by
@@ -80,21 +80,21 @@ def toolchains(
         url_formats = [mirror_format, original_format]
 
     zig_repository(
-        name = "zig_sdk-{}".format(exec),
+        name = "zig_sdk-{}-{}".format(exec_os, exec_arch),
         version = version,
         url_formats = url_formats,
         host_platform_sha256 = host_platform_sha256,
         host_platform_ext = host_platform_ext,
-        exec = exec,
+        exec_os = exec_os,
+        exec_arch = exec_arch,
     )
 
 def _quote(s):
     return "'" + s.replace("'", "'\\''") + "'"
 
 def _zig_repository_impl(repository_ctx):
-    arch_os = repository_ctx.attr.exec.split("-")
-    exec_os = arch_os[0]
-    exec_arch = arch_os[1]
+    exec_os = repository_ctx.attr.exec_os
+    exec_arch = repository_ctx.attr.exec_arch
     host_os = repository_ctx.os.name
     host_arch = repository_ctx.os.arch
     if exec_arch == "amd64":
@@ -264,10 +264,36 @@ zig_repository = repository_rule(
         "host_platform_sha256": attr.string_dict(),
         "url_formats": attr.string_list(allow_empty = False),
         "host_platform_ext": attr.string_dict(),
-        "exec": attr.string(),
+        "exec_os": attr.string(),
+        "exec_arch": attr.string(),
     },
     environ = ["HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX"],
     implementation = _zig_repository_impl,
+)
+
+def _host_zig_repository_impl(repository_ctx):
+    host_os = repository_ctx.os.name
+    host_arch = repository_ctx.os.arch
+    if host_os.startswith("mac os"):
+        host_os = "macos"
+
+    if host_os.startswith("windows"):
+        host_os = "windows"
+
+    if host_arch.startswith("aarch64"):
+        host_arch = "arm64"
+
+    if host_arch.startswith("x86_64"):
+        host_arch = "amd64"
+
+    host_platform_compatible_zig = Label("@zig_sdk-{}-{}//:WORKSPACE".format(host_os, host_arch))
+    compatible_zig_path = repository_ctx.path(host_platform_compatible_zig)
+    repository_ctx.delete(".")
+    repository_ctx.symlink(str(compatible_zig_path) + "/..", ".")
+
+host_zig_repository = repository_rule(
+    implementation = _host_zig_repository_impl,
+    local = True,
 )
 
 def filegroup(name, **kwargs):
