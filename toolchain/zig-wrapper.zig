@@ -63,7 +63,6 @@ const EXE = switch (builtin.target.os.tag) {
     .windows => ".exe",
     else => "",
 };
-
 const CACHE_DIR = "{HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX}";
 
 const usage =
@@ -208,6 +207,7 @@ fn parseArgs(
         );
     };
 
+    const zig_cache_dir = try fs.path.join(arena, &[_][]const u8{ cwd.realpathAlloc(arena, ".") catch unreachable, CACHE_DIR });
     const zig_lib_dir = try fs.path.join(arena, &[_][]const u8{ root, "lib" });
     const zig_exe = try fs.path.join(
         arena,
@@ -218,8 +218,8 @@ fn parseArgs(
         return parseFatal(arena, "error getting env: {s}", .{@errorName(err)});
 
     try env.put("ZIG_LIB_DIR", zig_lib_dir);
-    try env.put("ZIG_LOCAL_CACHE_DIR", CACHE_DIR);
-    try env.put("ZIG_GLOBAL_CACHE_DIR", CACHE_DIR);
+    try env.put("ZIG_LOCAL_CACHE_DIR", zig_cache_dir);
+    try env.put("ZIG_GLOBAL_CACHE_DIR", zig_cache_dir);
 
     // args is the path to the zig binary and args to it.
     var args = ArrayListUnmanaged([]const u8){};

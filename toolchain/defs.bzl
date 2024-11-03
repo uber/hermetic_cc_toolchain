@@ -191,12 +191,8 @@ def _zig_repository_impl(repository_ctx):
 
     cache_prefix = repository_ctx.os.environ.get("HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX", "")
     if cache_prefix == "":
-        if host_os == "windows":
-            cache_prefix = "C:\\\\Temp\\\\zig-cache"
-        elif host_os == "macos":
-            cache_prefix = "/var/tmp/zig-cache"
-        elif host_os == "linux":
-            cache_prefix = "/tmp/zig-cache"
+        if host_os == "windows" or host_os == "macos" or host_os == "linux":
+            cache_prefix = "zig-cache"
         else:
             fail("unknown os: {}".format(host_os))
 
