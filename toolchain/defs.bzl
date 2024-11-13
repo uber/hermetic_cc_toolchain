@@ -165,19 +165,6 @@ def _zig_repository_impl(repository_ctx):
     # https://bazel.build/extending/repo#when_is_the_implementation_function_executed
     # and a related rules_go PR:
     # https://github.com/bazelbuild/bazel-gazelle/pull/1206
-    macos_sdk_versions_str = _macos_versions(repository_ctx.attr.macos_sdk_versions)
-    repository_ctx.symlink(Label("//toolchain/platform:BUILD"), "platform/BUILD")
-    repository_ctx.template(
-        "BUILD",
-        Label("//toolchain:BUILD.sdk.bazel"),
-        executable = False,
-        substitutions = {
-            "{zig_sdk_path}": _quote("external/zig_sdk"),
-            "{os}": _quote(os),
-            "{macos_sdk_versions}": macos_sdk_versions_str,
-        },
-    )
-
     for dest, src in {
         "toolchain/BUILD": "//toolchain/toolchain:BUILD.sdk.bazel",
         "libc/BUILD": "//toolchain/libc:BUILD.sdk.bazel",
@@ -192,6 +179,19 @@ def _zig_repository_impl(repository_ctx):
                 "{macos_sdk_versions}": macos_sdk_versions_str,
             },
         )
+
+    macos_sdk_versions_str = _macos_versions(repository_ctx.attr.macos_sdk_versions)
+    repository_ctx.symlink(Label("//toolchain/platform:BUILD"), "platform/BUILD")
+    repository_ctx.template(
+        "BUILD",
+        Label("//toolchain:BUILD.sdk.bazel"),
+        executable = False,
+        substitutions = {
+            "{zig_sdk_path}": _quote("external/zig_sdk"),
+            "{os}": _quote(os),
+            "{macos_sdk_versions}": macos_sdk_versions_str,
+        },
+    )
 
     urls = [uf.format(**format_vars) for uf in repository_ctx.attr.url_formats]
     repository_ctx.download_and_extract(
