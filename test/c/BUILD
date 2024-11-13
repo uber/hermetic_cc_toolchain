@@ -82,7 +82,7 @@ _WINDOWS_AMD64 = [
         ),
         (
             "darwin_amd64",
-            "//platform:darwin_amd64",
+            "//platform:macos_amd64",
             _DARWIN_AMD64,
             "^macos non-glibc",
             ["darwin_c"],
@@ -90,7 +90,7 @@ _WINDOWS_AMD64 = [
         ),
         (
             "darwin_arm64",
-            "//platform:darwin_arm64",
+            "//platform:macos_arm64",
             _DARWIN_ARM64,
             "^macos non-glibc",
             ["darwin_c"],

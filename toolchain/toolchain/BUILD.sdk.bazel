@@ -1,0 +1,9 @@
+load("@hermetic_cc_toolchain//toolchain/toolchain:defs.bzl", "declare_toolchains")
+
+package(
+    default_visibility = ["//visibility:public"],
+)
+
+declare_toolchains(
+    macos_sdk_versions = {macos_sdk_versions},
+)

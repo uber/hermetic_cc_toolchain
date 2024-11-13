@@ -1,5 +1,6 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "read_user_netrc", "use_netrc")
+load("@hermetic_cc_toolchain//toolchain/private:http_pkg_archive.bzl", "http_pkg_archive_impl")
 load("@hermetic_cc_toolchain//toolchain/private:defs.bzl", "target_structs", "zig_tool_path")
 load(
     "@hermetic_cc_toolchain//toolchain/private:zig_sdk.bzl",
@@ -8,6 +9,7 @@ load(
     "URL_FORMAT_RELEASE",
     "VERSION",
 )
+load("@bazel_skylib//rules/directory:directory.bzl", "directory")
 
 _BUILTIN_TOOLS = ["ar", "ld.lld", "lld-link"]
 
@@ -56,17 +58,55 @@ are. Thus we need a bit of your collaboration to get to the bottom of it.
 After commenting on the issue, `rm -fr {cache_prefix}` and re-run your command.
 """
 
+_want_format = """
+Unexpected MacOS SDK definition. Expected format:
+
+zig_toolchain(
+    macos_sdks = [
+      struct(
+        version = "14.4",
+        urls = [ "https://<...>", ... ],
+        sha256 = "<...>",
+      ),
+      ...
+    ],
+)
+
+"""
+
 def toolchains(
         version = VERSION,
         url_formats = [],
         host_platform_sha256 = HOST_PLATFORM_SHA256,
-        host_platform_ext = _HOST_PLATFORM_EXT):
+        host_platform_ext = _HOST_PLATFORM_EXT,
+        macos_sdks = []):
     """
         Download zig toolchain and declare bazel toolchains.
         The platforms are not registered automatically, that should be done by
         the user with register_toolchains() in the WORKSPACE file. See README
         for possible choices.
     """
+
+    macos_sdk_versions = []
+    for sdk in macos_sdks:
+        if not(bool(sdk.version) and bool(sdk.urls) and bool(sdk.sha256)):
+            fail(_want_format)
+
+        macos_sdk_versions.append(sdk.version)
+
+        if not (len(sdk.version) == 4 and
+                sdk.version[2] == "." and
+                sdk.version[0:2].isdigit() and
+                sdk.version[3].isdigit()):
+            fail("unexpected macos SDK version {}, want DD.D".format(version))
+
+        macos_sdk_repository(
+            name = "macos_sdk_{}".format(sdk.version),
+            urls = sdk.urls,
+            sha256 = sdk.sha256,
+            strip_prefix = sdk.strip_prefix,
+            delete_paths = sdk.delete_paths,
+        )
 
     if not url_formats:
         if "dev" in version:
@@ -83,6 +123,16 @@ def toolchains(
         url_formats = url_formats,
         host_platform_sha256 = host_platform_sha256,
         host_platform_ext = host_platform_ext,
+        macos_sdk_versions = macos_sdk_versions,
+    )
+
+def macos_sdk(version, urls, sha256, strip_prefix = None, delete_paths = None):
+    return struct(
+        version = version,
+        urls = urls,
+        sha256 = sha256,
+        strip_prefix = strip_prefix,
+        delete_paths = delete_paths,
     )
 
 def _quote(s):
@@ -116,26 +166,32 @@ def _zig_repository_impl(repository_ctx):
     # and a related rules_go PR:
     # https://github.com/bazelbuild/bazel-gazelle/pull/1206
     for dest, src in {
-        "platform/BUILD": "//toolchain/platform:BUILD",
-        "toolchain/BUILD": "//toolchain/toolchain:BUILD",
-        "libc/BUILD": "//toolchain/libc:BUILD",
-        "libc_aware/platform/BUILD": "//toolchain/libc_aware/platform:BUILD",
-        "libc_aware/toolchain/BUILD": "//toolchain/libc_aware/toolchain:BUILD",
-    }.items():
-        repository_ctx.symlink(Label(src), dest)
-
-    for dest, src in {
-        "BUILD": "//toolchain:BUILD.sdk.bazel",
+        "toolchain/BUILD": "//toolchain/toolchain:BUILD.sdk.bazel",
+        "libc/BUILD": "//toolchain/libc:BUILD.sdk.bazel",
+        "libc_aware/platform/BUILD": "//toolchain/libc_aware/platform:BUILD.sdk.bazel",
+        "libc_aware/toolchain/BUILD": "//toolchain/libc_aware/toolchain:BUILD.sdk.bazel",
     }.items():
         repository_ctx.template(
             dest,
             Label(src),
             executable = False,
             substitutions = {
-                "{zig_sdk_path}": _quote("external/zig_sdk"),
-                "{os}": _quote(os),
+                "{macos_sdk_versions}": macos_sdk_versions_str,
             },
         )
+
+    macos_sdk_versions_str = _macos_versions(repository_ctx.attr.macos_sdk_versions)
+    repository_ctx.symlink(Label("//toolchain/platform:BUILD"), "platform/BUILD")
+    repository_ctx.template(
+        "BUILD",
+        Label("//toolchain:BUILD.sdk.bazel"),
+        executable = False,
+        substitutions = {
+            "{zig_sdk_path}": _quote("external/zig_sdk"),
+            "{os}": _quote(os),
+            "{macos_sdk_versions}": macos_sdk_versions_str,
+        },
+    )
 
     urls = [uf.format(**format_vars) for uf in repository_ctx.attr.url_formats]
     repository_ctx.download_and_extract(
@@ -216,8 +272,7 @@ def _zig_repository_impl(repository_ctx):
     exe = ".exe" if os == "windows" else ""
     for t in _BUILTIN_TOOLS:
         repository_ctx.symlink("tools/zig-wrapper{}".format(exe), "tools/{}{}".format(t, exe))
-
-    for target_config in target_structs():
+    for target_config in target_structs(repository_ctx.attr.macos_sdk_versions):
         tool_path = zig_tool_path(os).format(
             zig_tool = "c++",
             zigtarget = target_config.zigtarget,
@@ -230,16 +285,70 @@ zig_repository = repository_rule(
         "host_platform_sha256": attr.string_dict(),
         "url_formats": attr.string_list(allow_empty = False),
         "host_platform_ext": attr.string_dict(),
+        "macos_sdk_versions": attr.string_list(),
     },
     environ = ["HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX"],
     implementation = _zig_repository_impl,
+)
+
+def _macos_sdk_repository_impl(repository_ctx):
+    urls = repository_ctx.attr.urls
+    sha256 = repository_ctx.attr.sha256
+
+    repository_ctx.symlink(Label("//toolchain:BUILD.macos.bazel"), "BUILD.bazel")
+    repository_ctx.download_and_extract(
+        auth = use_netrc(read_user_netrc(repository_ctx), urls, {}),
+        url = urls,
+        sha256 = sha256,
+        stripPrefix = repository_ctx.attr.strip_prefix,
+    )
+    if repository_ctx.attr.delete_paths:
+        for path in repository_ctx.attr.delete_paths:
+            if not repository_ctx.delete(path):
+                print('Warning unable to delete path: {}'.format(path))
+
+macos_sdk_repository = repository_rule(
+    attrs = {
+        "urls": attr.string_list(allow_empty = False, mandatory = True),
+        "sha256": attr.string(mandatory = True),
+        "strip_prefix": attr.string(),
+        "delete_paths": attr.string_list(),
+    },
+    implementation = _macos_sdk_repository_impl,
 )
 
 def filegroup(name, **kwargs):
     native.filegroup(name = name, **kwargs)
     return ":" + name
 
-def declare_files(os):
+def declare_macos_sdk_files():
+    directory(
+        name = "sysroot",
+        srcs = native.glob(
+            ["usr/**"],
+            # some man file contains `:` which is not allowed in bazel
+            exclude = ['usr/share/man/**'],
+        ),
+    )
+    directory(
+        name = "Frameworks",
+        srcs = native.glob(
+            ["System/Library/Frameworks/**"],
+        ),
+    )
+    directory(
+        name = "usr_lib",
+        srcs = native.glob(["usr/lib/**"]),
+    )
+    directory(
+        name = "usr_include",
+        srcs = native.glob(["usr/include/**"]),
+    )
+    # filegroup(name = "Frameworks", srcs = native.glob(["Frameworks/**"]))
+    # filegroup(name = "usr_include", srcs = native.glob(["usr/include/**"]))
+    # filegroup(name = "usr_lib", srcs = native.glob(["lib/**"]))
+
+def declare_files(os, macos_sdk_versions):
     exe = ".exe" if os == "windows" else ""
 
     native.exports_files(["zig{}".format(exe)], visibility = ["//visibility:public"])
@@ -253,13 +362,13 @@ def declare_files(os):
     filegroup(name = "empty")
     lazy_filegroups = {}
 
-    for target_config in target_structs():
-        all_includes = [native.glob(["lib/{}/**".format(i)]) for i in target_config.includes]
-
+    for target_config in target_structs(macos_sdk_versions):
         cxx_tool_label = ":" + zig_tool_path(os).format(
             zig_tool = "c++",
             zigtarget = target_config.zigtarget,
         )
+
+        all_includes = [native.glob(["lib/{}/**".format(i)]) for i in target_config.includes]
 
         filegroup(
             name = "{}_includes".format(target_config.zigtarget),
@@ -270,9 +379,10 @@ def declare_files(os):
             name = "{}_compiler_files".format(target_config.zigtarget),
             srcs = [
                 ":zig",
+                ":lib/std",
                 ":{}_includes".format(target_config.zigtarget),
                 cxx_tool_label,
-            ],
+            ] + getattr(target_config, "sdk_include_files", [])
         )
 
         filegroup(
@@ -282,7 +392,7 @@ def declare_files(os):
                 ":{}_includes".format(target_config.zigtarget),
                 cxx_tool_label,
             ] + native.glob([
-                "lib/libc/{}/**".format(target_config.libc),
+                "lib/libc/{}/**".format('darwin'), # figure out how to pass in the right value: (target_config.libc),
                 "lib/libcxx/**",
                 "lib/libcxxabi/**",
                 "lib/libunwind/**",
@@ -291,7 +401,7 @@ def declare_files(os):
                 "lib/tsan/**",
                 "lib/*.zig",
                 "lib/*.h",
-            ]),
+            ]) + getattr(target_config, "sdk_lib_files", []),
         )
 
         filegroup(
@@ -308,16 +418,22 @@ def declare_files(os):
             ],
         )
 
-        for d in _DEFAULT_INCLUDE_DIRECTORIES + target_config.includes:
+        for d in _DEFAULT_INCLUDE_DIRECTORIES + getattr(target_config, "includes", []):
             d = "lib/" + d
             if d not in lazy_filegroups:
                 lazy_filegroups[d] = filegroup(name = d, srcs = native.glob([d + "/**"]))
+
 
 def _flatten(iterable):
     result = []
     for element in iterable:
         result += element
     return result
+
+
+def _macos_versions(versions):
+    return "[{}]".format(", ".join([_quote(v) for v in versions]))
+
 
 ## Copied from https://github.com/bazelbuild/bazel-skylib/blob/1.4.1/lib/paths.bzl#L59-L98
 def _paths_is_absolute(path):
