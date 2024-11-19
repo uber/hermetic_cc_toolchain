@@ -207,7 +207,13 @@ fn parseArgs(
         );
     };
 
-    const zig_cache_dir = try fs.path.join(arena, &[_][]const u8{ cwd.realpathAlloc(arena, ".") catch unreachable, CACHE_DIR });
+    const zig_cache_dir = if (CACHE_DIR[0] == sep[0])
+        CACHE_DIR
+    else
+        try fs.path.join(arena, &[_][]const u8{
+            cwd.realpathAlloc(arena, ".") catch unreachable,
+            CACHE_DIR,
+        });
     const zig_lib_dir = try fs.path.join(arena, &[_][]const u8{ root, "lib" });
     const zig_exe = try fs.path.join(
         arena,
