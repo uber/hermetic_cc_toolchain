@@ -93,7 +93,7 @@ const ParseResults = union(Action) {
 };
 
 // sub-commands in the same folder as `zig-wrapper`
-const sub_commands_target = std.ComptimeStringMap(void, .{
+const sub_commands_target = std.StaticStringMap(void).initComptime(.{
     .{"ar"},
     .{"ld.lld"},
     .{"lld-link"},
