@@ -55,7 +55,7 @@ const std = @import("std");
 const fs = std.fs;
 const mem = std.mem;
 const process = std.process;
-const ChildProcess = std.ChildProcess;
+const ChildProcess = std.process.Child;
 const ArrayListUnmanaged = std.ArrayListUnmanaged;
 const sep = fs.path.sep_str;
 
