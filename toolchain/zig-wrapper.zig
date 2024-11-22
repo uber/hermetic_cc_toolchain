@@ -276,7 +276,7 @@ fn getRunMode(self_exe: []const u8, self_base_noexe: []const u8) error{BadParent
     // strings `is.it.x86_64?-stallinux,macos-`; we are trying to aid users
     // that run things from the wrong directory, not trying to punish the ones
     // having fun.
-    var it = mem.split(u8, triple, "-");
+    var it = mem.splitSequence(u8, triple, "-");
 
     const arch = it.next() orelse return error.BadParent;
     if (mem.indexOf(u8, "aarch64,x86_64,wasm32", arch) == null)
