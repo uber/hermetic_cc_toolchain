@@ -28,7 +28,7 @@ def declare_libc_aware_platforms():
                 "linux",
                 "linux",
                 suffix = "_{}".format(libc),
-                extra_constraints = ["@zig_sdk//libc:{}".format(libc)],
+                extra_constraints = ["//libc:{}".format(libc)],
             )
 
 def declare_platform(gocpu, zigcpu, bzlos, os, suffix = "", extra_constraints = []):
