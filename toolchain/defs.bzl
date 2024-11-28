@@ -57,12 +57,12 @@ After commenting on the issue, `rm -fr {cache_prefix}` and re-run your command.
 """
 
 def toolchains(
-        exec_os,
-        exec_arch,
         version = VERSION,
         url_formats = [],
         host_platform_sha256 = HOST_PLATFORM_SHA256,
-        host_platform_ext = _HOST_PLATFORM_EXT):
+        host_platform_ext = _HOST_PLATFORM_EXT,
+        exec_os = "HOST",
+        exec_arch = "HOST"):
     """
         Download zig toolchain and declare bazel toolchains.
         The platforms are not registered automatically, that should be done by
@@ -78,6 +78,20 @@ def toolchains(
 
         mirror_format = original_format.replace("https://ziglang.org/", "https://mirror.bazel.build/ziglang.org/")
         url_formats = [mirror_format, original_format]
+
+    # If these are not specified by user in WORKSPACE, fall back to the old
+    # behavior of assuming HOST is the only supported platform.
+    if exec_os == "HOST" and exec_arch == "HOST":
+        zig_repository(
+            name = "zig_sdk",
+            version = version,
+            url_formats = url_formats,
+            host_platform_sha256 = host_platform_sha256,
+            host_platform_ext = host_platform_ext,
+            exec_os = exec_os,
+            exec_arch = exec_arch,
+        )
+        return
 
     zig_repository(
         name = "zig_sdk-{}-{}".format(exec_os, exec_arch),
@@ -97,6 +111,12 @@ def _zig_repository_impl(repository_ctx):
     exec_arch = repository_ctx.attr.exec_arch
     host_os = repository_ctx.os.name
     host_arch = repository_ctx.os.arch
+
+    if exec_os == "HOST":
+        exec_os = host_os
+    if exec_arch == "HOST":
+        exec_arch = host_arch
+
     if exec_arch == "amd64":
         exec_arch = "x86_64"
     if host_arch == "amd64":
