@@ -55,7 +55,7 @@ const std = @import("std");
 const fs = std.fs;
 const mem = std.mem;
 const process = std.process;
-const ChildProcess = std.ChildProcess;
+const ChildProcess = std.process.Child;
 const ArrayListUnmanaged = std.ArrayListUnmanaged;
 const sep = fs.path.sep_str;
 
@@ -93,7 +93,7 @@ const ParseResults = union(Action) {
 };
 
 // sub-commands in the same folder as `zig-wrapper`
-const sub_commands_target = std.ComptimeStringMap(void, .{
+const sub_commands_target = std.StaticStringMap(void).initComptime(.{
     .{"ar"},
     .{"ld.lld"},
     .{"lld-link"},
