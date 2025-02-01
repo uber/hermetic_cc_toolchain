@@ -192,7 +192,8 @@ def _zig_repository_impl(repository_ctx):
     cache_prefix = repository_ctx.os.environ.get("HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX", "")
     if cache_prefix == "":
         if host_os == "windows" or host_os == "macos" or host_os == "linux":
-            cache_prefix = "zig-cache"
+            # Use a shared cache directory in the execroot for all platforms
+            cache_prefix = "../../../zig_cache"
         else:
             fail("unknown os: {}".format(host_os))
 
