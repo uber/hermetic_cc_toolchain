@@ -15,3 +15,27 @@ URL_FORMAT_RELEASE = "https://ziglang.org/download/{version}/zig-{host_platform}
 # Caution: nightly releases are purged from ziglang.org after ~90 days. Use the
 # Bazel mirror or your own.
 URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform}-{version}.{_ext}"
+
+# Platforms & constraints repository
+def _zig_sdk_repository_impl(repository_ctx):
+    repository_ctx.file(
+        "BUILD.bazel",
+        "# main BUILD.bazel file\n",
+    )
+    repository_ctx.file(
+        "libc/BUILD.bazel",
+        repository_ctx.read(Label("//toolchain/libc:BUILD")),
+    )
+    repository_ctx.file(
+        "platform/BUILD.bazel",
+        repository_ctx.read(Label("//toolchain/platform:BUILD")),
+    )
+    repository_ctx.file(
+        "libc_aware/platform/BUILD.bazel",
+        repository_ctx.read(Label("//toolchain/libc_aware/platform:BUILD")),
+    )
+
+zig_sdk_repository = repository_rule(
+    doc = "Creates common constraint & platform definitions.",
+    implementation = _zig_sdk_repository_impl,
+)
