@@ -4,7 +4,7 @@
 def _platform_transition_impl(settings, attr):
     _ignore = settings
     return {
-        "//command_line_option:platforms": "@zig_sdk-linux-amd64{}".format(attr.platform),
+        "//command_line_option:platforms": "@zig_sdk{}".format(attr.platform),
     }
 
 _platform_transition = transition(
