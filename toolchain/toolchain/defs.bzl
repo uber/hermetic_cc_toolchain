@@ -14,6 +14,8 @@ def declare_toolchains(configs = ""):
 
         _declare_toolchain(gotarget, zigtarget, target_config.constraint_values + extra_constraints, configs)
 
+    _declare_zig_toolchain("zig", configs)
+
 def declare_libc_aware_toolchains(configs = ""):
     for target_config in target_structs():
         gotarget = target_config.gotarget
@@ -43,4 +45,12 @@ def _declare_toolchain(gotarget, zigtarget, target_compatible_with, configs):
         target_compatible_with = target_compatible_with,
         toolchain = "{}//:{}_cc".format(configs, zigtarget),
         toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
+    )
+
+def _declare_zig_toolchain(name, configs):
+    native.toolchain(
+        name = name,
+        exec_compatible_with = ["{}//:exec_os".format(configs), "{}//:exec_cpu".format(configs)],
+        toolchain = "{}//:zig_toolchain".format(configs),
+        toolchain_type = "@zig_sdk//toolchain:toolchain_type",
     )

@@ -18,9 +18,22 @@ URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform}-{version}.{
 
 # Platforms & constraints repository
 def _zig_sdk_repository_impl(repository_ctx):
+    toolchain_type = """
+package(
+    default_visibility = ["//visibility:public"],
+)
+toolchain_type(
+    name = "toolchain_type",
+)
+"""
+
     repository_ctx.file(
         "BUILD.bazel",
         "# main BUILD.bazel file\n",
+    )
+    repository_ctx.file(
+        "toolchain/BUILD.bazel",
+        toolchain_type,
     )
     repository_ctx.file(
         "libc/BUILD.bazel",
