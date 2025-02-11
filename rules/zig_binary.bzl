@@ -12,7 +12,7 @@ def _impl(ctx):
     ctx.actions.run(
         inputs = [ctx.file.src],
         outputs = [dst],
-        executable = zig_info.wrapper,
+        executable = zig_info.zig,
         tools = zig_info.data,
         arguments = [
             "build-exe",

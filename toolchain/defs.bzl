@@ -1,14 +1,13 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "read_user_netrc", "use_netrc")
 load("@hermetic_cc_toolchain//toolchain/private:defs.bzl", "target_structs", "transform_os_name", "zig_tool_path")
-load("@hermetic_cc_toolchain//toolchain/private:toolchains.bzl", "zig_toolchains_repository")
+load("@hermetic_cc_toolchain//toolchain/private:repositories.bzl", "zig_sdk_repository", "zig_toolchains_repository")
 load(
     "@hermetic_cc_toolchain//toolchain/private:zig_sdk.bzl",
     "HOST_PLATFORM_SHA256",
     "URL_FORMAT_NIGHTLY",
     "URL_FORMAT_RELEASE",
     "VERSION",
-    "zig_sdk_repository",
 )
 
 _BUILTIN_TOOLS = ["ar", "ld.lld", "lld-link"]

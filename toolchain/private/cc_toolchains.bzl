@@ -1,5 +1,5 @@
 load(":defs.bzl", "target_structs", "zig_tool_path")
-load("@hermetic_cc_toolchain//toolchain:zig_toolchain.bzl", "zig_cc_toolchain_config")
+load("@hermetic_cc_toolchain//toolchain:zig_cc_toolchain.bzl", "zig_cc_toolchain_config")
 
 def declare_cc_toolchains(os, zig_sdk_path):
     exe = ".exe" if os == "windows" else ""
