@@ -2,7 +2,10 @@ load("@hermetic_cc_toolchain//toolchain/private:defs.bzl", "transform_arch_name"
 
 # Platforms & constraints repository
 def _zig_sdk_repository_impl(repository_ctx):
-    toolchain_type = """
+    _os = transform_os_name(repository_ctx.os.name)
+    _arch = transform_arch_name(repository_ctx.os.arch)
+
+    _toolchain_type = """
 package(
     default_visibility = ["//visibility:public"],
 )
@@ -10,14 +13,20 @@ toolchain_type(
     name = "toolchain_type",
 )
 """
+    _build = """
+alias(
+    name = "zig",
+    actual = "{}//:zig",
+)
+""".format("@zig_config" if repository_ctx.attr.host_only else "@zig_config-{}-{}".format(_os, _arch))
 
     repository_ctx.file(
         "BUILD.bazel",
-        "# main BUILD.bazel file\n",
+        _build,
     )
     repository_ctx.file(
         "toolchain/BUILD.bazel",
-        toolchain_type,
+        _toolchain_type,
     )
     repository_ctx.file(
         "libc/BUILD.bazel",
@@ -34,6 +43,11 @@ toolchain_type(
 
 zig_sdk_repository = repository_rule(
     doc = "Creates common constraint & platform definitions.",
+    attrs = {
+        "host_only": attr.bool(
+            default = False,
+        ),
+    },
     implementation = _zig_sdk_repository_impl,
 )
 

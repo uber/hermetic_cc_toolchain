@@ -83,11 +83,13 @@ def toolchains(
 
     indirect_repos = []
 
-    zig_sdk_repository(name = "zig_sdk")
+    host_only = not bool(exec_platforms)
+
+    zig_sdk_repository(name = "zig_sdk", host_only = host_only)
 
     # If `exec_platforms` dict is not specified by user in WORKSPACE,
     # create configs just for the HOST.
-    if not bool(exec_platforms):
+    if host_only:
         zig_repository(
             name = "zig_config",
             version = version,

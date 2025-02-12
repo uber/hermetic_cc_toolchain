@@ -68,7 +68,7 @@ _WINDOWS_AMD64 = [
             "linux_amd64",
             "//platform:linux_amd64",
             _LINUX_AMD64,
-            "^linux glibc_2.17",
+            "^linux glibc_2.28",
             [],
             "NATIVE",
         ),

@@ -33,7 +33,35 @@ use_repo(
 toolchains = use_extension("//toolchain:ext.bzl", "toolchains")
 use_repo(toolchains, "zig_sdk", "zig_toolchains")
 
-register_toolchains(
-    "@zig_toolchains//...",
+_COMMON_EXEC_PLATFORMS = {
+    "linux": ["amd64", "arm64"],
+    "macos": ["amd64", "arm64"],
+    "windows": ["amd64"],
+}
+
+# TODO: register all toolchains by:
+# `register_toolchains("@zig_toolchains//...")`
+# when `hermetic_cc_toolchain` supports MacOS SDK
+# https://github.com/uber/hermetic_cc_toolchain/issues/10
+[register_toolchains(
+    "@zig_toolchains//{}-{}/toolchain:linux_amd64_gnu.2.28".format(os, arch),
+    "@zig_toolchains//{}-{}/toolchain:linux_arm64_gnu.2.28".format(os, arch),
+    "@zig_toolchains//{}-{}/toolchain:windows_amd64".format(os, arch),
+    "@zig_toolchains//{}-{}/toolchain:windows_arm64".format(os, arch),
+
+    # amd64 toolchains for libc-aware platforms:
+    "@zig_toolchains//{}-{}/libc_aware/toolchain:linux_amd64_gnu.2.28".format(os, arch),
+    "@zig_toolchains//{}-{}/libc_aware/toolchain:linux_amd64_gnu.2.31".format(os, arch),
+    "@zig_toolchains//{}-{}/libc_aware/toolchain:linux_amd64_musl".format(os, arch),
+
+    # arm64 toolchains for libc-aware platforms:
+    "@zig_toolchains//{}-{}/libc_aware/toolchain:linux_arm64_gnu.2.28".format(os, arch),
+    "@zig_toolchains//{}-{}/libc_aware/toolchain:linux_arm64_musl".format(os, arch),
+
+    # wasm/wasi toolchains
+    "@zig_toolchains//{}-{}/toolchain:wasip1_wasm".format(os, arch),
+
+    # zig toolchains
+    "@zig_toolchains//{}-{}/toolchain:zig".format(os, arch),
     dev_dependency = True,
-)
+) for os, archs in _COMMON_EXEC_PLATFORMS.items() for arch in archs]
