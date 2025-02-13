@@ -60,6 +60,7 @@ def declare_cc_toolchains(os, zig_sdk_path):
             toolchain_config = ":%s_cc_config" % zigtarget,
             all_files = "//:{}_all_files".format(zigtarget),
             ar_files = "//:{}_ar_files".format(zigtarget),
+            as_files = "//:{}_compiler_files".format(zigtarget),
             compiler_files = "//:{}_compiler_files".format(zigtarget),
             linker_files = "//:{}_linker_files".format(zigtarget),
             dwp_files = "//:empty",
