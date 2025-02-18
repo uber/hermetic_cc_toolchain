@@ -1,7 +1,7 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "read_user_netrc", "use_netrc")
 load("@hermetic_cc_toolchain//toolchain/private:defs.bzl", "target_structs", "transform_os_name", "zig_tool_path")
-load("@hermetic_cc_toolchain//toolchain/private:repositories.bzl", "zig_sdk_repository", "zig_toolchains_repository")
+load("@hermetic_cc_toolchain//toolchain/private:repositories.bzl", "zig_sdk_repository")
 load(
     "@hermetic_cc_toolchain//toolchain/private:zig_sdk.bzl",
     "HOST_PLATFORM_SHA256",
@@ -85,7 +85,11 @@ def toolchains(
 
     host_only = not bool(exec_platforms)
 
-    zig_sdk_repository(name = "zig_sdk", host_only = host_only)
+    zig_sdk_repository(
+        name = "zig_sdk",
+        exec_platforms = exec_platforms,
+        host_only = host_only,
+    )
 
     # If `exec_platforms` dict is not specified by user in WORKSPACE,
     # create configs just for the HOST.
@@ -113,13 +117,8 @@ def toolchains(
                 )
                 indirect_repos.append("zig_config-{}-{}".format(os, arch))
 
-    zig_toolchains_repository(
-        name = "zig_toolchains",
-        exec_platforms = exec_platforms,
-    )
-
     return struct(
-        direct = ["zig_sdk", "zig_toolchains"],
+        direct = ["zig_sdk"],
         indirect = indirect_repos,
     )
 

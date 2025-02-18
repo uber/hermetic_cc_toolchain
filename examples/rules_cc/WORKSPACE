@@ -22,5 +22,5 @@ load("@hermetic_cc_toolchain//toolchain:defs.bzl", zig_toolchains = "toolchains"
 zig_toolchains()
 
 register_toolchains(
-    "@zig_toolchains//...",
+    "@zig_sdk//...",
 )

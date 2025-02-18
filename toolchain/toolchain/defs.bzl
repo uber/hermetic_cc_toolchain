@@ -52,5 +52,5 @@ def _declare_zig_toolchain(name, configs):
         name = name,
         exec_compatible_with = ["{}//:exec_os".format(configs), "{}//:exec_cpu".format(configs)],
         toolchain = "{}//:zig_toolchain".format(configs),
-        toolchain_type = "@zig_sdk//toolchain:toolchain_type",
+        toolchain_type = "@zig_sdk//toolchain/zig:toolchain_type",
     )

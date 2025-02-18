@@ -12,7 +12,7 @@ build:linux --sandbox_add_mount_pair=/tmp
 build:macos --sandbox_add_mount_pair=/var/tmp
 build:windows --sandbox_add_mount_pair=C:\Temp
 
-build:macos_toolchains --extra_toolchains @zig_toolchains//linux-amd64/toolchain:darwin_amd64,@zig_toolchains//linux-amd64/toolchain:darwin_arm64,@zig_toolchains//linux-arm64/toolchain:darwin_amd64,@zig_toolchains//linux-arm64/toolchain:darwin_arm64,@zig_toolchains//macos-amd64/toolchain:darwin_amd64,@zig_toolchains//macos-amd64/toolchain:darwin_arm64,@zig_toolchains//macos-arm64/toolchain:darwin_amd64,@zig_toolchains//macos-arm64/toolchain:darwin_arm64,@zig_toolchains//windows-amd64/toolchain:darwin_amd64,@zig_toolchains//windows-amd64/toolchain:darwin_arm64
+build:macos_toolchains --extra_toolchains @zig_sdk//toolchain/linux-amd64:darwin_amd64,@zig_sdk//toolchain/linux-amd64:darwin_arm64,@zig_sdk//toolchain/linux-arm64:darwin_amd64,@zig_sdk//toolchain/linux-arm64:darwin_arm64,@zig_sdk//toolchain/macos-amd64:darwin_amd64,@zig_sdk//toolchain/macos-amd64:darwin_arm64,@zig_sdk//toolchain/macos-arm64:darwin_amd64,@zig_sdk//toolchain/macos-arm64:darwin_arm64,@zig_sdk//toolchain/windows-amd64:darwin_amd64,@zig_sdk//toolchain/windows-amd64:darwin_arm64
 build:macos_toolchains --action_env BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
 build:macos_toolchains --build_tag_filters=
 

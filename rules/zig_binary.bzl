@@ -1,5 +1,5 @@
 def _impl(ctx):
-    zig_info = ctx.toolchains["@zig_sdk//toolchain:toolchain_type"].ziginfo
+    zig_info = ctx.toolchains["@zig_sdk//toolchain/zig:toolchain_type"].ziginfo
     dst = ctx.actions.declare_file(ctx.label.name)
 
     macos = ctx.attr._macos_constraint[platform_common.ConstraintValueInfo]
@@ -40,6 +40,6 @@ zig_binary = rule(
             default = "@platforms//cpu:aarch64",
         ),
     },
-    toolchains = ["@zig_sdk//toolchain:toolchain_type"],
+    toolchains = ["@zig_sdk//toolchain/zig:toolchain_type"],
     executable = True,
 )

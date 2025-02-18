@@ -9,7 +9,7 @@ bazel_dep(
 )
 
 toolchains = use_extension("@hermetic_cc_toolchain//toolchain:ext.bzl", "toolchains")
-use_repo(toolchains, "zig_sdk", "zig_toolchains")
+use_repo(toolchains, "zig_sdk")
 
 _EXEC_PLATFORMS = {
     "linux": ["amd64", "arm64"],
@@ -18,10 +18,10 @@ _EXEC_PLATFORMS = {
 }
 
 [register_toolchains(
-    "@zig_toolchains//{}-{}/toolchain:linux_amd64_gnu.2.31".format(os, arch),
-    "@zig_toolchains//{}-{}/toolchain:linux_arm64_gnu.2.31".format(os, arch),
-    "@zig_toolchains//{}-{}/toolchain:windows_amd64".format(os, arch),
-    "@zig_toolchains//{}-{}/toolchain:windows_arm64".format(os, arch),
+    "@zig_sdk//libc_aware/toolchain/{}-{}:linux_amd64_gnu.2.31".format(os, arch),
+    "@zig_sdk//libc_aware/toolchain/{}-{}:linux_arm64_gnu.2.31".format(os, arch),
+    "@zig_sdk//toolchain/{}-{}:windows_amd64".format(os, arch),
+    "@zig_sdk//toolchain/{}-{}:windows_arm64".format(os, arch),
 ) for os, archs in _EXEC_PLATFORMS.items() for arch in archs]
 
 bazel_dep(
