@@ -81,41 +81,34 @@ def toolchains(
         mirror_format = original_format.replace("https://ziglang.org/", "https://mirror.bazel.build/ziglang.org/")
         url_formats = [mirror_format, original_format]
 
-    indirect_repos = []
-
-    host_only = not bool(exec_platforms)
-
     zig_sdk_repository(
         name = "zig_sdk",
         exec_platforms = exec_platforms,
-        host_only = host_only,
     )
 
-    # If `exec_platforms` dict is not specified by user in WORKSPACE,
-    # create configs just for the HOST.
-    if host_only:
-        zig_repository(
-            name = "zig_config",
-            version = version,
-            url_formats = url_formats,
-            host_platform_sha256 = host_platform_sha256,
-            host_platform_ext = host_platform_ext,
-        )
-        indirect_repos.append("zig_config")
+    # create configs for the HOST
+    zig_repository(
+        name = "zig_config",
+        version = version,
+        url_formats = url_formats,
+        host_platform_sha256 = host_platform_sha256,
+        host_platform_ext = host_platform_ext,
+    )
 
-    else:
-        for os, archs in exec_platforms.items():
-            for arch in archs:
-                zig_repository(
-                    name = "zig_config-{}-{}".format(os, arch),
-                    version = version,
-                    url_formats = url_formats,
-                    host_platform_sha256 = host_platform_sha256,
-                    host_platform_ext = host_platform_ext,
-                    exec_os = os,
-                    exec_arch = arch,
-                )
-                indirect_repos.append("zig_config-{}-{}".format(os, arch))
+    indirect_repos = ["zig_config"]
+
+    for os, archs in exec_platforms.items():
+        for arch in archs:
+            zig_repository(
+                name = "zig_config-{}-{}".format(os, arch),
+                version = version,
+                url_formats = url_formats,
+                host_platform_sha256 = host_platform_sha256,
+                host_platform_ext = host_platform_ext,
+                exec_os = os,
+                exec_arch = arch,
+            )
+            indirect_repos.append("zig_config-{}-{}".format(os, arch))
 
     return struct(
         direct = ["zig_sdk"],

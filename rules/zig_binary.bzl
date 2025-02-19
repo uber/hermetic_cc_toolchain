@@ -21,6 +21,8 @@ def _impl(ctx):
             "-femit-bin={}".format(dst.path),
         ],
         mnemonic = "ZigBuildExe",
+        toolchain = "@zig_sdk//toolchain/zig:toolchain_type",
+        progress_message = "Compiling '%{input}' to create '%{output}'",
     )
     return [DefaultInfo(
         files = depset([dst]),

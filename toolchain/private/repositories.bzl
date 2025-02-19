@@ -1,17 +1,6 @@
 load("@hermetic_cc_toolchain//toolchain/private:defs.bzl", "transform_arch_name", "transform_os_name")
 
-def _define_zig_toolchains(repository_ctx, os, arch):
-    _os = transform_os_name(os)
-    _arch = transform_arch_name(arch)
-
-    # TODO: find better way for `configs` & `package`
-    configs = "@zig_config-{}-{}".format(_os, _arch)
-    package = "{}-{}/".format(_os, _arch)
-
-    if _os == "HOST" and _arch == "HOST":
-        configs = "@zig_config"
-        package = ""
-
+def _define_zig_toolchains(repository_ctx, configs, package = ""):
     repository_ctx.template(
         "toolchain/{}BUILD".format(package),
         Label("//toolchain/toolchain:BUILD.bazel.tmpl"),
@@ -38,16 +27,21 @@ def _zig_sdk_repository_impl(repository_ctx):
 package(
     default_visibility = ["//visibility:public"],
 )
+
 toolchain_type(
     name = "toolchain_type",
 )
 """
     _build = """
+package(
+    default_visibility = ["//visibility:public"],
+)
+
 alias(
     name = "zig",
-    actual = "{}//:zig",
+    actual = "@zig_config//:zig",
 )
-""".format("@zig_config" if repository_ctx.attr.host_only else "@zig_config-{}-{}".format(_os, _arch))
+"""
 
     repository_ctx.file(
         "BUILD.bazel",
@@ -70,14 +64,25 @@ alias(
         repository_ctx.read(Label("//toolchain/libc_aware/platform:BUILD")),
     )
 
-    # if empty get host os & arch
-    if not bool(repository_ctx.attr.exec_platforms):
-        _define_zig_toolchains(repository_ctx, "HOST", "HOST")
-        return
+    # toolchains for the HOST
+    _define_zig_toolchains(repository_ctx, "@zig_config")
 
-    for os, archs in repository_ctx.attr.exec_platforms.items():
+    # Remove the HOST to not duplicate Zig HOST toolchains (@zig_config)
+    exec_platforms = repository_ctx.attr.exec_platforms
+
+    _archs = exec_platforms.get(_os, list())
+    if _arch in _archs:
+        _archs.remove(_arch)
+        exec_platforms[_os] = _archs
+
+    for os, archs in exec_platforms.items():
         for arch in archs:
-            _define_zig_toolchains(repository_ctx, os, arch)
+            _os = transform_os_name(os)
+            _arch = transform_arch_name(arch)
+            configs = "@zig_config-{}-{}".format(_os, _arch)
+            package = "{}-{}/".format(_os, _arch)
+
+            _define_zig_toolchains(repository_ctx, configs, package = package)
 
 zig_sdk_repository = repository_rule(
     doc = "Creates common constraint & platform definitions.",
