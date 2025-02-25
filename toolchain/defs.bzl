@@ -362,6 +362,7 @@ def declare_files(os):
                 ":zig",
                 ":{}_includes".format(target_config.zigtarget),
                 cxx_tool_label,
+                ":tools/ld.lld{}".format(exe),
             ] + native.glob([
                 "lib/libc/{}/**".format(target_config.libc),
                 "lib/libcxx/**",
