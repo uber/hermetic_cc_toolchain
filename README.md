@@ -34,6 +34,8 @@ Uber GitHub repository](https://github.com/uber) and renamed to
 
 ## Usage
 
+### WORKSPACE
+
 Add this to your `WORKSPACE`:
 
 ```starlark
@@ -57,6 +59,23 @@ load("@hermetic_cc_toolchain//toolchain:defs.bzl", zig_toolchains = "toolchains"
 # download URL.
 zig_toolchains()
 ```
+
+### MODULE.bazel
+
+Add this to your `MODULE.bazel`:
+
+```starlark
+bazel_dep(name = "hermetic_cc_toolchain", version = "3.1.0")
+
+toolchains = use_extension("@hermetic_cc_toolchain//toolchain:ext.bzl", "toolchains")
+use_repo(toolchains, "zig_sdk")
+
+register_toolchains(
+    "@zig_sdk//toolchain/...",
+    "@zig_sdk//libc_aware/toolchain/...",
+```
+
+### Configuration file
 
 And this to `.bazelrc` on a Unix-y systems:
 
@@ -87,6 +106,85 @@ introduction to C++ toolchains from "user's perspective" too.
 
 See [examples][examples] for some other recommended `.bazelrc` flags, as well
 as how to use `hermetic_cc_toolchain` with bzlmod.
+
+### Repositories
+
+`hermetic_cc_toolchain` creates few repositories to work with:
+- `@zig_sdk` - platform, constraint and toolchain definitions for supported platforms
+- `@zig_config` - internal config targets for HOST platform (not visible to main repository)
+- `@zig_config-{os}-{arch}` - internal config targets for supported platforms when explicitly provided to [toolchains()](toolchain/defs.bzl#62) macro (not visible to main repository)
+
+By default `hermetic_cc_toolchain` creates toolchains just for the HOST execution
+platform. To create toolchains for other execution platforms than HOST, those need
+to be explicitly specified within [toolchains()](toolchain/defs.bzl#62) macro call.
+The dictionary argument of [exec_platforms](toolchain/defs.bzl#L67), specifies additional execution platforms and has to conform Bazel's
+[attr.string_dict()](https://bazel.build/rules/lib/toplevel/attr#string_dict), e.g.:
+
+```starlark
+_EXEC_PLATFORMS = {
+    "linux": ["arm64"],
+    "macos": ["amd64", "arm64"],
+    "windows": ["amd64"],
+}
+```
+
+#### WORKSPACE
+
+If toolchains for other than HOST execution platforms are needed, pass them to `zig_toolchains()`:
+
+```
+load("@hermetic_cc_toolchain//toolchain:defs.bzl", zig_toolchains = "toolchains")
+
+_MACOS_EXEC_PLATFORMS = {
+    "macos": ["amd64", "arm64"],
+}
+
+zig_toolchains(
+  exec_platforms = _MACOS_EXEC_PLATFORMS
+)
+```
+
+#### MODULE.bazel
+
+[toolchains](toolchain/ext.bzl#40) module extension provides [exec_platform](toolchain/ext.bzl#4)
+tag class, which allows to specify additional execution platforms.
+To add toolchains for `windows-amd64` execution platform (additionally to HOST execution
+platform), call `toolchains.exec_platform()`:
+
+```starlark
+toolchains = use_extension("//toolchain:ext.bzl", "toolchains")
+toolchains.exec_platform(
+    os = "windows",
+    arch = "amd64",
+)
+use_repo(toolchains, "zig_sdk")
+```
+
+### Toolchains
+
+All toolchain definitions for the HOST execution platform are defined in:
+
+- `@zig_sdk//toolchain/...`
+  - unaware of `libc` constraint (`"@zig_sdk//libc:variant"`)
+- `@zig_sdk//libc_aware/toolchain/...`
+  - `libc` version aware e.g. `@zig_sdk//libc_aware/toolchain:linux_arm64_gnu.2.31`
+
+In case of additional execution platforms, toolchains are placed with the same rule
+as for the HOST but with an additional platform _subpackage_ of `"{os}-{arch}"` i.e.:
+
+```starlark
+@zig_sdk//toolchain/{os}-{arch}/...
+@zig_sdk//libc_aware/toolchain/{os}-{arch}/...
+```
+
+Having a `x86_64-linux-musl` toolchain for `@zig_sdk//platform:windows_amd64` execution platform will have full label of:
+
+```
+@zig_sdk//toolchain/windows-amd64:x86_64-linux-musl
+                    ~~~~~~~~~~~~~
+                    ^
+                    os = `windows`, arch = `x86_64`
+```
 
 ### Use case: manually build a single target with a specific zig cc toolchain
 
@@ -125,10 +223,9 @@ platform(
 compatible with (in Bazelspeak, `target_compatible_with`) **all of the**
 `["@platforms//os:linux", "@platforms//cpu:aarch64"]`.
 
-#### Option `--toolchains=@zig_sdk//toolchain:linux_arm64_musl`
+#### Option `--extra_toolchains=@zig_sdk//toolchain:linux_arm64_musl`
 
-Inspect first (`@platforms//cpu:aarch64` is an alias to
-`@platforms//cpu:arm64`):
+Inspect first (`@platforms//cpu:aarch64` is an alias to `@platforms//cpu:arm64`):
 
 ```
 $ bazel query --output=build @zig_sdk//toolchain:linux_arm64_musl
@@ -136,12 +233,21 @@ toolchain(
   name = "linux_arm64_musl",
   generator_name = "linux_arm64_musl",
   generator_function = "declare_toolchains",
-  generator_location = "toolchain/BUILD:7:19",
+  generator_location = "toolchains~zig_sdk/toolchain/BUILD:7:19",
   toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
+  exec_compatible_with = ["@@_main~toolchains~zig_config//:exec_os", "@@_main~toolchains~zig_config//:exec_cpu"],
   target_compatible_with = ["@platforms//os:linux", "@platforms//cpu:aarch64", "@zig_sdk//libc:unconstrained"],
-  toolchain = "@zig_sdk//:aarch64-linux-musl_cc",
+  toolchain = "@@_main~toolchains~zig_config//:aarch64-linux-musl_cc",
 )
 ```
+
+Toolchain is compatible with an execution platform who satisfies
+`constraint_value`s of:
+- `@zig_config//:exec_os`
+- `@zig_config//:exec_cpu`
+
+Both are aliases to actual `os` and `cpu` of HOST platform (here `@platforms//os:linux`
+and `@platforms//cpu:x86_64` respectively).
 
 For a platform to pick up the right toolchain, the platform's
 `constraint_values` must be a subset[^1] of the toolchain's
@@ -173,9 +279,38 @@ bazel build --config=linux_arm64_musl //test/go:go
 ### Use case: always compile with zig cc
 
 Instead of adding the toolchains to `.bazelrc`, they can be added
-unconditionally. Append this to `WORKSPACE` after `zig_toolchains(...)`:
+unconditionally.
+
+#### MODULE.bazel
+
+```
+register_toolchains(
+    # execution HOST platform
+    "@zig_sdk//toolchain:aarch64-linux-musl",
+    "@zig_sdk//libc_aware/toolchain:linux_arm64_gnu.2.31",
+
+    # toolchains for libc-aware platforms, will be used for amd64 / arm64
+    "@zig_sdk//libc_aware/toolchain:linux_amd64_gnu.2.28",
+    "@zig_sdk//libc_aware/toolchain:linux_arm64_gnu.2.28",
+
+    # toolchains for darwin, will be used for amd64 / arm64
+    "@zig_sdk//toolchain:darwin_amd64",
+    "@zig_sdk//toolchain:darwin_arm64",
+
+    # wasm/wasi toolchains
+    "@zig_sdk//toolchain:wasip1_wasm",
+)
+```
+
+#### WORKSPACE
+
+Append this to `WORKSPACE` after `zig_toolchains()`:
 
 ```starlark
+load("@hermetic_cc_toolchain//toolchain:defs.bzl", zig_toolchains = "toolchains")
+
+zig_toolchains()
+
 register_toolchains(
     "@zig_sdk//toolchain:linux_amd64_gnu.2.28",
     "@zig_sdk//toolchain:linux_arm64_gnu.2.28",
@@ -186,6 +321,16 @@ register_toolchains(
     "@zig_sdk//toolchain:wasip1_wasm",
 )
 ```
+
+#### All toolchains at once
+
+To register all available toolchains one can simply call:
+
+```starlark
+register_toolchains("@zig_sdk//...")
+```
+
+#### No local toolchains
 
 Append this to `.bazelrc`:
 
@@ -223,14 +368,14 @@ register_toolchains(
 What does `@zig_sdk//libc_aware/toolchain:linux_amd64_gnu.2.19` mean?
 
 ```
-$ bazel query --output=build @zig_sdk//libc_aware/toolchain:linux_amd64_gnu.2.19 |& grep target
+$ bazel query --output=build @zig_sdk//libc_aware/toolchain:linux_amd64_gnu.2.19 | grep target
   target_compatible_with = ["@platforms//os:linux", "@platforms//cpu:x86_64", "@zig_sdk//libc:gnu.2.19"],
 ```
 
 To see how this relates to the platform:
 
 ```
-$ bazel query --output=build @zig_sdk//libc_aware/platform:linux_amd64_gnu.2.19 |& grep constraint
+$ bazel query --output=build @zig_sdk//libc_aware/platform:linux_amd64_gnu.2.19 | grep constraint
   constraint_values = ["@platforms//os:linux", "@platforms//cpu:x86_64", "@zig_sdk//libc:gnu.2.19"],
 ```
 
@@ -241,17 +386,15 @@ build a project for a specific libc-aware platform; it will select the
 appropriate toolchain:
 
 ```
-$ bazel run --platforms @zig_sdk//libc_aware/platform:linux_amd64_gnu.2.19 //test/c:which_libc
-glibc_2.19
-$ bazel run --platforms @zig_sdk//libc_aware/platform:linux_amd64_gnu.2.28 //test/c:which_libc
-glibc_2.28
-$ bazel run --platforms @zig_sdk//libc_aware/platform:linux_amd64_musl //test/c:which_libc
-non_glibc
+$ bazel run --platforms @zig_sdk//libc_aware/platform:linux_amd64_gnu.2.28 //test/c:which_libc_linux_amd64_gnu.2.28
+linux glibc_2.28
+$ bazel run --platforms @zig_sdk//libc_aware/platform:linux_amd64_musl //test/c:which_libc_linux_amd64_musl
+linux non-glibc
 $ bazel run --run_under=file --platforms @zig_sdk//libc_aware/platform:linux_arm64_gnu.2.28 //test/c:which_libc
 which_libc: ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, for GNU/Linux 2.0.0, stripped
 ```
 
-To the list of libc aware toolchains and platforms:
+To list libc aware toolchains and platforms:
 
 ```
 $ bazel query @zig_sdk//libc_aware/toolchain/...
@@ -302,6 +445,15 @@ used, run:
 
 ```
 $ bazel query @zig_sdk//toolchain/...
+```
+
+> **For execution platform other than HOST toolchains subpackage of
+> `@zig_sdk` repository uses only `go` names:**
+
+```
+$ bazel query @zig_sdk//toolchain/linux-arm64/...
+                                  ~~~~~~~~~~~
+                                  execution platform os = linux, arch = arm64
 ```
 
 ## Incompatibilities with clang and gcc

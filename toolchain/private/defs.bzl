@@ -168,7 +168,7 @@ def _target_linux_gnu(gocpu, zigcpu, glibc_version):
             "@platforms//os:linux",
             "@platforms//cpu:{}".format(zigcpu),
         ],
-        libc_constraint = "//libc:{}".format(glibc_suffix),
+        libc_constraint = "@zig_sdk//libc:{}".format(glibc_suffix),
         ld_zig_subcmd = "ld.lld",
         artifact_name_patterns = [],
     )
@@ -196,7 +196,7 @@ def _target_linux_musl(gocpu, zigcpu):
             "@platforms//os:linux",
             "@platforms//cpu:{}".format(zigcpu),
         ],
-        libc_constraint = "//libc:musl",
+        libc_constraint = "@zig_sdk//libc:musl",
         ld_zig_subcmd = "ld.lld",
         artifact_name_patterns = [],
     )
@@ -234,3 +234,21 @@ def _target_wasm():
             },
         ],
     )
+
+def transform_os_name(os):
+    if os.startswith("mac os"):
+        return "macos"
+
+    if os.startswith("windows"):
+        return "windows"
+
+    return os
+
+def transform_arch_name(arch):
+    if arch.startswith("aarch64"):
+        return "arm64"
+
+    if arch.startswith("x86_64"):
+        return "amd64"
+
+    return arch

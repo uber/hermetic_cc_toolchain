@@ -3,6 +3,7 @@
 
 load("@hermetic_cc_toolchain//toolchain:defs.bzl", "declare_files")
 load("@hermetic_cc_toolchain//toolchain/private:cc_toolchains.bzl", "declare_cc_toolchains")
+load("@hermetic_cc_toolchain//toolchain/private:zig_toolchain.bzl", "declare_zig_toolchain")
 
 package(
     default_visibility = ["//visibility:public"],
@@ -16,6 +17,8 @@ declare_cc_toolchains(
     os = {os},
     zig_sdk_path = {zig_sdk_path},
 )
+
+declare_zig_toolchain(name = "zig_toolchain")
 
 alias(
     name = "exec_os",

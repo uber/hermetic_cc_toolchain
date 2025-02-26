@@ -1,4 +1,5 @@
 def _impl(ctx):
+    zig_info = ctx.toolchains["@zig_sdk//toolchain/zig:toolchain_type"].ziginfo
     dst = ctx.actions.declare_file(ctx.label.name)
 
     macos = ctx.attr._macos_constraint[platform_common.ConstraintValueInfo]
@@ -9,9 +10,10 @@ def _impl(ctx):
         mcpu = "baseline"
 
     ctx.actions.run(
-        inputs = [ctx.file.src] + ctx.files._zig_sdk,
+        inputs = [ctx.file.src],
         outputs = [dst],
-        executable = ctx.file._zig.path,
+        executable = zig_info.zig,
+        tools = zig_info.data,
         arguments = [
             "build-exe",
             ctx.file.src.short_path,
@@ -19,6 +21,8 @@ def _impl(ctx):
             "-femit-bin={}".format(dst.path),
         ],
         mnemonic = "ZigBuildExe",
+        toolchain = "@zig_sdk//toolchain/zig:toolchain_type",
+        progress_message = "Compiling '%{input}' to create '%{output}'",
     )
     return [DefaultInfo(
         files = depset([dst]),
@@ -31,14 +35,6 @@ zig_binary = rule(
         "src": attr.label(
             allow_single_file = [".zig"],
         ),
-        "_zig": attr.label(
-            default = "@zig_sdk//:tools/zig-wrapper",
-            allow_single_file = True,
-        ),
-        "_zig_sdk": attr.label(
-            default = "@zig_sdk//:all",
-            allow_files = True,
-        ),
         "_macos_constraint": attr.label(
             default = "@platforms//os:macos",
         ),
@@ -46,5 +42,6 @@ zig_binary = rule(
             default = "@platforms//cpu:aarch64",
         ),
     },
+    toolchains = ["@zig_sdk//toolchain/zig:toolchain_type"],
     executable = True,
 )

@@ -1,6 +1,7 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "read_user_netrc", "use_netrc")
-load("@hermetic_cc_toolchain//toolchain/private:defs.bzl", "target_structs", "zig_tool_path")
+load("@hermetic_cc_toolchain//toolchain/private:defs.bzl", "target_structs", "transform_os_name", "zig_tool_path")
+load("@hermetic_cc_toolchain//toolchain/private:repositories.bzl", "zig_sdk_repository")
 load(
     "@hermetic_cc_toolchain//toolchain/private:zig_sdk.bzl",
     "HOST_PLATFORM_SHA256",
@@ -24,6 +25,7 @@ _HOST_PLATFORM_EXT = {
     "macos-aarch64": "tar.xz",
     "macos-x86_64": "tar.xz",
     "windows-x86_64": "zip",
+    "windows-aarch64": "zip",
 }
 
 # map bazel's host_platform to zig's -target= and -mcpu=
@@ -33,6 +35,7 @@ _TARGET_MCPU = {
     "macos-aarch64": ("aarch64-macos-none", "apple_a14"),
     "macos-x86_64": ("x86_64-macos-none", "baseline"),
     "windows-x86_64": ("x86_64-windows-gnu", "baseline"),
+    "windows-aarch64": ("aarch64-windows-gnu", "baseline"),
 }
 
 _compile_failed = """
@@ -61,8 +64,7 @@ def toolchains(
         url_formats = [],
         host_platform_sha256 = HOST_PLATFORM_SHA256,
         host_platform_ext = _HOST_PLATFORM_EXT,
-        exec_os = "HOST",
-        exec_arch = "HOST"):
+        exec_platforms = {}):
     """
         Download zig toolchain and declare bazel toolchains.
         The platforms are not registered automatically, that should be done by
@@ -79,28 +81,38 @@ def toolchains(
         mirror_format = original_format.replace("https://ziglang.org/", "https://mirror.bazel.build/ziglang.org/")
         url_formats = [mirror_format, original_format]
 
-    # If these are not specified by user in WORKSPACE, fall back to the old
-    # behavior of assuming HOST is the only supported platform.
-    if exec_os == "HOST" and exec_arch == "HOST":
-        zig_repository(
-            name = "zig_sdk",
-            version = version,
-            url_formats = url_formats,
-            host_platform_sha256 = host_platform_sha256,
-            host_platform_ext = host_platform_ext,
-            exec_os = exec_os,
-            exec_arch = exec_arch,
-        )
-        return
+    zig_sdk_repository(
+        name = "zig_sdk",
+        exec_platforms = exec_platforms,
+    )
 
+    # create configs for the HOST
     zig_repository(
-        name = "zig_sdk-{}-{}".format(exec_os, exec_arch),
+        name = "zig_config",
         version = version,
         url_formats = url_formats,
         host_platform_sha256 = host_platform_sha256,
         host_platform_ext = host_platform_ext,
-        exec_os = exec_os,
-        exec_arch = exec_arch,
+    )
+
+    indirect_repos = ["zig_config"]
+
+    for os, archs in exec_platforms.items():
+        for arch in archs:
+            zig_repository(
+                name = "zig_config-{}-{}".format(os, arch),
+                version = version,
+                url_formats = url_formats,
+                host_platform_sha256 = host_platform_sha256,
+                host_platform_ext = host_platform_ext,
+                exec_os = os,
+                exec_arch = arch,
+            )
+            indirect_repos.append("zig_config-{}-{}".format(os, arch))
+
+    return struct(
+        direct = ["zig_sdk"],
+        indirect = indirect_repos,
     )
 
 def _quote(s):
@@ -117,6 +129,7 @@ def _zig_repository_impl(repository_ctx):
     if exec_arch == "HOST":
         exec_arch = host_arch
 
+    # transform {host,exec}_arch to conform _HOST_PLATFORM_EXT keys
     if exec_arch == "amd64":
         exec_arch = "x86_64"
     if host_arch == "amd64":
@@ -126,15 +139,8 @@ def _zig_repository_impl(repository_ctx):
     if exec_arch == "arm64":
         exec_arch = "aarch64"
 
-    # os = repository_ctx.os.name.lower()
-    if exec_os.startswith("mac os"):
-        exec_os = "macos"
-    if host_os.startswith("mac os"):
-        host_os = "macos"
-    if exec_os.startswith("windows"):
-        exec_os = "windows"
-    if host_os.startswith("windows"):
-        host_os = "windows"
+    exec_os = transform_os_name(exec_os)
+    host_os = transform_os_name(host_os)
 
     host_platform = "{}-{}".format(host_os, host_arch)
     exec_platform = "{}-{}".format(exec_os, exec_arch)
@@ -151,20 +157,6 @@ def _zig_repository_impl(repository_ctx):
         "version": repository_ctx.attr.version,
         "host_platform": exec_platform,
     }
-
-    # Fetch Label dependencies before doing download/extract.
-    # The Bazel docs are not very clear about this behavior but see:
-    # https://bazel.build/extending/repo#when_is_the_implementation_function_executed
-    # and a related rules_go PR:
-    # https://github.com/bazelbuild/bazel-gazelle/pull/1206
-    for dest, src in {
-        "platform/BUILD": "//toolchain/platform:BUILD",
-        "toolchain/BUILD": "//toolchain/toolchain:BUILD",
-        "libc/BUILD": "//toolchain/libc:BUILD",
-        "libc_aware/platform/BUILD": "//toolchain/libc_aware/platform:BUILD",
-        "libc_aware/toolchain/BUILD": "//toolchain/libc_aware/toolchain:BUILD",
-    }.items():
-        repository_ctx.symlink(Label(src), dest)
 
     for dest, src in {
         "BUILD": "//toolchain:BUILD.sdk.bazel",
@@ -284,36 +276,11 @@ zig_repository = repository_rule(
         "host_platform_sha256": attr.string_dict(),
         "url_formats": attr.string_list(allow_empty = False),
         "host_platform_ext": attr.string_dict(),
-        "exec_os": attr.string(),
-        "exec_arch": attr.string(),
+        "exec_os": attr.string(default = "HOST"),
+        "exec_arch": attr.string(default = "HOST"),
     },
     environ = ["HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX"],
     implementation = _zig_repository_impl,
-)
-
-def _host_zig_repository_impl(repository_ctx):
-    host_os = repository_ctx.os.name
-    host_arch = repository_ctx.os.arch
-    if host_os.startswith("mac os"):
-        host_os = "macos"
-
-    if host_os.startswith("windows"):
-        host_os = "windows"
-
-    if host_arch.startswith("aarch64"):
-        host_arch = "arm64"
-
-    if host_arch.startswith("x86_64"):
-        host_arch = "amd64"
-
-    host_platform_compatible_zig = Label("@zig_sdk-{}-{}//:WORKSPACE".format(host_os, host_arch))
-    compatible_zig_path = repository_ctx.path(host_platform_compatible_zig)
-    repository_ctx.delete(".")
-    repository_ctx.symlink(str(compatible_zig_path) + "/..", ".")
-
-host_zig_repository = repository_rule(
-    implementation = _host_zig_repository_impl,
-    local = True,
 )
 
 def filegroup(name, **kwargs):
