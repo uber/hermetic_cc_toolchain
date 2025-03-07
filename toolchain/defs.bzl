@@ -95,7 +95,7 @@ def toolchains(
         host_platform_ext = host_platform_ext,
     )
 
-    indirect_repos = ["zig_config"]
+    private_repos = ["zig_config"]
 
     for os, archs in exec_platforms.items():
         for arch in archs:
@@ -108,11 +108,11 @@ def toolchains(
                 exec_os = os,
                 exec_arch = arch,
             )
-            indirect_repos.append("zig_config-{}-{}".format(os, arch))
+            private_repos.append("zig_config-{}-{}".format(os, arch))
 
     return struct(
-        direct = ["zig_sdk"],
-        indirect = indirect_repos,
+        public = ["zig_sdk"],
+        private = private_repos,
     )
 
 def _quote(s):
