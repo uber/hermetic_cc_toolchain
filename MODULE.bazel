@@ -30,7 +30,7 @@ use_repo(
     "com_github_tetratelabs_wazero",
 )
 
-toolchains = use_extension("//toolchain:ext.bzl", "toolchains")
+toolchains = use_extension("//toolchain:ext.bzl", "toolchains", dev_dependency = True)
 use_repo(toolchains, "zig_sdk")
 
 # TODO: register all toolchains by:
