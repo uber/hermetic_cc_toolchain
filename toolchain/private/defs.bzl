@@ -207,12 +207,18 @@ def _target_wasm():
         zigtarget = "wasm32-wasi-musl",
         includes = [
             "libc/include/wasm-wasi-musl",
+            "libc/include/generic-musl",
             "libc/wasi",
         ] + _INCLUDE_TAIL,
         linkopts = [],
         dynamic_library_linkopts = [],
         supports_dynamic_linker = False,
-        copts = [],
+        copts = [
+            "-D_LIBCPP_HAS_MUSL_LIBC",
+            "-D_LIBCPP_HAS_NO_THREADS",
+            "-D_LIBCPP_HAS_NO_THREAD_UNSAFE_C_FUNCTIONS",
+            "-D_LIBCPP_HAS_NO_THREAD_API_PTHREAD",
+        ],
         libc = "musl",
         bazel_target_cpu = "wasm32",
         constraint_values = [
