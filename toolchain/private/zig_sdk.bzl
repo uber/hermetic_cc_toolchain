@@ -1,12 +1,12 @@
-VERSION = "0.14.0-dev.3028+cdc9d65b0"
+VERSION = "0.14.0"
 
 HOST_PLATFORM_SHA256 = {
-    "linux-aarch64": "2049eda7a11a4ca251d9d8d2546c6778828edd0940d621805f2b9c56a06c5043",
-    "linux-x86_64": "",
-    "macos-aarch64": "ea5b85f82fe22d81dc0d2f2f78f59999418e13ac0fb4d2a5fcfc7be1a979cb80",
-    "macos-x86_64": "",
-    "windows-aarch64": "",
-    "windows-x86_64": "1fa65e7110416ea338868f042c457ed4d724c281cb94329436f6c32f3e658854",
+    "linux-aarch64": "ab64e3ea277f6fc5f3d723dcd95d9ce1ab282c8ed0f431b4de880d30df891e4f",
+    "linux-x86_64": "473ec26806133cf4d1918caf1a410f8403a13d979726a9045b421b685031a982",
+    "macos-aarch64": "b71e4b7c4b4be9953657877f7f9e6f7ee89114c716da7c070f4a238220e95d7e",
+    "macos-x86_64": "685816166f21f0b8d6fc7aa6a36e91396dcd82ca6556dfbe3e329deffc01fec3",
+    "windows-aarch64": "03e984383ebb8f85293557cfa9f48ee8698e7c400239570c9ff1aef3bffaf046",
+    "windows-x86_64": "f53e5f9011ba20bbc3e0e6d0a9441b31eb227a97bac0e7d24172f1b8b27b4371",
 }
 
 # Official recommended version. Should use this when we have a usable release.
