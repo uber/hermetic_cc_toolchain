@@ -161,11 +161,7 @@ def _target_linux_gnu(gocpu, zigcpu, glibc_version):
         linkopts = [],
         dynamic_library_linkopts = [],
         supports_dynamic_linker = True,
-        copts = [
-            "-D_GNU_SOURCE",
-            "-D_POSIX_C_SOURCE=200809L",
-            "-D_XOPEN_SOURCE=600",
-        ],
+        copts = ["-D_GNU_SOURCE"],
         libc = "glibc",
         bazel_target_cpu = "k8",
         constraint_values = [
