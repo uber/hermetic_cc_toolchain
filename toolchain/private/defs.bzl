@@ -213,12 +213,7 @@ def _target_wasm():
         linkopts = [],
         dynamic_library_linkopts = [],
         supports_dynamic_linker = False,
-        copts = [
-            "-D_LIBCPP_HAS_MUSL_LIBC",
-            "-D_LIBCPP_HAS_NO_THREADS",
-            "-D_LIBCPP_HAS_NO_THREAD_UNSAFE_C_FUNCTIONS",
-            "-D_LIBCPP_HAS_NO_THREAD_API_PTHREAD",
-        ],
+        copts = [],
         libc = "musl",
         bazel_target_cpu = "wasm32",
         constraint_values = [
