@@ -54,6 +54,7 @@ register_toolchains(
 
     # wasm/wasi toolchains
     "@zig_sdk//toolchain:wasip1_wasm",
+    "@zig_sdk//toolchain:none_wasm",
 
     # zig toolchains
     "@zig_sdk//toolchain:zig",
