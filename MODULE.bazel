@@ -3,8 +3,8 @@ module(
     version = "3.2.0",
 )
 
-bazel_dep(name = "bazel_features", version = "1.20.0")
-bazel_dep(name = "platforms", version = "0.0.8")
+bazel_dep(name = "bazel_features", version = "1.21.0")
+bazel_dep(name = "platforms", version = "0.0.10")
 
 bazel_dep(name = "rules_go", version = "0.54.0", dev_dependency = True)
 
