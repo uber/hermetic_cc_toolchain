@@ -6,7 +6,7 @@ module(
 bazel_dep(name = "bazel_features", version = "1.20.0")
 bazel_dep(name = "platforms", version = "0.0.8")
 
-bazel_dep(name = "rules_go", version = "0.45.1", dev_dependency = True)
+bazel_dep(name = "rules_go", version = "0.54.0", dev_dependency = True)
 
 go_sdk = use_extension(
     "@rules_go//go:extensions.bzl",
@@ -15,7 +15,7 @@ go_sdk = use_extension(
 )
 use_repo(go_sdk, "go_default_sdk")
 
-bazel_dep(name = "gazelle", version = "0.35.0", dev_dependency = True)
+bazel_dep(name = "gazelle", version = "0.43.0", dev_dependency = True)
 
 go_deps = use_extension(
     "@gazelle//:extensions.bzl",
