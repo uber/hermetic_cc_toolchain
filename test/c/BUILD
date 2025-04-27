@@ -1,6 +1,6 @@
 load("@hermetic_cc_toolchain//rules:platform.bzl", "platform_binary")
-load("@rules_go//go:def.bzl", "go_library", "go_test")
 load("@local_config_platform//:constraints.bzl", "HOST_CONSTRAINTS")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 cc_binary(
     name = "which_libc",

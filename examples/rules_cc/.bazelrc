@@ -3,6 +3,7 @@
 try-import %workspace%/../../.bazelrc.ci
 
 common --enable_platform_specific_config
+common --noenable_bzlmod --enable_workspace
 
 build --incompatible_disallow_empty_glob
 build --verbose_failures

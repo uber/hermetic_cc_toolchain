@@ -1,8 +1,8 @@
 # Copyright 2023 Uber Technologies, Inc.
 # Licensed under the MIT License
 
-load("@rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
 load("@hermetic_cc_toolchain//rules:platform.bzl", "platform_binary")
+load("@rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
 
 go_library(
     name = "cgo_lib",
