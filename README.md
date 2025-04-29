@@ -81,20 +81,14 @@ And this to `.bazelrc` on a Unix-y systems:
 
 ```
 common --enable_platform_specific_config
-build:linux --sandbox_add_mount_pair=/tmp
-build:macos --sandbox_add_mount_pair=/var/tmp
-build:windows --sandbox_add_mount_pair=C:\Temp
 ```
 
-The directories can be narrowed down to `/tmp/zig-cache` (Linux),
-`/var/tmp/zig-cache` (MacOS) and `C:\Temp\zig-cache` respectively
-if it can be ensured they will be created before the invocation of `bazel
-build`. See [#83][pr-83] for more context. If a different place is preferred
-for zig cache, set:
+The default zig cache location is within `./zig-cache` in the workspace root. If
+a different path is preferred for zig cache, set it. (It is always resolved
+against the workspace root):
 
 ```
-build --repo_env=HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX=/path/to/cache
-build --sandbox_add_mount_pair=/path/to/cache
+build --repo_env=HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX=path/to/cache
 ```
 
 The snippets above will download the zig toolchain and make the bazel
@@ -593,6 +587,5 @@ On a more practical note:
 [subset]: https://en.wikipedia.org/wiki/Subset
 [universal-headers]: https://github.com/ziglang/universal-headers
 [go-monorepo]: https://www.uber.com/blog/go-monorepo-bazel/
-[pr-83]: https://github.com/uber/hermetic_cc_toolchain/issues/83
 [pr-10]: https://github.com/uber/hermetic_cc_toolchain/issues/10
 [examples]: https://github.com/uber/hermetic_cc_toolchain/tree/main/examples
