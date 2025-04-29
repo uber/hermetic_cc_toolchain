@@ -15,11 +15,19 @@ _exec_platform = tag_class(
     doc = "Zig execution platform tuple",
 )
 
+_extra_target_settings = tag_class(
+    attrs = {
+        "settings": attr.label_list(),
+    },
+    doc = "Each setting is added to every toolchain to make them more restrictive",
+)
+
 def _toolchains_impl(mctx):
     exec_platforms = {}
     root_direct_deps = []
     root_direct_dev_deps = []
     is_non_dev_dependency = mctx.root_module_has_non_dev_dependency
+    extra_target_settings = []
 
     for mod in mctx.modules:
         if mod.is_root:
@@ -29,7 +37,10 @@ def _toolchains_impl(mctx):
                     _archs.append(ep.arch)
                 exec_platforms[ep.os] = _archs
 
-            repos = zig_toolchains(exec_platforms = exec_platforms)
+            for tag in mod.tags.extra_target_settings:
+                extra_target_settings += tag.settings
+
+            repos = zig_toolchains(exec_platforms = exec_platforms, extra_target_settings = extra_target_settings)
 
             root_direct_deps = list(repos.public) if is_non_dev_dependency else []
             root_direct_dev_deps = list(repos.public) if not is_non_dev_dependency else []
@@ -46,5 +57,8 @@ def _toolchains_impl(mctx):
 
 toolchains = module_extension(
     implementation = _toolchains_impl,
-    tag_classes = {"exec_platform": _exec_platform},
+    tag_classes = {
+        "exec_platform": _exec_platform,
+        "extra_target_settings": _extra_target_settings,
+    },
 )
