@@ -97,6 +97,10 @@ build --repo_env=HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX=/path/to/cache
 build --sandbox_add_mount_pair=/path/to/cache
 ```
 
+If you get an error `unable to create compilation: ReadOnlyFileSystem`, 
+try adding `build --sandbox_writable_path=/path/to/cache` to `.bazelrc` 
+which is known to resolve the issue for some users.
+
 The snippets above will download the zig toolchain and make the bazel
 toolchains available for registration and usage. If nothing else is done, this
 will work for some minimal use cases. The `.bazelrc` snippet instructs Bazel to
