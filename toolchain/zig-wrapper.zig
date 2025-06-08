@@ -142,9 +142,9 @@ fn spawnWindows(arena: mem.Allocator, params: ExecParams) u8 {
     proc.env_map = &params.env;
     const ret = proc.spawnAndWait() catch |err|
         return fatal(
-        "error spawning {s}: {s}\n",
-        .{ params.args.items[0], @errorName(err) },
-    );
+            "error spawning {s}: {s}\n",
+            .{ params.args.items[0], @errorName(err) },
+        );
 
     switch (ret) {
         .Exited => |code| return code,
@@ -227,16 +227,21 @@ fn parseArgs(
 
     switch (run_mode) {
         .wrapper => {},
-        .arg1 => try args.appendSlice(arena, &[_][]const u8{arg0_noexe}),
-        .cc => |target| try args.appendSlice(arena, &[_][]const u8{
-            arg0_noexe,
-            "-target",
-            target,
-        }),
+        .arg1, .cc => try args.appendSlice(arena, &[_][]const u8{arg0_noexe}),
     }
 
     while (argv_it.next()) |arg|
         try args.append(arena, arg);
+
+    // Add -target as the last parameter. The wrapper should overwrite
+    // the target specified by other tools calling the wrapper.
+    // Some tools might pass LLVM target triple, which are rejected by zig.
+    if (run_mode == RunMode.cc) {
+        try args.appendSlice(arena, &[_][]const u8{
+            "-target",
+            run_mode.cc,
+        });
+    }
 
     return ParseResults{ .exec = .{ .args = args, .env = env } };
 }
