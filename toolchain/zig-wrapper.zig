@@ -142,9 +142,9 @@ fn spawnWindows(arena: mem.Allocator, params: ExecParams) u8 {
     proc.env_map = &params.env;
     const ret = proc.spawnAndWait() catch |err|
         return fatal(
-            "error spawning {s}: {s}\n",
-            .{ params.args.items[0], @errorName(err) },
-        );
+        "error spawning {s}: {s}\n",
+        .{ params.args.items[0], @errorName(err) },
+    );
 
     switch (ret) {
         .Exited => |code| return code,
