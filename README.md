@@ -41,11 +41,11 @@ Add this to your `WORKSPACE`:
 ```starlark
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-HERMETIC_CC_TOOLCHAIN_VERSION = "v4.0.0"
+HERMETIC_CC_TOOLCHAIN_VERSION = "v4.0.1"
 
 http_archive(
     name = "hermetic_cc_toolchain",
-    sha256 = "fa481fdaf058e54a866ab61245685f6b7a883596dcfddaf2fa67b70fd0d171c4",
+    sha256 = "364655885e5af5acd02b299e4eaf113a1317dd656253249b37b7c9f05bf23b79",
     urls = [
         "https://mirror.bazel.build/github.com/uber/hermetic_cc_toolchain/releases/download/{0}/hermetic_cc_toolchain-{0}.tar.gz".format(HERMETIC_CC_TOOLCHAIN_VERSION),
         "https://github.com/uber/hermetic_cc_toolchain/releases/download/{0}/hermetic_cc_toolchain-{0}.tar.gz".format(HERMETIC_CC_TOOLCHAIN_VERSION),
