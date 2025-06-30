@@ -5,7 +5,7 @@
 //
 // In simple cases it is usually enough to:
 //
-//      zig c++ -target <triple> <...>
+//      zig c++ <...> -target <triple>
 //
 // However, there are some caveats:
 //
@@ -227,16 +227,22 @@ fn parseArgs(
 
     switch (run_mode) {
         .wrapper => {},
-        .arg1 => try args.appendSlice(arena, &[_][]const u8{arg0_noexe}),
-        .cc => |target| try args.appendSlice(arena, &[_][]const u8{
-            arg0_noexe,
-            "-target",
-            target,
-        }),
+        .arg1, .cc => try args.appendSlice(arena, &[_][]const u8{arg0_noexe}),
     }
 
     while (argv_it.next()) |arg|
         try args.append(arena, arg);
+
+    // Add -target as the last parameter. The wrapper should overwrite
+    // the target specified by other tools calling the wrapper.
+    // Some tools might pass LLVM target triple, which are rejected by zig.
+    // https://github.com/uber/hermetic_cc_toolchain/issues/222
+    if (run_mode == RunMode.cc) {
+        try args.appendSlice(arena, &[_][]const u8{
+            "-target",
+            run_mode.cc,
+        });
+    }
 
     return ParseResults{ .exec = .{ .args = args, .env = env } };
 }
@@ -363,11 +369,11 @@ test "zig-wrapper:parseArgs" {
                         "tools" ++ sep ++ "x86_64-linux-musl" ++ sep ++
                             ".." ++ sep ++ ".." ++ sep ++ "zig" ++ EXE,
                         "c++",
-                        "-target",
-                        "x86_64-linux-musl",
                         "main.c",
                         "-o",
                         "/dev/null",
+                        "-target",
+                        "x86_64-linux-musl",
                     },
                     .env_zig_lib_dir = "tools" ++ sep ++ "x86_64-linux-musl" ++
                         sep ++ ".." ++ sep ++ ".." ++ sep ++ "lib",
@@ -407,11 +413,11 @@ test "zig-wrapper:parseArgs" {
                     .args = &[_][:0]const u8{
                         "external" ++ sep ++ "zig_sdk" ++ sep ++ "zig" ++ EXE,
                         "c++",
-                        "-target",
-                        "x86_64-linux-gnu.2.28",
                         "main.c",
                         "-o",
                         "/dev/null",
+                        "-target",
+                        "x86_64-linux-gnu.2.28",
                     },
                     .env_zig_lib_dir = "external" ++ sep ++ "zig_sdk" ++
                         sep ++ "lib",
