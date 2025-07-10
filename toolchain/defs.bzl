@@ -2,6 +2,7 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "read_user_netrc", "use_netrc")
 load("@hermetic_cc_toolchain//toolchain/private:defs.bzl", "target_structs", "transform_os_name", "zig_tool_path")
 load("@hermetic_cc_toolchain//toolchain/private:repositories.bzl", "zig_sdk_repository")
+load("@hermetic_cc_toolchain//toolchain:utils.bzl", "quote")
 load(
     "@hermetic_cc_toolchain//toolchain/private:zig_sdk.bzl",
     "HOST_PLATFORM_SHA256",
@@ -64,7 +65,8 @@ def toolchains(
         url_formats = [],
         host_platform_sha256 = HOST_PLATFORM_SHA256,
         host_platform_ext = _HOST_PLATFORM_EXT,
-        exec_platforms = {}):
+        exec_platforms = {},
+        extra_target_settings = []):
     """
         Download zig toolchain and declare bazel toolchains.
         The platforms are not registered automatically, that should be done by
@@ -84,6 +86,7 @@ def toolchains(
     zig_sdk_repository(
         name = "zig_sdk",
         exec_platforms = exec_platforms,
+        extra_target_settings = extra_target_settings,
     )
 
     # create configs for the HOST
@@ -114,9 +117,6 @@ def toolchains(
         public = ["zig_sdk"],
         private = private_repos,
     )
-
-def _quote(s):
-    return "'" + s.replace("'", "'\\''") + "'"
 
 def _zig_repository_impl(repository_ctx):
     exec_os = repository_ctx.attr.exec_os
@@ -166,8 +166,8 @@ def _zig_repository_impl(repository_ctx):
             Label(src),
             executable = False,
             substitutions = {
-                "{zig_sdk_path}": _quote("external/zig_sdk"),
-                "{os}": _quote(exec_os),
+                "{zig_sdk_path}": quote("external/zig_sdk"),
+                "{os}": quote(exec_os),
                 "{exec_os}": exec_os,
                 "{exec_cpu}": exec_arch,
             },
