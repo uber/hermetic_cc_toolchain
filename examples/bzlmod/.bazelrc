@@ -9,9 +9,5 @@ build --verbose_failures
 build --worker_sandboxing
 build --experimental_output_directory_naming_scheme=diff_against_dynamic_baseline
 
-build:linux --sandbox_add_mount_pair=/tmp
-build:macos --sandbox_add_mount_pair=/var/tmp
-build:windows --sandbox_add_mount_pair=C:\Temp
-
 test --sandbox_default_allow_network=false
 test --test_output=errors
