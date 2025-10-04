@@ -1,12 +1,16 @@
 load("@hermetic_cc_toolchain//toolchain/private:defs.bzl", "transform_arch_name", "transform_os_name")
+load("@hermetic_cc_toolchain//toolchain:utils.bzl", "quote")
 
 def _define_zig_toolchains(repository_ctx, configs, package = ""):
+    extra_target_settings = "[" + " ".join([quote(str(setting)) + "," for setting in repository_ctx.attr.extra_target_settings]) + "]"
+
     repository_ctx.template(
         "toolchain/{}BUILD".format(package),
         Label("//toolchain/toolchain:BUILD.bazel.tmpl"),
         executable = False,
         substitutions = {
             "{configs}": repr(configs),
+            "{extra_target_settings}": extra_target_settings,
         },
     )
 
@@ -16,6 +20,7 @@ def _define_zig_toolchains(repository_ctx, configs, package = ""):
         executable = False,
         substitutions = {
             "{configs}": repr(configs),
+            "{extra_target_settings}": extra_target_settings,
         },
     )
 
@@ -90,6 +95,9 @@ zig_sdk_repository = repository_rule(
         "exec_platforms": attr.string_list_dict(
             doc = "Dictionary, where the keys are oses and the values are lists of supported architectures",
             mandatory = True,
+        ),
+        "extra_target_settings": attr.label_list(
+            doc = "Additional settings to add to the generated toolchains, to make them more restrictive",
         ),
     },
     implementation = _zig_sdk_repository_impl,
