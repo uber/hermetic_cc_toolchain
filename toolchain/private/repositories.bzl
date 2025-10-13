@@ -1,5 +1,5 @@
-load("@hermetic_cc_toolchain//toolchain/private:defs.bzl", "transform_arch_name", "transform_os_name")
 load("@hermetic_cc_toolchain//toolchain:utils.bzl", "quote")
+load("@hermetic_cc_toolchain//toolchain/private:defs.bzl", "transform_arch_name", "transform_os_name")
 
 def _define_zig_toolchains(repository_ctx, configs, package = ""):
     extra_target_settings = "[" + " ".join([quote(str(setting)) + "," for setting in repository_ctx.attr.extra_target_settings]) + "]"

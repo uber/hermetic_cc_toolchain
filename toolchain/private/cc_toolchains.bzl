@@ -66,6 +66,6 @@ def declare_cc_toolchains(os, zig_sdk_path):
             dwp_files = "//:empty",
             objcopy_files = "//:empty",
             strip_files = "//:empty",
-            supports_param_files = 0,
+            supports_param_files = True,
             visibility = ["//visibility:private"],
         )
