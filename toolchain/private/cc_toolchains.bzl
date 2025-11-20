@@ -1,4 +1,5 @@
 load("@hermetic_cc_toolchain//toolchain:zig_cc_toolchain.bzl", "zig_cc_toolchain_config")
+load("@rules_cc//cc/toolchains:cc_toolchain.bzl", "cc_toolchain")
 load(":defs.bzl", "target_structs", "zig_tool_path")
 
 def declare_cc_toolchains(os, zig_sdk_path):
@@ -54,7 +55,7 @@ def declare_cc_toolchains(os, zig_sdk_path):
             visibility = ["//visibility:private"],
         )
 
-        native.cc_toolchain(
+        cc_toolchain(
             name = zigtarget + "_cc",
             toolchain_identifier = zigtarget + "-toolchain",
             toolchain_config = ":%s_cc_config" % zigtarget,
