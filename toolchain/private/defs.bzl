@@ -161,7 +161,7 @@ def _target_linux_gnu(gocpu, zigcpu, glibc_version):
         linkopts = [],
         dynamic_library_linkopts = [],
         supports_dynamic_linker = True,
-        copts = [],
+        copts = ["-D_GNU_SOURCE"],
         libc = "glibc",
         bazel_target_cpu = "k8",
         constraint_values = [
@@ -207,6 +207,7 @@ def _target_wasm():
         zigtarget = "wasm32-wasi-musl",
         includes = [
             "libc/include/wasm-wasi-musl",
+            "libc/include/generic-musl",
             "libc/wasi",
         ] + _INCLUDE_TAIL,
         linkopts = [],
