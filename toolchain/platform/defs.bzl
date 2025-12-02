@@ -16,6 +16,7 @@ def declare_platforms():
 
     # We can support GOARCH=wasm32 after https://github.com/golang/go/issues/63131
     declare_platform("wasm", "wasm32", "wasi", "wasip1")
+    declare_platform("wasm", "wasm32", "none", "none")
 
 def declare_libc_aware_platforms():
     # create @zig_sdk//{os}_{arch}_platform entries with zig and go conventions
