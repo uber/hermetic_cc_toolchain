@@ -55,7 +55,7 @@ const std = @import("std");
 const fs = std.fs;
 const mem = std.mem;
 const process = std.process;
-const ChildProcess = std.ChildProcess;
+const ChildProcess = std.process.Child;
 const ArrayListUnmanaged = std.ArrayListUnmanaged;
 const sep = fs.path.sep_str;
 
@@ -93,7 +93,7 @@ const ParseResults = union(Action) {
 };
 
 // sub-commands in the same folder as `zig-wrapper`
-const sub_commands_target = std.ComptimeStringMap(void, .{
+const sub_commands_target = std.StaticStringMap(void).initComptime(.{
     .{"ar"},
     .{"ld.lld"},
     .{"lld-link"},
@@ -142,9 +142,9 @@ fn spawnWindows(arena: mem.Allocator, params: ExecParams) u8 {
     proc.env_map = &params.env;
     const ret = proc.spawnAndWait() catch |err|
         return fatal(
-        "error spawning {s}: {s}\n",
-        .{ params.args.items[0], @errorName(err) },
-    );
+            "error spawning {s}: {s}\n",
+            .{ params.args.items[0], @errorName(err) },
+        );
 
     switch (ret) {
         .Exited => |code| return code,
@@ -282,7 +282,7 @@ fn getRunMode(self_exe: []const u8, self_base_noexe: []const u8) error{BadParent
     // strings `is.it.x86_64?-stallinux,macos-`; we are trying to aid users
     // that run things from the wrong directory, not trying to punish the ones
     // having fun.
-    var it = mem.split(u8, triple, "-");
+    var it = mem.splitSequence(u8, triple, "-");
 
     const arch = it.next() orelse return error.BadParent;
     if (mem.indexOf(u8, "aarch64,x86_64,wasm32", arch) == null)
