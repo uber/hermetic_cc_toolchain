@@ -159,11 +159,38 @@ def _zig_cc_toolchain_config_impl(ctx):
         ],
     )
 
+    linker_param_file_feature = feature(
+        name = "linker_param_file",
+        flag_sets = [
+            flag_set(
+                actions = all_link_actions +
+                          [ACTION_NAMES.cpp_link_static_library],
+                flag_groups = [
+                    flag_group(
+                        flags = ["@%{linker_param_file}"],
+                        expand_if_available = "linker_param_file",
+                    ),
+                ],
+            ),
+        ],
+    )
+
+    archive_param_file_feature = feature(
+        name = "archive_param_file",
+    )
+
+    compiler_param_file_feature = feature(
+        name = "compiler_param_file",
+    )
+
     features = [
         compile_and_link_flags,
         default_linker_flags,
         supports_dynamic_linker,
         strip_debug_symbols_feature,
+        linker_param_file_feature,
+        archive_param_file_feature,
+        compiler_param_file_feature,
     ] + _compilation_mode_features(ctx)
 
     artifact_name_patterns = [
