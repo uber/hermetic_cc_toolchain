@@ -50,6 +50,7 @@ def target_structs():
             ret.append(_target_linux_gnu(gocpu, zigcpu, glibc))
     ret.append(_target_wasm())
     ret.append(_target_wasm_no_wasi())
+    ret.append(_target_linux_musl("riscv64", "riscv64"))
     return ret
 
 def _target_macos(gocpu, zigcpu):
@@ -184,7 +185,8 @@ def _target_linux_musl(gocpu, zigcpu):
                    ] +
                    # x86_64-linux-any is x86_64-linux and x86-linux combined.
                    (["libc/include/x86-linux-any"] if zigcpu == "x86_64" else []) +
-                   (["libc/include/{}-linux-any".format(zigcpu)] if zigcpu != "x86_64" else []) + [
+                   (["libc/include/aarch64-linux-any".format(zigcpu)] if zigcpu == "aarch64" else []) +
+                   (["libc/include/riscv-linux-any"] if zigcpu == "riscv64" else []) + [
             "libc/include/any-linux-any",
         ] + _INCLUDE_TAIL,
         linkopts = [],

@@ -32,18 +32,38 @@ def declare_libc_aware_platforms():
                 extra_constraints = ["//libc:{}".format(libc)],
             )
 
+    declare_platform(
+        "riscv64",
+        "riscv64",
+        "linux",
+        "linux",
+        suffix = "_{}".format("musl"),
+        extra_constraints = ["//libc:{}".format("musl")],
+    )
+
 def declare_platform(gocpu, zigcpu, bzlos, os, suffix = "", extra_constraints = []):
     constraint_values = [
         "@platforms//os:{}".format(bzlos),
         "@platforms//cpu:{}".format(zigcpu),
     ] + extra_constraints
 
+    if gocpu != zigcpu:
+        native.platform(
+            name = "{os}_{zigcpu}{suffix}".format(os = os, zigcpu = zigcpu, suffix = suffix),
+            constraint_values = constraint_values,
+        )
+        native.platform(
+            name = "{os}_{gocpu}{suffix}".format(os = os, gocpu = gocpu, suffix = suffix),
+            constraint_values = constraint_values,
+        )
+        return
+
+    # for riscv64, zigcpu==gocpu
     native.platform(
-        name = "{os}_{zigcpu}{suffix}".format(os = os, zigcpu = zigcpu, suffix = suffix),
+        name = "{os}_{zigcpu}{suffix}_zig".format(os = os, zigcpu = zigcpu, suffix = suffix),
         constraint_values = constraint_values,
     )
-
     native.platform(
-        name = "{os}_{gocpu}{suffix}".format(os = os, gocpu = gocpu, suffix = suffix),
+        name = "{os}_{gocpu}{suffix}_go".format(os = os, gocpu = gocpu, suffix = suffix),
         constraint_values = constraint_values,
     )
