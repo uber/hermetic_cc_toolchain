@@ -4,4 +4,9 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
-declare_toolchains(configs = {configs}, extra_target_settings = {extra_target_settings})
+declare_toolchains(
+    configs = {configs},
+    extra_exec_compatible_with = {extra_exec_compatible_with},
+    extra_target_compatible_with = {extra_target_compatible_with},
+    extra_target_settings = {extra_target_settings},
+)

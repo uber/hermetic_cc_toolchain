@@ -2,6 +2,8 @@ load("@hermetic_cc_toolchain//toolchain:utils.bzl", "quote")
 load("@hermetic_cc_toolchain//toolchain/private:defs.bzl", "transform_arch_name", "transform_os_name")
 
 def _define_zig_toolchains(repository_ctx, configs, package = ""):
+    extra_exec_compatible_with = "[" + " ".join([quote(str(setting)) + "," for setting in repository_ctx.attr.extra_exec_compatible_with]) + "]"
+    extra_target_compatible_with = "[" + " ".join([quote(str(setting)) + "," for setting in repository_ctx.attr.extra_target_compatible_with]) + "]"
     extra_target_settings = "[" + " ".join([quote(str(setting)) + "," for setting in repository_ctx.attr.extra_target_settings]) + "]"
 
     repository_ctx.template(
@@ -10,6 +12,8 @@ def _define_zig_toolchains(repository_ctx, configs, package = ""):
         executable = False,
         substitutions = {
             "{configs}": repr(configs),
+            "{extra_exec_compatible_with}": extra_exec_compatible_with,
+            "{extra_target_compatible_with}": extra_target_compatible_with,
             "{extra_target_settings}": extra_target_settings,
         },
     )
@@ -20,6 +24,8 @@ def _define_zig_toolchains(repository_ctx, configs, package = ""):
         executable = False,
         substitutions = {
             "{configs}": repr(configs),
+            "{extra_exec_compatible_with}": extra_exec_compatible_with,
+            "{extra_target_compatible_with}": extra_target_compatible_with,
             "{extra_target_settings}": extra_target_settings,
         },
     )
@@ -95,6 +101,12 @@ zig_sdk_repository = repository_rule(
         "exec_platforms": attr.string_list_dict(
             doc = "Dictionary, where the keys are oses and the values are lists of supported architectures",
             mandatory = True,
+        ),
+        "extra_exec_compatible_with": attr.label_list(
+            doc = "Additional constraints added to the `exec_compatible_with` attribute of each generated toolchain",
+        ),
+        "extra_target_compatible_with": attr.label_list(
+            doc = "Additional constraints added to the `target_compatible_with` attribute of each generated toolchain",
         ),
         "extra_target_settings": attr.label_list(
             doc = "Additional settings to add to the generated toolchains, to make them more restrictive",

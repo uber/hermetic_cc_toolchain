@@ -66,6 +66,8 @@ def toolchains(
         host_platform_sha256 = HOST_PLATFORM_SHA256,
         host_platform_ext = _HOST_PLATFORM_EXT,
         exec_platforms = {},
+        extra_exec_compatible_with = [],
+        extra_target_compatible_with = [],
         extra_target_settings = []):
     """
         Download zig toolchain and declare bazel toolchains.
@@ -86,6 +88,8 @@ def toolchains(
     zig_sdk_repository(
         name = "zig_sdk",
         exec_platforms = exec_platforms,
+        extra_exec_compatible_with = extra_exec_compatible_with,
+        extra_target_compatible_with = extra_target_compatible_with,
         extra_target_settings = extra_target_settings,
     )
 

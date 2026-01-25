@@ -22,11 +22,27 @@ _extra_target_settings = tag_class(
     doc = "Each setting is added to every toolchain to make them more restrictive",
 )
 
+_extra_target_compatible_with = tag_class(
+    attrs = {
+        "constraints": attr.label_list(),
+    },
+    doc = "Extra constraints added to every toolchain's `target_compatible_with`",
+)
+
+_extra_exec_compatible_with = tag_class(
+    attrs = {
+        "constraints": attr.label_list(),
+    },
+    doc = "Extra constraints added to every toolchain's `exec_compatible_with`",
+)
+
 def _toolchains_impl(mctx):
     exec_platforms = {}
     root_direct_deps = []
     root_direct_dev_deps = []
     is_non_dev_dependency = mctx.root_module_has_non_dev_dependency
+    extra_exec_compatible_with = []
+    extra_target_compatible_with = []
     extra_target_settings = []
 
     for mod in mctx.modules:
@@ -40,7 +56,18 @@ def _toolchains_impl(mctx):
             for tag in mod.tags.extra_target_settings:
                 extra_target_settings += tag.settings
 
-            repos = zig_toolchains(exec_platforms = exec_platforms, extra_target_settings = extra_target_settings)
+            for tag in mod.tags.extra_exec_compatible_with:
+                extra_exec_compatible_with += tag.constraints
+
+            for tag in mod.tags.extra_target_compatible_with:
+                extra_target_compatible_with += tag.constraints
+
+            repos = zig_toolchains(
+                exec_platforms = exec_platforms,
+                extra_exec_compatible_with = extra_exec_compatible_with,
+                extra_target_compatible_with = extra_target_compatible_with,
+                extra_target_settings = extra_target_settings,
+            )
 
             root_direct_deps = list(repos.public) if is_non_dev_dependency else []
             root_direct_dev_deps = list(repos.public) if not is_non_dev_dependency else []
@@ -59,6 +86,8 @@ toolchains = module_extension(
     implementation = _toolchains_impl,
     tag_classes = {
         "exec_platform": _exec_platform,
+        "extra_exec_compatible_with": _extra_exec_compatible_with,
+        "extra_target_compatible_with": _extra_target_compatible_with,
         "extra_target_settings": _extra_target_settings,
     },
 )

@@ -1,6 +1,10 @@
 load("@hermetic_cc_toolchain//toolchain/private:defs.bzl", "target_structs")
 
-def declare_toolchains(configs = "", extra_target_settings = []):
+def declare_toolchains(
+        configs = "",
+        extra_exec_compatible_with = [],
+        extra_target_compatible_with = [],
+        extra_target_settings = []):
     for target_config in target_structs():
         gotarget = target_config.gotarget
         zigtarget = target_config.zigtarget
@@ -12,11 +16,15 @@ def declare_toolchains(configs = "", extra_target_settings = []):
         if hasattr(target_config, "libc_constraint"):
             extra_constraints = ["@zig_sdk//libc:unconstrained"]
 
-        _declare_toolchain(gotarget, zigtarget, target_config.constraint_values + extra_constraints, configs, extra_target_settings)
+        _declare_toolchain(gotarget, zigtarget, target_config.constraint_values + extra_constraints, configs, extra_exec_compatible_with, extra_target_compatible_with, extra_target_settings)
 
     _declare_zig_toolchain("zig", configs)
 
-def declare_libc_aware_toolchains(configs = "", extra_target_settings = []):
+def declare_libc_aware_toolchains(
+        configs = "",
+        extra_exec_compatible_with = [],
+        extra_target_compatible_with = [],
+        extra_target_settings = []):
     for target_config in target_structs():
         gotarget = target_config.gotarget
         zigtarget = target_config.zigtarget
@@ -25,15 +33,22 @@ def declare_libc_aware_toolchains(configs = "", extra_target_settings = []):
         # is only selected if libc is not expicitly set and another one that is
         # only selected if the specific libc variant is selected.
         if hasattr(target_config, "libc_constraint"):
-            _declare_toolchain(gotarget, zigtarget, target_config.constraint_values + [target_config.libc_constraint], configs, extra_target_settings)
+            _declare_toolchain(gotarget, zigtarget, target_config.constraint_values + [target_config.libc_constraint], configs, extra_exec_compatible_with, extra_target_compatible_with, extra_target_settings)
 
-def _declare_toolchain(gotarget, zigtarget, target_compatible_with, configs, extra_target_settings):
+def _declare_toolchain(
+        gotarget,
+        zigtarget,
+        target_compatible_with,
+        configs,
+        extra_exec_compatible_with,
+        extra_target_compatible_with,
+        extra_target_settings):
     # register two kinds of toolchain targets: Go and Zig conventions.
     # Go convention: amd64/arm64, linux/darwin
     native.toolchain(
         name = gotarget,
-        exec_compatible_with = ["{}//:exec_os".format(configs), "{}//:exec_cpu".format(configs)],
-        target_compatible_with = target_compatible_with,
+        exec_compatible_with = ["{}//:exec_os".format(configs), "{}//:exec_cpu".format(configs)] + extra_exec_compatible_with,
+        target_compatible_with = target_compatible_with + extra_target_compatible_with,
         target_settings = extra_target_settings,
         toolchain = "{}//:{}_cc".format(configs, zigtarget),
         toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
@@ -42,8 +57,8 @@ def _declare_toolchain(gotarget, zigtarget, target_compatible_with, configs, ext
     # Zig convention: x86_64/aarch64, linux/macos
     native.toolchain(
         name = zigtarget,
-        exec_compatible_with = ["{}//:exec_os".format(configs), "{}//:exec_cpu".format(configs)],
-        target_compatible_with = target_compatible_with,
+        exec_compatible_with = ["{}//:exec_os".format(configs), "{}//:exec_cpu".format(configs)] + extra_exec_compatible_with,
+        target_compatible_with = target_compatible_with + extra_target_compatible_with,
         target_settings = extra_target_settings,
         toolchain = "{}//:{}_cc".format(configs, zigtarget),
         toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
