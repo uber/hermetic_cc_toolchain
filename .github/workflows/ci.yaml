@@ -18,12 +18,12 @@ jobs:
         os: [windows-latest, ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
           fetch-tags: true
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         name: "Windows: cache bazelisk and zig-cache"
         if: runner.os == 'Windows'
         with:
@@ -32,7 +32,7 @@ jobs:
             C:\Temp\zig-cache
             ~\AppData\Local\bazelisk'
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         name: "MacOS: cache bazelisk and zig-cache"
         if: runner.os == 'macOS'
         with:
@@ -41,7 +41,7 @@ jobs:
             /var/tmp/zig-cache
             ~/Library/Caches/bazelisk
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         name: "Linux: cache bazelisk and zig-cache"
         if: runner.os == 'Linux'
         with:
