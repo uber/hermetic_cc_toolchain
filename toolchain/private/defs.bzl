@@ -151,12 +151,12 @@ def _target_linux_gnu(gocpu, zigcpu, glibc_version):
         gotarget = "linux_{}_{}".format(gocpu, glibc_suffix),
         zigtarget = "{}-linux-{}".format(zigcpu, glibc_suffix),
         includes = [
-                       "libc/include/{}-linux-gnu".format(zigcpu),
                        "libc/include/generic-glibc",
+                       "libc/glibc/include",
                    ] +
                    # x86_64-linux-any is x86_64-linux and x86-linux combined.
-                   (["libc/include/x86-linux-any"] if zigcpu == "x86_64" else []) +
-                   (["libc/include/{}-linux-any".format(zigcpu)] if zigcpu != "x86_64" else []) + [
+                   (["libc/include/x86-linux-any", "libc/include/x86-linux-gnu"] if zigcpu == "x86_64" else []) +
+                   (["libc/include/{}-linux-any".format(zigcpu), "libc/include/{}-linux-gnu".format(zigcpu)] if zigcpu != "x86_64" else []) + [
             "libc/include/any-linux-any",
         ] + _INCLUDE_TAIL,
         linkopts = [],
@@ -209,6 +209,7 @@ def _target_wasm():
         includes = [
             "libc/include/wasm-wasi-musl",
             "libc/wasi",
+            "libc/include/generic-musl",
         ] + _INCLUDE_TAIL,
         linkopts = [],
         dynamic_library_linkopts = [],
