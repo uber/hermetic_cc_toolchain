@@ -52,7 +52,7 @@ func TestParseZigVersion(t *testing.T) {
 			contents: `VERSION = "0.11.0"; URL_FORMAT_RELEASE = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.{_ext}"`,
 			want: zigUpstream{
 				version:     "0.11.0",
-				urlTemplate: "https://mirror.bazel.build/ziglang.org/download/{version}/zig-{host_platform}-{version}.{_ext}",
+				urlTemplate: "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.{_ext}",
 			},
 		},
 		{
