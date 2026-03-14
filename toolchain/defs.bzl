@@ -78,12 +78,10 @@ def toolchains(
 
     if not url_formats:
         if "dev" in version:
-            original_format = URL_FORMAT_NIGHTLY
+            mirror_format = URL_FORMAT_NIGHTLY.replace("https://ziglang.org/", "https://mirror.bazel.build/ziglang.org/")
+            url_formats = [mirror_format, URL_FORMAT_NIGHTLY]
         else:
-            original_format = URL_FORMAT_RELEASE
-
-        mirror_format = original_format.replace("https://ziglang.org/", "https://mirror.bazel.build/ziglang.org/")
-        url_formats = [mirror_format, original_format]
+            url_formats = [URL_FORMAT_RELEASE]
 
     zig_sdk_repository(
         name = "zig_sdk",

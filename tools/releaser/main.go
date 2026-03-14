@@ -128,7 +128,7 @@ This utility is intended to handle many of the steps to release a new version.
 	}
 
 	if err := checkZigMirrored(repoRoot); err != nil {
-		return fmt.Errorf("zig is correctly mirrored: %w", err)
+		return fmt.Errorf("zig is not mirrored: %w", err)
 	}
 
 	// if the tag already exists, do not cut a new one.
@@ -467,6 +467,11 @@ func checkZigMirrored(repoRoot string) error {
 		return err
 	}
 
+	if !strings.Contains(upstream.version, "dev") {
+		log("skipping mirror check for release version %q", upstream.version)
+		return nil
+	}
+
 	// spot-checking only windows-x86_64, because:
 	// - to check all platforms, we should parse much more of zig_sdk.bzl.
 	// - so we'd rather pick a single platform and test it.
@@ -491,15 +496,15 @@ func checkZigMirrored(repoRoot string) error {
 
 // parseZigUpstrem parses "VERSION" from toolchain/private/zig_sdk.bzl
 func parseZigUpstream(defsPath string) (zigUpstream, error) {
-	ret := zigUpstream{}
+	var ret zigUpstream
 
 	data, err := os.ReadFile(defsPath)
 	if err != nil {
-		return zigUpstream{}, err
+		return ret, err
 	}
 	parsed, err := bzl.Parse(defsPath, data)
 	if err != nil {
-		return zigUpstream{}, err
+		return ret, err
 	}
 
 	var nightlyFormat, releaseFormat string
@@ -525,28 +530,27 @@ func parseZigUpstream(defsPath string) (zigUpstream, error) {
 
 		value, ok := def.RHS.(*bzl.StringExpr)
 		if !ok {
-			return zigUpstream{}, errors.New("got a non-string expression")
+			return ret, errors.New("got a non-string expression")
 		}
 
 		*to = value.Value
 	}
 
 	if ret.version == "" {
-		return zigUpstream{}, errors.New("VERSION not found")
+		return ret, errors.New("VERSION not found")
 	}
 	if strings.Contains(ret.version, "dev") {
-		ret.urlTemplate = nightlyFormat
+		ret.urlTemplate = strings.Replace(nightlyFormat,
+			"https://ziglang.org/",
+			"https://mirror.bazel.build/ziglang.org/",
+			1,
+		)
 	} else {
 		ret.urlTemplate = releaseFormat
 	}
 	if ret.urlTemplate == "" {
-		return zigUpstream{}, fmt.Errorf("url format for %q not found", ret.version)
+		return ret, fmt.Errorf("url format for %q not found", ret.version)
 	}
-	ret.urlTemplate = strings.Replace(ret.urlTemplate,
-		"https://ziglang.org/",
-		"https://mirror.bazel.build/ziglang.org/",
-		1,
-	)
 
 	return ret, nil
 }
