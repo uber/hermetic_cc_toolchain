@@ -467,6 +467,11 @@ func checkZigMirrored(repoRoot string) error {
 		return err
 	}
 
+	if !strings.Contains(upstream.version, "dev") {
+		log("skipping mirror check for release version %q", upstream.version)
+		return nil
+	}
+
 	// spot-checking only x86_64-windows, because:
 	// - to check all platforms, we should parse much more of zig_sdk.bzl.
 	// - so we'd rather pick a single platform and test it.
