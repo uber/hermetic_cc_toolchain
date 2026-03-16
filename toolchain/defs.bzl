@@ -341,7 +341,7 @@ def declare_files(os):
                 "lib/std/**",
                 "lib/libtsan/**",
                 "lib/*.zig",
-                "lib/c/*.zig", # stdlib and helpers are in there
+                "lib/c/*.zig",  # stdlib and helpers are in there
                 "lib/*.h",
             ]),
         )
