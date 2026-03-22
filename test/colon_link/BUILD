@@ -1,16 +1,11 @@
 # Copyright 2025 Uber Technologies, Inc.
 # Licensed under the MIT License
 
-# Tests that Zig correctly handles the "-l :filename.so" linking syntax
-# (with a space between -l and :filename).
+# Tests that Zig correctly handles the colon-link syntax ("-l :filename.so"),
+# which links a library by exact filename.
 #
-# In Zig 0.14.0, the linker incorrectly reported:
+# In Zig 0.14.0, this syntax was broken and the linker incorrectly reported:
 #   ld.lld: error: unable to find library -l:mylib.so
-# when "-l" and ":mylib.so" were passed as two separate arguments.
-#
-# Bazel shell-tokenizes linkopts strings, so the entry "-l :libgreeter.so"
-# is split into two tokens ("-l" and ":libgreeter.so") before being passed
-# to the linker — reproducing exactly the form that Zig 0.14.0 mishandled.
 #
 # See https://github.com/ziglang/zig/issues/23287
 
@@ -26,9 +21,6 @@ cc_binary(
 )
 
 # Build a binary that links against libgreeter.so using the colon syntax.
-# The linkopts string "-l :libgreeter.so" is shell-tokenized by Bazel into
-# the two tokens "-l" and ":libgreeter.so", which is the exact invocation
-# form that Zig 0.14.0 failed to handle.
 # See https://github.com/ziglang/zig/issues/23287
 cc_binary(
     name = "main",
@@ -37,12 +29,9 @@ cc_binary(
     # before the link step and includes it in the sandbox.
     additional_linker_inputs = [":libgreeter.so"],
     linkopts = [
-        # Add the output directory to the library search path.
         "-L$(BINDIR)/test/colon_link",
-        # Link using the colon syntax. Bazel tokenizes this into:
-        #   ["-l", ":libgreeter.so"]
-        # testing the space-separated form from the Zig issue.
-        "-l :libgreeter.so",
+        "-l",
+        ":libgreeter.so",
     ],
     tags = ["manual"],
 )
