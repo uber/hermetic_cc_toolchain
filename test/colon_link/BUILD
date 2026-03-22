@@ -1,8 +1,10 @@
 # Copyright 2025 Uber Technologies, Inc.
 # Licensed under the MIT License
 
-# Tests that Zig correctly handles the colon-link syntax ("-l :filename.so"),
-# which links a library by exact filename.
+# Tests that Zig correctly handles the colon-link syntax ("-l:filename.so"),
+# which links a library by exact filename. This is necessary when the library
+# does not follow the standard "lib<name>.so" naming convention, making
+# "-l<name>" insufficient.
 #
 # In Zig 0.14.0, this syntax was broken and the linker incorrectly reported:
 #   ld.lld: error: unable to find library -l:mylib.so
@@ -11,27 +13,30 @@
 
 load("@hermetic_cc_toolchain//rules:platform.bzl", "platform_binary")
 
-# Build a shared library. Naming the cc_binary target "libgreeter.so" ensures
-# the output file is named libgreeter.so (cc_binary uses the target name as-is).
+# Build a versioned shared library "libgreeter.so.1". The standard "-lgreeter"
+# flag looks for "libgreeter.so" (unversioned), so the colon syntax is required
+# to link by exact filename.
 cc_binary(
-    name = "libgreeter.so",
+    name = "libgreeter.so.1",
     srcs = ["greeter.c"],
     linkshared = True,
     tags = ["manual"],
 )
 
-# Build a binary that links against libgreeter.so using the colon syntax.
+# Build a binary that links against libgreeter.so.1 using the colon syntax.
+# "-lgreeter" would not work here since it looks for "libgreeter.so", not
+# the versioned "libgreeter.so.1".
 # See https://github.com/ziglang/zig/issues/23287
 cc_binary(
     name = "main",
     srcs = ["main.c"],
-    # Make libgreeter.so available as a linker input so Bazel builds it
+    # Make libgreeter.so.1 available as a linker input so Bazel builds it
     # before the link step and includes it in the sandbox.
-    additional_linker_inputs = [":libgreeter.so"],
+    additional_linker_inputs = [":libgreeter.so.1"],
     linkopts = [
         "-L$(BINDIR)/test/colon_link",
         "-l",
-        ":libgreeter.so",
+        ":libgreeter.so.1",
     ],
     tags = ["manual"],
 )
