@@ -161,11 +161,28 @@ def _zig_cc_toolchain_config_impl(ctx):
         ],
     )
 
+    soname_feature = feature(
+        name = "soname",
+        enabled = True,
+        flag_sets = [
+            flag_set(
+                actions = dynamic_library_link_actions,
+                flag_groups = [
+                    flag_group(
+                        expand_if_available = "runtime_solib_name",
+                        flags = ["-Wl,-soname,%{runtime_solib_name}"],
+                    ),
+                ],
+            ),
+        ],
+    )
+
     features = [
         compile_and_link_flags,
         default_linker_flags,
         supports_dynamic_linker,
         strip_debug_symbols_feature,
+        soname_feature,
     ] + _compilation_mode_features(ctx)
 
     artifact_name_patterns = [
