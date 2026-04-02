@@ -230,8 +230,20 @@ fn parseArgs(
         .arg1, .cc => try args.appendSlice(arena, &[_][]const u8{arg0_noexe}),
     }
 
-    while (argv_it.next()) |arg|
-        try args.append(arena, arg);
+    // Process arguments, transforming -u SYMBOL into -Wl,-u,SYMBOL
+    // This is needed because zig c++ doesn't handle the -u flag correctly
+    // (it tries to open the symbol name as a file instead of passing it to the linker)
+    while (argv_it.next()) |arg| {
+        if (mem.eql(u8, arg, "-u")) {
+            // Get the next argument (the symbol name)
+            if (argv_it.next()) |symbol| {
+                const transformed = try std.fmt.allocPrint(arena, "-Wl,-u,{s}", .{symbol});
+                try args.append(arena, transformed);
+            }
+        } else {
+            try args.append(arena, arg);
+        }
+    }
 
     // Add -target as the last parameter. The wrapper should overwrite
     // the target specified by other tools calling the wrapper.
