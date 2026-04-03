@@ -21,22 +21,22 @@ _DEFAULT_INCLUDE_DIRECTORIES = [
 ]
 
 _HOST_PLATFORM_EXT = {
-    "linux-aarch64": "tar.xz",
-    "linux-x86_64": "tar.xz",
-    "macos-aarch64": "tar.xz",
-    "macos-x86_64": "tar.xz",
-    "windows-x86_64": "zip",
-    "windows-aarch64": "zip",
+    "aarch64-linux": "tar.xz",
+    "x86_64-linux": "tar.xz",
+    "aarch64-macos": "tar.xz",
+    "x86_64-macos": "tar.xz",
+    "x86_64-windows": "zip",
+    "aarch64-windows": "zip",
 }
 
 # map bazel's host_platform to zig's -target= and -mcpu=
 _TARGET_MCPU = {
-    "linux-aarch64": ("aarch64-linux-musl", "baseline"),
-    "linux-x86_64": ("x86_64-linux-musl", "baseline"),
-    "macos-aarch64": ("aarch64-macos-none", "apple_a14"),
-    "macos-x86_64": ("x86_64-macos-none", "baseline"),
-    "windows-x86_64": ("x86_64-windows-gnu", "baseline"),
-    "windows-aarch64": ("aarch64-windows-gnu", "baseline"),
+    "aarch64-linux": ("aarch64-linux-musl", "baseline"),
+    "x86_64-linux": ("x86_64-linux-musl", "baseline"),
+    "aarch64-macos": ("aarch64-macos-none", "apple_a14"),
+    "x86_64-macos": ("x86_64-macos-none", "baseline"),
+    "x86_64-windows": ("x86_64-windows-gnu", "baseline"),
+    "aarch64-windows": ("aarch64-windows-gnu", "baseline"),
 }
 
 _compile_failed = """
@@ -144,8 +144,8 @@ def _zig_repository_impl(repository_ctx):
     exec_os = transform_os_name(exec_os)
     host_os = transform_os_name(host_os)
 
-    host_platform = "{}-{}".format(host_os, host_arch)
-    exec_platform = "{}-{}".format(exec_os, exec_arch)
+    host_platform = "{}-{}".format(host_arch, host_os)
+    exec_platform = "{}-{}".format(exec_arch, exec_os)
 
     zig_sha256 = repository_ctx.attr.host_platform_sha256[host_platform]
     zig_ext = repository_ctx.attr.host_platform_ext[host_platform]
@@ -339,8 +339,9 @@ def declare_files(os):
                 "lib/libunwind/**",
                 "lib/compiler_rt/**",
                 "lib/std/**",
-                "lib/tsan/**",
+                "lib/libtsan/**",
                 "lib/*.zig",
+                "lib/c/*.zig",  # stdlib and helpers are in there
                 "lib/*.h",
             ]),
         )
