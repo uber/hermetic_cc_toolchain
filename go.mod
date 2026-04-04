@@ -6,7 +6,7 @@ toolchain go1.23.6
 
 require (
 	github.com/bazelbuild/buildtools v0.0.0-20240918101019-be1c24cc9a44
-	github.com/bazelbuild/rules_go v0.54.0
+	github.com/bazelbuild/rules_go v0.59.0
 	github.com/stretchr/testify v1.8.2
 	github.com/tetratelabs/wazero v1.6.0
 )
