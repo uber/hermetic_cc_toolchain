@@ -9,6 +9,10 @@ cd "$(git rev-parse --show-toplevel)"
 
 >&2 echo "--- releaser :flag-lt:"
 TAG=$(git -c 'versionsort.suffix=-rc' tag --sort=v:refname | tail -1)
+if [ -z "$TAG" ]; then
+  >&2 echo "no git tags found, skipping release validation"
+  exit 0
+fi
 tools/bazel run //tools/releaser -- -tag "$TAG" -skipBranchCheck
 
 >&2 echo "--- git diff :git:"

@@ -2,6 +2,7 @@
 # Licensed under the MIT License
 
 load("@hermetic_cc_toolchain//rules:platform.bzl", "platform_binary")
+load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
 
 cc_binary(
     name = "main",

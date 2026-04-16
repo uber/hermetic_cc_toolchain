@@ -23,11 +23,11 @@
 //   ├── lld-link
 //   ├── zig-wrapper
 //   ├── x86_64-linux-gnu.2.34
-//   │   └── c++
+//   │   └── c++
 //   ├── x86_64-linux-musl
-//   │   └── c++
+//   │   └── c++
 //   ├── x86_64-macos-none
-//   │   └── c++
+//   │   └── c++
 //   ...
 // * ZIG_LIB_DIR controls the output of `zig c++ -MF -MD <...>`. Bazel uses
 // command to understand which input files were used to the compilation. If any
@@ -52,12 +52,12 @@
 
 const builtin = @import("builtin");
 const std = @import("std");
-const fs = std.fs;
+const Io = std.Io;
 const mem = std.mem;
+const path = std.fs.path;
 const process = std.process;
-const ChildProcess = std.ChildProcess;
 const ArrayListUnmanaged = std.ArrayListUnmanaged;
-const sep = fs.path.sep_str;
+const sep = path.sep_str;
 
 const EXE = switch (builtin.target.os.tag) {
     .windows => ".exe",
@@ -84,7 +84,7 @@ const Action = enum {
 
 const ExecParams = struct {
     args: ArrayListUnmanaged([]const u8),
-    env: process.EnvMap,
+    environ_map: process.Environ.Map,
 };
 
 const ParseResults = union(Action) {
@@ -93,7 +93,7 @@ const ParseResults = union(Action) {
 };
 
 // sub-commands in the same folder as `zig-wrapper`
-const sub_commands_target = std.ComptimeStringMap(void, .{
+const sub_commands_target = std.StaticStringMap(void).initComptime(.{
     .{"ar"},
     .{"ld.lld"},
     .{"lld-link"},
@@ -109,51 +109,53 @@ const RunMode = union(enum) {
     cc: []const u8, // cc -target <...>
 };
 
-pub fn main() u8 {
-    const allocator = if (builtin.link_libc)
-        std.heap.c_allocator
-    else blk: {
-        var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-        break :blk gpa.allocator();
-    };
-    var arena_allocator = std.heap.ArenaAllocator.init(allocator);
-    defer arena_allocator.deinit();
-    const arena = arena_allocator.allocator();
+pub fn main(init: process.Init) u8 {
+    const arena = init.arena.allocator();
 
-    var argv_it = process.argsWithAllocator(arena) catch |err|
-        return fatal("error parsing args: {s}\n", .{@errorName(err)});
+    var argv_it = process.Args.Iterator.initAllocator(
+        init.minimal.args,
+        arena,
+    ) catch |err|
+        return fatal("error initializing args iterator: {s}\n", .{@errorName(err)});
 
-    const action = parseArgs(arena, fs.cwd(), &argv_it) catch |err|
+    const action = parseArgs(arena, init.io, init.minimal.environ, std.Io.Dir.cwd(), &argv_it) catch |err|
         return fatal("error: {s}\n", .{@errorName(err)});
 
     switch (action) {
         .err => |msg| return fatal("{s}", .{msg}),
         .exec => |params| {
             if (builtin.os.tag == .windows)
-                return spawnWindows(arena, params)
+                return spawnWindows(init.io, arena, params)
             else
-                return execUnix(arena, params);
+                return execUnix(init.io, arena, params);
         },
     }
 }
 
-fn spawnWindows(arena: mem.Allocator, params: ExecParams) u8 {
-    var proc = ChildProcess.init(params.args.items, arena);
-    proc.env_map = &params.env;
-    const ret = proc.spawnAndWait() catch |err|
+fn spawnWindows(io: Io, _: mem.Allocator, params: ExecParams) u8 {
+    var child = process.spawn(io, .{
+        .argv = params.args.items,
+        .environ_map = &params.environ_map,
+    }) catch |err|
         return fatal(
-        "error spawning {s}: {s}\n",
-        .{ params.args.items[0], @errorName(err) },
-    );
+            "error spawning {s}: {s}\n",
+            .{ params.args.items[0], @errorName(err) },
+        );
 
-    switch (ret) {
-        .Exited => |code| return code,
+    const term = child.wait(io) catch |err|
+        return fatal("error waiting for {s}: {s}\n", .{ params.args.items[0], @errorName(err) });
+
+    switch (term) {
+        .exited => |code| return code,
         else => |other| return fatal("abnormal exit: {any}\n", .{other}),
     }
 }
 
-fn execUnix(arena: mem.Allocator, params: ExecParams) u8 {
-    const err = process.execve(arena, params.args.items, &params.env);
+fn execUnix(io: Io, _: mem.Allocator, params: ExecParams) u8 {
+    const err = process.replace(io, .{
+        .argv = params.args.items,
+        .environ_map = &params.environ_map,
+    });
     std.debug.print(
         "error execing {s}: {s}\n",
         .{ params.args.items[0], @errorName(err) },
@@ -163,17 +165,19 @@ fn execUnix(arena: mem.Allocator, params: ExecParams) u8 {
 
 // argv_it is an object that has such method:
 //     fn next(self: *Self) ?[]const u8
-// in non-testing code it is *process.ArgIterator.
+// in non-testing code it is *process.Args.Iterator.
 // Leaks memory: the name of the first argument is arena not by chance.
 fn parseArgs(
     arena: mem.Allocator,
-    cwd: fs.Dir,
+    io: Io,
+    environ: process.Environ,
+    cwd: Io.Dir,
     argv_it: anytype,
 ) error{OutOfMemory}!ParseResults {
     const arg0 = argv_it.next() orelse
         return parseFatal(arena, "error: argv[0] cannot be null", .{});
 
-    const arg0_noexe = noExe(fs.path.basename(arg0));
+    const arg0_noexe = noExe(path.basename(arg0));
 
     const run_mode = getRunMode(arg0, arg0_noexe) catch |err| switch (err) {
         error.BadParent => {
@@ -186,20 +190,19 @@ fn parseArgs(
     };
 
     const root = blk: {
-        var dir = cwd.openDir(
-            "external" ++ sep ++ "zig_sdk" ++ sep ++ "lib",
-            .{ .access_sub_paths = false, .no_follow = true },
-        );
+        var dir = Io.Dir.openDir(cwd, io, "external" ++ sep ++ "zig_sdk" ++ sep ++ "lib", .{
+            .access_sub_paths = false,
+        });
 
         if (dir) |*dir_exists| {
-            dir_exists.close();
+            dir_exists.close(io);
             break :blk "external" ++ sep ++ "zig_sdk";
         } else |_| {}
 
         // directory does not exist or there was an error opening it
-        const here = fs.path.dirname(arg0) orelse ".";
+        const here = path.dirname(arg0) orelse ".";
 
-        break :blk try fs.path.join(
+        break :blk try path.join(
             arena,
             switch (run_mode) {
                 .wrapper, .arg1 => &[_][]const u8{ here, ".." },
@@ -208,21 +211,20 @@ fn parseArgs(
         );
     };
 
-    const zig_lib_dir = try fs.path.join(arena, &[_][]const u8{ root, "lib" });
-    const zig_exe = try fs.path.join(
+    const zig_lib_dir = try path.join(arena, &[_][]const u8{ root, "lib" });
+    const zig_exe = try path.join(
         arena,
         &[_][]const u8{ root, "zig" ++ EXE },
     );
 
-    var env = process.getEnvMap(arena) catch |err|
+    var environ_map = process.Environ.createMap(environ, arena) catch |err|
         return parseFatal(arena, "error getting env: {s}", .{@errorName(err)});
 
-    try env.put("ZIG_LIB_DIR", zig_lib_dir);
-    try env.put("ZIG_LOCAL_CACHE_DIR", CACHE_DIR);
-    try env.put("ZIG_GLOBAL_CACHE_DIR", CACHE_DIR);
+    try environ_map.put("ZIG_LIB_DIR", zig_lib_dir);
+    try environ_map.put("ZIG_LOCAL_CACHE_DIR", CACHE_DIR);
+    try environ_map.put("ZIG_GLOBAL_CACHE_DIR", CACHE_DIR);
 
-    // args is the path to the zig binary and args to it.
-    var args = ArrayListUnmanaged([]const u8){};
+    var args = ArrayListUnmanaged([]const u8).empty;
     try args.appendSlice(arena, &[_][]const u8{zig_exe});
 
     switch (run_mode) {
@@ -230,8 +232,13 @@ fn parseArgs(
         .arg1, .cc => try args.appendSlice(arena, &[_][]const u8{arg0_noexe}),
     }
 
-    while (argv_it.next()) |arg|
+    while (argv_it.next()) |arg| {
+        // Filter unsupported flags that are meaningless for zig but get
+        // passed by toolchains like Go's CGO (which adds -mthreads for
+        // MinGW targets). Under -Werror these cause build failures.
+        if (mem.eql(u8, arg, "-mthreads")) continue;
         try args.append(arena, arg);
+    }
 
     // Add -target as the last parameter. The wrapper should overwrite
     // the target specified by other tools calling the wrapper.
@@ -244,7 +251,7 @@ fn parseArgs(
         });
     }
 
-    return ParseResults{ .exec = .{ .args = args, .env = env } };
+    return ParseResults{ .exec = .{ .args = args, .environ_map = environ_map } };
 }
 
 fn parseFatal(
@@ -274,15 +281,15 @@ fn getRunMode(self_exe: []const u8, self_base_noexe: []const u8) error{BadParent
         return error.BadParent;
 
     // what follows is the validation that `-target` is a plausible string.
-    const here = fs.path.dirname(self_exe) orelse return error.BadParent;
-    const triple = fs.path.basename(here);
+    const here = path.dirname(self_exe) orelse return error.BadParent;
+    const triple = path.basename(here);
 
     // Validating the triple now will help users catch errors even if they
     // don't yet need the target. yes yes the validation will miss things
     // strings `is.it.x86_64?-stallinux,macos-`; we are trying to aid users
     // that run things from the wrong directory, not trying to punish the ones
     // having fun.
-    var it = mem.split(u8, triple, "-");
+    var it = mem.splitScalar(u8, triple, '-');
 
     const arch = it.next() orelse return error.BadParent;
     if (mem.indexOf(u8, "aarch64,x86_64,wasm32", arch) == null)
@@ -326,15 +333,14 @@ fn compareExec(
 
     try testing.expectEqualStrings(
         want_env_zig_lib_dir,
-        res.exec.env.get("ZIG_LIB_DIR").?,
+        res.exec.environ_map.get("ZIG_LIB_DIR").?,
     );
 }
 
 test "zig-wrapper:parseArgs" {
     // not using testing.allocator, because parseArgs is designed to be used
     // with an arena.
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    const allocator = gpa.allocator();
+    const allocator = std.heap.page_allocator;
 
     const tests = [_]struct {
         args: []const [:0]const u8,
@@ -431,10 +437,10 @@ test "zig-wrapper:parseArgs" {
         defer tmp.cleanup();
 
         if (tt.precreate_dir) |dir|
-            try tmp.dir.makePath(dir);
+            try tmp.dir.createDirPath(testing.io, dir);
 
         var argv_it = TestArgIterator{ .argv = tt.args };
-        const res = try parseArgs(allocator, tmp.dir, &argv_it);
+        const res = try parseArgs(allocator, testing.io, .{ .block = .empty }, tmp.dir, &argv_it);
 
         switch (tt.want_result) {
             .err => |want_msg| try testing.expectEqualStrings(
