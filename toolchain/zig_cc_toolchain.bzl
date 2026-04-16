@@ -50,7 +50,7 @@ def _compilation_mode_features(ctx):
                 actions = actions,
                 flag_groups = [
                     flag_group(
-                        flags = ["-g", "-fsanitize-undefined-strip-path-components=-1"],
+                        flags = ["-g"],
                     ),
                 ],
             ),
@@ -79,7 +79,7 @@ def _compilation_mode_features(ctx):
                 actions = actions,
                 flag_groups = [
                     flag_group(
-                        flags = ["-fno-lto", "-fsanitize-undefined-strip-path-components=-1"],
+                        flags = ["-fno-lto"],
                     ),
                 ],
             ),
@@ -102,6 +102,11 @@ def _zig_cc_toolchain_config_impl(ctx):
         "-D__DATE__=\"redacted\"",
         "-D__TIMESTAMP__=\"redacted\"",
         "-D__TIME__=\"redacted\"",
+        # Zig 0.16+ enables undefined behavior sanitizer by default.
+        # Disable it to avoid linker errors from missing ubsan runtime
+        # symbols (__ubsan_handle_*) when the zig toolchain is used as
+        # an external linker (e.g., for Go cgo builds).
+        "-fno-sanitize=undefined",
     ]
 
     compile_and_link_flags = feature(

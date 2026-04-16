@@ -1,10 +1,14 @@
 const std = @import("std");
 
-pub fn main() !void {
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    const argv = try std.process.argsAlloc(gpa.allocator());
-    defer std.process.argsFree(gpa.allocator(), argv);
-
-    if (argv.len != 3) return error.InvalidUsage;
-    try std.fs.cwd().copyFile(argv[1], std.fs.cwd(), argv[2], .{});
+pub fn main(init: std.process.Init) !void {
+    const arena = init.arena.allocator();
+    var argv_it = try std.process.Args.Iterator.initAllocator(
+        init.minimal.args,
+        arena,
+    );
+    _ = argv_it.next();
+    const src = argv_it.next() orelse return error.InvalidUsage;
+    const dst = argv_it.next() orelse return error.InvalidUsage;
+    if (argv_it.next() != null) return error.InvalidUsage;
+    try std.Io.Dir.copyFile(std.Io.Dir.cwd(), src, std.Io.Dir.cwd(), dst, init.io, .{});
 }

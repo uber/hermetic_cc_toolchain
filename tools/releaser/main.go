@@ -50,7 +50,6 @@ var (
 
 	_boilerplateFiles = []string{
 		"README.md",
-		path.Join("examples", "rules_cc", "WORKSPACE"),
 	}
 )
 

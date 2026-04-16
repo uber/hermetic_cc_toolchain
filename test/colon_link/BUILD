@@ -9,9 +9,13 @@
 # In Zig 0.14.0, this syntax was broken and the linker incorrectly reported:
 #   ld.lld: error: unable to find library -l:mylib.so
 #
+# This is still broken as of Zig 0.16.0 and tracked upstream at:
+# https://codeberg.org/ziglang/zig/issues/31823
+#
 # See https://github.com/ziglang/zig/issues/23287
 
 load("@hermetic_cc_toolchain//rules:platform.bzl", "platform_binary")
+load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
 
 # Build a versioned shared library "libgreeter.so.1". The standard "-lgreeter"
 # flag looks for "libgreeter.so" (unversioned), so the colon syntax is required
@@ -43,11 +47,14 @@ cc_binary(
 
 # Only glibc targets are tested here. musl uses static linking by default,
 # which is incompatible with dynamically linking a .so file.
+# Tagged manual: colon-link is broken in Zig 0.16.0.
+# Remove manual tag when upstream fix lands.
 [
     platform_binary(
         name = "main_{}".format(name),
         src = "main",
         platform = platform,
+        tags = ["manual"],
     )
     for name, platform in [
         ("linux_amd64_gnu.2.28", "//libc_aware/platform:linux_amd64_gnu.2.28"),

@@ -64,7 +64,8 @@ def _target_macos(gocpu, zigcpu):
         includes = [
             "libunwind/include",
             "libc/darwin",
-            "libc/include/any-macos-any",
+            # Renamed from any-macos-any to any-darwin-any in Zig 0.16.0
+            "libc/include/any-darwin-any",
         ] + _INCLUDE_TAIL,
         linkopts = ["-Wl,-headerpad_max_install_names"],
         dynamic_library_linkopts = ["-Wl,-undefined=dynamic_lookup"],
@@ -108,8 +109,9 @@ def _target_windows(gocpu, zigcpu):
         # static library by default. Note that you can still build Windows DLLs if you really want to through the
         # cc_binary rule, see the example in the upstream bazel repo in /examples/windows/dll/.
         supports_dynamic_linker = False,
-        # Required to compile Go SDK. Otherwise:
-        #   zig: error: argument unused during compilation: '-mthreads' [-Werror,-Wunused-command-line-argument]
+        # Belt-and-suspenders for Go CGo's -mthreads flag: the zig-wrapper
+        # filters it out, but this suppresses the warning in case args
+        # bypass the wrapper.
         copts = ["-Wno-unused-command-line-argument"],
         libc = "mingw",
         bazel_target_cpu = "x64_windows",
@@ -144,6 +146,14 @@ def _target_windows(gocpu, zigcpu):
         ],
     )
 
+def _linux_any_includes(zigcpu):
+    """Zig 0.15+ merged x86_64-linux and x86-linux into x86-linux-any."""
+    return (
+        (["libc/include/x86-linux-any"] if zigcpu == "x86_64" else []) +
+        (["libc/include/{}-linux-any".format(zigcpu)] if zigcpu != "x86_64" else []) +
+        ["libc/include/any-linux-any"]
+    )
+
 def _target_linux_gnu(gocpu, zigcpu, glibc_version):
     glibc_suffix = "gnu.{}".format(glibc_version)
 
@@ -151,14 +161,11 @@ def _target_linux_gnu(gocpu, zigcpu, glibc_version):
         gotarget = "linux_{}_{}".format(gocpu, glibc_suffix),
         zigtarget = "{}-linux-{}".format(zigcpu, glibc_suffix),
         includes = [
-                       "libc/include/{}-linux-gnu".format(zigcpu),
+                       # As of Zig 0.15.x, x86_64-linux-gnu was renamed to x86-linux-gnu.
+                       "libc/include/{}-linux-gnu".format("x86" if zigcpu == "x86_64" else zigcpu),
                        "libc/include/generic-glibc",
                    ] +
-                   # x86_64-linux-any is x86_64-linux and x86-linux combined.
-                   (["libc/include/x86-linux-any"] if zigcpu == "x86_64" else []) +
-                   (["libc/include/{}-linux-any".format(zigcpu)] if zigcpu != "x86_64" else []) + [
-            "libc/include/any-linux-any",
-        ] + _INCLUDE_TAIL,
+                   _linux_any_includes(zigcpu) + _INCLUDE_TAIL,
         linkopts = [],
         dynamic_library_linkopts = [],
         supports_dynamic_linker = True,
@@ -182,11 +189,7 @@ def _target_linux_musl(gocpu, zigcpu):
                        "libc/include/{}-linux-musl".format(zigcpu),
                        "libc/include/generic-musl",
                    ] +
-                   # x86_64-linux-any is x86_64-linux and x86-linux combined.
-                   (["libc/include/x86-linux-any"] if zigcpu == "x86_64" else []) +
-                   (["libc/include/{}-linux-any".format(zigcpu)] if zigcpu != "x86_64" else []) + [
-            "libc/include/any-linux-any",
-        ] + _INCLUDE_TAIL,
+                   _linux_any_includes(zigcpu) + _INCLUDE_TAIL,
         linkopts = [],
         dynamic_library_linkopts = [],
         supports_dynamic_linker = True,
@@ -208,6 +211,7 @@ def _target_wasm():
         zigtarget = "wasm32-wasi-musl",
         includes = [
             "libc/include/wasm-wasi-musl",
+            "libc/include/generic-musl",
             "libc/wasi",
         ] + _INCLUDE_TAIL,
         linkopts = [],
@@ -240,7 +244,7 @@ def _target_wasm_no_wasi():
     return struct(
         gotarget = "none_wasm",
         zigtarget = "wasm32-freestanding-musl",
-        includes = [] + _INCLUDE_TAIL,
+        includes = _INCLUDE_TAIL,
         linkopts = [],
         dynamic_library_linkopts = [],
         supports_dynamic_linker = False,

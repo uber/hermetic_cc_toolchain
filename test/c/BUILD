@@ -1,5 +1,5 @@
 load("@hermetic_cc_toolchain//rules:platform.bzl", "platform_binary")
-load("@local_config_platform//:constraints.bzl", "HOST_CONSTRAINTS")
+load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
 load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 cc_binary(
@@ -99,7 +99,7 @@ _WINDOWS_AMD64 = [
         (
             "wasip1_wasm32",
             "//platform:wasip1_wasm",
-            HOST_CONSTRAINTS,
+            [],
             "^wasi non-glibc",
             [],
             "WASI",
