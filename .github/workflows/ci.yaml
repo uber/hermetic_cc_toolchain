@@ -10,6 +10,7 @@ concurrency:
   # Cancels pending runs when a PR gets updated.
   group: ${{ github.head_ref || github.run_id }}-${{ github.actor }}
   cancel-in-progress: true
+
 jobs:
 
   build-and-test:
@@ -20,23 +21,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
           fetch-tags: true
 
       - uses: actions/cache@v4
         name: "Windows: cache bazelisk and zig-cache"
         if: runner.os == 'Windows'
         with:
-          key: cache-${{ matrix.os }}-${{ hashFiles('.bazelversion', 'toolchain/private/zig_sdk.bzl', '.github/workflows/ci.yaml') }}
+          key: cache-${{ runner.os }}-${{ hashFiles('.bazelversion', 'toolchain/private/zig_sdk.bzl', '.github/workflows/ci.yaml') }}
+          restore-keys: cache-${{ runner.os }}-
           path: |
             C:\Temp\zig-cache
-            ~\AppData\Local\bazelisk'
+            ~\AppData\Local\bazelisk
 
       - uses: actions/cache@v4
         name: "MacOS: cache bazelisk and zig-cache"
         if: runner.os == 'macOS'
         with:
-          key: cache-${{ matrix.os }}-${{ hashFiles('.bazelversion', 'toolchain/private/zig_sdk.bzl', '.github/workflows/ci.yaml') }}
+          key: cache-${{ runner.os }}-${{ hashFiles('.bazelversion', 'toolchain/private/zig_sdk.bzl', '.github/workflows/ci.yaml') }}
+          restore-keys: cache-${{ runner.os }}-
           path: |
             /var/tmp/zig-cache
             ~/Library/Caches/bazelisk
@@ -45,31 +47,68 @@ jobs:
         name: "Linux: cache bazelisk and zig-cache"
         if: runner.os == 'Linux'
         with:
-          key: cache-${{ matrix.os }}-${{ hashFiles('.bazelversion', 'toolchain/private/zig_sdk.bzl', '.github/workflows/ci.yaml') }}
+          key: cache-${{ runner.os }}-${{ hashFiles('.bazelversion', 'toolchain/private/zig_sdk.bzl', '.github/workflows/ci.yaml') }}
+          restore-keys: cache-${{ runner.os }}-
           path: |
             /tmp/zig-cache
             ~/.cache/bazelisk
 
       - run: echo "common --announce_rc" >> .bazelrc.ci
 
-      - run: brew install bash
-        if: runner.os == 'macOS'
-
-      # Linux, macOS and Windows
       - run: ci/list_toolchains_platforms
       - run: tools/bazel test //...
-      - run: ci/prepare_git && ci/test_example rules_cc override_repository
-      - run: ci/prepare_git && ci/test_example bzlmod override_module
+        if: runner.os != 'Windows'
+      - run: tools/bazel test //test/c:test_libc_windows_amd64 //test/cgo:cgo_test //test/cgo:cgo_windows_amd64 //test/cgo:cgo_windows_arm64
+        if: runner.os == 'Windows'
       - run: ci/zig-utils
+        if: runner.os != 'Windows'
 
-      # Test the Zig toolchain for Darwin on Darwin.
       - run: tools/bazel test --config=macos_toolchains --@rules_go//go/config:static --@rules_go//go/config:pure //test/c/...
         if: runner.os == 'macOS'
 
-      # Windows problems:
-      # protoc does not compile due to `-lpthread`.
+  test-examples:
+    strategy:
+      matrix:
+        example:
+          - {name: rules_cc, override: override_module}
+          - {name: bzlmod, override: override_module}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-tags: true
+
+      - uses: actions/cache@v4
+        name: "Linux: cache bazelisk and zig-cache"
+        with:
+          key: cache-${{ runner.os }}-${{ hashFiles('.bazelversion', 'toolchain/private/zig_sdk.bzl', '.github/workflows/ci.yaml') }}
+          restore-keys: cache-${{ runner.os }}-
+          path: |
+            /tmp/zig-cache
+            ~/.cache/bazelisk
+
+      - run: echo "common --announce_rc" >> .bazelrc.ci
+
+      - run: ci/prepare_git && ci/test_example ${{ matrix.example.name }} ${{ matrix.example.override }}
+
+  lint-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - uses: actions/cache@v4
+        name: "Linux: cache bazelisk and zig-cache"
+        with:
+          key: cache-${{ runner.os }}-${{ hashFiles('.bazelversion', 'toolchain/private/zig_sdk.bzl', '.github/workflows/ci.yaml') }}
+          restore-keys: cache-${{ runner.os }}-
+          path: |
+            /tmp/zig-cache
+            ~/.cache/bazelisk
+
+      - run: echo "common --announce_rc" >> .bazelrc.ci
+
       - run: ci/lint
-        if: runner.os != 'Windows'
-      # Releaser emits different hashes
       - run: ci/release
-        if: runner.os != 'Windows'

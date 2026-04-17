@@ -147,17 +147,24 @@ def _zig_repository_impl(repository_ctx):
     host_platform = "{}-{}".format(host_os, host_arch)
     exec_platform = "{}-{}".format(exec_os, exec_arch)
 
+    # As of Zig 0.14.x, the download URL and archive directory changed from
+    # zig-{os}-{arch}-{version} to zig-{arch}-{os}-{version}.
+    host_platform_url = "{}-{}".format(host_arch, host_os)
+    exec_platform_url = "{}-{}".format(exec_arch, exec_os)
+
     zig_sha256 = repository_ctx.attr.host_platform_sha256[host_platform]
     zig_ext = repository_ctx.attr.host_platform_ext[host_platform]
     format_vars = {
         "_ext": zig_ext,
         "version": repository_ctx.attr.version,
         "host_platform": host_platform,
+        "host_platform_url": host_platform_url,
     }
     format_vars_exec = {
         "_ext": repository_ctx.attr.host_platform_ext[exec_platform],
         "version": repository_ctx.attr.version,
         "host_platform": exec_platform,
+        "host_platform_url": exec_platform_url,
     }
 
     for dest, src in {
@@ -179,7 +186,7 @@ def _zig_repository_impl(repository_ctx):
     repository_ctx.download_and_extract(
         auth = use_netrc(read_user_netrc(repository_ctx), urls, {}),
         url = urls,
-        stripPrefix = "zig-{host_platform}-{version}/".format(**format_vars),
+        stripPrefix = "zig-{host_platform_url}-{version}/".format(**format_vars),
         sha256 = zig_sha256,
     )
 
@@ -261,7 +268,7 @@ def _zig_repository_impl(repository_ctx):
     repository_ctx.download_and_extract(
         auth = use_netrc(read_user_netrc(repository_ctx), urls, {}),
         url = urls,
-        stripPrefix = "zig-{host_platform}-{version}/".format(**format_vars_exec),
+        stripPrefix = "zig-{host_platform_url}-{version}/".format(**format_vars_exec),
         sha256 = repository_ctx.attr.host_platform_sha256[exec_platform],
     )
 
@@ -337,12 +344,14 @@ def declare_files(os):
                 "lib/libcxx/**",
                 "lib/libcxxabi/**",
                 "lib/libunwind/**",
+                # lib/c is new in Zig 0.16.x (libc sub-compilation sources)
+                "lib/c/**",
                 "lib/compiler_rt/**",
                 "lib/std/**",
-                "lib/tsan/**",
+                "lib/libtsan/**",
                 "lib/*.zig",
                 "lib/*.h",
-            ]),
+            ], allow_empty = True),
         )
 
         filegroup(

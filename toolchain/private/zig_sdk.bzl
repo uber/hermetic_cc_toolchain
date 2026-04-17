@@ -1,17 +1,19 @@
-VERSION = "0.12.0"
+VERSION = "0.16.0"
 
 HOST_PLATFORM_SHA256 = {
-    "linux-aarch64": "754f1029484079b7e0ca3b913a0a2f2a6afd5a28990cb224fe8845e72f09de63",
-    "linux-x86_64": "c7ae866b8a76a568e2d5cfd31fe89cdb629bdd161fdd5018b29a4a0a17045cad",
-    "macos-aarch64": "294e224c14fd0822cfb15a35cf39aa14bd9967867999bf8bdfe3db7ddec2a27f",
-    "macos-x86_64": "4d411bf413e7667821324da248e8589278180dbc197f4f282b7dbb599a689311",
-    "windows-aarch64": "04c6b92689241ca7a8a59b5f12d2ca2820c09d5043c3c4808b7e93e41c7bf97b",
-    "windows-x86_64": "2199eb4c2000ddb1fba85ba78f1fcf9c1fb8b3e57658f6a627a8e513131893f5",
+    "linux-aarch64": "ea4b09bfb22ec6f6c6ceac57ab63efb6b46e17ab08d21f69f3a48b38e1534f17",
+    "linux-x86_64": "70e49664a74374b48b51e6f3fdfbf437f6395d42509050588bd49abe52ba3d00",
+    "macos-aarch64": "b23d70deaa879b5c2d486ed3316f7eaa53e84acf6fc9cc747de152450d401489",
+    "macos-x86_64": "0387557ed1877bc6a2e1802c8391953baddba76081876301c522f52977b52ba7",
+    "windows-aarch64": "aee38316ee4111717900f45dd3130145c39289e105541d737eb8c5ed653c78ef",
+    "windows-x86_64": "68659eb5f1e4eb1437a722f1dd889c5a322c9954607f5edcf337bc3684a75a7e",
 }
 
 # Official recommended version. Should use this when we have a usable release.
-URL_FORMAT_RELEASE = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.{_ext}"
+# As of 0.14.x, the URL format changed from zig-{os}-{arch}-{version} to
+# zig-{arch}-{os}-{version}. We use {host_platform_url} which is arch-os order.
+URL_FORMAT_RELEASE = "https://ziglang.org/download/{version}/zig-{host_platform_url}-{version}.{_ext}"
 
 # Caution: nightly releases are purged from ziglang.org after ~90 days. Use the
 # Bazel mirror or your own.
-URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform}-{version}.{_ext}"
+URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform_url}-{version}.{_ext}"
