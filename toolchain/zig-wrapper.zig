@@ -470,13 +470,13 @@ test "zig-wrapper:per-user cache dir" {
     } };
     const res = try parseArgs(allocator, tmp.dir, &argv_it);
 
-    const user_var = if (builtin.os.tag == .windows) "USERNAME" else "USER";
     const cache_dir = res.exec.env.get("ZIG_LOCAL_CACHE_DIR").?;
     const global_cache_dir = res.exec.env.get("ZIG_GLOBAL_CACHE_DIR").?;
 
     try testing.expectEqualStrings(cache_dir, global_cache_dir);
 
-    if (std.posix.getenv(user_var)) |user| {
+    const user_var = if (builtin.os.tag == .windows) "USERNAME" else "USER";
+    if (res.exec.env.get(user_var)) |user| {
         const expected = try std.fmt.allocPrint(allocator, "{s}-{s}", .{ CACHE_DIR, user });
         try testing.expectEqualStrings(expected, cache_dir);
     } else {
