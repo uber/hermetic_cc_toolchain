@@ -203,9 +203,12 @@ def _zig_repository_impl(repository_ctx):
         },
     )
 
+    user = repository_ctx.os.environ.get("USER", "") if host_os != "windows" else repository_ctx.os.environ.get("USERNAME", "")
+    compile_cache = "{}-{}".format(cache_prefix, user) if user else cache_prefix
+
     compile_env = {
-        "ZIG_LOCAL_CACHE_DIR": cache_prefix,
-        "ZIG_GLOBAL_CACHE_DIR": cache_prefix,
+        "ZIG_LOCAL_CACHE_DIR": compile_cache,
+        "ZIG_GLOBAL_CACHE_DIR": compile_cache,
     }
 
     compile_cmd = [

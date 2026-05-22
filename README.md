@@ -86,16 +86,22 @@ build:macos --sandbox_add_mount_pair=/var/tmp
 build:windows --sandbox_add_mount_pair=C:\Temp
 ```
 
-The directories can be narrowed down to `/tmp/zig-cache` (Linux),
-`/var/tmp/zig-cache` (MacOS) and `C:\Temp\zig-cache` respectively
-if it can be ensured they will be created before the invocation of `bazel
-build`. See [#83][pr-83] for more context. If a different place is preferred
-for zig cache, set:
+The zig cache directory includes the OS username for per-user isolation
+(e.g. `/tmp/zig-cache-alice` on Linux). The directories can be narrowed
+down to `/tmp/zig-cache-$USER` (Linux), `/var/tmp/zig-cache-$USER` (MacOS)
+and `C:\Temp\zig-cache-%USERNAME%` (Windows) respectively if it can be
+ensured they will be created before the invocation of `bazel build`.
+See [#83][pr-83] for more context. If a different place is preferred for
+zig cache, set:
 
 ```
-build --repo_env=HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX=/path/to/cache
-build --sandbox_add_mount_pair=/path/to/cache
+build --repo_env=HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX=/path/to/zig-cache
+build --sandbox_add_mount_pair=/path/to
 ```
+
+Note: the actual cache directory will be `{prefix}-{username}` (e.g.
+`/path/to/zig-cache-alice`), so the sandbox mount pair should cover
+the parent directory.
 
 If you get an error `unable to create compilation: ReadOnlyFileSystem`, 
 try adding `build --sandbox_writable_path=/path/to/cache` to `.bazelrc` 
@@ -486,9 +492,11 @@ will be accepted.
 
 ### Zig cache location
 
-Currently zig cache is stored in `/var/tmp/zig-cache`, so `bazel clean
---expunge` will not clear the zig cache. Zig's cache should be stored somewhere
-in the project's path. It is not clear how to do it.
+Zig cache is stored outside Bazel's output base (e.g. `/var/tmp/zig-cache-$USER`),
+so `bazel clean --expunge` will not clear it. The cache directory includes the OS
+username so that multiple users on the same machine do not collide. If `USER`
+(Unix) or `USERNAME` (Windows) is not set, the cache falls back to the base
+directory without a username suffix.
 
 See [#83][pr-83] for more context.
 

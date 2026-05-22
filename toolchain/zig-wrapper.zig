@@ -217,9 +217,18 @@ fn parseArgs(
     var env = process.getEnvMap(arena) catch |err|
         return parseFatal(arena, "error getting env: {s}", .{@errorName(err)});
 
+    const cache_dir = blk: {
+        const user_var = if (builtin.os.tag == .windows) "USERNAME" else "USER";
+        if (env.get(user_var)) |user| {
+            if (user.len > 0)
+                break :blk try std.fmt.allocPrint(arena, "{s}-{s}", .{ CACHE_DIR, user });
+        }
+        break :blk @as([]const u8, CACHE_DIR);
+    };
+
     try env.put("ZIG_LIB_DIR", zig_lib_dir);
-    try env.put("ZIG_LOCAL_CACHE_DIR", CACHE_DIR);
-    try env.put("ZIG_GLOBAL_CACHE_DIR", CACHE_DIR);
+    try env.put("ZIG_LOCAL_CACHE_DIR", cache_dir);
+    try env.put("ZIG_GLOBAL_CACHE_DIR", cache_dir);
 
     // args is the path to the zig binary and args to it.
     var args = ArrayListUnmanaged([]const u8){};
@@ -445,6 +454,33 @@ test "zig-wrapper:parseArgs" {
                 try compareExec(res, want.args, want.env_zig_lib_dir);
             },
         }
+    }
+}
+
+test "zig-wrapper:per-user cache dir" {
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    const allocator = gpa.allocator();
+
+    var tmp = testing.tmpDir(.{});
+    defer tmp.cleanup();
+
+    var argv_it = TestArgIterator{ .argv = &[_][:0]const u8{
+        "tools" ++ sep ++ "x86_64-linux-musl" ++ sep ++ "c++" ++ EXE,
+        "main.c",
+    } };
+    const res = try parseArgs(allocator, tmp.dir, &argv_it);
+
+    const user_var = if (builtin.os.tag == .windows) "USERNAME" else "USER";
+    const cache_dir = res.exec.env.get("ZIG_LOCAL_CACHE_DIR").?;
+    const global_cache_dir = res.exec.env.get("ZIG_GLOBAL_CACHE_DIR").?;
+
+    try testing.expectEqualStrings(cache_dir, global_cache_dir);
+
+    if (std.posix.getenv(user_var)) |user| {
+        const expected = try std.fmt.allocPrint(allocator, "{s}-{s}", .{ CACHE_DIR, user });
+        try testing.expectEqualStrings(expected, cache_dir);
+    } else {
+        try testing.expectEqualStrings(CACHE_DIR, cache_dir);
     }
 }
 
