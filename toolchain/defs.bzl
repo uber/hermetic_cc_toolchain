@@ -184,15 +184,6 @@ def _zig_repository_impl(repository_ctx):
     )
 
     cache_prefix = repository_ctx.os.environ.get("HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX", "")
-    if cache_prefix == "":
-        if host_os == "windows":
-            cache_prefix = "C:\\\\Temp\\\\zig-cache"
-        elif host_os == "macos":
-            cache_prefix = "/var/tmp/zig-cache"
-        elif host_os == "linux":
-            cache_prefix = "/tmp/zig-cache"
-        else:
-            fail("unknown os: {}".format(host_os))
 
     repository_ctx.template(
         "tools/zig-wrapper.zig",
@@ -203,12 +194,24 @@ def _zig_repository_impl(repository_ctx):
         },
     )
 
-    user = repository_ctx.os.environ.get("USER", "") if host_os != "windows" else repository_ctx.os.environ.get("USERNAME", "")
-    compile_cache = "{}-{}".format(cache_prefix, user) if user else cache_prefix
+    if cache_prefix == "":
+        if host_os == "windows":
+            local_app_data = repository_ctx.os.environ.get("LOCALAPPDATA", "")
+            cache_prefix = "{}\\zig".format(local_app_data) if local_app_data else "C:\\\\Temp\\\\zig-cache"
+        else:
+            home = repository_ctx.os.environ.get("HOME", "")
+            if home:
+                cache_prefix = "{}/.cache/zig".format(home)
+            elif host_os == "macos":
+                cache_prefix = "/var/tmp/zig-cache"
+            elif host_os == "linux":
+                cache_prefix = "/tmp/zig-cache"
+            else:
+                fail("unknown os: {}".format(host_os))
 
     compile_env = {
-        "ZIG_LOCAL_CACHE_DIR": compile_cache,
-        "ZIG_GLOBAL_CACHE_DIR": compile_cache,
+        "ZIG_LOCAL_CACHE_DIR": cache_prefix,
+        "ZIG_GLOBAL_CACHE_DIR": cache_prefix,
     }
 
     compile_cmd = [

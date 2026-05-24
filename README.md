@@ -81,27 +81,21 @@ And this to `.bazelrc` on a Unix-y systems:
 
 ```
 common --enable_platform_specific_config
-build:linux --sandbox_add_mount_pair=/tmp
-build:macos --sandbox_add_mount_pair=/var/tmp
-build:windows --sandbox_add_mount_pair=C:\Temp
+build:linux --sandbox_add_mount_pair=/home
+build:macos --sandbox_add_mount_pair=/Users
+build:windows --sandbox_add_mount_pair=C:\Users
 ```
 
-The zig cache directory includes the OS username for per-user isolation
-(e.g. `/tmp/zig-cache-alice` on Linux). The directories can be narrowed
-down to `/tmp/zig-cache-$USER` (Linux), `/var/tmp/zig-cache-$USER` (MacOS)
-and `C:\Temp\zig-cache-%USERNAME%` (Windows) respectively if it can be
-ensured they will be created before the invocation of `bazel build`.
+The zig cache directory defaults to `$HOME/.cache/zig` on Unix and
+`%LocalAppData%\zig` on Windows. Each user gets their own cache directory
+automatically, so multiple users on the same machine do not collide.
 See [#83][pr-83] for more context. If a different place is preferred for
 zig cache, set:
 
 ```
 build --repo_env=HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX=/path/to/zig-cache
-build --sandbox_add_mount_pair=/path/to
+build --sandbox_add_mount_pair=/path/to/zig-cache
 ```
-
-Note: the actual cache directory will be `{prefix}-{username}` (e.g.
-`/path/to/zig-cache-alice`), so the sandbox mount pair should cover
-the parent directory.
 
 If you get an error `unable to create compilation: ReadOnlyFileSystem`, 
 try adding `build --sandbox_writable_path=/path/to/cache` to `.bazelrc` 
@@ -492,11 +486,9 @@ will be accepted.
 
 ### Zig cache location
 
-Zig cache is stored outside Bazel's output base (e.g. `/var/tmp/zig-cache-$USER`),
-so `bazel clean --expunge` will not clear it. The cache directory includes the OS
-username so that multiple users on the same machine do not collide. If `USER`
-(Unix) or `USERNAME` (Windows) is not set, the cache falls back to the base
-directory without a username suffix.
+Zig cache is stored outside Bazel's output base (at `$HOME/.cache/zig` on Unix
+or `%LocalAppData%\zig` on Windows), so `bazel clean --expunge` will not clear
+it. Each user gets their own cache directory automatically via `$HOME`.
 
 See [#83][pr-83] for more context.
 

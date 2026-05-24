@@ -29,7 +29,7 @@ jobs:
         with:
           key: cache-${{ matrix.os }}-${{ hashFiles('.bazelversion', 'toolchain/private/zig_sdk.bzl', '.github/workflows/ci.yaml') }}
           path: |
-            C:\Temp\zig-cache-runneradmin
+            ~\AppData\Local\zig
             ~\AppData\Local\bazelisk'
 
       - uses: actions/cache@v4
@@ -38,7 +38,7 @@ jobs:
         with:
           key: cache-${{ matrix.os }}-${{ hashFiles('.bazelversion', 'toolchain/private/zig_sdk.bzl', '.github/workflows/ci.yaml') }}
           path: |
-            /var/tmp/zig-cache-runner
+            ~/.cache/zig
             ~/Library/Caches/bazelisk
 
       - uses: actions/cache@v4
@@ -47,7 +47,7 @@ jobs:
         with:
           key: cache-${{ matrix.os }}-${{ hashFiles('.bazelversion', 'toolchain/private/zig_sdk.bzl', '.github/workflows/ci.yaml') }}
           path: |
-            /tmp/zig-cache-runner
+            ~/.cache/zig
             ~/.cache/bazelisk
 
       - run: echo "common --announce_rc" >> .bazelrc.ci

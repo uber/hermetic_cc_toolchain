@@ -218,12 +218,19 @@ fn parseArgs(
         return parseFatal(arena, "error getting env: {s}", .{@errorName(err)});
 
     const cache_dir = blk: {
-        const user_var = if (builtin.os.tag == .windows) "USERNAME" else "USER";
-        if (env.get(user_var)) |user| {
-            if (user.len > 0)
-                break :blk try std.fmt.allocPrint(arena, "{s}-{s}", .{ CACHE_DIR, user });
+        if (CACHE_DIR.len > 0) break :blk @as([]const u8, CACHE_DIR);
+        if (builtin.os.tag == .windows) {
+            if (env.get("LOCALAPPDATA")) |local_app_data| {
+                if (local_app_data.len > 0)
+                    break :blk try fs.path.join(arena, &[_][]const u8{ local_app_data, "zig" });
+            }
+            break :blk @as([]const u8, "C:\\Temp\\zig-cache");
         }
-        break :blk @as([]const u8, CACHE_DIR);
+        if (env.get("HOME")) |home| {
+            if (home.len > 0)
+                break :blk try fs.path.join(arena, &[_][]const u8{ home, ".cache", "zig" });
+        }
+        break :blk @as([]const u8, if (builtin.os.tag == .macos) "/var/tmp/zig-cache" else "/tmp/zig-cache");
     };
 
     try env.put("ZIG_LIB_DIR", zig_lib_dir);
@@ -457,7 +464,7 @@ test "zig-wrapper:parseArgs" {
     }
 }
 
-test "zig-wrapper:per-user cache dir" {
+test "zig-wrapper:cache dir override" {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     const allocator = gpa.allocator();
 
@@ -474,14 +481,7 @@ test "zig-wrapper:per-user cache dir" {
     const global_cache_dir = res.exec.env.get("ZIG_GLOBAL_CACHE_DIR").?;
 
     try testing.expectEqualStrings(cache_dir, global_cache_dir);
-
-    const user_var = if (builtin.os.tag == .windows) "USERNAME" else "USER";
-    if (res.exec.env.get(user_var)) |user| {
-        const expected = try std.fmt.allocPrint(allocator, "{s}-{s}", .{ CACHE_DIR, user });
-        try testing.expectEqualStrings(expected, cache_dir);
-    } else {
-        try testing.expectEqualStrings(CACHE_DIR, cache_dir);
-    }
+    try testing.expectEqualStrings(CACHE_DIR, cache_dir);
 }
 
 fn noExe(b: []const u8) []const u8 {
