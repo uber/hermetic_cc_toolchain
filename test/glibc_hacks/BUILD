@@ -21,5 +21,6 @@ cc_binary(
         ("linux_amd64_musl", "//libc_aware/platform:linux_amd64_musl"),
         ("linux_amd64_gnu.2.28", "//libc_aware/platform:linux_amd64_gnu.2.28"),
         ("linux_arm64_musl", "//libc_aware/platform:linux_arm64_musl"),
+        ("linux_riscv64_musl_zig", "//libc_aware/platform:linux_riscv64_musl_zig"),
     ]
 ]
