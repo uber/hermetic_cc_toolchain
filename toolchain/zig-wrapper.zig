@@ -249,6 +249,12 @@ fn parseArgs(
     while (argv_it.next()) |arg|
         try args.append(arena, arg);
 
+    // Workaround for https://github.com/ziglang/zig/issues/23287: zig 0.14.0
+    // lld does not handle the colon-link syntax (-l :filename or -l:filename).
+    // Resolve such flags to full paths by searching the -L directories.
+    if (run_mode == RunMode.cc)
+        try resolveColonLibraries(arena, cwd, &args);
+
     // Add -target as the last parameter. The wrapper should overwrite
     // the target specified by other tools calling the wrapper.
     // Some tools might pass LLVM target triple, which are rejected by zig.
@@ -261,6 +267,37 @@ fn parseArgs(
     }
 
     return ParseResults{ .exec = .{ .args = args, .env = env } };
+}
+
+// Workaround for https://github.com/ziglang/zig/issues/23287: zig 0.14.0 lld
+// does not handle the colon-link syntax (-l:filename). When we see "-l" followed
+// by ":filename", resolve it to a full path by searching the -L directories.
+fn resolveColonLibraries(
+    arena: mem.Allocator,
+    cwd: fs.Dir,
+    args: *ArrayListUnmanaged([]const u8),
+) error{OutOfMemory}!void {
+    var lib_paths = ArrayListUnmanaged([]const u8){};
+    for (args.items) |arg| {
+        if (mem.startsWith(u8, arg, "-L") and arg.len > 2)
+            try lib_paths.append(arena, arg[2..]);
+    }
+
+    var i: usize = 0;
+    while (i + 1 < args.items.len) : (i += 1) {
+        if (!mem.eql(u8, args.items[i], "-l")) continue;
+        const next = args.items[i + 1];
+        if (!mem.startsWith(u8, next, ":")) continue;
+
+        const filename = next[1..];
+        for (lib_paths.items) |lib_path| {
+            const full_path = try fs.path.join(arena, &[_][]const u8{ lib_path, filename });
+            cwd.access(full_path, .{}) catch continue;
+            args.items[i] = full_path;
+            _ = args.orderedRemove(i + 1);
+            break;
+        }
+    }
 }
 
 fn parseFatal(

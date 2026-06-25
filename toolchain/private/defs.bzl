@@ -211,6 +211,7 @@ def _target_wasm():
         zigtarget = "wasm32-wasi-musl",
         includes = [
             "libc/include/wasm-wasi-musl",
+            "libc/include/generic-musl",
             "libc/wasi",
         ] + _INCLUDE_TAIL,
         linkopts = [],
