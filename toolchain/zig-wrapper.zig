@@ -237,6 +237,18 @@ fn parseArgs(
     try env.put("ZIG_LOCAL_CACHE_DIR", cache_dir);
     try env.put("ZIG_GLOBAL_CACHE_DIR", cache_dir);
 
+    // Zig 0.14.0 locates the macOS SDK by running `xcrun --show-sdk-path`.
+    // Bazel clears PATH via `exec env -`, making xcrun unfindable. Restore
+    // the minimal system PATH so xcrun works in the sandbox.
+    if (builtin.target.os.tag == .macos) {
+        const existing = env.get("PATH") orelse "";
+        const path = if (existing.len > 0)
+            try std.fmt.allocPrint(arena, "{s}:/usr/bin:/bin", .{existing})
+        else
+            "/usr/bin:/bin";
+        try env.put("PATH", path);
+    }
+
     // args is the path to the zig binary and args to it.
     var args = ArrayListUnmanaged([]const u8){};
     try args.appendSlice(arena, &[_][]const u8{zig_exe});
