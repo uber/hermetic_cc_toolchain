@@ -472,11 +472,11 @@ func checkZigMirrored(repoRoot string) error {
 		return nil
 	}
 
-	// spot-checking only windows-x86_64, because:
+	// spot-checking only x86_64-windows, because:
 	// - to check all platforms, we should parse much more of zig_sdk.bzl.
 	// - so we'd rather pick a single platform and test it.
 	// - because windows coverage is smallest, let's take the windows platform.
-	url := strings.Replace(upstream.urlTemplate, "{host_platform}", "windows-x86_64", 1)
+	url := strings.Replace(upstream.urlTemplate, "{host_platform}", "x86_64-windows", 1)
 	url = strings.ReplaceAll(url, "{version}", upstream.version)
 	url = strings.Replace(url, "{_ext}", "zip", 1)
 
