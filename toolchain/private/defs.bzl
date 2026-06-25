@@ -165,7 +165,12 @@ def _target_linux_gnu(gocpu, zigcpu, glibc_version):
         linkopts = [],
         dynamic_library_linkopts = [],
         supports_dynamic_linker = True,
-        copts = [],
+        # Zig 0.14.0 dropped the implicit -D_GNU_SOURCE that 0.12.0 passed,
+        # but glibc headers gate POSIX extensions (posix_openpt, grantpt,
+        # unlockpt, ptsname, ...) behind __USE_XOPEN_EXTENDED / __USE_XOPEN2KXSI
+        # which are only set when _XOPEN_SOURCE>=500/600. _GNU_SOURCE enables
+        # all of them, matching the behaviour users expect on Linux/glibc.
+        copts = ["-D_GNU_SOURCE"],
         libc = "glibc",
         bazel_target_cpu = "k8",
         constraint_values = [
