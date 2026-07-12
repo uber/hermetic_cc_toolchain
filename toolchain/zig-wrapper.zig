@@ -55,7 +55,7 @@ const std = @import("std");
 const fs = std.fs;
 const mem = std.mem;
 const process = std.process;
-const ChildProcess = std.process.Child;
+const ChildProcess = std.ChildProcess;
 const ArrayListUnmanaged = std.ArrayListUnmanaged;
 const sep = fs.path.sep_str;
 
@@ -93,7 +93,7 @@ const ParseResults = union(Action) {
 };
 
 // sub-commands in the same folder as `zig-wrapper`
-const sub_commands_target = std.StaticStringMap(void).initComptime(.{
+const sub_commands_target = std.ComptimeStringMap(void, .{
     .{"ar"},
     .{"ld.lld"},
     .{"lld-link"},
@@ -142,9 +142,9 @@ fn spawnWindows(arena: mem.Allocator, params: ExecParams) u8 {
     proc.env_map = &params.env;
     const ret = proc.spawnAndWait() catch |err|
         return fatal(
-            "error spawning {s}: {s}\n",
-            .{ params.args.items[0], @errorName(err) },
-        );
+        "error spawning {s}: {s}\n",
+        .{ params.args.items[0], @errorName(err) },
+    );
 
     switch (ret) {
         .Exited => |code| return code,
@@ -237,18 +237,6 @@ fn parseArgs(
     try env.put("ZIG_LOCAL_CACHE_DIR", cache_dir);
     try env.put("ZIG_GLOBAL_CACHE_DIR", cache_dir);
 
-    // Zig 0.14.0 locates the macOS SDK by running `xcrun --show-sdk-path`.
-    // Bazel clears PATH via `exec env -`, making xcrun unfindable. Restore
-    // the minimal system PATH so xcrun works in the sandbox.
-    if (builtin.target.os.tag == .macos) {
-        const existing = env.get("PATH") orelse "";
-        const path = if (existing.len > 0)
-            try std.fmt.allocPrint(arena, "{s}:/usr/bin:/bin", .{existing})
-        else
-            "/usr/bin:/bin";
-        try env.put("PATH", path);
-    }
-
     // args is the path to the zig binary and args to it.
     var args = ArrayListUnmanaged([]const u8){};
     try args.appendSlice(arena, &[_][]const u8{zig_exe});
@@ -260,12 +248,6 @@ fn parseArgs(
 
     while (argv_it.next()) |arg|
         try args.append(arena, arg);
-
-    // Workaround for https://github.com/ziglang/zig/issues/23287: zig 0.14.0
-    // lld does not handle the colon-link syntax (-l :filename or -l:filename).
-    // Resolve such flags to full paths by searching the -L directories.
-    if (run_mode == RunMode.cc)
-        try resolveColonLibraries(arena, cwd, &args);
 
     // Add -target as the last parameter. The wrapper should overwrite
     // the target specified by other tools calling the wrapper.
@@ -279,37 +261,6 @@ fn parseArgs(
     }
 
     return ParseResults{ .exec = .{ .args = args, .env = env } };
-}
-
-// Workaround for https://github.com/ziglang/zig/issues/23287: zig 0.14.0 lld
-// does not handle the colon-link syntax (-l:filename). When we see "-l" followed
-// by ":filename", resolve it to a full path by searching the -L directories.
-fn resolveColonLibraries(
-    arena: mem.Allocator,
-    cwd: fs.Dir,
-    args: *ArrayListUnmanaged([]const u8),
-) error{OutOfMemory}!void {
-    var lib_paths = ArrayListUnmanaged([]const u8){};
-    for (args.items) |arg| {
-        if (mem.startsWith(u8, arg, "-L") and arg.len > 2)
-            try lib_paths.append(arena, arg[2..]);
-    }
-
-    var i: usize = 0;
-    while (i + 1 < args.items.len) : (i += 1) {
-        if (!mem.eql(u8, args.items[i], "-l")) continue;
-        const next = args.items[i + 1];
-        if (!mem.startsWith(u8, next, ":")) continue;
-
-        const filename = next[1..];
-        for (lib_paths.items) |lib_path| {
-            const full_path = try fs.path.join(arena, &[_][]const u8{ lib_path, filename });
-            cwd.access(full_path, .{}) catch continue;
-            args.items[i] = full_path;
-            _ = args.orderedRemove(i + 1);
-            break;
-        }
-    }
 }
 
 fn parseFatal(
@@ -347,7 +298,7 @@ fn getRunMode(self_exe: []const u8, self_base_noexe: []const u8) error{BadParent
     // strings `is.it.x86_64?-stallinux,macos-`; we are trying to aid users
     // that run things from the wrong directory, not trying to punish the ones
     // having fun.
-    var it = mem.splitScalar(u8, triple, '-');
+    var it = mem.split(u8, triple, "-");
 
     const arch = it.next() orelse return error.BadParent;
     if (mem.indexOf(u8, "aarch64,x86_64,wasm32", arch) == null)

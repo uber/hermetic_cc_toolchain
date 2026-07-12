@@ -19,7 +19,6 @@ def _impl(ctx):
             ctx.file.src.short_path,
             "-mcpu={}".format(mcpu),
             "-femit-bin={}".format(dst.path),
-            "-lc",
         ],
         mnemonic = "ZigBuildExe",
         toolchain = "@zig_sdk//toolchain/zig:toolchain_type",
