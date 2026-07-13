@@ -5,6 +5,17 @@ set -xeuo pipefail
 echo "--- which zig"
 ZIG=${ZIG:-$(tools/bazel run "$@" --run_under=echo @zig_sdk//:zig)}
 
+# On macOS, pass an explicit -target so zig links against its bundled
+# hermetic libc stubs instead of the host SDK. Without it, zig 0.14.0 fails
+# to parse the libSystem.tbd shipped with newer Xcode SDKs
+# (ziglang/zig#23324) and yields undefined-symbol link errors. Other
+# platforms build natively and need no target override.
+TARGET_ARGS=()
+case "$(uname -s)-$(uname -m)" in
+  Darwin-arm64)  TARGET_ARGS=(-target aarch64-macos-none) ;;
+  Darwin-x86_64) TARGET_ARGS=(-target x86_64-macos-none) ;;
+esac
+
 for zigfile in $(git ls-files '*.zig'); do
-  $ZIG test "$zigfile"
+  $ZIG test ${TARGET_ARGS[@]+"${TARGET_ARGS[@]}"} "$zigfile"
 done
