@@ -177,12 +177,38 @@ def _zig_cc_toolchain_config_impl(ctx):
         ],
     )
 
+    # https://github.com/bazelbuild/rules_cc/blob/6fd317b2ae0534a29db7085605b0262849e62f93/cc/private/toolchain/unix_cc_toolchain_config.bzl#L1099
+    external_include_paths_feature = feature(
+        name = "external_include_paths",
+        flag_sets = [
+            flag_set(
+                actions = compile_and_link_actions + [
+                    # This is the subset of rest_compile_actions that was also
+                    # included in rules_cc's external_include_paths feature.
+                    ACTION_NAMES.preprocess_assemble,
+                    ACTION_NAMES.linkstamp_compile,
+                    ACTION_NAMES.cpp_header_parsing,
+                    ACTION_NAMES.cpp_module_compile,
+                    ACTION_NAMES.clif_match,
+                ],
+                flag_groups = [
+                    flag_group(
+                        flags = ["-isystem", "%{external_include_paths}"],
+                        iterate_over = "external_include_paths",
+                        expand_if_available = "external_include_paths",
+                    ),
+                ],
+            ),
+        ],
+    )
+
     features = [
         compile_and_link_flags,
         default_linker_flags,
         supports_dynamic_linker,
         strip_debug_symbols_feature,
         soname_feature,
+        external_include_paths_feature,
     ] + _compilation_mode_features(ctx)
 
     artifact_name_patterns = [
