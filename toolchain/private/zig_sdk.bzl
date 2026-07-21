@@ -1,12 +1,12 @@
-VERSION = "0.15.2"
+VERSION = "0.16.0"
 
 HOST_PLATFORM_SHA256 = {
-    "linux-aarch64": "958ed7d1e00d0ea76590d27666efbf7a932281b3d7ba0c6b01b0ff26498f667f",
-    "linux-x86_64": "02aa270f183da276e5b5920b1dac44a63f1a49e55050ebde3aecc9eb82f93239",
-    "macos-aarch64": "3cc2bab367e185cdfb27501c4b30b1b0653c28d9f73df8dc91488e66ece5fa6b",
-    "macos-x86_64": "375b6909fc1495d16fc2c7db9538f707456bfc3373b14ee83fdd3e22b3d43f7f",
-    "windows-aarch64": "b926465f8872bf983422257cd9ec248bb2b270996fbe8d57872cca13b56fc370",
-    "windows-x86_64": "3a0ed1e8799a2f8ce2a6e6290a9ff22e6906f8227865911fb7ddedc3cc14cb0c",
+    "linux-aarch64": "ea4b09bfb22ec6f6c6ceac57ab63efb6b46e17ab08d21f69f3a48b38e1534f17",
+    "linux-x86_64": "70e49664a74374b48b51e6f3fdfbf437f6395d42509050588bd49abe52ba3d00",
+    "macos-aarch64": "b23d70deaa879b5c2d486ed3316f7eaa53e84acf6fc9cc747de152450d401489",
+    "macos-x86_64": "0387557ed1877bc6a2e1802c8391953baddba76081876301c522f52977b52ba7",
+    "windows-aarch64": "aee38316ee4111717900f45dd3130145c39289e105541d737eb8c5ed653c78ef",
+    "windows-x86_64": "68659eb5f1e4eb1437a722f1dd889c5a322c9954607f5edcf337bc3684a75a7e",
 }
 
 # Zig >=0.14.1 names its release tarballs zig-{arch}-{os}-{version} (arch
