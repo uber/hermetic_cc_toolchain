@@ -11,11 +11,12 @@
 #            result must be a regular archive that links fine.
 #
 #   raw:     `zig ar` is invoked directly (bypassing the wrapper) to create a
-#            genuinely thin archive, and linking against it must FAIL with
-#            the ziglang/zig#25694 error. This is a canary: when a Zig
-#            upgrade makes this test fail, upstream has fixed #25694 —
-#            flip this mode's expectation and delete stripThinArchiveFlags
-#            from toolchain/zig-wrapper.zig.
+#            genuinely thin archive, and linking against it must SUCCEED:
+#            ziglang/zig#25694 is fixed in Zig 0.16. This is the inverse of
+#            the 0.15 canary — if a future Zig regresses thin-archive
+#            reading, this test fails. The wrapper still strips thin-archive
+#            requests for consistency with the 0.15 line; delete
+#            stripThinArchiveFlags once 0.15 support is dropped.
 
 set -euo pipefail
 
@@ -53,14 +54,9 @@ raw)
         exit 1
     fi
 
-    if "$cxx" test/ar/main.c "$work/libmember.a" -o "$work/main" 2>"$work/link.err"; then
-        echo "FAIL: linking a thin archive succeeded: ziglang/zig#25694 appears" >&2
-        echo "to be fixed upstream. Flip this test's expectation and delete" >&2
-        echo "stripThinArchiveFlags from toolchain/zig-wrapper.zig." >&2
-        exit 1
-    fi
-    if ! grep -q 'unexpected token in LD script' "$work/link.err"; then
-        echo "FAIL: link failed, but not with the ziglang/zig#25694 error:" >&2
+    if ! "$cxx" test/ar/main.c "$work/libmember.a" -o "$work/main" 2>"$work/link.err"; then
+        echo "FAIL: linking a thin archive failed; ziglang/zig#25694 has" >&2
+        echo "regressed (it is fixed in Zig 0.16):" >&2
         cat "$work/link.err" >&2
         exit 1
     fi

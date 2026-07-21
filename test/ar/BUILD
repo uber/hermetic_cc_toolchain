@@ -3,19 +3,20 @@
 
 # Tests for the ar wrapper's thin-archive handling.
 #
-# Zig 0.15's linker cannot read thin archives (ziglang/zig#25694):
+# Zig 0.15's linker could not read thin archives (ziglang/zig#25694):
 #     error: unexpected token in LD script: literal: '!<thin>'
 # so the toolchain's ar wrapper strips thin-archive requests (the `T`
-# modifier and `--thin`) and produces regular archives instead.
+# modifier and `--thin`) and produces regular archives instead. The strip is
+# retained on Zig 0.16 for consistency with the 0.15 line even though the
+# upstream bug is fixed there.
 #
 # ar_thin_request_test checks the workaround: asking the wrapper for a thin
 # archive yields a regular archive that links.
 #
-# thin_archive_canary_test checks that the workaround is still needed: a
-# genuinely thin archive (created by raw `zig ar`, bypassing the wrapper)
-# still fails to link. When a Zig upgrade fixes ziglang/zig#25694, this
-# test starts failing; flip its expectation and delete
-# stripThinArchiveFlags from toolchain/zig-wrapper.zig.
+# thin_archive_canary_test checks upstream behavior with the wrapper
+# bypassed: a genuinely thin archive created by raw `zig ar` links fine on
+# Zig 0.16 (ziglang/zig#25694 is fixed). If a future Zig regresses
+# thin-archive reading, this test fails.
 
 _TEST_DATA = [
     "main.c",

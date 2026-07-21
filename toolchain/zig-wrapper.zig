@@ -55,7 +55,9 @@ const std = @import("std");
 const fs = std.fs;
 const mem = std.mem;
 const process = std.process;
-const ChildProcess = std.process.Child;
+const Io = std.Io;
+const Dir = std.Io.Dir;
+const Environ = std.process.Environ;
 const ArrayListUnmanaged = std.ArrayListUnmanaged;
 const sep = fs.path.sep_str;
 
@@ -84,7 +86,7 @@ const Action = enum {
 
 const ExecParams = struct {
     args: ArrayListUnmanaged([]const u8),
-    env: process.EnvMap,
+    env: *Environ.Map,
 };
 
 const ParseResults = union(Action) {
@@ -109,51 +111,59 @@ const RunMode = union(enum) {
     cc: []const u8, // cc -target <...>
 };
 
-pub fn main() u8 {
-    const allocator = if (builtin.link_libc)
-        std.heap.c_allocator
-    else blk: {
-        var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-        break :blk gpa.allocator();
-    };
-    var arena_allocator = std.heap.ArenaAllocator.init(allocator);
-    defer arena_allocator.deinit();
-    const arena = arena_allocator.allocator();
+pub fn main(init: std.process.Init) u8 {
+    // Juicy Main (Zig 0.16): the runtime hands us a pre-initialized arena,
+    // Io implementation and environment map. Everything that blocks or
+    // touches the OS (args, env, filesystem, exec) now flows through `io`.
+    const arena = init.arena.allocator();
+    const io = init.io;
 
-    var argv_it = process.argsWithAllocator(arena) catch |err|
+    var argv_it = init.minimal.args.iterateAllocator(arena) catch |err|
         return fatal("error parsing args: {s}\n", .{@errorName(err)});
 
-    const action = parseArgs(arena, fs.cwd(), &argv_it) catch |err|
+    const action = parseArgs(arena, io, Dir.cwd(), &argv_it, init.environ_map) catch |err|
         return fatal("error: {s}\n", .{@errorName(err)});
 
     switch (action) {
         .err => |msg| return fatal("{s}", .{msg}),
         .exec => |params| {
-            if (builtin.os.tag == .windows)
-                return spawnWindows(arena, params)
+            // execve-style replacement where supported (POSIX); spawn+wait
+            // on platforms that cannot replace the process image (Windows).
+            if (process.can_replace)
+                return replaceProcess(io, params)
             else
-                return execUnix(arena, params);
+                return spawnAndWait(io, params);
         },
     }
 }
 
-fn spawnWindows(arena: mem.Allocator, params: ExecParams) u8 {
-    var proc = ChildProcess.init(params.args.items, arena);
-    proc.env_map = &params.env;
-    const ret = proc.spawnAndWait() catch |err|
+fn spawnAndWait(io: Io, params: ExecParams) u8 {
+    var child = process.spawn(io, .{
+        .argv = params.args.items,
+        .environ_map = params.env,
+    }) catch |err|
         return fatal(
             "error spawning {s}: {s}\n",
             .{ params.args.items[0], @errorName(err) },
         );
 
-    switch (ret) {
-        .Exited => |code| return code,
+    const term = child.wait(io) catch |err|
+        return fatal(
+            "error waiting for {s}: {s}\n",
+            .{ params.args.items[0], @errorName(err) },
+        );
+
+    switch (term) {
+        .exited => |code| return code,
         else => |other| return fatal("abnormal exit: {any}\n", .{other}),
     }
 }
 
-fn execUnix(arena: mem.Allocator, params: ExecParams) u8 {
-    const err = process.execve(arena, params.args.items, &params.env);
+fn replaceProcess(io: Io, params: ExecParams) u8 {
+    const err = process.replace(io, .{
+        .argv = params.args.items,
+        .environ_map = params.env,
+    });
     std.debug.print(
         "error execing {s}: {s}\n",
         .{ params.args.items[0], @errorName(err) },
@@ -167,8 +177,10 @@ fn execUnix(arena: mem.Allocator, params: ExecParams) u8 {
 // Leaks memory: the name of the first argument is arena not by chance.
 fn parseArgs(
     arena: mem.Allocator,
-    cwd: fs.Dir,
+    io: Io,
+    cwd: Dir,
     argv_it: anytype,
+    env: *Environ.Map,
 ) error{OutOfMemory}!ParseResults {
     const arg0 = argv_it.next() orelse
         return parseFatal(arena, "error: argv[0] cannot be null", .{});
@@ -187,12 +199,13 @@ fn parseArgs(
 
     const root = blk: {
         var dir = cwd.openDir(
+            io,
             "external" ++ sep ++ "zig_sdk" ++ sep ++ "lib",
-            .{ .access_sub_paths = false, .no_follow = true },
+            .{ .access_sub_paths = false, .follow_symlinks = false },
         );
 
         if (dir) |*dir_exists| {
-            dir_exists.close();
+            dir_exists.close(io);
             break :blk "external" ++ sep ++ "zig_sdk";
         } else |_| {}
 
@@ -213,9 +226,6 @@ fn parseArgs(
         arena,
         &[_][]const u8{ root, "zig" ++ EXE },
     );
-
-    var env = process.getEnvMap(arena) catch |err|
-        return parseFatal(arena, "error getting env: {s}", .{@errorName(err)});
 
     const cache_dir = blk: {
         if (CACHE_DIR.len > 0) break :blk @as([]const u8, CACHE_DIR);
@@ -250,7 +260,7 @@ fn parseArgs(
     }
 
     // args is the path to the zig binary and args to it.
-    var args = ArrayListUnmanaged([]const u8){};
+    var args: ArrayListUnmanaged([]const u8) = .empty;
     try args.appendSlice(arena, &[_][]const u8{zig_exe});
 
     switch (run_mode) {
@@ -266,8 +276,21 @@ fn parseArgs(
     if (run_mode == RunMode.cc)
         try args.appendSlice(arena, &[_][]const u8{"-fno-sanitize=undefined"});
 
-    while (argv_it.next()) |arg|
+    // Go's cgo unconditionally appends the MinGW-only `-mthreads` flag when
+    // targeting Windows (golang/go#80290). Since llvm/llvm-project D151590,
+    // clang's driver treats MinGW link flags as target-specific, and zig's
+    // clang rejects `-mthreads` for windows-gnu. The flag is redundant for
+    // zig's always-threadsafe mingw-w64 runtime, so drop it when targeting
+    // Windows. The upstream fix is pending in Go 1.27.
+    const strip_mthreads = switch (run_mode) {
+        .cc => |triple| mem.indexOf(u8, triple, "windows") != null,
+        else => false,
+    };
+
+    while (argv_it.next()) |arg| {
+        if (strip_mthreads and mem.eql(u8, arg, "-mthreads")) continue;
         try args.append(arena, arg);
+    }
 
     // Zig 0.15's linker cannot read thin archives (ziglang/zig#25694):
     //     error: unexpected token in LD script: literal: '!<thin>'
@@ -282,7 +305,7 @@ fn parseArgs(
     // lld does not handle the colon-link syntax (-l :filename or -l:filename).
     // Resolve such flags to full paths by searching the -L directories.
     if (run_mode == RunMode.cc)
-        try resolveColonLibraries(arena, cwd, &args);
+        try resolveColonLibraries(arena, io, cwd, &args);
 
     // Add -target as the last parameter. The wrapper should overwrite
     // the target specified by other tools calling the wrapper.
@@ -303,10 +326,11 @@ fn parseArgs(
 // by ":filename", resolve it to a full path by searching the -L directories.
 fn resolveColonLibraries(
     arena: mem.Allocator,
-    cwd: fs.Dir,
+    io: Io,
+    cwd: Dir,
     args: *ArrayListUnmanaged([]const u8),
 ) error{OutOfMemory}!void {
-    var lib_paths = ArrayListUnmanaged([]const u8){};
+    var lib_paths: ArrayListUnmanaged([]const u8) = .empty;
     for (args.items) |arg| {
         if (mem.startsWith(u8, arg, "-L") and arg.len > 2)
             try lib_paths.append(arena, arg[2..]);
@@ -321,7 +345,7 @@ fn resolveColonLibraries(
         const filename = next[1..];
         for (lib_paths.items) |lib_path| {
             const full_path = try fs.path.join(arena, &[_][]const u8{ lib_path, filename });
-            cwd.access(full_path, .{}) catch continue;
+            cwd.access(io, full_path, .{}) catch continue;
             args.items[i] = full_path;
             _ = args.orderedRemove(i + 1);
             break;
@@ -447,8 +471,9 @@ fn compareExec(
 test "zig-wrapper:parseArgs" {
     // not using testing.allocator, because parseArgs is designed to be used
     // with an arena.
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    var gpa: std.heap.DebugAllocator(.{}) = .init;
     const allocator = gpa.allocator();
+    const io = std.testing.io;
 
     const tests = [_]struct {
         args: []const [:0]const u8,
@@ -576,10 +601,11 @@ test "zig-wrapper:parseArgs" {
         defer tmp.cleanup();
 
         if (tt.precreate_dir) |dir|
-            try tmp.dir.makePath(dir);
+            try tmp.dir.createDirPath(io, dir);
 
+        var env = Environ.Map.init(allocator);
         var argv_it = TestArgIterator{ .argv = tt.args };
-        const res = try parseArgs(allocator, tmp.dir, &argv_it);
+        const res = try parseArgs(allocator, io, tmp.dir, &argv_it, &env);
 
         switch (tt.want_result) {
             .err => |want_msg| try testing.expectEqualStrings(
@@ -594,17 +620,19 @@ test "zig-wrapper:parseArgs" {
 }
 
 test "zig-wrapper:cache dir override" {
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    var gpa: std.heap.DebugAllocator(.{}) = .init;
     const allocator = gpa.allocator();
+    const io = std.testing.io;
 
     var tmp = testing.tmpDir(.{});
     defer tmp.cleanup();
 
+    var env = Environ.Map.init(allocator);
     var argv_it = TestArgIterator{ .argv = &[_][:0]const u8{
         "tools" ++ sep ++ "x86_64-linux-musl" ++ sep ++ "c++" ++ EXE,
         "main.c",
     } };
-    const res = try parseArgs(allocator, tmp.dir, &argv_it);
+    const res = try parseArgs(allocator, io, tmp.dir, &argv_it, &env);
 
     const cache_dir = res.exec.env.get("ZIG_LOCAL_CACHE_DIR").?;
     const global_cache_dir = res.exec.env.get("ZIG_GLOBAL_CACHE_DIR").?;
