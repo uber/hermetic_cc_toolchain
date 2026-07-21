@@ -67,7 +67,9 @@ def _target_macos(gocpu, zigcpu):
         includes = [
             "libunwind/include",
             "libc/darwin",
-            "libc/include/any-macos-any",
+            # Zig 0.16 renamed the any-macos-any libc-include dir to
+            # any-darwin-any.
+            "libc/include/any-darwin-any",
         ] + _INCLUDE_TAIL,
         linkopts = ["-Wl,-headerpad_max_install_names"],
         dynamic_library_linkopts = ["-Wl,-undefined=dynamic_lookup"],
@@ -154,12 +156,15 @@ def _target_linux_gnu(gocpu, zigcpu, glibc_version):
         gotarget = "linux_{}_{}".format(gocpu, glibc_suffix),
         zigtarget = "{}-linux-{}".format(zigcpu, glibc_suffix),
         includes = [
-                       "libc/include/{}-linux-gnu".format(zigcpu),
                        "libc/include/generic-glibc",
                    ] +
-                   # x86_64-linux-any is x86_64-linux and x86-linux combined.
-                   (["libc/include/x86-linux-any"] if zigcpu == "x86_64" else []) +
-                   (["libc/include/{}-linux-any".format(zigcpu)] if zigcpu != "x86_64" else []) + [
+                   # Zig 0.15 folded x86_64-linux-gnu into the shared
+                   # x86-linux-gnu dir. x86_64-linux-any never existed and is
+                   # likewise covered by x86-linux-any.
+                   (["libc/include/x86-linux-gnu", "libc/include/x86-linux-any"] if zigcpu == "x86_64" else [
+                       "libc/include/{}-linux-gnu".format(zigcpu),
+                       "libc/include/{}-linux-any".format(zigcpu),
+                   ]) + [
             "libc/include/any-linux-any",
         ] + _INCLUDE_TAIL,
         linkopts = [],

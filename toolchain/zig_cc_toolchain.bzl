@@ -50,7 +50,12 @@ def _compilation_mode_features(ctx):
                 actions = actions,
                 flag_groups = [
                     flag_group(
-                        flags = ["-g", "-fsanitize-undefined-strip-path-components=-1"],
+                        # -fno-sanitize=undefined: Zig 0.15 enables UBSan for
+                        # C/C++ by default, which leads to `undefined symbol:
+                        # __ubsan_handle_*` link errors. The wrapper also
+                        # passes this flag; it is repeated here so the intent
+                        # is visible in the toolchain config.
+                        flags = ["-g", "-fsanitize-undefined-strip-path-components=-1", "-fno-sanitize=undefined"],
                     ),
                 ],
             ),
@@ -79,7 +84,8 @@ def _compilation_mode_features(ctx):
                 actions = actions,
                 flag_groups = [
                     flag_group(
-                        flags = ["-fno-lto", "-fsanitize-undefined-strip-path-components=-1"],
+                        # -fno-sanitize=undefined: see the dbg feature above.
+                        flags = ["-fno-lto", "-fsanitize-undefined-strip-path-components=-1", "-fno-sanitize=undefined"],
                     ),
                 ],
             ),

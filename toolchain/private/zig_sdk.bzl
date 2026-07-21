@@ -1,17 +1,23 @@
-VERSION = "0.14.0"
+VERSION = "0.16.0"
 
 HOST_PLATFORM_SHA256 = {
-    "linux-aarch64": "ab64e3ea277f6fc5f3d723dcd95d9ce1ab282c8ed0f431b4de880d30df891e4f",
-    "linux-x86_64": "473ec26806133cf4d1918caf1a410f8403a13d979726a9045b421b685031a982",
-    "macos-aarch64": "b71e4b7c4b4be9953657877f7f9e6f7ee89114c716da7c070f4a238220e95d7e",
-    "macos-x86_64": "685816166f21f0b8d6fc7aa6a36e91396dcd82ca6556dfbe3e329deffc01fec3",
-    "windows-aarch64": "03e984383ebb8f85293557cfa9f48ee8698e7c400239570c9ff1aef3bffaf046",
-    "windows-x86_64": "f53e5f9011ba20bbc3e0e6d0a9441b31eb227a97bac0e7d24172f1b8b27b4371",
+    "linux-aarch64": "ea4b09bfb22ec6f6c6ceac57ab63efb6b46e17ab08d21f69f3a48b38e1534f17",
+    "linux-x86_64": "70e49664a74374b48b51e6f3fdfbf437f6395d42509050588bd49abe52ba3d00",
+    "macos-aarch64": "b23d70deaa879b5c2d486ed3316f7eaa53e84acf6fc9cc747de152450d401489",
+    "macos-x86_64": "0387557ed1877bc6a2e1802c8391953baddba76081876301c522f52977b52ba7",
+    "windows-aarch64": "aee38316ee4111717900f45dd3130145c39289e105541d737eb8c5ed653c78ef",
+    "windows-x86_64": "68659eb5f1e4eb1437a722f1dd889c5a322c9954607f5edcf337bc3684a75a7e",
 }
 
+# Zig >=0.14.1 names its release tarballs zig-{arch}-{os}-{version} (arch
+# first), whereas older releases used zig-{os}-{arch}-{version}. The download
+# URL and archive strip-prefix therefore use the {zig_platform} format var
+# (arch-os), while the dicts above stay keyed by {os}-{arch} for the public
+# host_platform_sha256 / host_platform_ext override API.
+
 # Official recommended version. Should use this when we have a usable release.
-URL_FORMAT_RELEASE = "https://ziglang.org/download/{version}/zig-{host_platform}-{version}.{_ext}"
+URL_FORMAT_RELEASE = "https://ziglang.org/download/{version}/zig-{zig_platform}-{version}.{_ext}"
 
 # Caution: nightly releases are purged from ziglang.org after ~90 days. Use the
 # Bazel mirror or your own.
-URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{host_platform}-{version}.{_ext}"
+URL_FORMAT_NIGHTLY = "https://ziglang.org/builds/zig-{zig_platform}-{version}.{_ext}"

@@ -32,7 +32,7 @@ use_repo(
 )
 
 toolchains = use_extension("//toolchain:ext.bzl", "toolchains", dev_dependency = True)
-use_repo(toolchains, "zig_sdk")
+use_repo(toolchains, "zig_config", "zig_sdk")
 
 # TODO: register all toolchains by:
 # `register_toolchains("@zig_sdk//...")`
