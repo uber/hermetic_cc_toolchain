@@ -153,11 +153,14 @@ def _zig_repository_impl(repository_ctx):
         "_ext": zig_ext,
         "version": repository_ctx.attr.version,
         "host_platform": host_platform,
+        # Zig >=0.14.1 tarballs are named zig-{arch}-{os}-{version}.
+        "zig_platform": "{}-{}".format(host_arch, host_os),
     }
     format_vars_exec = {
         "_ext": repository_ctx.attr.host_platform_ext[exec_platform],
         "version": repository_ctx.attr.version,
         "host_platform": exec_platform,
+        "zig_platform": "{}-{}".format(exec_arch, exec_os),
     }
 
     for dest, src in {
@@ -179,7 +182,7 @@ def _zig_repository_impl(repository_ctx):
     repository_ctx.download_and_extract(
         auth = use_netrc(read_user_netrc(repository_ctx), urls, {}),
         url = urls,
-        stripPrefix = "zig-{host_platform}-{version}/".format(**format_vars),
+        stripPrefix = "zig-{zig_platform}-{version}/".format(**format_vars),
         sha256 = zig_sha256,
     )
 
@@ -267,7 +270,7 @@ def _zig_repository_impl(repository_ctx):
     repository_ctx.download_and_extract(
         auth = use_netrc(read_user_netrc(repository_ctx), urls, {}),
         url = urls,
-        stripPrefix = "zig-{host_platform}-{version}/".format(**format_vars_exec),
+        stripPrefix = "zig-{zig_platform}-{version}/".format(**format_vars_exec),
         sha256 = repository_ctx.attr.host_platform_sha256[exec_platform],
     )
 
@@ -345,7 +348,11 @@ def declare_files(os):
                 "lib/libunwind/**",
                 "lib/compiler_rt/**",
                 "lib/std/**",
-                "lib/tsan/**",
+                # Zig 0.15 renamed lib/tsan to lib/libtsan.
+                "lib/libtsan/**",
+                # Zig 0.15's lib/c.zig (the libzigc shim built during linking)
+                # imports lib/c/*.zig, which must be staged into the sandbox.
+                "lib/c/**",
                 "lib/*.zig",
                 "lib/*.h",
             ]),
