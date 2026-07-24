@@ -302,9 +302,17 @@ fn resolveColonLibraries(
     args: *ArrayListUnmanaged([]const u8),
 ) error{OutOfMemory}!void {
     var lib_paths = ArrayListUnmanaged([]const u8){};
-    for (args.items) |arg| {
-        if (mem.startsWith(u8, arg, "-L") and arg.len > 2)
+    var j: usize = 0;
+    while (j < args.items.len) : (j += 1) {
+        const arg = args.items[j];
+        // Bazel passes the search path as a separate argument ("-L" "path");
+        // other callers may fuse them ("-Lpath"). Collect both forms.
+        if (mem.eql(u8, arg, "-L") and j + 1 < args.items.len) {
+            j += 1;
+            try lib_paths.append(arena, args.items[j]);
+        } else if (mem.startsWith(u8, arg, "-L") and arg.len > 2) {
             try lib_paths.append(arena, arg[2..]);
+        }
     }
 
     var i: usize = 0;
