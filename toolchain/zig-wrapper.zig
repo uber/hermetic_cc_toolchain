@@ -266,8 +266,20 @@ fn parseArgs(
     if (run_mode == RunMode.cc)
         try args.appendSlice(arena, &[_][]const u8{"-fno-sanitize=undefined"});
 
-    while (argv_it.next()) |arg|
-        try args.append(arena, arg);
+    // Process arguments, transforming -u SYMBOL into -Wl,-u,SYMBOL
+    // This is needed because zig c++ doesn't handle the -u flag correctly
+    // (it tries to open the symbol name as a file instead of passing it to the linker)
+    while (argv_it.next()) |arg| {
+        if (mem.eql(u8, arg, "-u")) {
+            // Get the next argument (the symbol name)
+            if (argv_it.next()) |symbol| {
+                const transformed = try std.fmt.allocPrint(arena, "-Wl,-u,{s}", .{symbol});
+                try args.append(arena, transformed);
+            }
+        } else {
+            try args.append(arena, arg);
+        }
+    }
 
     // Workaround for https://github.com/ziglang/zig/issues/23287: zig 0.14.0
     // lld does not handle the colon-link syntax (-l :filename or -l:filename).
@@ -298,9 +310,17 @@ fn resolveColonLibraries(
     args: *ArrayListUnmanaged([]const u8),
 ) error{OutOfMemory}!void {
     var lib_paths = ArrayListUnmanaged([]const u8){};
-    for (args.items) |arg| {
-        if (mem.startsWith(u8, arg, "-L") and arg.len > 2)
+    var j: usize = 0;
+    while (j < args.items.len) : (j += 1) {
+        const arg = args.items[j];
+        // Bazel passes the search path as a separate argument ("-L" "path");
+        // other callers may fuse them ("-Lpath"). Collect both forms.
+        if (mem.eql(u8, arg, "-L") and j + 1 < args.items.len) {
+            j += 1;
+            try lib_paths.append(arena, args.items[j]);
+        } else if (mem.startsWith(u8, arg, "-L") and arg.len > 2) {
             try lib_paths.append(arena, arg[2..]);
+        }
     }
 
     var i: usize = 0;
