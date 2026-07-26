@@ -269,15 +269,6 @@ fn parseArgs(
     while (argv_it.next()) |arg|
         try args.append(arena, arg);
 
-    // Zig 0.15's linker cannot read thin archives (ziglang/zig#25694):
-    //     error: unexpected token in LD script: literal: '!<thin>'
-    // Some build systems (e.g. Meson) create thin archives for internal
-    // static libraries by passing the `T` modifier to ar. Archives created
-    // by this toolchain are also consumed by it, so drop the thin-archive
-    // request and create regular archives instead.
-    if (run_mode == RunMode.arg1 and mem.eql(u8, arg0_noexe, "ar"))
-        try stripThinArchiveFlags(arena, &args);
-
     // Workaround for https://github.com/ziglang/zig/issues/23287: zig 0.14.0
     // lld does not handle the colon-link syntax (-l :filename or -l:filename).
     // Resolve such flags to full paths by searching the -L directories.
@@ -326,38 +317,6 @@ fn resolveColonLibraries(
             _ = args.orderedRemove(i + 1);
             break;
         }
-    }
-}
-
-// Workaround for https://github.com/ziglang/zig/issues/25694: drop
-// thin-archive requests from `ar` invocations, so that regular archives are
-// created instead. `--thin` args are removed, and the `T` modifier is
-// stripped from the operation string (the first non-option argument, e.g.
-// "rcsT" or "-csrDT").
-fn stripThinArchiveFlags(
-    arena: mem.Allocator,
-    args: *ArrayListUnmanaged([]const u8),
-) error{OutOfMemory}!void {
-    // args.items[0] is the zig binary, args.items[1] is "ar".
-    var i: usize = 2;
-    var seen_operation = false;
-    while (i < args.items.len) {
-        const arg = args.items[i];
-        if (mem.eql(u8, arg, "--thin")) {
-            _ = args.orderedRemove(i);
-            continue;
-        }
-        if (!seen_operation and !mem.startsWith(u8, arg, "--")) {
-            seen_operation = true;
-            if (mem.indexOfScalar(u8, arg, 'T') != null) {
-                var stripped = try ArrayListUnmanaged(u8).initCapacity(arena, arg.len);
-                for (arg) |c| {
-                    if (c != 'T') stripped.appendAssumeCapacity(c);
-                }
-                args.items[i] = stripped.items;
-            }
-        }
-        i += 1;
     }
 }
 
@@ -508,35 +467,6 @@ test "zig-wrapper:parseArgs" {
                         "external" ++ sep ++ "zig_sdk" ++ sep ++ "zig" ++ EXE,
                         "ar",
                         "rcs",
-                    },
-                    .env_zig_lib_dir = "external" ++ sep ++ "zig_sdk" ++
-                        sep ++ "lib",
-                },
-            },
-        },
-        .{
-            // thin-archive requests are dropped (ziglang/zig#25694): the `T`
-            // modifier is stripped from the operation string and `--thin` is
-            // removed.
-            .args = &[_][:0]const u8{
-                "external_zig_sdk" ++ sep ++ "tools" ++ sep ++
-                    "ar" ++ EXE,
-                "--format=gnu",
-                "csrDT",
-                "--thin",
-                "out.a",
-                "in.o",
-            },
-            .precreate_dir = "external" ++ sep ++ "zig_sdk" ++ sep ++ "lib",
-            .want_result = .{
-                .exec = .{
-                    .args = &[_][:0]const u8{
-                        "external" ++ sep ++ "zig_sdk" ++ sep ++ "zig" ++ EXE,
-                        "ar",
-                        "--format=gnu",
-                        "csrD",
-                        "out.a",
-                        "in.o",
                     },
                     .env_zig_lib_dir = "external" ++ sep ++ "zig_sdk" ++
                         sep ++ "lib",
