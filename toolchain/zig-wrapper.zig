@@ -258,6 +258,14 @@ fn parseArgs(
         .arg1, .cc => try args.appendSlice(arena, &[_][]const u8{arg0_noexe}),
     }
 
+    // Zig 0.15 compiles C/C++ with UBSan instrumentation by default, which
+    // surfaces as `ld.lld: error: undefined symbol: __ubsan_handle_*` when
+    // the instrumented objects are linked. Disable it by default; the flag
+    // is added before the caller's args, so an explicit -fsanitize=undefined
+    // from the caller still takes precedence.
+    if (run_mode == RunMode.cc)
+        try args.appendSlice(arena, &[_][]const u8{"-fno-sanitize=undefined"});
+
     // Process arguments, transforming -u SYMBOL into -Wl,-u,SYMBOL
     // This is needed because zig c++ doesn't handle the -u flag correctly
     // (it tries to open the symbol name as a file instead of passing it to the linker)
@@ -454,6 +462,7 @@ test "zig-wrapper:parseArgs" {
                         "tools" ++ sep ++ "x86_64-linux-musl" ++ sep ++
                             ".." ++ sep ++ ".." ++ sep ++ "zig" ++ EXE,
                         "c++",
+                        "-fno-sanitize=undefined",
                         "main.c",
                         "-o",
                         "/dev/null",
@@ -498,6 +507,7 @@ test "zig-wrapper:parseArgs" {
                     .args = &[_][:0]const u8{
                         "external" ++ sep ++ "zig_sdk" ++ sep ++ "zig" ++ EXE,
                         "c++",
+                        "-fno-sanitize=undefined",
                         "main.c",
                         "-o",
                         "/dev/null",
