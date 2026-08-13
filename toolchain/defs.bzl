@@ -68,13 +68,24 @@ def toolchains(
         exec_platforms = {},
         extra_exec_compatible_with = [],
         extra_target_compatible_with = [],
-        extra_target_settings = []):
+        extra_target_settings = [],
+        sysroots = {}):
     """
         Download zig toolchain and declare bazel toolchains.
         The platforms are not registered automatically, that should be done by
         the user with register_toolchains() in the WORKSPACE file. See README
         for possible choices.
+
+        sysroots: optional dict keyed by target os ("macos"/"linux"/"windows")
+        with values {path, include_dirs, copts, linkopts, files}. When set, the
+        zig cc toolchains for that os use the external sysroot (e.g. a macOS
+        SDK). See the `sysroot` tag in toolchain/ext.bzl. Backward-compatible:
+        empty by default.
     """
+
+    # Repo rule attrs can't carry nested dicts, so serialize to JSON and
+    # decode inside the repository / the generated BUILD.
+    sysroots_json = json.encode(sysroots)
 
     if not url_formats:
         if "dev" in version:
@@ -98,6 +109,7 @@ def toolchains(
         url_formats = url_formats,
         host_platform_sha256 = host_platform_sha256,
         host_platform_ext = host_platform_ext,
+        sysroots_json = sysroots_json,
     )
 
     private_repos = ["zig_config"]
@@ -112,6 +124,7 @@ def toolchains(
                 host_platform_ext = host_platform_ext,
                 exec_os = os,
                 exec_arch = arch,
+                sysroots_json = sysroots_json,
             )
             private_repos.append("zig_config-{}-{}".format(os, arch))
 
@@ -175,6 +188,7 @@ def _zig_repository_impl(repository_ctx):
                 "{os}": quote(exec_os),
                 "{exec_os}": exec_os,
                 "{exec_cpu}": exec_arch,
+                "{sysroots_json}": quote(repository_ctx.attr.sysroots_json),
             },
         )
 
@@ -289,6 +303,7 @@ zig_repository = repository_rule(
         "host_platform_ext": attr.string_dict(),
         "exec_os": attr.string(default = "HOST"),
         "exec_arch": attr.string(default = "HOST"),
+        "sysroots_json": attr.string(default = "{}"),
     },
     environ = ["HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX"],
     implementation = _zig_repository_impl,
@@ -298,8 +313,26 @@ def filegroup(name, **kwargs):
     native.filegroup(name = name, **kwargs)
     return ":" + name
 
-def declare_files(os):
+def declare_files(os, sysroots_json = "{}"):
     exe = ".exe" if os == "windows" else ""
+
+    # Per-target-OS sysroot file labels to STAGE into compile/link actions, so
+    # the sysroot's -I/-isysroot paths resolve in the exec root (see the
+    # `files` attr in toolchain/ext.bzl). Keyed by the "-<os>-" triple token.
+    sysroots = json.decode(sysroots_json) if sysroots_json else {}
+    _sysroot_token_files = {}
+    for _os_name, _cfg in sysroots.items():
+        _files = _cfg.get("files", "")
+        if _files:
+            _token = {"linux": "-linux-", "macos": "-macos-", "windows": "-windows-"}.get(_os_name)
+            if _token:
+                _sysroot_token_files[_token] = _files
+
+    def _sysroot_files_for(zigtarget):
+        for _token, _lbl in _sysroot_token_files.items():
+            if _token in zigtarget:
+                return [_lbl]
+        return []
 
     native.exports_files(["zig{}".format(exe)], visibility = ["//visibility:public"])
     if os == "windows":
@@ -325,13 +358,15 @@ def declare_files(os):
             srcs = _flatten(all_includes),
         )
 
+        sysroot_files = _sysroot_files_for(target_config.zigtarget)
+
         filegroup(
             name = "{}_compiler_files".format(target_config.zigtarget),
             srcs = [
                 ":zig",
                 ":{}_includes".format(target_config.zigtarget),
                 cxx_tool_label,
-            ],
+            ] + sysroot_files,
         )
 
         filegroup(
@@ -355,7 +390,7 @@ def declare_files(os):
                 "lib/c/**",
                 "lib/*.zig",
                 "lib/*.h",
-            ]),
+            ]) + sysroot_files,
         )
 
         filegroup(

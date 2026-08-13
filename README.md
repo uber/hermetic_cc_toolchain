@@ -496,9 +496,106 @@ See [#83][pr-83] for more context.
 ### OSX: sysroot
 
 For non-trivial programs (and for all darwin/arm64 cgo programs) MacOS SDK may
-be necessary. Read [Jakub's comment][sysroot] about it. Support for OSX sysroot
-is currently not implemented, but patches implementing it will be accepted, as
-long as the OSX sysroot must come through an `http_archive`.
+be necessary. Read [Jakub's comment][sysroot] about it.
+
+The `toolchains` module extension accepts an optional `sysroot` tag,
+configuring an external sysroot (e.g. a macOS SDK) for the zig cc toolchains
+targeting a given OS. It is entirely optional and backward-compatible: with no
+`sysroot` tag, toolchains behave exactly as before. As discussed in [#10][pr-10],
+the sysroot itself must come from an `http_archive` (or another repo rule
+producing an equivalent filegroup) — `hermetic_cc_toolchain` does not fetch or
+redistribute Apple's SDK itself.
+
+```starlark
+sysroot(
+    os,            # "linux" | "windows" | "macos"
+    path = "",     # exec-root-relative path to the sysroot
+    include_dirs = [],  # extra cxx_builtin_include_directories (e.g. <path>/usr/include)
+    copts = [],    # extra compiler flags, e.g. "-F <path>/System/Library/Frameworks"
+    linkopts = [], # extra linker flags
+    files = "",    # label (as a string) of a filegroup staging the sysroot's files
+)
+```
+
+`path`/`include_dirs` are registered as `builtin_sysroot`/
+`cxx_builtin_include_directories` so Bazel's header-inclusion validation
+accepts headers found there without forcing every SDK header onto the
+compiler's `-I` search path ahead of libc++'s own headers (`include_dirs` are
+searched with `-idirafter`, the lowest priority, after the toolchain's own
+headers). `files` is required for the sysroot to work on actions that don't
+otherwise declare it as a dependency (Bazel does not create the external
+repo's symlink in the sandbox otherwise, and the `-I`/`-isysroot` paths would
+dangle).
+
+Two ways to get the SDK into a `files` filegroup:
+
+**1. A prebuilt redistributable mirror**, e.g.
+[`joseluisq/macosx-sdks`](https://github.com/joseluisq/macosx-sdks) (a widely
+used mirror of the Xcode Command Line Tools SDK):
+
+```starlark
+http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+    name = "macos_sdk",
+    build_file_content = """\
+filegroup(
+    name = "sysroot",
+    srcs = glob(["usr/include/**", "usr/lib/**", "System/Library/Frameworks/**", "SDKSettings.*"]),
+    visibility = ["//visibility:public"],
+)
+""",
+    sha256 = "6e146275d19f027faa2e8354da5e0267513abf013b8f16ad65a231653a2b1c5d",
+    strip_prefix = "MacOSX14.5.sdk",
+    urls = ["https://github.com/joseluisq/macosx-sdks/releases/download/14.5/MacOSX14.5.sdk.tar.xz"],
+)
+
+zig_toolchains = use_extension("@hermetic_cc_toolchain//toolchain:ext.bzl", "toolchains")
+zig_toolchains.sysroot(
+    os = "macos",
+    path = "external/+http_archive+macos_sdk",
+    include_dirs = ["external/+http_archive+macos_sdk/usr/include"],
+    copts = ["-iframework", "external/+http_archive+macos_sdk/System/Library/Frameworks"],
+    files = "@@+http_archive+macos_sdk//:sysroot",
+)
+```
+
+**2. Apple's own CDN**, downloading the Command Line Tools `.pkg` directly
+(the approach [openai/codex](https://github.com/openai/codex) takes for its
+own, unrelated `llvm`-based toolchain — `http_archive`'s `type = "pkg"`
+support extracts a `.pkg` payload the same way it extracts a `.tar.gz`):
+
+```starlark
+http_archive(
+    name = "macos_sdk",
+    build_file_content = """\
+filegroup(
+    name = "sysroot",
+    srcs = glob(["usr/include/**", "usr/lib/**", "System/Library/Frameworks/**"]),
+    visibility = ["//visibility:public"],
+)
+""",
+    sha256 = "5f044578cd78a3a9b9c965a42d56bad609ee5d252e1d4e6aa7c42fc3f35fee7b",
+    strip_prefix = "Payload/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk",
+    type = "pkg",
+    urls = ["https://swcdn.apple.com/content/downloads/09/08/047-91568-A_Y1CFZWQCD4/4xekpyz43i26dbp4enxfro8eb1q7wiujh5/CLTools_macOSNMOS_SDK.pkg"],
+)
+
+zig_toolchains.sysroot(
+    os = "macos",
+    path = "external/+http_archive+macos_sdk",
+    include_dirs = ["external/+http_archive+macos_sdk/usr/include"],
+    files = "@@+http_archive+macos_sdk//:sysroot",
+)
+```
+
+Known limitation: pure zig-cc `-framework` linking of a cross target
+(`aarch64-macos-none` from a non-macOS host) is still limited — zig resolves
+the top-level `.tbd` but its absolute `/usr/lib` reexports aren't re-rooted at
+the sysroot (see [ziglang/zig#10299][sysroot]). Consumers with a raw
+non-zig-cc linker in the loop (e.g. `rules_rust`'s `rust-lld`, or a
+`rules_foreign_cc`/cmake build) aren't affected, since they never go through
+zig cc's own linker driver for the final link.
 
 In essence, OSX target support is not well tested with `hermetic_cc_toolchain`.
 Also see [#10][pr-10].

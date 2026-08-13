@@ -11,10 +11,12 @@ package(
 
 declare_files(
     os = {os},
+    sysroots_json = {sysroots_json},
 )
 
 declare_cc_toolchains(
     os = {os},
+    sysroots_json = {sysroots_json},
     zig_sdk_path = {zig_sdk_path},
 )
 

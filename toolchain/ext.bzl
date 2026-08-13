@@ -36,6 +36,48 @@ _extra_exec_compatible_with = tag_class(
     doc = "Extra constraints added to every toolchain's `exec_compatible_with`",
 )
 
+_sysroot = tag_class(
+    attrs = {
+        "os": attr.string(
+            values = ["linux", "windows", "macos"],
+            mandatory = True,
+            doc = "Target OS whose zig cc toolchains should use this sysroot.",
+        ),
+        "path": attr.string(
+            doc = "Exec-root-relative path to the sysroot. Passed as " +
+                  "`--sysroot <path>` (and `-isysroot <path>` on macos). " +
+                  "May be empty if only include_dirs/copts/linkopts are needed.",
+        ),
+        "include_dirs": attr.string_list(
+            doc = "Extra directories registered as the toolchain's " +
+                  "cxx_builtin_include_directories (so Bazel's header " +
+                  "validation accepts headers found there). Typically " +
+                  "`<path>/usr/include` and the macOS framework roots.",
+        ),
+        "copts": attr.string_list(
+            doc = "Extra compiler flags for this OS's toolchains, e.g. " +
+                  "`-F <path>/System/Library/Frameworks`.",
+        ),
+        "linkopts": attr.string_list(
+            doc = "Extra linker flags for this OS's toolchains, e.g. " +
+                  "`-F <path>/System/Library/Frameworks` and `-L <path>/usr/lib`.",
+        ),
+        "files": attr.string(
+            doc = "Optional label (as a string, e.g. \"@macos_sdk//:sysroot\") " +
+                  "of a filegroup of the sysroot's files. It is added to the " +
+                  "toolchains' compiler_files/linker_files so every compile/" +
+                  "link action STAGES the sysroot into the exec root (Bazel " +
+                  "does not create the external symlink otherwise, and the " +
+                  "-I/-isysroot paths would dangle). Required for the sysroot " +
+                  "to work on actions that don't otherwise depend on it (e.g. " +
+                  "the @m4 BCR compile).",
+        ),
+    },
+    doc = "Configure an external sysroot (e.g. a macOS SDK) for the zig cc " +
+          "toolchains targeting a given OS. Optional and backward-compatible: " +
+          "with no sysroot tag the toolchains behave exactly as before.",
+)
+
 def _toolchains_impl(mctx):
     exec_platforms = {}
     root_direct_deps = []
@@ -44,6 +86,7 @@ def _toolchains_impl(mctx):
     extra_exec_compatible_with = []
     extra_target_compatible_with = []
     extra_target_settings = []
+    sysroots = {}
 
     for mod in mctx.modules:
         if mod.is_root:
@@ -62,11 +105,21 @@ def _toolchains_impl(mctx):
             for tag in mod.tags.extra_target_compatible_with:
                 extra_target_compatible_with += tag.constraints
 
+            for tag in mod.tags.sysroot:
+                sysroots[tag.os] = {
+                    "path": tag.path,
+                    "include_dirs": tag.include_dirs,
+                    "copts": tag.copts,
+                    "linkopts": tag.linkopts,
+                    "files": tag.files,
+                }
+
             repos = zig_toolchains(
                 exec_platforms = exec_platforms,
                 extra_exec_compatible_with = extra_exec_compatible_with,
                 extra_target_compatible_with = extra_target_compatible_with,
                 extra_target_settings = extra_target_settings,
+                sysroots = sysroots,
             )
 
             root_direct_deps = list(repos.public) if is_non_dev_dependency else []
@@ -89,5 +142,6 @@ toolchains = module_extension(
         "extra_exec_compatible_with": _extra_exec_compatible_with,
         "extra_target_compatible_with": _extra_target_compatible_with,
         "extra_target_settings": _extra_target_settings,
+        "sysroot": _sysroot,
     },
 )
