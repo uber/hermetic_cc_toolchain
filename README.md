@@ -65,7 +65,7 @@ zig_toolchains()
 Add this to your `MODULE.bazel`:
 
 ```starlark
-bazel_dep(name = "hermetic_cc_toolchain", version = "3.1.0")
+bazel_dep(name = "hermetic_cc_toolchain", version = "4.3.0")
 
 toolchains = use_extension("@hermetic_cc_toolchain//toolchain:ext.bzl", "toolchains")
 use_repo(toolchains, "zig_sdk")
