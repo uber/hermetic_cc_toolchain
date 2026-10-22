@@ -67,7 +67,9 @@ def _target_macos(gocpu, zigcpu):
         includes = [
             "libunwind/include",
             "libc/darwin",
-            "libc/include/any-macos-any",
+            # Zig 0.16 renamed the any-macos-any libc-include dir to
+            # any-darwin-any.
+            "libc/include/any-darwin-any",
         ] + _INCLUDE_TAIL,
         linkopts = ["-Wl,-headerpad_max_install_names"],
         dynamic_library_linkopts = ["-Wl,-undefined=dynamic_lookup"],
