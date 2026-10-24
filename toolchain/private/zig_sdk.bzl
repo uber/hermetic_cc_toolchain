@@ -2,6 +2,7 @@ VERSION = "0.15.2"
 
 HOST_PLATFORM_SHA256 = {
     "linux-aarch64": "958ed7d1e00d0ea76590d27666efbf7a932281b3d7ba0c6b01b0ff26498f667f",
+    "linux-riscv64": "493512bdca485be3c6a9b0f69dcb4cbe4587f3af8e1be282fdd827108ba39930",
     "linux-x86_64": "02aa270f183da276e5b5920b1dac44a63f1a49e55050ebde3aecc9eb82f93239",
     "macos-aarch64": "3cc2bab367e185cdfb27501c4b30b1b0653c28d9f73df8dc91488e66ece5fa6b",
     "macos-x86_64": "375b6909fc1495d16fc2c7db9538f707456bfc3373b14ee83fdd3e22b3d43f7f",

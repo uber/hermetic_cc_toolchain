@@ -37,6 +37,11 @@ _INCLUDE_TAIL = [
 
 LIBCS = ["musl"] + ["gnu.{}".format(glibc) for glibc in _GLIBCS]
 
+# RISC-V was added to glibc in 2.27. Zig 0.15.2 rejects older versions
+# (lib/std/zig/target.zig: riscv64 linux gnu glibc_min = 2.27).
+_RISCV64_GLIBCS = _GLIBCS[_GLIBCS.index("2.27"):]
+RISCV64_LIBCS = ["musl"] + ["gnu.{}".format(glibc) for glibc in _RISCV64_GLIBCS]
+
 def zig_tool_path(os):
     if os == "windows":
         return _ZIG_TOOL_PATH + ".exe"
@@ -51,6 +56,9 @@ def target_structs():
         ret.append(_target_linux_musl(gocpu, zigcpu))
         for glibc in _GLIBCS:
             ret.append(_target_linux_gnu(gocpu, zigcpu, glibc))
+    ret.append(_target_linux_musl("riscv64", "riscv64"))
+    for glibc in _RISCV64_GLIBCS:
+        ret.append(_target_linux_gnu("riscv64", "riscv64", glibc))
     ret.append(_target_wasm())
     ret.append(_target_wasm_no_wasi())
     return ret
@@ -160,8 +168,9 @@ def _target_linux_gnu(gocpu, zigcpu, glibc_version):
                    # x86-linux-gnu dir. x86_64-linux-any never existed and is
                    # likewise covered by x86-linux-any.
                    (["libc/include/x86-linux-gnu", "libc/include/x86-linux-any"] if zigcpu == "x86_64" else [
-                       "libc/include/{}-linux-gnu".format(zigcpu),
-                       "libc/include/{}-linux-any".format(zigcpu),
+                       # Zig names the RISC-V glibc headers riscv-linux-gnu, not riscv64-linux-gnu.
+                       "libc/include/riscv-linux-gnu" if zigcpu == "riscv64" else "libc/include/{}-linux-gnu".format(zigcpu),
+                       "libc/include/riscv-linux-any" if zigcpu == "riscv64" else "libc/include/{}-linux-any".format(zigcpu),
                    ]) + [
             "libc/include/any-linux-any",
         ] + _INCLUDE_TAIL,
@@ -195,7 +204,9 @@ def _target_linux_musl(gocpu, zigcpu):
                    ] +
                    # x86_64-linux-any is x86_64-linux and x86-linux combined.
                    (["libc/include/x86-linux-any"] if zigcpu == "x86_64" else []) +
-                   (["libc/include/{}-linux-any".format(zigcpu)] if zigcpu != "x86_64" else []) + [
+                   # Zig names the RISC-V asm headers riscv-linux-any, not riscv64-linux-any.
+                   (["libc/include/riscv-linux-any"] if zigcpu == "riscv64" else []) +
+                   (["libc/include/{}-linux-any".format(zigcpu)] if zigcpu not in ("x86_64", "riscv64") else []) + [
             "libc/include/any-linux-any",
         ] + _INCLUDE_TAIL,
         linkopts = [],

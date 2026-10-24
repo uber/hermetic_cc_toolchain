@@ -1,4 +1,4 @@
-load("@hermetic_cc_toolchain//toolchain/private:defs.bzl", "LIBCS")
+load("@hermetic_cc_toolchain//toolchain/private:defs.bzl", "LIBCS", "RISCV64_LIBCS")
 
 _CPUS = (("x86_64", "amd64"), ("aarch64", "arm64"))
 _OS = {
@@ -18,6 +18,9 @@ def declare_platforms():
     declare_platform("wasm", "wasm32", "wasi", "wasip1")
     declare_platform("wasm", "wasm32", "none", "none")
 
+    # gocpu and zigcpu are both riscv64, so this declares a single linux_riscv64 platform.
+    declare_platform("riscv64", "riscv64", "linux", "linux")
+
 def declare_libc_aware_platforms():
     # create @zig_sdk//{os}_{arch}_platform entries with zig and go conventions
     # with libc specified
@@ -32,18 +35,34 @@ def declare_libc_aware_platforms():
                 extra_constraints = ["//libc:{}".format(libc)],
             )
 
+    for libc in RISCV64_LIBCS:
+        declare_platform(
+            "riscv64",
+            "riscv64",
+            "linux",
+            "linux",
+            suffix = "_{}".format(libc),
+            extra_constraints = ["//libc:{}".format(libc)],
+        )
+
 def declare_platform(gocpu, zigcpu, bzlos, os, suffix = "", extra_constraints = []):
     constraint_values = [
         "@platforms//os:{}".format(bzlos),
         "@platforms//cpu:{}".format(zigcpu),
     ] + extra_constraints
 
+    zig_name = "{os}_{zigcpu}{suffix}".format(os = os, zigcpu = zigcpu, suffix = suffix)
+    go_name = "{os}_{gocpu}{suffix}".format(os = os, gocpu = gocpu, suffix = suffix)
+
     native.platform(
-        name = "{os}_{zigcpu}{suffix}".format(os = os, zigcpu = zigcpu, suffix = suffix),
+        name = zig_name,
         constraint_values = constraint_values,
     )
 
-    native.platform(
-        name = "{os}_{gocpu}{suffix}".format(os = os, gocpu = gocpu, suffix = suffix),
-        constraint_values = constraint_values,
-    )
+    # amd64/arm64 use different Go and Zig arch names, so both aliases exist.
+    # riscv64 uses the same name in both, and a second platform() would collide.
+    if go_name != zig_name:
+        native.platform(
+            name = go_name,
+            constraint_values = constraint_values,
+        )

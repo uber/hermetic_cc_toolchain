@@ -517,6 +517,7 @@ This repository is used on the following (host) platforms:
 
 - `linux_amd64`, a.k.a. `x86_64`.
 - `linux_arm64`, a.k.a. `AArch64`.
+- `linux_riscv64`.
 - `darwin_amd64`, the 64-bit post-PowerPC models.
 - `darwin_arm64`, the M1.
 - `windows_amd64`, a.k.a. `x64`.

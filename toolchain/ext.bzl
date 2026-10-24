@@ -8,7 +8,7 @@ _exec_platform = tag_class(
             mandatory = True,
         ),
         "arch": attr.string(
-            values = ["amd64", "arm64"],
+            values = ["amd64", "arm64", "riscv64"],
             mandatory = True,
         ),
     },

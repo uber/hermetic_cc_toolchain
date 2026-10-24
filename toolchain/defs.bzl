@@ -22,6 +22,7 @@ _DEFAULT_INCLUDE_DIRECTORIES = [
 
 _HOST_PLATFORM_EXT = {
     "linux-aarch64": "tar.xz",
+    "linux-riscv64": "tar.xz",
     "linux-x86_64": "tar.xz",
     "macos-aarch64": "tar.xz",
     "macos-x86_64": "tar.xz",
@@ -32,6 +33,7 @@ _HOST_PLATFORM_EXT = {
 # map bazel's host_platform to zig's -target= and -mcpu=
 _TARGET_MCPU = {
     "linux-aarch64": ("aarch64-linux-musl", "baseline"),
+    "linux-riscv64": ("riscv64-linux-musl", "baseline"),
     "linux-x86_64": ("x86_64-linux-musl", "baseline"),
     "macos-aarch64": ("aarch64-macos-none", "apple_a14"),
     "macos-x86_64": ("x86_64-macos-none", "baseline"),
