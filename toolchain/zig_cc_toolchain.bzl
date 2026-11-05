@@ -100,8 +100,13 @@ def _compilation_mode_features(ctx):
 
 def _zig_cc_toolchain_config_impl(ctx):
     compiler_flags = [
+        # Special Bazel tokens (%sysroot%, %workspace%, %package(...)%) are
+        # resolved by Bazel for the undeclared-inclusion exemption but must NOT
+        # be emitted as literal -I flags (the compiler can't understand them).
+        # For a %sysroot% dir the search path already comes from -isysroot.
         "-I" + d
         for d in ctx.attr.cxx_builtin_include_directories
+        if not d.startswith("%")
     ] + [
         "-no-canonical-prefixes",
         "-Wno-builtin-macro-redefined",
@@ -191,6 +196,20 @@ def _zig_cc_toolchain_config_impl(ctx):
         soname_feature,
     ] + _compilation_mode_features(ctx)
 
+    # When builtin_sysroot is set purely to satisfy Bazel's header-inclusion
+    # validation (headers found under the sysroot are exempt from "undeclared
+    # inclusion"), Bazel's implicit `sysroot` feature would ALSO append
+    # `--sysroot=<path>` to every compile AND link. That breaks consumers that
+    # invoke a raw linker not going through `zig cc` (e.g. rules_rust calls
+    # rust-lld directly, which rejects `--sysroot=` in its darwin/ld64 flavor).
+    # Defining an (empty, enabled) feature named "sysroot" overrides the
+    # built-in one, so no automatic `--sysroot` is emitted. The caller supplies
+    # the sysroot to the *compiler* explicitly via copts (`--sysroot` /
+    # `-isysroot`) and the SDK link search paths via linkopts (`-F` / `-L`),
+    # which are the forms zig cc / ld64 understand.
+    if ctx.attr.builtin_sysroot and ctx.attr.suppress_builtin_sysroot_flag:
+        features.append(feature(name = "sysroot", enabled = True))
+
     artifact_name_patterns = [
         artifact_name_pattern(**json.decode(p))
         for p in ctx.attr.artifact_name_patterns
@@ -212,6 +231,7 @@ def _zig_cc_toolchain_config_impl(ctx):
             for name, path in ctx.attr.tool_paths.items()
         ],
         cxx_builtin_include_directories = ctx.attr.cxx_builtin_include_directories,
+        builtin_sysroot = ctx.attr.builtin_sysroot or None,
         artifact_name_patterns = artifact_name_patterns,
     )
 
@@ -219,6 +239,8 @@ zig_cc_toolchain_config = rule(
     implementation = _zig_cc_toolchain_config_impl,
     attrs = {
         "cxx_builtin_include_directories": attr.string_list(),
+        "builtin_sysroot": attr.string(),
+        "suppress_builtin_sysroot_flag": attr.bool(default = True),
         "linkopts": attr.string_list(),
         "dynamic_library_linkopts": attr.string_list(),
         "supports_dynamic_linker": attr.bool(),
