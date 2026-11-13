@@ -12,6 +12,7 @@
 # See https://github.com/ziglang/zig/issues/23287
 
 load("@hermetic_cc_toolchain//rules:platform.bzl", "platform_binary")
+load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
 
 # Build a versioned shared library "libgreeter.so.1". The standard "-lgreeter"
 # flag looks for "libgreeter.so" (unversioned), so the colon syntax is required
