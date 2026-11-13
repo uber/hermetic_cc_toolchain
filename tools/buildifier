@@ -5,4 +5,4 @@
 
 set -xeu
 
-exec "$(git rev-parse --show-toplevel)/tools/bazel" run @com_github_bazelbuild_buildtools//buildifier -- "$@"
+exec "$(git rev-parse --show-toplevel)/tools/bazel" run @buildifier_prebuilt//:buildifier -- "$@"

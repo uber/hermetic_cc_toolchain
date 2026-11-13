@@ -6,6 +6,7 @@
 # is absent: the linker records the full build-time path in DT_NEEDED of
 # any binary that links against the library, breaking runtime loading.
 
+load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
 load("@rules_go//go:def.bzl", "go_test")
 
 cc_binary(
