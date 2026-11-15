@@ -70,6 +70,3 @@ jobs:
       # protoc does not compile due to `-lpthread`.
       - run: ci/lint
         if: runner.os != 'Windows'
-      # Releaser emits different hashes
-      - run: ci/release
-        if: runner.os != 'Windows'

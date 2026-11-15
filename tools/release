@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+# Sets the module version, writes hermetic_cc_toolchain-<tag>.tar.gz, puts the
+# tag and the tarball's sha256 into README.md and examples/rules_cc/WORKSPACE,
+# then commits and tags.
+
+set -euo pipefail
+
+usage()
+(
+    echo "Usage: release {tag}"
+)
+
+if [ "${1:0:1}" != "v" ]; then
+    echo 'Release version must be prefixed with a "v"'
+    usage && exit 1;
+fi
+
+tag=$1
+tarball=hermetic_cc_toolchain-$tag.tar.gz
+
+cd "$(git rev-parse --show-toplevel)"
+
+sed -i.bak "3s/\".*\"/\"${tag#v}\"/" MODULE.bazel
+git add MODULE.bazel
+
+git archive --format=tar.gz --mtime=2000-01-01T00:00:00Z -o "$tarball" \
+    "$(git write-tree)" LICENSE MODULE.bazel toolchain
+sha256=$( (sha256sum "$tarball" 2>/dev/null || shasum -a 256 "$tarball") | cut -d' ' -f1)
+
+sed -i.bak \
+    -e "s/^HERMETIC_CC_TOOLCHAIN_VERSION = .*/HERMETIC_CC_TOOLCHAIN_VERSION = \"$tag\"/" \
+    -e "/^HERMETIC_CC_TOOLCHAIN_VERSION = /,/^)/ s/^    sha256 = .*/    sha256 = \"$sha256\",/" \
+    README.md examples/rules_cc/WORKSPACE
+rm MODULE.bazel.bak README.md.bak examples/rules_cc/WORKSPACE.bak
+
+git commit -q -m "Release hermetic_cc_toolchain $tag"
+git tag "$tag"
+echo "wrote $tarball, sha256: $sha256"

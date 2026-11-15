@@ -528,12 +528,11 @@ The tests are running (CId) on linux-amd64.
 A standalone Docker environment to play with `hermetic_cc_toolchain`:
 
 ```
-$ docker run -e CC=/usr/bin/false -ti --rm -v "$PWD:/x" -w /x debian:bookworm-slim
+$ docker run -e CC=/usr/bin/false -ti --rm -v "$PWD:/x" -w /x debian:trixie-slim
 # apt update && apt install --no-install-recommends -y shellcheck ca-certificates python3 git
 # git config --global --add safe.directory /x
 # tools/bazel test //...
 # ./ci/lint
-# ./ci/release
 # ./ci/zig-wrapper
 ```
 ## Communication

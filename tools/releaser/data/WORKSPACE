@@ -1,1 +1,0 @@
-workspace(name = "hermetic_cc_toolchain")
