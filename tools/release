@@ -34,6 +34,6 @@ sed -i.bak \
     README.md examples/rules_cc/WORKSPACE
 rm MODULE.bazel.bak README.md.bak examples/rules_cc/WORKSPACE.bak
 
-git commit -q -m "Release hermetic_cc_toolchain $tag"
+git commit -q -am "Release hermetic_cc_toolchain $tag"
 git tag "$tag"
 echo "wrote $tarball, sha256: $sha256"

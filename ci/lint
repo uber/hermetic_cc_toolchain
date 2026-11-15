@@ -8,7 +8,7 @@ set -xeuo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
 echo "--- which zig"
-ZIG=${ZIG:-$(tools/bazel run "$@" --run_under=echo @zig_sdk//:zig)}
+ZIG=${ZIG:-$(bazelisk run "$@" --run_under=echo @zig_sdk//:zig)}
 
 >&2 echo "--- shellcheck :flag-lt:"
 if command -v shellcheck &> /dev/null; then
@@ -31,13 +31,13 @@ $ZIG fmt "${zigfiles[@]}"
 >&2 echo "--- Skipping go fmt :go:"
 #>&2 echo "--- go fmt :go:"
 #mapfile -t gofiles < <(git ls-files '**/*.go')
-#tools/bazel run @rules_go//go -- fmt -w "${gofiles[@]}"
+#bazelisk run @rules_go//go -- fmt -w "${gofiles[@]}"
 
 >&2 echo "--- buildifier :bazel:"
 tools/buildifier -r -mode fix "$PWD"
 
 >&2 echo "--- Gazelle :goat:"
-tools/bazel run //:gazelle -- -mode fix
+bazelisk run //:gazelle -- -mode fix
 
 >&2 echo "--- git diff :git:"
 git diff --exit-code

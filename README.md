@@ -529,9 +529,11 @@ A standalone Docker environment to play with `hermetic_cc_toolchain`:
 
 ```
 $ docker run -e CC=/usr/bin/false -ti --rm -v "$PWD:/x" -w /x debian:trixie-slim
-# apt update && apt install --no-install-recommends -y shellcheck ca-certificates python3 git
+# apt update && apt install --no-install-recommends -y shellcheck ca-certificates curl git
+# curl -fLo /usr/local/bin/bazelisk https://github.com/bazelbuild/bazelisk/releases/latest/download/bazelisk-linux-$(dpkg --print-architecture)
+# chmod +x /usr/local/bin/bazelisk
 # git config --global --add safe.directory /x
-# tools/bazel test //...
+# bazelisk test //...
 # ./ci/lint
 # ./ci/zig-wrapper
 ```

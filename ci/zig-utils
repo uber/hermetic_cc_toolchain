@@ -3,7 +3,7 @@
 set -xeuo pipefail
 
 echo "--- which zig"
-ZIG=${ZIG:-$(tools/bazel run "$@" --run_under=echo @zig_sdk//:zig)}
+ZIG=${ZIG:-$(bazelisk run "$@" --run_under=echo @zig_sdk//:zig)}
 
 # On macOS, pass an explicit -target so zig links against its bundled
 # hermetic libc stubs instead of the host SDK. Without it, zig 0.14.0 fails
