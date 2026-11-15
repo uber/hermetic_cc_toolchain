@@ -34,31 +34,7 @@ Uber GitHub repository](https://github.com/uber) and renamed to
 
 ## Usage
 
-### WORKSPACE
-
-Add this to your `WORKSPACE`:
-
-```starlark
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-
-HERMETIC_CC_TOOLCHAIN_VERSION = "v4.3.0"
-
-http_archive(
-    name = "hermetic_cc_toolchain",
-    sha256 = "79338d8c5c4499c7402aea1fe78dcd20267f300e9f8f5886be7017d57ccf0fbc",
-    urls = [
-        "https://mirror.bazel.build/github.com/uber/hermetic_cc_toolchain/releases/download/{0}/hermetic_cc_toolchain-{0}.tar.gz".format(HERMETIC_CC_TOOLCHAIN_VERSION),
-        "https://github.com/uber/hermetic_cc_toolchain/releases/download/{0}/hermetic_cc_toolchain-{0}.tar.gz".format(HERMETIC_CC_TOOLCHAIN_VERSION),
-    ],
-)
-
-load("@hermetic_cc_toolchain//toolchain:defs.bzl", zig_toolchains = "toolchains")
-
-# Plain zig_toolchains() will pick reasonable defaults. See
-# toolchain/defs.bzl:toolchains on how to change the Zig SDK version and
-# download URL.
-zig_toolchains()
-```
+`hermetic_cc_toolchain` needs Bazel 9 or later.
 
 ### MODULE.bazel
 
@@ -104,56 +80,23 @@ which is known to resolve the issue for some users.
 
 The snippets above will download the zig toolchain and make the bazel
 toolchains available for registration and usage. If nothing else is done, this
-will work for some minimal use cases. The `.bazelrc` snippet instructs Bazel to
-use the registered "new kinds of toolchains". The next steps depend on how one
+will work for some minimal use cases. The next steps depend on how one
 wants to use `hermetic_cc_toolchain`. The descriptions below is a gentle
 introduction to C++ toolchains from "user's perspective" too.
 
-See [examples][examples] for some other recommended `.bazelrc` flags, as well
-as how to use `hermetic_cc_toolchain` with bzlmod.
+See [examples][examples] for some other recommended `.bazelrc` flags.
 
 ### Repositories
 
 `hermetic_cc_toolchain` creates few repositories to work with:
 - `@zig_sdk` - platform, constraint and toolchain definitions for supported platforms
 - `@zig_config` - internal config targets for HOST platform (not visible to main repository)
-- `@zig_config-{os}-{arch}` - internal config targets for supported platforms when explicitly provided to [toolchains()](toolchain/defs.bzl#62) macro (not visible to main repository)
+- `@zig_config-{os}-{arch}` - internal config targets for execution platforms requested with `toolchains.exec_platform()` (not visible to main repository)
 
 By default `hermetic_cc_toolchain` creates toolchains just for the HOST execution
-platform. To create toolchains for other execution platforms than HOST, those need
-to be explicitly specified within [toolchains()](toolchain/defs.bzl#62) macro call.
-The dictionary argument of [exec_platforms](toolchain/defs.bzl#L67), specifies additional execution platforms and has to conform Bazel's
-[attr.string_dict()](https://bazel.build/rules/lib/toplevel/attr#string_dict), e.g.:
-
-```starlark
-_EXEC_PLATFORMS = {
-    "linux": ["arm64"],
-    "macos": ["amd64", "arm64"],
-    "windows": ["amd64"],
-}
-```
-
-#### WORKSPACE
-
-If toolchains for other than HOST execution platforms are needed, pass them to `zig_toolchains()`:
-
-```
-load("@hermetic_cc_toolchain//toolchain:defs.bzl", zig_toolchains = "toolchains")
-
-_MACOS_EXEC_PLATFORMS = {
-    "macos": ["amd64", "arm64"],
-}
-
-zig_toolchains(
-  exec_platforms = _MACOS_EXEC_PLATFORMS
-)
-```
-
-#### MODULE.bazel
-
-[toolchains](toolchain/ext.bzl#40) module extension provides [exec_platform](toolchain/ext.bzl#4)
-tag class, which allows to specify additional execution platforms.
-To add toolchains for `windows-amd64` execution platform (additionally to HOST execution
+platform. Toolchains for other execution platforms need to be requested explicitly.
+The [toolchains](toolchain/ext.bzl#40) module extension provides the [exec_platform](toolchain/ext.bzl#4)
+tag class for that. To add toolchains for `windows-amd64` execution platform (additionally to HOST execution
 platform), call `toolchains.exec_platform()`:
 
 ```starlark
@@ -307,26 +250,6 @@ register_toolchains(
 )
 ```
 
-#### WORKSPACE
-
-Append this to `WORKSPACE` after `zig_toolchains()`:
-
-```starlark
-load("@hermetic_cc_toolchain//toolchain:defs.bzl", zig_toolchains = "toolchains")
-
-zig_toolchains()
-
-register_toolchains(
-    "@zig_sdk//toolchain:linux_amd64_gnu.2.28",
-    "@zig_sdk//toolchain:linux_arm64_gnu.2.28",
-    "@zig_sdk//toolchain:darwin_amd64",
-    "@zig_sdk//toolchain:darwin_arm64",
-    "@zig_sdk//toolchain:windows_amd64",
-    "@zig_sdk//toolchain:windows_arm64",
-    "@zig_sdk//toolchain:wasip1_wasm",
-)
-```
-
 #### All toolchains at once
 
 To register all available toolchains one can simply call:
@@ -360,7 +283,7 @@ use the hermetic toolchain exclusively, it won't hurt.
 When some targets need to be build with different libcs (either different
 versions of glibc or musl), use a linux toolchain from
 `@zig_sdk//libc_aware/toolchains:<...>`. The toolchain will only be selected
-when building for a specific libc. For example, in `WORKSPACE`:
+when building for a specific libc. For example, in `MODULE.bazel`:
 
 ```starlark
 register_toolchains(
@@ -502,14 +425,6 @@ long as the OSX sysroot must come through an `http_archive`.
 
 In essence, OSX target support is not well tested with `hermetic_cc_toolchain`.
 Also see [#10][pr-10].
-
-### Bazel 6 or earlier
-
-Add to `.bazelrc`:
-
-```
-build --incompatible_enable_cc_toolchain_resolution
-```
 
 ## Host Environments
 

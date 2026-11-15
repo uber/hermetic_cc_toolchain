@@ -233,7 +233,6 @@ def _target_wasm():
             "@platforms//cpu:wasm32",
         ],
         ld_zig_subcmd = "wasm-ld",
-        # .wasm extension supported in bazel >= 6.4.0
         artifact_name_patterns = [
             {
                 "category_name": "dynamic_library",
@@ -264,7 +263,6 @@ def _target_wasm_no_wasi():
             "@platforms//cpu:wasm32",
         ],
         ld_zig_subcmd = "wasm-ld",
-        # .wasm extension supported in bazel >= 6.4.0
         artifact_name_patterns = [
             {
                 "category_name": "dynamic_library",

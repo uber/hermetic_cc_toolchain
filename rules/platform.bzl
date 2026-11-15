@@ -43,9 +43,6 @@ _attrs = {
     "platform": attr.string(
         doc = "The platform to build the target for.",
     ),
-    "_allowlist_function_transition": attr.label(
-        default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
-    ),
     "_cp": attr.label(
         default = "//rules:cp",
         allow_single_file = True,

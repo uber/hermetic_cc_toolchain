@@ -58,8 +58,8 @@ jobs:
       # Linux, macOS and Windows
       - run: ci/list_toolchains_platforms
       - run: bazelisk test //...
-      - run: ci/prepare_git && ci/test_example rules_cc override_repository
-      - run: ci/prepare_git && ci/test_example bzlmod override_module
+      - run: ci/prepare_git && ci/test_example rules_cc
+      - run: ci/prepare_git && ci/test_example bzlmod
       - run: ci/zig-utils
 
       # Test the Zig toolchain for Darwin on Darwin.

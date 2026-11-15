@@ -1,4 +1,3 @@
-load("@bazel_features//:features.bzl", "bazel_features")
 load("@hermetic_cc_toolchain//toolchain:defs.bzl", zig_toolchains = "toolchains")
 
 _exec_platform = tag_class(
@@ -72,14 +71,10 @@ def _toolchains_impl(mctx):
             root_direct_deps = list(repos.public) if is_non_dev_dependency else []
             root_direct_dev_deps = list(repos.public) if not is_non_dev_dependency else []
 
-    metadata_kwargs = {}
-    if bazel_features.external_deps.extension_metadata_has_reproducible:
-        metadata_kwargs["reproducible"] = True
-
     return mctx.extension_metadata(
         root_module_direct_deps = root_direct_deps,
         root_module_direct_dev_deps = root_direct_dev_deps,
-        **metadata_kwargs
+        reproducible = True,
     )
 
 toolchains = module_extension(

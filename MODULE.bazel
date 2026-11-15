@@ -3,7 +3,6 @@ module(
     version = "4.3.0",
 )
 
-bazel_dep(name = "bazel_features", version = "1.45.0")
 bazel_dep(name = "platforms", version = "1.1.0")
 bazel_dep(name = "rules_cc", version = "0.2.17")
 

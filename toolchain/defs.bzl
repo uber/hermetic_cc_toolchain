@@ -72,7 +72,7 @@ def toolchains(
     """
         Download zig toolchain and declare bazel toolchains.
         The platforms are not registered automatically, that should be done by
-        the user with register_toolchains() in the WORKSPACE file. See README
+        the user with register_toolchains() in the MODULE.bazel file. See README
         for possible choices.
     """
 

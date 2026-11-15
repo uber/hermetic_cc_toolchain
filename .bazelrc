@@ -2,11 +2,8 @@ try-import %workspace%/.bazelrc.ci
 
 common --enable_platform_specific_config
 
-build --incompatible_disallow_empty_glob
 build --verbose_failures
 build --worker_sandboxing
-
-build --experimental_output_directory_naming_scheme=diff_against_dynamic_baseline
 
 build:linux --sandbox_add_mount_pair=/home
 build:macos --sandbox_add_mount_pair=/Users
