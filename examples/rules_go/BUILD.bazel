@@ -7,7 +7,7 @@ go_library(
     name = "cgo_lib",
     srcs = ["cgo.go"],
     cgo = True,
-    importpath = "github.com/uber/hermetic_cc_toolchain/test/bzlmod",
+    importpath = "github.com/uber/hermetic_cc_toolchain/test/rules_go",
     visibility = ["//visibility:private"],
 )
 

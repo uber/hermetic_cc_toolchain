@@ -1,5 +1,5 @@
 module(
-    name = "hermetic_cc_toolchain_bcr_tests",
+    name = "hermetic_cc_toolchain_rules_go_example",
     version = "0.1.0",
 )
 

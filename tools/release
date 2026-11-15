@@ -20,7 +20,7 @@ tarball=hermetic_cc_toolchain-$tag.tar.gz
 
 cd "$(git rev-parse --show-toplevel)"
 
-sed -i "3s/\".*\"/\"${tag#v}\"/" MODULE.bazel
+sed -i -e "3s/\".*\"/\"${tag#v}\"/" MODULE.bazel
 git add MODULE.bazel
 
 git archive --format=tar.gz --mtime=2000-01-01T00:00:00Z -o "$tarball" \

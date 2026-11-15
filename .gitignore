@@ -6,5 +6,5 @@
 /bazel-out
 /bazel-testlogs
 /bazel-x
-/examples/bzlmod/bazel-*
+/examples/rules_go/bazel-*
 MODULE.bazel.lock
