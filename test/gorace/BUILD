@@ -1,4 +1,5 @@
 # Copyright 2023 Uber Technologies, Inc.
+# Copyright 2026 toolchains_zig_cc contributors
 # Licensed under the MIT License
 
 load("@rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
@@ -8,7 +9,7 @@ go_library(
     srcs = ["main.go"],
     # keep
     cgo = True,
-    importpath = "github.com/uber/hermetic_cc_toolchain/test/gorace",
+    importpath = "github.com/Zer0-One/toolchains_zig_cc/test/gorace",
     # TODO lld-link: error: undefined symbol: WaitOnAddress on Windows
     target_compatible_with = select({
         "@platforms//os:windows": ["@platforms//:incompatible"],

@@ -1,4 +1,5 @@
 // Copyright 2023 Uber Technologies, Inc.
+// Copyright 2026 toolchains_zig_cc contributors
 // Licensed under the MIT License
 //
 // A wrapper for `zig` subcommands.
@@ -35,7 +36,7 @@
 // complain that the compiler is using undeclared directories on the host file
 // system. We do not declare prerequisites using absolute paths, because that
 // busts Bazel's remote cache.
-// * HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX is configurable per toolchain instance, and
+// * TOOLCHAINS_ZIG_CC_CACHE_PREFIX is configurable per toolchain instance, and
 // ZIG_GLOBAL_CACHE_DIR and ZIG_LOCAL_CACHE_DIR must be set to its value for
 // all `zig` invocations.
 //
@@ -64,7 +65,7 @@ const EXE = switch (builtin.target.os.tag) {
     else => "",
 };
 
-const CACHE_DIR = "{HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX}";
+const CACHE_DIR = "{TOOLCHAINS_ZIG_CC_CACHE_PREFIX}";
 
 const usage =
     \\

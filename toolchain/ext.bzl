@@ -1,4 +1,4 @@
-load("@hermetic_cc_toolchain//toolchain:defs.bzl", zig_toolchains = "toolchains")
+load("@toolchains_zig_cc//toolchain:defs.bzl", zig_toolchains = "toolchains")
 
 _exec_platform = tag_class(
     attrs = {

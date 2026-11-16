@@ -1,4 +1,4 @@
-load("@hermetic_cc_toolchain//toolchain/private:defs.bzl", "target_structs")
+load("@toolchains_zig_cc//toolchain/private:defs.bzl", "target_structs")
 
 def declare_toolchains(
         configs = "",

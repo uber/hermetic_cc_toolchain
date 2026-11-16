@@ -1,4 +1,4 @@
-module github.com/uber/hermetic_cc_toolchain
+module github.com/Zer0-One/toolchains_zig_cc
 
 go 1.25.0
 

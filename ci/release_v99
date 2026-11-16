@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # Copyright 2023 Uber Technologies, Inc.
+# Copyright 2026 toolchains_zig_cc contributors
 # Licensed under the MIT License
 
 set -xeuo pipefail
@@ -11,4 +12,4 @@ tools/release v99.0.0
 cleanup() { git tag -d v99.0.0; git reset --hard "$prev_ref"; }
 trap cleanup EXIT
 
-file hermetic_cc_toolchain-v99.0.0.tar.gz | grep -q 'gzip compressed data'
+file toolchains_zig_cc-v99.0.0.tar.gz | grep -q 'gzip compressed data'

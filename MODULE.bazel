@@ -1,5 +1,5 @@
 module(
-    name = "hermetic_cc_toolchain",
+    name = "toolchains_zig_cc",
     version = "4.3.0",
 )
 
@@ -35,7 +35,7 @@ use_repo(toolchains, "zig_sdk")
 
 # TODO: register all toolchains by:
 # `register_toolchains("@zig_sdk//...")`
-# when `hermetic_cc_toolchain` supports MacOS SDK
+# when `toolchains_zig_cc` supports MacOS SDK
 # https://github.com/uber/hermetic_cc_toolchain/issues/10
 register_toolchains(
     "@zig_sdk//toolchain:linux_amd64_gnu.2.28",

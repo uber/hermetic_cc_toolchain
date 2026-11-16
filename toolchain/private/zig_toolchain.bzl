@@ -1,4 +1,4 @@
-load("@hermetic_cc_toolchain//toolchain:zig_toolchain.bzl", "zig_toolchain")
+load("@toolchains_zig_cc//toolchain:zig_toolchain.bzl", "zig_toolchain")
 
 def declare_zig_toolchain(name):
     zig_toolchain(

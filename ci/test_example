@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # Copyright 2023 Uber Technologies, Inc.
+# Copyright 2026 toolchains_zig_cc contributors
 # Licensed under the MIT License
 
 set -xeuo pipefail
@@ -11,17 +12,17 @@ echo --- setup "$example"
 root=$(git rev-parse --show-toplevel)
 cd "examples/$example"
 
-echo --- "testing examples/$example with hermetic_cc_toolchain pointing to git repository root"
+echo --- "testing examples/$example with toolchains_zig_cc pointing to git repository root"
 # lockfile_mode=off, so examples/$example/MODULE.bazel.lock does not get the override below
-bazelisk test --lockfile_mode=off "--override_module=hermetic_cc_toolchain=$root" --test_output=errors ...
+bazelisk test --lockfile_mode=off "--override_module=toolchains_zig_cc=$root" --test_output=errors ...
 
-echo --- "testing examples/$example with hermetic_cc_toolchain pointing to a directory produced by release tarball"
+echo --- "testing examples/$example with toolchains_zig_cc pointing to a directory produced by release tarball"
 # generate release tarball and put to temp
 REL=$(mktemp -d); trap 'rm -fr $REL' EXIT; "$root/ci/release_v99"
-tar -vxf "../../hermetic_cc_toolchain-v99.0.0.tar.gz" -C "$REL"
+tar -vxf "../../toolchains_zig_cc-v99.0.0.tar.gz" -C "$REL"
 
 # lockfile_mode=off, so examples/$example/MODULE.bazel.lock does not get the override below
-bazelisk test --lockfile_mode=off "--override_module=hermetic_cc_toolchain=$REL" --test_output=errors ...
+bazelisk test --lockfile_mode=off "--override_module=toolchains_zig_cc=$REL" --test_output=errors ...
 
 echo --- "testing examples/$example as is"
 bazelisk test --test_output=errors ...

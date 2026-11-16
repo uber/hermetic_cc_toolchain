@@ -1,13 +1,13 @@
 module(
-    name = "hermetic_cc_toolchain_rules_go_example",
+    name = "toolchains_zig_cc_rules_go_example",
     version = "0.1.0",
 )
 
 bazel_dep(name = "platforms", version = "1.1.0")
 bazel_dep(name = "rules_go", version = "0.64.0", repo_name = "io_bazel_rules_go")
-bazel_dep(name = "hermetic_cc_toolchain", version = "4.3.0")
+bazel_dep(name = "toolchains_zig_cc", version = "4.3.0")
 
-toolchains = use_extension("@hermetic_cc_toolchain//toolchain:ext.bzl", "toolchains")
+toolchains = use_extension("@toolchains_zig_cc//toolchain:ext.bzl", "toolchains")
 use_repo(toolchains, "zig_sdk")
 
 register_toolchains(

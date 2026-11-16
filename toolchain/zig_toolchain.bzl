@@ -1,4 +1,4 @@
-load("@hermetic_cc_toolchain//toolchain/private:zig_toolchain_info.bzl", "ZigToolchainInfo")
+load("@toolchains_zig_cc//toolchain/private:zig_toolchain_info.bzl", "ZigToolchainInfo")
 
 def _zig_toolchain_impl(ctx):
     zig_toolchain_info = platform_common.ToolchainInfo(

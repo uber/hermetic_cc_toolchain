@@ -1,5 +1,5 @@
-load("@hermetic_cc_toolchain//toolchain:zig_cc_toolchain.bzl", "zig_cc_toolchain_config")
 load("@rules_cc//cc/toolchains:cc_toolchain.bzl", "cc_toolchain")
+load("@toolchains_zig_cc//toolchain:zig_cc_toolchain.bzl", "zig_cc_toolchain_config")
 load(":defs.bzl", "target_structs", "zig_tool_path")
 
 def declare_cc_toolchains(os, zig_sdk_path):

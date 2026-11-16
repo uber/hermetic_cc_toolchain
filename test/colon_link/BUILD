@@ -1,4 +1,5 @@
 # Copyright 2025 Uber Technologies, Inc.
+# Copyright 2026 toolchains_zig_cc contributors
 # Licensed under the MIT License
 
 # Tests that Zig correctly handles the colon-link syntax ("-l:filename.so"),
@@ -11,8 +12,8 @@
 #
 # See https://github.com/ziglang/zig/issues/23287
 
-load("@hermetic_cc_toolchain//rules:platform.bzl", "platform_binary")
 load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
+load("@toolchains_zig_cc//rules:platform.bzl", "platform_binary")
 
 # Build a versioned shared library "libgreeter.so.1". The standard "-lgreeter"
 # flag looks for "libgreeter.so" (unversioned), so the colon syntax is required

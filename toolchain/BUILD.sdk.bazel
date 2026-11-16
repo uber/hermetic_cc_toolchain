@@ -1,9 +1,10 @@
 # Copyright 2023 Uber Technologies, Inc.
+# Copyright 2026 toolchains_zig_cc contributors
 # Licensed under the MIT License
 
-load("@hermetic_cc_toolchain//toolchain:defs.bzl", "declare_files")
-load("@hermetic_cc_toolchain//toolchain/private:cc_toolchains.bzl", "declare_cc_toolchains")
-load("@hermetic_cc_toolchain//toolchain/private:zig_toolchain.bzl", "declare_zig_toolchain")
+load("@toolchains_zig_cc//toolchain:defs.bzl", "declare_files")
+load("@toolchains_zig_cc//toolchain/private:cc_toolchains.bzl", "declare_cc_toolchains")
+load("@toolchains_zig_cc//toolchain/private:zig_toolchain.bzl", "declare_zig_toolchain")
 
 package(
     default_visibility = ["//visibility:public"],

@@ -1,8 +1,9 @@
 # Copyright 2023 Uber Technologies, Inc.
+# Copyright 2026 toolchains_zig_cc contributors
 # Licensed under the MIT License
 
-load("@hermetic_cc_toolchain//rules:platform.bzl", "platform_binary")
 load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
+load("@toolchains_zig_cc//rules:platform.bzl", "platform_binary")
 
 cc_binary(
     name = "main",

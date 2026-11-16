@@ -1,10 +1,10 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "read_user_netrc", "use_netrc")
-load("@hermetic_cc_toolchain//toolchain:utils.bzl", "quote")
-load("@hermetic_cc_toolchain//toolchain/private:defs.bzl", "target_structs", "transform_os_name", "zig_tool_path")
-load("@hermetic_cc_toolchain//toolchain/private:repositories.bzl", "zig_sdk_repository")
+load("@toolchains_zig_cc//toolchain:utils.bzl", "quote")
+load("@toolchains_zig_cc//toolchain/private:defs.bzl", "target_structs", "transform_os_name", "zig_tool_path")
+load("@toolchains_zig_cc//toolchain/private:repositories.bzl", "zig_sdk_repository")
 load(
-    "@hermetic_cc_toolchain//toolchain/private:zig_sdk.bzl",
+    "@toolchains_zig_cc//toolchain/private:zig_sdk.bzl",
     "HOST_PLATFORM_SHA256",
     "URL_FORMAT_NIGHTLY",
     "URL_FORMAT_RELEASE",
@@ -46,7 +46,7 @@ return_code={return_code}
 stderr={stderr}
 stdout={stdout}
 
-You stumbled into a problem with Zig SDK that hermetic_cc_toolchain was not
+You stumbled into a problem with Zig SDK that toolchains_zig_cc was not
 able to fix. This is most likely a long-standing problem mostly (only?)
 observed in OSX. Please please add a comment to
 https://github.com/ziglang/zig/issues/18763 with:
@@ -54,7 +54,7 @@ https://github.com/ziglang/zig/issues/18763 with:
 - Full output of this Bazel run, including the Bazel command.
 - Full OS version and hardware revision (e.g. aarch64 or x86_64?).
 
-Zig and hermetic_cc_toolchain maintainers aren't able to reproduce it, but you
+Zig and toolchains_zig_cc maintainers aren't able to reproduce it, but you
 are. Thus we need a bit of your collaboration to get to the bottom of it.
 
 After commenting on the issue, `rm -fr {cache_prefix}` and re-run your command.
@@ -186,14 +186,14 @@ def _zig_repository_impl(repository_ctx):
         sha256 = zig_sha256,
     )
 
-    cache_prefix = repository_ctx.os.environ.get("HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX", "")
+    cache_prefix = repository_ctx.os.environ.get("TOOLCHAINS_ZIG_CC_CACHE_PREFIX", "")
 
     repository_ctx.template(
         "tools/zig-wrapper.zig",
         Label("//toolchain:zig-wrapper.zig"),
         executable = False,
         substitutions = {
-            "{HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX}": cache_prefix,
+            "{TOOLCHAINS_ZIG_CC_CACHE_PREFIX}": cache_prefix,
         },
     )
 
@@ -290,7 +290,7 @@ zig_repository = repository_rule(
         "exec_os": attr.string(default = "HOST"),
         "exec_arch": attr.string(default = "HOST"),
     },
-    environ = ["HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX"],
+    environ = ["TOOLCHAINS_ZIG_CC_CACHE_PREFIX"],
     implementation = _zig_repository_impl,
 )
 

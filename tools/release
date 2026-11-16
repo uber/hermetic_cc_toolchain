@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Sets the module version, writes hermetic_cc_toolchain-<tag>.tar.gz, then
+# Sets the module version, writes toolchains_zig_cc-<tag>.tar.gz, then
 # commits and tags.
 
 set -euo pipefail
@@ -16,7 +16,7 @@ if [ "${1:0:1}" != "v" ]; then
 fi
 
 tag=$1
-tarball=hermetic_cc_toolchain-$tag.tar.gz
+tarball=toolchains_zig_cc-$tag.tar.gz
 
 cd "$(git rev-parse --show-toplevel)"
 
@@ -27,6 +27,6 @@ git archive --format=tar.gz --mtime=2000-01-01T00:00:00Z -o "$tarball" \
     "$(git write-tree)" LICENSE MODULE.bazel toolchain
 sha256=$( (sha256sum "$tarball" 2>/dev/null || shasum -a 256 "$tarball") | cut -d' ' -f1)
 
-git commit -q -m "Release hermetic_cc_toolchain $tag"
+git commit -q -m "Release toolchains_zig_cc $tag"
 git tag "$tag"
 echo "wrote $tarball, sha256: $sha256"

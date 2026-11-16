@@ -1,19 +1,27 @@
 {
-    "homepage": "https://github.com/uber/hermetic_cc_toolchain",
+    "homepage": "https://github.com/Zer0-One/toolchains_zig_cc",
     "maintainers": [
         {
-            "email": "sungyoon@uber.com",
-            "github": "sywhang",
-            "name": "Sung Yoon Whang"
+            "email": "zero-one@zer0-one.net",
+            "github": "Zer0-One",
+            "github_user_id": 1117820,
+            "name": "David Zero"
         },
         {
-            "email": "zplin@uber.com",
-            "github": "linzhp",
-            "name": "Zhongpeng Lin"
+            "email": "iphydf@gmail.com",
+            "github": "iphydf",
+            "github_user_id": 10647936,
+            "name": "Df"
+        },
+        {
+            "email": "dev@robinlinden.eu",
+            "github": "robinlinden",
+            "github_user_id": 8304462,
+            "name": "Robin Lindén"
         }
     ],
     "repository": [
-      "github:uber/hermetic_cc_toolchain"
+      "github:Zer0-One/toolchains_zig_cc"
     ],
     "versions": [],
     "yanked_versions": {}

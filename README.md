@@ -1,6 +1,6 @@
-[![ci](https://github.com/uber/hermetic_cc_toolchain/actions/workflows/ci.yaml/badge.svg)](https://github.com/uber/hermetic_cc_toolchain/actions/workflows/ci.yaml)
+[![ci](https://github.com/Zer0-One/toolchains_zig_cc/actions/workflows/ci.yaml/badge.svg)](https://github.com/Zer0-One/toolchains_zig_cc/actions/workflows/ci.yaml)
 
-# Hermetic CC toolchain
+# toolchains_zig_cc
 
 This is a C/C++ toolchain that can (cross-)compile C/C++ programs on top of
 `zig cc`. It contains clang-17, musl, glibc 2.17-2.38, all in a ~40MB package.
@@ -10,9 +10,9 @@ about zig-cc; the rest of the README will present how to use this toolchain
 from Bazel.
 
 Configuring toolchains in Bazel is complex and fraught with peril. We, the team
-behind `hermetic_cc_toolchain`, are still confused on how this all works, and
+behind `toolchains_zig_cc`, are still confused on how this all works, and
 often wonder why it works at all. That aside, we made our best effort to make
-`hermetic_cc_toolchain` usable for your C/C++/CGo projects, with as many
+`toolchains_zig_cc` usable for your C/C++/CGo projects, with as many
 guardrails can be installed.
 
 While copy-pasting the code in your project, attempt to read and understand the
@@ -25,7 +25,9 @@ This repository is cloned from and is based on Adam Bouhenguel's
 [bazel-zig-cc][ajbouh], and was later developed at
 `sr.ht/~motiejus/bazel-zig-cc`. After a while this repository was moved to [the
 Uber GitHub repository](https://github.com/uber) and renamed to
-`hermetic_cc_toolchain`.
+`hermetic_cc_toolchain`. It was then forked to
+[Zer0-One/toolchains_zig_cc](https://github.com/Zer0-One/toolchains_zig_cc) and
+renamed to `toolchains_zig_cc`.
 
 > **Our special thanks to Adam for coming up with the idea - and creating the
 > original version – of `bazel-zig-cc` and publishing it. His idea and work
@@ -34,16 +36,16 @@ Uber GitHub repository](https://github.com/uber) and renamed to
 
 ## Usage
 
-`hermetic_cc_toolchain` needs Bazel 9 or later.
+`toolchains_zig_cc` needs Bazel 9 or later.
 
 ### MODULE.bazel
 
 Add this to your `MODULE.bazel`:
 
 ```starlark
-bazel_dep(name = "hermetic_cc_toolchain", version = "4.3.0")
+bazel_dep(name = "toolchains_zig_cc", version = "4.3.0")
 
-toolchains = use_extension("@hermetic_cc_toolchain//toolchain:ext.bzl", "toolchains")
+toolchains = use_extension("@toolchains_zig_cc//toolchain:ext.bzl", "toolchains")
 use_repo(toolchains, "zig_sdk")
 
 register_toolchains(
@@ -70,7 +72,7 @@ See [#83][pr-83] for more context. If a different place is preferred for
 zig cache, set:
 
 ```
-build --repo_env=HERMETIC_CC_TOOLCHAIN_CACHE_PREFIX=/path/to/zig-cache
+build --repo_env=TOOLCHAINS_ZIG_CC_CACHE_PREFIX=/path/to/zig-cache
 build --sandbox_add_mount_pair=/path/to/zig-cache
 ```
 
@@ -81,19 +83,19 @@ which is known to resolve the issue for some users.
 The snippets above will download the zig toolchain and make the bazel
 toolchains available for registration and usage. If nothing else is done, this
 will work for some minimal use cases. The next steps depend on how one
-wants to use `hermetic_cc_toolchain`. The descriptions below is a gentle
+wants to use `toolchains_zig_cc`. The descriptions below is a gentle
 introduction to C++ toolchains from "user's perspective" too.
 
 See [examples][examples] for some other recommended `.bazelrc` flags.
 
 ### Repositories
 
-`hermetic_cc_toolchain` creates few repositories to work with:
+`toolchains_zig_cc` creates few repositories to work with:
 - `@zig_sdk` - platform, constraint and toolchain definitions for supported platforms
 - `@zig_config` - internal config targets for HOST platform (not visible to main repository)
 - `@zig_config-{os}-{arch}` - internal config targets for execution platforms requested with `toolchains.exec_platform()` (not visible to main repository)
 
-By default `hermetic_cc_toolchain` creates toolchains just for the HOST execution
+By default `toolchains_zig_cc` creates toolchains just for the HOST execution
 platform. Toolchains for other execution platforms need to be requested explicitly.
 The [toolchains](toolchain/ext.bzl#40) module extension provides the [exec_platform](toolchain/ext.bzl#4)
 tag class for that. To add toolchains for `windows-amd64` execution platform (additionally to HOST execution
@@ -138,7 +140,7 @@ Having a `x86_64-linux-musl` toolchain for `@zig_sdk//platform:windows_amd64` ex
 
 This option is least disruptive to the workflow compared to no hermetic C++
 toolchain, and works best when trying out or getting started with
-`hermetic_cc_toolchain` for a subset of targets.
+`toolchains_zig_cc` for a subset of targets.
 
 To request Bazel to use a specific toolchain (compatible with the specified
 platform) for build/tests/whatever on linux-amd64-musl, do:
@@ -269,7 +271,7 @@ build --action_env BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
 From Bazel's perspective, this is almost equivalent to always specifying
 `--extra_toolchains` on every `bazel <...>` command-line invocation. It also
 means there is no way to disable the toolchain with the command line. This is
-useful if you find `hermetic_cc_toolchain` useful enough to compile for all of
+useful if you find `toolchains_zig_cc` useful enough to compile for all of
 your targets and tools.
 
 With `BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1` Bazel stops detecting the default
@@ -402,9 +404,9 @@ SIGILL: illegal instruction
 This flag encourages program authors to fix the undefined behavior. There are
 [many ways][ubsan2] to find the undefined behavior.
 
-## Known Issues In `hermetic_cc_toolchain`
+## Known Issues In `toolchains_zig_cc`
 
-These are the things you may stumble into when using `hermetic_cc_toolchain`.
+These are the things you may stumble into when using `toolchains_zig_cc`.
 We are unlikely to implement them any time soon, but patches implementing those
 will be accepted.
 
@@ -423,7 +425,7 @@ be necessary. Read [Jakub's comment][sysroot] about it. Support for OSX sysroot
 is currently not implemented, but patches implementing it will be accepted, as
 long as the OSX sysroot must come through an `http_archive`.
 
-In essence, OSX target support is not well tested with `hermetic_cc_toolchain`.
+In essence, OSX target support is not well tested with `toolchains_zig_cc`.
 Also see [#10][pr-10].
 
 ## Host Environments
@@ -440,7 +442,7 @@ The tests are running (CId) on linux-amd64.
 
 ### Transient docker environment
 
-A standalone Docker environment to play with `hermetic_cc_toolchain`:
+A standalone Docker environment to play with `toolchains_zig_cc`:
 
 ```
 $ docker run -e CC=/usr/bin/false -ti --rm -v "$PWD:/x" -w /x debian:trixie-slim
@@ -498,7 +500,7 @@ On a more practical note:
   of Zig.
 - Currently releases are coordinated with Uber employees, because they can test
   the version-to-be-released their [big repository][go-monorepo]. If you use
-  `hermetic_cc_toolchain` in production and, more importantly, have a
+  `toolchains_zig_cc` in production and, more importantly, have a
   heterogeneous environment (different languages, RBE, different platforms), we
   encourage you to make yourself known. That way we can work together to
   validate it before cutting the release.
@@ -516,4 +518,4 @@ On a more practical note:
 [go-monorepo]: https://www.uber.com/blog/go-monorepo-bazel/
 [pr-83]: https://github.com/uber/hermetic_cc_toolchain/issues/83
 [pr-10]: https://github.com/uber/hermetic_cc_toolchain/issues/10
-[examples]: https://github.com/uber/hermetic_cc_toolchain/tree/main/examples
+[examples]: https://github.com/Zer0-One/toolchains_zig_cc/tree/master/examples
