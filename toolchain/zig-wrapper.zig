@@ -378,11 +378,11 @@ fn getRunMode(self_exe: []const u8, self_base_noexe: []const u8) error{BadParent
     var it = mem.splitScalar(u8, triple, '-');
 
     const arch = it.next() orelse return error.BadParent;
-    if (mem.indexOf(u8, "aarch64,x86_64,wasm32", arch) == null)
+    if (!isOneOf(arch, &.{ "aarch64", "x86_64", "wasm32" }))
         return error.BadParent;
 
     const got_os = it.next() orelse return error.BadParent;
-    if (mem.indexOf(u8, "linux,macos,windows,wasi,freestanding", got_os) == null)
+    if (!isOneOf(got_os, &.{ "linux", "macos", "windows", "wasi", "freestanding" }))
         return error.BadParent;
 
     // ABI triple is too much of a moving target
@@ -391,6 +391,13 @@ fn getRunMode(self_exe: []const u8, self_base_noexe: []const u8) error{BadParent
     if (it.next() != null) return error.BadParent;
 
     return RunMode{ .cc = triple };
+}
+
+fn isOneOf(s: []const u8, list: []const []const u8) bool {
+    for (list) |item| {
+        if (mem.eql(u8, s, item)) return true;
+    }
+    return false;
 }
 
 const testing = std.testing;
@@ -539,6 +546,50 @@ test "zig-wrapper:parseArgs" {
             .exec => |want| {
                 try compareExec(res, want.args, want.env_zig_lib_dir);
             },
+        }
+    }
+}
+
+test "zig-wrapper:getRunMode" {
+    const tests = [_]struct {
+        triple: []const u8,
+        want_ok: bool,
+    }{
+        .{ .triple = "x86_64-linux-musl", .want_ok = true },
+        .{ .triple = "aarch64-macos-none", .want_ok = true },
+        .{ .triple = "x86_64-windows-gnu", .want_ok = true },
+        .{ .triple = "wasm32-wasi-musl", .want_ok = true },
+        .{ .triple = "wasm32-freestanding-musl", .want_ok = true },
+        // Parts of a valid name used to be accepted.
+        .{ .triple = "64-linux-musl", .want_ok = false },
+        .{ .triple = "x86-linux-musl", .want_ok = false },
+        .{ .triple = "x86_64-os-none", .want_ok = false },
+        .{ .triple = "x86_64-linux,macos-none", .want_ok = false },
+        // The triple needs exactly three parts.
+        .{ .triple = "x86_64-linux", .want_ok = false },
+        .{ .triple = "x86_64-linux-gnu-extra", .want_ok = false },
+    };
+
+    for (tests) |tt| {
+        var buf: [256]u8 = undefined;
+        const self_exe = try std.fmt.bufPrint(
+            &buf,
+            "tools" ++ sep ++ "{s}" ++ sep ++ "c++" ++ EXE,
+            .{tt.triple},
+        );
+
+        const got = getRunMode(self_exe, "c++");
+        if (tt.want_ok) {
+            const mode = got catch |err| {
+                std.debug.print("{s}: unexpected error {}\n", .{ tt.triple, err });
+                return err;
+            };
+            try testing.expectEqualStrings(tt.triple, mode.cc);
+        } else {
+            testing.expectError(error.BadParent, got) catch |err| {
+                std.debug.print("{s}: want error.BadParent\n", .{tt.triple});
+                return err;
+            };
         }
     }
 }
